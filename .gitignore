@@ -1,0 +1,13 @@
+# composer
+/vendor
+composer.phar
+
+# Laravel
+/bootstrap/compiled.php
+.env.*.php
+.env.php
+
+# OSX
+.DS_Store
+Thumbs.db
+
