@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', function()
+Route::group(['prefix' => 'api/v1'], function ()
 {
-	return View::make('hello');
+    Route::resource('organizations', 'OrganizationController');
 });
+

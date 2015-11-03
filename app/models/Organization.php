@@ -1,6 +1,6 @@
 <?php
 
-class Organization extends Eloquent {
+class Organization extends \Eloquent {
     
     public $table = 'organizations';
     protected $relationships = ['groups'];
