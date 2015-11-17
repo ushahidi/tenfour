@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: RollCall
+        psr4_prefix: Rollcall
+        src_path: app
