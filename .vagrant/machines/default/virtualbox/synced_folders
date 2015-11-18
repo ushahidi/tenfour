@@ -1,1 +1,0 @@
-{"virtualbox":{"/home/vagrant/rollcall":{"type":null,"mount_options":[],"guestpath":"/home/vagrant/rollcall","hostpath":"/private/var/wwwdocs/rollcall","disabled":false},"/vagrant":{"guestpath":"/vagrant","hostpath":"/private/var/wwwdocs/rollcall","disabled":false}}}
