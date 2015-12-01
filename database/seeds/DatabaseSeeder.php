@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use RollCall\Seeders\OauthTableSeeder;
+use RollCall\Seeders\UserTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,7 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
          $this->call(OauthTableSeeder::class);
+         $this->call(UserTableSeeder::class);
 
         Model::reguard();
     }
