@@ -10,4 +10,9 @@ $api->version('v1', [
 	// Authentication
 	//////////////////////////////////////////////////////////////////////
 	$api->post('auth', ['protected' => false, 'uses' => 'AuthController@token']);
+
+    //Users 
+    ////////////////////////////////////////////////////////////////////
+    $api->get('users', ['uses' => 'UsersController@show']);
+    $api->post('users', ['uses' => 'UsersController@create']);
 });

@@ -6,7 +6,9 @@ composer.phar
 /bootstrap/compiled.php
 .env.*.php
 .env.php
-
+.idea
+.vagrant
+.env
 # OSX
 .DS_Store
 Thumbs.db
