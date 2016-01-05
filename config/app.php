@@ -144,6 +144,7 @@ return [
         RollCall\Providers\AuthServiceProvider::class,
         RollCall\Providers\EventServiceProvider::class,
         RollCall\Providers\RouteServiceProvider::class,
+        RollCall\Providers\OAuthServiceProvider::class,
 
         /*
          * 3rd party Service Providers...
