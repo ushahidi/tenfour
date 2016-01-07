@@ -6,13 +6,11 @@ $api = app(Router::class);
 $api->version('v1', [
 	'namespace' => 'RollCall\Http\Controllers\Api\First',
 	'protected' => true,
+	'middleware' => 'api.auth',
 ], function ($api) {
-	// Authentication
-	//////////////////////////////////////////////////////////////////////
-	$api->post('auth', ['protected' => false, 'uses' => 'AuthController@token']);
-
-    //Users 
-    ////////////////////////////////////////////////////////////////////
-    $api->get('users', ['uses' => 'UsersController@show']);
-    $api->post('users', ['uses' => 'UsersController@create']);
+    	
+	//Users 
+    	////////////////////////////////////////////////////////////////////
+    	$api->get('users', ['uses' => 'UsersController@show']);
+    	$api->post('users', ['uses' => 'UsersController@create']);
 });
