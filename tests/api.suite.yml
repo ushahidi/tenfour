@@ -1,0 +1,6 @@
+class_name: ApiTester
+modules:
+    enabled: [ApiHelper, Laravel5, REST]
+    config:
+      REST:
+           url: 'http://api.rollcall.dev/api/v1'
