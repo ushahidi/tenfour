@@ -1,19 +1,17 @@
 actor: Tester
 paths:
-  tests: tests/codeception
-  log: tests/codeception/_output
-  data: tests/codeception/_data
-  helpers: tests/codeception/_support
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    helpers: tests/_support
 settings:
-  bootstrap: _bootstrap.php
-  colors: true
-  memory_limit: 1024M
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
 modules:
-  config:
-    Db:
-      dsn: 'sqlite:database/codeception.sqlite'
-      user: ''
-      password: ''
-      dump: 'tests/codeception/_data/dump.sql'
-      populate: true
-      cleanup: true
+    config:
+        Db:
+            dsn: ''
+            user: ''
+            password: ''
+            dump: tests/_data/dump.sql
