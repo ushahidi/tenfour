@@ -3,19 +3,20 @@ namespace RollCall\Seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use RollCall\Entities\Models\User;
+use RollCall\Models\User;
 
 
 class UserTableSeeder extends Seeder
 {
-	public function run() {
-		$user = User::firstOrCreate([
-			'username' => 'admin',
-			'email' => 'team@ushahidi.com',
-		]);
+    public function run() {
+        $user = User::firstOrCreate([
+            'username' => 'admin',
+            'name' => 'Team Ushahidi',
+            'email' => 'team@ushahidi.com',
+        ]);
 
-		$user->update([
-			'password' => bcrypt('westgate'),
-		]);
-	}
+        $user->update([
+            'password' => 'westgate'
+        ]);
+    }
 }

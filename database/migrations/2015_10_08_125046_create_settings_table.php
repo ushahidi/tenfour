@@ -6,37 +6,37 @@ use Illuminate\Database\Schema\Blueprint;
 class CreateSettingsTable extends Migration
 {
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('settings', function ($table) {
-			$table->engine = 'InnoDB';
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('settings', function ($table) {
+            $table->engine = 'InnoDB';
 
-			$table->bigIncrements('id')->unsigned();
+            $table->increments('id')->unsigned();
 
-			$table->bigInteger('organization_id')->unsigned()->nullable()->default(null);
+            $table->integer('organization_id')->unsigned()->nullable()->default(null);
 
-			$table->string('key', 100)->default('');
-			$table->text('value')->nullable()->default(null);
+            $table->string('key', 100)->default('');
+            $table->text('value')->nullable()->default(null);
 
-			$table->timestamps();
+            $table->timestamps();
 
-			$table->unique(['organization_id', 'key']);
-		});
-	}
+            $table->unique(['organization_id', 'key']);
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('settings');
-	}
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('settings');
+    }
 
 }

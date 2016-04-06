@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => RollCall\User::class,
+    'model' => RollCall\Models\User::class,
 
     /*
     |--------------------------------------------------------------------------

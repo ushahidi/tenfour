@@ -3,7 +3,7 @@ namespace RollCall\Seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use RollCall\Entities\Models\Role;
+use RollCall\Models\Role;
 
 class RoleTableSeeder extends Seeder
 {

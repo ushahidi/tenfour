@@ -1,8 +1,9 @@
 <?php
 namespace RollCall\Http\Controllers\Api\First;
 
+use Illuminate\Http\Request;
 use LucaDegasperi\OAuth2Server\Authorizer;
-use RollCall\Entities\Models\User;
+use RollCall\Models\User;
 
 class AuthController extends ApiController
 {
@@ -26,7 +27,7 @@ class AuthController extends ApiController
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function token()
+	public function token(Request $request)
 	{
 		// Validates input
 		$input = $request->all();

@@ -1,6 +1,11 @@
 class_name: ApiTester
 modules:
-    enabled: [ApiHelper, Laravel5, REST]
+    enabled: [ApiHelper, DbHelper, Laravel5, REST]
     config:
       REST:
            url: 'http://api.rollcall.dev/api/v1'
+      DbHelper:
+           dsn: 'mysql:host=localhost;dbname=rollcall'
+           user: 'root'
+           password: 'secret'
+           dump: 'tests/_data/dump.sql'
