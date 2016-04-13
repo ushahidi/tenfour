@@ -1,6 +1,6 @@
 ## Getting Started
 
-Before setting up the project make sure you have the following installed:
+Before setting up the project, make sure you have the following installed:
 
 - [Composer](https://getcomposer.org/)
 - [Vagrant](https://www.vagrantup.com/)
@@ -30,20 +30,18 @@ vagrant@rollcall-api:~/rollcall-api$ ruby -v
 ruby 1.9.3p484 (2013-11-22 revision 43786) [x86_64-linux]
 ```
 
-#### Environemnt configuration
+#### Environment configuration
 
-Next is to copy the environment configuration.
+Copy the environment configuration.
 
 ```bash
 cp .env.gen .env
 ```
 
-You might have to restart your computer before the changes are applied.
-
-And finally, you have to add the following to your `/etc/hosts` file:
+And finally, add the following to your `/etc/hosts` file:
 
 ```
 192.168.10.10 rollcall.dev
 ```
 
-Head to http://rollcall.dev/ in your browser to verify everything worked.
+Go to http://rollcall.dev/ in your browser to verify that everything worked.
