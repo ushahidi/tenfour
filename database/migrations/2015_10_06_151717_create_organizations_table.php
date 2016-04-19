@@ -18,7 +18,7 @@ class CreateOrganizationsTable extends Migration
 
             $table->increments('id')->unsigned();
             $table->string('name', 255)->nullable()->default(null);
-            $table->string('sub_domain')->nullable()->default(null);
+            $table->string('url')->nullable()->default(null);
 
             $table->timestamps();
         });
