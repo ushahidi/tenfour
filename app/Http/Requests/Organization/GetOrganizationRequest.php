@@ -1,14 +1,14 @@
 <?php
 
-namespace RollCall\Http\Requests;
+namespace RollCall\Http\Requests\Organization;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
 
-class GetUserRequest extends FormRequest
+class GetOrganizationRequest extends FormRequest
 {
     use UserAccess;
-
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -21,14 +21,19 @@ class GetUserRequest extends FormRequest
             return true;
         }
 
-        // A user can access their own details
-        if ($this->isSelf($this->route('user'))) {
+        // A user is an organization admin
+        if ($this->isOrganizationAdmin($this->route('organization'))) {
             return true;
         }
 
         return false;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         return [];

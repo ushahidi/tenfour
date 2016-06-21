@@ -1,11 +1,13 @@
 <?php
 
-namespace RollCall\Http\Requests;
+namespace RollCall\Http\Requests\Organization;
 
 use Dingo\Api\Http\FormRequest;
+use RollCall\Traits\UserAccess;
 
-class CreateUserRequest extends FormRequest
+class CreateOrganizationRequest extends FormRequest
 {
+    use UserAccess;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,10 +15,12 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        // Anyone can register as a user
-        return true;
+        // Admin has full permissions
+        if ($this->isAdmin()) {
+            return true;
+        }
     }
-    
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,9 +30,7 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|unique:users|max:255',
-            'password' => 'required|min:8',
-            'password_confirm' => 'required|same:password',
+            'url'  => 'required'
         ];
     }
 }

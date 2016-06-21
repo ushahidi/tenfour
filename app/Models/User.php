@@ -54,5 +54,14 @@ class User extends Model implements AuthenticatableContract,
 	{
 		return $this->belongsToMany('RollCall\Models\Role', 'roles_users');
 	}
+
+	/**
+	 * A user is an organization admin
+	 *
+	 **/
+	public function organizations()
+	{
+		return $this->belongsToMany('RollCall\Models\Organization', 'organization_admins', 'user_id', 'organization_id');
+	}
 	
 }

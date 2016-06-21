@@ -19,6 +19,7 @@ class CreateOrganizationsTable extends Migration
             $table->increments('id')->unsigned();
             $table->string('name', 255)->nullable()->default(null);
             $table->string('url')->nullable()->default(null);
+            $table->integer('user_id')->unsigned()->default(0);
 
             $table->timestamps();
         });

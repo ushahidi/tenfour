@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests;
+namespace RollCall\Http\Requests\User;
 
 class GetUsersRequest extends GetUserRequest
 {

@@ -21,6 +21,7 @@ class OauthTableSeeder extends Seeder
         $this->container->db->table('oauth_scopes')->insert([
             ['id' => 'basic', 'description' => 'The base API scope', 'created_at' => time(), 'updated_at' => time()],
             ['id' => 'user', 'description' => 'user', 'created_at' => time(), 'updated_at' => time()],
+            ['id' => 'organization', 'description' => 'organization', 'created_at' => time(), 'updated_at' => time()],
         ]);
     }
 }

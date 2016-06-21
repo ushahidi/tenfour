@@ -2,11 +2,11 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\UserRepository;
-use RollCall\Http\Requests\GetUserRequest;
-use RollCall\Http\Requests\DeleteUserRequest;
-use RollCall\Http\Requests\CreateUserRequest;
-use RollCall\Http\Requests\UpdateUserRequest;
-use RollCall\Http\Requests\GetUsersRequest;
+use RollCall\Http\Requests\User\GetUserRequest;
+use RollCall\Http\Requests\User\DeleteUserRequest;
+use RollCall\Http\Requests\User\CreateUserRequest;
+use RollCall\Http\Requests\User\UpdateUserRequest;
+use RollCall\Http\Requests\User\GetUsersRequest;
 
 class UserController extends ApiController
 {

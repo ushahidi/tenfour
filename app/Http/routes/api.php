@@ -10,7 +10,7 @@ $api->version($version, [
 	'namespace' => 'RollCall\Http\Controllers\Api\First',
 	'protected' => true,
 	'middleware' => 'api.auth',
-	'scopes' => ['user'],
+	'scopes' => ['user','organization']
 ], function ($api) use ($base) {
 	// Authentication
 	//////////////////////////////////////////////////////////////////////
@@ -31,4 +31,12 @@ $api->version($version, [
     $api->get($base. 'users/{user}', ['as' => 'users.show', 'uses' => 'UserController@find']);
     $api->put($base. 'users/{user}', ['as' => 'users.update', 'uses' => 'UserController@update']);
     $api->delete($base. 'users/{user}', ['as' => 'users.delete', 'uses' => 'UserController@delete']);
+
+    //Organizations
+    ////////////////////////////////////////////////////////////////////
+    $api->get($base.'organizations', ['as' => 'organizations.index', 'uses' => 'OrganizationController@all']);
+    $api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
+    $api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
+    $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
+    $api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
 });	
