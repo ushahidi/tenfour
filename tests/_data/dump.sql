@@ -14,7 +14,7 @@ INSERT INTO roles_users (user_id, role_id) VALUES ('2', '1');
 -- Clients
 INSERT INTO oauth_clients (id, secret) VALUES ('webapp', 'secret');
 -- Scopes
-INSERT INTO oauth_scopes (id) VALUES ('user'),('organization');
+INSERT INTO oauth_scopes (id) VALUES ('user'),('organization'),('contact');
 
 -- Client credentials
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('anonusertoken', 'user');
@@ -24,9 +24,9 @@ INSERT INTO oauth_access_tokens VALUES ('anonusertoken',1,1856429714,'0000-00-00
 
 -- Password grants
 -- User
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('usertoken', 'user');
+INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('usertoken', 'user'), ('usertoken','contact');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','1');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('2','user');
+INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('2','user'),('6', 'contact');
 INSERT INTO oauth_access_tokens VALUES ('usertoken',2,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 -- Admin
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('admintoken', 'user');
@@ -34,7 +34,7 @@ INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','u
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('3','user');
 INSERT INTO oauth_access_tokens VALUES ('admintoken',3,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 -- Organization Admin
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgadmintoken', 'organization');
+INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgadmintoken', 'organization'), ('orgadmintoken', 'contact');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','1');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('4', 'organization');
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',4,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
@@ -45,3 +45,7 @@ INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall@rol
 
 --Add test organization admins
 INSERT INTO organization_admins(organization_id, user_id) VALUES ('1', '1');
+
+--Add test contacts
+INSERT INTO contacts (user_id, can_receive, type, contact) VALUES ('1', '1', 'phone', '0721674180'), ('2','0', 'email', 'linda@ushahidi.com');
+

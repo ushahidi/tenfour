@@ -16,7 +16,8 @@ class CreateContactsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->default(0);
             $table->integer('can_receive')->unsigned()->default(0);
-            $table->string('type', 255)->nullable()->default(null);
+            $table->string('type', 255);
+            $table->string('contact', 255);
             $table->timestamps();
         });
     }

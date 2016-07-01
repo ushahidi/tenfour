@@ -23,12 +23,12 @@ class DbHelper extends \Codeception\Module\Db
         $dbh->exec('TRUNCATE TABLE oauth_clients');
 
         // Delete test users
-		$dbh->exec('TRUNCATE TABLE users');
+        $dbh->exec('TRUNCATE TABLE users');
 
         //Delete test roles_users
         $dbh->exec('TRUNCATE TABLE roles_users');
 
-		//Delete roles;
+        //Delete roles;
         $dbh->exec('TRUNCATE TABLE roles');
 
         //Delete test organizations
@@ -40,9 +40,9 @@ class DbHelper extends \Codeception\Module\Db
         //Delete test organization_admins
         $dbh->exec('TRUNCATE TABLE organization_admins');
 
+        //Delete test contacts
+        $dbh->exec('TRUNCATE TABLE contacts');
+
         $dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
-
-
     }
-
 }

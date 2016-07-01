@@ -10,7 +10,7 @@ $api->version($version, [
 	'namespace' => 'RollCall\Http\Controllers\Api\First',
 	'protected' => true,
 	'middleware' => 'api.auth',
-	'scopes' => ['user','organization']
+	'scopes' => ['user','organization', 'contact']
 ], function ($api) use ($base) {
 	// Authentication
 	//////////////////////////////////////////////////////////////////////
@@ -39,4 +39,13 @@ $api->version($version, [
     $api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
     $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
     $api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
+    
+    //Contacts
+    ////////////////////////////////////////////////////////////////////
+    $api->get($base.'contacts', ['as' => 'contacts.index', 'uses' => 'ContactController@all']);
+    $api->post($base.'contacts', ['as' => 'contacts.create', 'uses' => 'ContactController@create']);
+    $api->put($base. 'contacts/{contact}', ['as' => 'contacts.update', 'uses' => 'ContactController@update']);
+    $api->delete($base. 'contacts/{contact}', ['as' => 'contacts.delete', 'uses' => 'ContactController@delete']);
+
+
 });	
