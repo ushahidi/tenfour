@@ -12,9 +12,9 @@ INSERT INTO roles_users (user_id, role_id) VALUES ('2', '1');
 
 -- Add OAuth tokens and scopes
 -- Clients
-INSERT INTO oauth_clients (id, secret) VALUES ('webapp', 'secret');
+INSERT INTO oauth_clients (id, secret, name) VALUES ('webapp', 'secret', 'webapp');
 -- Scopes
-INSERT INTO oauth_scopes (id) VALUES ('user'),('organization'),('contact');
+INSERT INTO oauth_scopes (id, description) VALUES ('user', 'user'),('organization', 'organization'),('contact', 'contact');
 
 -- Client credentials
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('anonusertoken', 'user');
@@ -38,7 +38,7 @@ INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgad
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','1');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('4', 'organization');
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',4,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
-	
+
 -- Add test organizations
 INSERT INTO organizations (id, name, url) VALUES ('1', 'Test organization', 'test@rollcall.io');
 INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall@rollcall.io');
