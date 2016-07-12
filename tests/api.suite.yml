@@ -9,3 +9,13 @@ modules:
            user: 'root'
            password: 'secret'
            dump: 'tests/_data/dump.sql'
+env:
+  testing:
+    modules:
+      config:
+        REST:
+             url: 'http://api.rollcall.dev/api/v1'
+        DbHelper:
+          dsn: 'mysql:host=mysql;dbname=rollcall'
+          user: rollcall
+          password: rollcall

@@ -1,0 +1,3 @@
+- name: "Test"
+  service: test
+  command: composer test -- --env=testing
