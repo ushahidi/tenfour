@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrganizationAdminsTable extends Migration
+class CreateOrganizationUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,16 @@ class CreateOrganizationAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('organization_admins', function (Blueprint $table) {
+        Schema::create('organization_user', function (Blueprint $table) {
             $table->integer('organization_id')->unsigned()->default(0);
             $table->integer('user_id')->unsigned()->default(0);
             $table->foreign('organization_id')->references('id')->on('organizations')
                 ->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade');
+            $table->enum('role', array(
+                'member', 'admin', 'owner'
+            ))->default('member');
         });
     }
 
@@ -29,6 +32,6 @@ class CreateOrganizationAdminsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('organization_admins');
+        Schema::drop('organization_users');
     }
 }

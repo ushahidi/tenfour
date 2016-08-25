@@ -7,8 +7,8 @@ INSERT INTO roles (id, name) VALUES ('2', 'member');
 INSERT INTO roles (id, name) VALUES ('3', 'login');
 
 -- Insert admin role
-INSERT INTO roles_users (user_id, role_id) VALUES ('1', '2');
-INSERT INTO roles_users (user_id, role_id) VALUES ('2', '1');
+INSERT INTO role_user (user_id, role_id) VALUES ('1', '2');
+INSERT INTO role_user (user_id, role_id) VALUES ('2', '1');
 
 -- Add OAuth tokens and scopes
 -- Clients
@@ -43,9 +43,8 @@ INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',4,1856429714,'0000-00-00
 INSERT INTO organizations (id, name, url) VALUES ('1', 'Test organization', 'test@rollcall.io');
 INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall@rollcall.io');
 
---Add test organization admins
-INSERT INTO organization_admins(organization_id, user_id) VALUES ('1', '1');
-
 --Add test contacts
 INSERT INTO contacts (user_id, can_receive, type, contact) VALUES ('1', '1', 'phone', '0721674180'), ('2','0', 'email', 'linda@ushahidi.com');
 
+--Add test rollcalls
+INSERT INTO rollcalls (message, organization_id, status, contact_id, sent) VALUES ('Westgate under seige', '2', 'pending', '4','0');

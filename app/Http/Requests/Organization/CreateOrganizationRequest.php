@@ -15,10 +15,11 @@ class CreateOrganizationRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full permissions
-        if ($this->isAdmin()) {
+        // If this is an existing user
+        if ($this->auth->user()->id) {
             return true;
         }
+        return false;    
     }
 
     /**

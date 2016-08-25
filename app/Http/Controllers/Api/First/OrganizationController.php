@@ -8,13 +8,15 @@ use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
+use Dingo\Api\Auth\Auth;
 
 
 class OrganizationController extends ApiController
 {
-    public function __construct(OrganizationRepository $organizations)
+    public function __construct(OrganizationRepository $organizations, Auth $auth)
     {
         $this->organizations = $organizations;
+        $this->auth = $auth;
     }
 
     /**

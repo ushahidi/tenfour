@@ -18,14 +18,23 @@ class Organization extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'url', 'user_id'];
+    protected $fillable = ['name', 'url'];
 
     /**
-     * An organization has admins
+     * An organization has users
      *
      */
-    public function admins()
+    public function users()
     {
-        return $this->belongsToMany('RollCall\Models\User', 'organization_admins', 'organization_id', 'user_id');
+        return $this->belongsToMany('RollCall\Models\User')->withPivot('role');
+    }
+
+    /**
+     *
+     * An organization has rollcalls
+     */
+    public function rollcalls()
+    {
+        return $this->hasMany('RollCall\Models\Rollcall');
     }
 }

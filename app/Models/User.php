@@ -52,16 +52,25 @@ class User extends Model implements AuthenticatableContract,
 	 **/
 	public function roles()
 	{
-		return $this->belongsToMany('RollCall\Models\Role', 'roles_users');
+		return $this->belongsToMany('RollCall\Models\Role');
 	}
 
 	/**
-	 * A user is an organization admin
+	 * A user belongs to an organization 
 	 *
 	 **/
 	public function organizations()
 	{
-		return $this->belongsToMany('RollCall\Models\Organization', 'organization_admins', 'user_id', 'organization_id');
+		return $this->belongsToMany('RollCall\Models\Organization')->withPivot('role');
 	}
+
+	/**
+     *
+     * A user has rollcalls
+     */
+    public function rollcalls()
+    {
+        return $this->hasMany('RollCall\Models\Rollcall');
+    }
 	
 }

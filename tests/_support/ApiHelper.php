@@ -37,4 +37,5 @@ class ApiHelper extends \Codeception\Module
         $this->getModule('REST')->amBearerAuthenticated($this->user_token);
     }
     */
+
 }
