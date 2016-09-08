@@ -8,7 +8,7 @@ use RollCall\Traits\UserAccess;
 class GetOrganizationRequest extends FormRequest
 {
     use UserAccess;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -21,7 +21,12 @@ class GetOrganizationRequest extends FormRequest
             return true;
         }
 
-        // A user is an organization admin
+        // An org owner can get view an organization
+        if ($this->isOrganizationOwner($this->route('organization'))) {
+            return true;
+        }
+
+        // An org admin can get view an organization
         if ($this->isOrganizationAdmin($this->route('organization'))) {
             return true;
         }

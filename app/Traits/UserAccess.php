@@ -26,24 +26,15 @@ trait UserAccess
         return in_array('admin', $roles);
     }
 
-    
     protected function isOrganizationOwner($org_id)
     {
-        $user = $this->organizations->getUserById($org_id, $this->auth->user()->id);
-        return (bool) $user->role === 'owner';
+        $role = $this->organizations->getMemberRole($org_id, $this->auth->user()->id);
+        return $role === 'owner';
     }
-
 
     protected function isOrganizationAdmin($org_id)
     {
-        $user = $this->organizations->getUserById($org_id, $this->auth->user()->id);
-        return (bool) $user->role === 'admin';
+        $role = $this->organizations->getMemberRole($org_id, $this->auth->user()->id);
+        return $role === 'admin';
     }
-
-    protected function isMember($org_id)
-    {
-        $user = $this->organizations->getUserById($org_id, $this->auth->user()->id);
-        return (bool) $user->role === 'member';
-    }
-
 }

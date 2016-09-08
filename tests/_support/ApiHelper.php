@@ -10,6 +10,7 @@ class ApiHelper extends \Codeception\Module
     protected $user_token = 'usertoken';
     protected $admin_token = 'admintoken';
     protected $orgadmin_token = 'orgadmintoken';
+    protected $orgowner_token = 'orgownertoken';
     
     public function amAuthenticatedAsClient()
     {
@@ -26,16 +27,13 @@ class ApiHelper extends \Codeception\Module
     	$this->getModule('REST')->amBearerAuthenticated($this->admin_token);
     }
 
-    public function amAuthenticatedAsOrganizationAdmin()
+    public function amAuthenticatedAsOrgAdmin()
     {
         $this->getModule('REST')->amBearerAuthenticated($this->orgadmin_token);
     }
 
-    /*
-    public function amAuthenticatedAsOrganizationOwner()
+    public function amAuthenticatedAsOrgOwner()
     {
-        $this->getModule('REST')->amBearerAuthenticated($this->user_token);
+        $this->getModule('REST')->amBearerAuthenticated($this->orgowner_token);
     }
-    */
-
 }

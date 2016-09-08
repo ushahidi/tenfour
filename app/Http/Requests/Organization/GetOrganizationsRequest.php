@@ -11,11 +11,11 @@ class GetOrganizationsRequest extends GetOrganizationRequest
      */
     public function authorize()
     {
-        // Only admin can list users
+        // Only admin can list organizations
         if ($this->isAdmin()) {
             return true;
         }
 
-        //return false;
+        return false;
     }
 }

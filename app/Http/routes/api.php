@@ -7,25 +7,26 @@ $base = 'api/'.$version.'/';
 $api = app(Router::class);
 
 $api->version($version, [
-	'namespace' => 'RollCall\Http\Controllers\Api\First',
-	'protected' => true,
-	'middleware' => 'api.auth',
-	'scopes' => ['user','organization', 'contact', 'rollcall']
+    'namespace' => 'RollCall\Http\Controllers\Api\First',
+    'protected' => true,
+    'middleware' => 'api.auth',
+    'scopes' => ['user','organization', 'contact', 'rollcall']
 ], function ($api) use ($base) {
-	// Authentication
-	//////////////////////////////////////////////////////////////////////
-	// XXX: handled through oauth endpoint
-	//$api->post('auth', ['protected' => false, 'uses' => 'AuthController@token']);
+    // Authentication
+    //////////////////////////////////////////////////////////////////////
+    // XXX: handled through oauth endpoint
+    //$api->post('auth', ['protected' => false, 'uses' => 'AuthController@token']);
 
-	// Welcome
-	/*
-	$api->get($base, ['uses' => function () {
+    // Welcome
+    /*
+    $api->get($base, ['uses' => function () {
 
-	}]);
-	*/
-	
-    //Users 
+    }]);
+    */
+
+    //Users
     ////////////////////////////////////////////////////////////////////
+
 /*
     $api->get($base.'users', ['as' => 'users.index', 'uses' => 'UserController@all']);
     $api->post($base.'users', ['as' => 'users.create', 'uses' => 'UserController@create']);
@@ -35,19 +36,22 @@ $api->version($version, [
 */
     //Organizations
     ////////////////////////////////////////////////////////////////////
-    //$api->get($base.'organizations', ['as' => 'organizations.index', 'uses' => 'OrganizationController@all']);
-    //$api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
-    //$api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
-    //$api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
-    //$api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
-/*    
+
+    $api->get($base.'organizations', ['as' => 'organizations.index', 'uses' => 'OrganizationController@all']);
+    $api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
+    $api->post($base.'organizations/{organization}/members/add', ['uses' => 'OrganizationController@addMembers']);
+    $api->post($base.'organizations/{organization}/members/delete', ['uses' => 'OrganizationController@deleteMembers']);
+    $api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
+    $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
+    $api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
+
     //Contacts
     ////////////////////////////////////////////////////////////////////
     $api->get($base.'contacts', ['as' => 'contacts.index', 'uses' => 'ContactController@all']);
     $api->post($base.'contacts', ['as' => 'contacts.create', 'uses' => 'ContactController@create']);
     $api->put($base. 'contacts/{contact}', ['as' => 'contacts.update', 'uses' => 'ContactController@update']);
     $api->delete($base. 'contacts/{contact}', ['as' => 'contacts.delete', 'uses' => 'ContactController@delete']);
-*/
+
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
@@ -55,4 +59,4 @@ $api->version($version, [
     $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);
     $api->put($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.update', 'uses' => 'RollCallController@update']);
 
-});	
+});
