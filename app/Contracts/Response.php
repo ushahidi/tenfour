@@ -11,7 +11,7 @@ interface Response
      * @param object $transformer
      * @param string $resource
      *
-     * @return array
+     * @return \Dingo\Api\Http\Response
      */
     public function item(array $output, $transformer, $resource);
 
@@ -22,7 +22,7 @@ interface Response
      * @param object $transformer
      * @param string $resource
      *
-     * @return array
+     * @return \Dingo\Api\Http\Response
      */
     public function collection(array $output, $transformer, $resource);
 }
