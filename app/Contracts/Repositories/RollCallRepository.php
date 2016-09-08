@@ -1,7 +1,7 @@
 <?php
 namespace RollCall\Contracts\Repositories;
 
-interface RollcallRepository extends CrudRepository
+interface RollCallRepository extends CrudRepository
 {
 
 }

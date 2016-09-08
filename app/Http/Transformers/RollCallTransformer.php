@@ -3,7 +3,7 @@ namespace RollCall\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-class RollcallTransformer extends TransformerAbstract
+class RollCallTransformer extends TransformerAbstract
 {
     public function transform(array $rollcall)
     {

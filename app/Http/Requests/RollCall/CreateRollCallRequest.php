@@ -1,15 +1,14 @@
 <?php
 
-namespace RollCall\Http\Requests\Rollcall;
+namespace RollCall\Http\Requests\RollCall;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
 use App;
 
-class GetRollCallRequest extends FormRequest
+class CreateRollCallRequest extends FormRequest
 {
     use UserAccess;
-    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -17,7 +16,7 @@ class GetRollCallRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full access
+        // Admin has full permissions
         if ($this->isAdmin()) {
             return true;
         }
@@ -25,8 +24,18 @@ class GetRollCallRequest extends FormRequest
         $rollcall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
                  ->find($this->route('rollcall'));
 
-        // A user is an organization admin
-        if ($this->isOrganizationAdmin($rollcall->organization_id)) {
+        $organization = $rollcall->organization_id;
+                 
+        // An organization admin can send rollcalls
+        if ($this->isOrganizationAdmin($organization)) {
+            return true;
+        }
+
+        if ($this->isMember($organization)) {
+            return true;
+        }
+
+        if ($this->isOwner($organization)) {
             return true;
         }
 
@@ -41,7 +50,9 @@ class GetRollCallRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'message'         => 'required',
+            'contact_id'      => 'required',
+            'organization_id' => 'required'
         ];
     }
 }

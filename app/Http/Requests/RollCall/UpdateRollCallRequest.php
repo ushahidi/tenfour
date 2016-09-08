@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Rollcall;
+namespace RollCall\Http\Requests\RollCall;
 
 use RollCall\Http\Requests\Request;
 use App;

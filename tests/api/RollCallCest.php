@@ -1,6 +1,6 @@
 <?php
 
-class RollcallCest
+class RollCallCest
 {
     protected $endpoint = '/rollcalls';
 
@@ -8,7 +8,7 @@ class RollcallCest
      * Get all rollcalls in an organization as an admin
      *
      */
-    public function getAllRollcalls(ApiTester $I)
+    public function getAllRollCalls(ApiTester $I)
     {
         $I->wantTo('Get a list of all rollcalls for an organization as an admin');
         $I->amAuthenticatedAsAdmin();
@@ -28,7 +28,7 @@ class RollcallCest
      * Get all rollcalls in an organization as an authenticated user
      *
      */
-    public function getAllRollcallsAsUser(ApiTester $I)
+    public function getAllRollCallsAsUser(ApiTester $I)
     {
         $I->wantTo('Get a list of all rollcalls for an organization as an authenticated user');
         $I->amAuthenticatedAsUser();
@@ -41,7 +41,7 @@ class RollcallCest
      * Get rollcall details as admin
      *
      */
-    public function getRollcall(ApiTester $I)
+    public function getRollCall(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Get rollcall details as an admin');
@@ -61,7 +61,7 @@ class RollcallCest
      * Create a rollcall as admin
      *
      */
-    public function createRollcall(ApiTester $I)
+    public function createRollCall(ApiTester $I)
     {
         $I->wantTo('Create a rollcall as admin');
         $I->amAuthenticatedAsAdmin();
@@ -85,7 +85,7 @@ class RollcallCest
      * Create a rollcall as a registered member
      *
      *//*
-    public function createRollcallAsMember(ApiTester $I)
+    public function createRollCallAsMember(ApiTester $I)
     {
         $I->wantTo('Create a rollcall as a registered member');
         $I->amAuthenticatedAsUser();
@@ -109,7 +109,7 @@ class RollcallCest
      * Update a rollcall as admin
      *
      */
-    public function updateRollcall(ApiTester $I)
+    public function updateRollCall(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Update rollcall details as the admin');
