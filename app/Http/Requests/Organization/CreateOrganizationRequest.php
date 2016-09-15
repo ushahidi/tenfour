@@ -28,7 +28,7 @@ class CreateOrganizationRequest extends FormRequest
 
         // Check that at least the user creating
         // an organization is a registered user
-        if ($this->auth->user()->id) {
+        if ($this->auth->user()['id']) {
             return true;
         }
 

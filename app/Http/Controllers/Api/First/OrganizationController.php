@@ -46,7 +46,7 @@ class OrganizationController extends ApiController
         $organization = $this->organizations->create([
                  'name'    => $request->input('name'),
                  'url'     => $request->input('url'),
-                 'user_id' => $request->input('user_id', $this->auth->user()->id),
+                 'user_id' => $request->input('user_id', $this->auth->user()['id']),
         ]);
 
         return $this->response->item($organization, new OrganizationTransformer, 'organization');

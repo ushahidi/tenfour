@@ -15,9 +15,17 @@ class UserCest
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['name' => 'Test user','email' => 'test@ushahidi.com']);
-        $I->seeResponseContainsJson(['name' => 'Admin user','email' => 'admin@ushahidi.com']);
-
+        $I->seeResponseContainsJson([
+            'users' => [
+                ['name' => 'Test user',
+                 'email' => 'test@ushahidi.com'
+                ],
+                [
+                'name' => 'Admin user',
+                'email' => 'admin@ushahidi.com'
+                ]
+            ]
+        ]);
     } 
 
     /*
@@ -46,14 +54,18 @@ class UserCest
         $I->sendGET($this->endpoint."/$id");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['name' => 'Test user']);
-
+        $I->seeResponseContainsJson([
+            'user' => [
+                'name' => 'Test user',
+                'email' => 'test@ushahidi.com'
+            ]
+        ]);
     }
 
     /* 
      * Attempt to get user details as an anonymous user
      *
-     */
+     *//*
     public function getUserAsAnonUser(ApiTester $I)
     {
         $id = 1;
@@ -80,7 +92,12 @@ class UserCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['name' => 'Nat Manning']);
+        $I->seeResponseContainsJson([
+            'user' => [
+                'name' => 'Nat Manning',
+                'email' => 'nat@ushahidi.com'
+            ]
+        ]);
     }
 
     /*
@@ -102,8 +119,10 @@ class UserCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'Team RollCall',
-            'email' => 'rollcall@ushahidi.com',
+            'user' => [
+                'name' => 'Team RollCall',
+                'email' => 'rollcall@ushahidi.com'
+            ]
         ]);
     }
 

@@ -8,31 +8,39 @@ class EloquentUserRepository implements UserRepository
 {
     public function all()
     {
-        return User::all();
+        $users = User::all();
+
+        return $users->toArray();
     }
 
     public function update(array $input, $id)
     {
 		$user = User::findorFail($id);
         $user->update($input);
-		return $user;
+
+		return $user->toArray();
     }
 
     public function create(array $input)
     {
-        return User::create($input);
+        $user = User::create($input);
+
+        return $user->toArray();
     }
 
     public function find($id)
     {
-        return User::find($id);
+        $user = User::find($id);
+
+        return $user->toArray();
     }
 
     public function delete($id)
     {
 		$user = User::findorFail($id);
 		$user->delete();
-        return $user;
+
+        return $user->toArray();
     }
 
     public function getRoles($id)

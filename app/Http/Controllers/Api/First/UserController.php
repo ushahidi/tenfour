@@ -8,11 +8,15 @@ use RollCall\Http\Requests\User\CreateUserRequest;
 use RollCall\Http\Requests\User\UpdateUserRequest;
 use RollCall\Http\Requests\User\GetUsersRequest;
 
+use RollCall\Http\Transformers\UserTransformer;
+use RollCall\Http\Response;
+
 class UserController extends ApiController
 {
-    public function __construct(UserRepository $users)
+    public function __construct(UserRepository $users, Response $response)
     {
         $this->users = $users;
+        $this->response = $response;
     }
 
     /**
@@ -24,7 +28,7 @@ class UserController extends ApiController
     public function all(GetUsersRequest $request)
     {
         $users = $this->users->all();
-        return $users;
+        return $this->response->collection($users, new UserTransformer, 'users');
     }
 
     /**
@@ -41,7 +45,7 @@ class UserController extends ApiController
             'password' => $request->input('password'),
         ]);
 
-        return $user;
+        return $this->response->item($user, new UserTransformer, 'user');
     }
 
     /**
@@ -55,7 +59,8 @@ class UserController extends ApiController
     public function find(GetUserRequest $request, $id)
     {
         $user = $this->users->find($id);
-        return $user;
+
+        return $this->response->item($user, new UserTransformer, 'user');
     }
 
     /**
@@ -68,7 +73,8 @@ class UserController extends ApiController
     public function update(UpdateUserRequest $request, $id)
     {
         $user = $this->users->update($request->all(), $id);
-        return $user;
+        
+        return $this->response->item($user, new UserTransformer, 'user');
     }
 
     /**
@@ -82,6 +88,7 @@ class UserController extends ApiController
     public function delete(DeleteUserRequest $request, $id)
     {
         $user = $this->users->delete($id);
-        return $user;
+        
+        return $this->response->item($user, new UserTransformer, 'user');
     }
 }
