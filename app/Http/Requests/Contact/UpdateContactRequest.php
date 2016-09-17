@@ -26,7 +26,7 @@ class UpdateContactRequest extends CreateContactRequest
                  ->find($this->route('contact'));
 
         // A user can edit their own contact details
-        if ($this->isSelf($contact->user_id)) {
+        if ($this->isSelf($contact['user_id'])) {
             return true;
 		}
 

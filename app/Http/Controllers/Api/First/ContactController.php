@@ -9,12 +9,15 @@ use RollCall\Http\Requests\Contact\CreateContactRequest;
 use RollCall\Http\Requests\Contact\UpdateContactRequest;
 use RollCall\Http\Requests\Contact\DeleteContactRequest;
 
+use RollCall\Http\Transformers\ContactTransformer;
+use RollCall\Http\Response;
 
 class ContactController extends ApiController
 {
-    public function __construct(ContactRepository $contacts)
+    public function __construct(ContactRepository $contacts, Response $response)
     {
         $this->contacts = $contacts;
+        $this->response = $response;
     }
 
     /**
@@ -26,7 +29,8 @@ class ContactController extends ApiController
     public function all(GetContactsRequest $request)
     {
         $contacts = $this->contacts->all();
-        return $contacts;
+
+        return $this->response->collection($contacts, new ContactTransformer, 'contacts');
     }
 
     /**
@@ -44,7 +48,7 @@ class ContactController extends ApiController
             'contact'     => $request->input('contact'),
         ]);
 
-        return $contact;
+        return $this->response->item($contact, new ContactTransformer, 'contact');
     }
 
     /**
@@ -75,8 +79,8 @@ class ContactController extends ApiController
     public function update(UpdateContactRequest $request, $id)
     {
         $contact = $this->contacts->update($request->all(), $id);
-        return $contact;
-
+        
+        return $this->response->item($contact, new ContactTransformer, 'contact');
     }
 
     /**
@@ -90,7 +94,7 @@ class ContactController extends ApiController
     public function delete(DeleteContactRequest $request, $id)
     {
         $contact = $this->contacts->delete($id);
-        return $contact;
-
+       
+        return $this->response->item($contact, new ContactTransformer, 'contact');
     }
 }

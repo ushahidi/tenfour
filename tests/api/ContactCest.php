@@ -16,12 +16,17 @@ class ContactCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
-            ['user_id' => 1,'can_receive' => 1, 'type' => 'phone','contact' => '0721674180']
+            ['receive' => 1, 
+             'type' => 'phone',
+             'contact' => '0721674180',
+             'user' => ['id' => 1],
+            ],
+            ['receive' => 0,
+             'type' => 'email',
+             'contact' => 'linda@ushahidi.com',
+             'user' => ['id' => 2]
+            ]
         );
-		$I->seeResponseContainsJson(
-			['user_id' => 2,'can_receive' => 0, 'type' => 'email', 'contact' => 'linda@ushahidi.com']
-		);
-
     }
     /*
      * Create contact as admin
@@ -33,17 +38,21 @@ class ContactCest
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'user_id' => 3,
-            'can_receive' => 1,
+            'can_receive' => 1, 
             'type' => 'email',
-            'contact' => 'test@ushahidi.com'
+            'contact' => 'test@ushahidi.com',
+            'user_id' => 3
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['contact' =>
-            ['user_id' => 3,'can_receive' => 1, 'type' => 'email', 'contact' => 'test@ushahidi.com']
-        ]
-        );
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'receive' => 1, 
+                'type' => 'email',
+                'contact' => 'test@ushahidi.com',
+                'user' => ['id' => 3]
+            ]
+        ]);
     }
     /*
      * Update contact details as the admin
@@ -63,10 +72,14 @@ class ContactCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['contact' =>
-            ['user_id' => 3, 'can_receive' => 0,'type' => 'email', 'contact' => 'test@ushahidi.com']
-		]
-        );
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'receive' => 0, 
+                'type' => 'email',
+                'contact' => 'test@ushahidi.com',
+                'user' => ['id' => 3]
+            ]
+        ]);
     }
 
     /*
@@ -87,10 +100,14 @@ class ContactCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['contact' =>
-            ['user_id' => 3,'can_receive' => 0,'type' => 'email', 'contact'=> 'test@ushahidi.com']
-		]
-        );
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'receive' => 0, 
+                'type' => 'email',
+                'contact' => 'test@ushahidi.com',
+                'user' => ['id' => 3]
+            ]
+        ]);
     }
     /*
      * Delete contact as an admin

@@ -8,31 +8,39 @@ class EloquentContactRepository implements ContactRepository
 {
     public function all()
     {
-        return Contact::all();
+        $contacts = Contact::all();
+
+        return $contacts->toArray();
     }
 
     public function update(array $input, $id)
     {
 		$contact = Contact::findorFail($id);
         $contact->update($input);
-		return $contact;
+		
+        return $contact->toArray();
     }
 
     public function create(array $input)
     {
-        return Contact::create($input);
+        $contact = Contact::create($input);
+
+        return $contact->toArray();
     }
 
     public function find($id)
     {
-        return Contact::find($id);
+        $contact = Contact::find($id);
+
+        return $contact->toArray();
     }
 
     public function delete($id)
     {
 		$contact = Contact::findorFail($id);
 		$contact->delete();
-        return $contact;
+        
+        return $contact->toArray();
     }
     
 }

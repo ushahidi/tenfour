@@ -43,6 +43,7 @@ $api->version($version, [
     $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
     $api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
 
+
     //Contacts
     ////////////////////////////////////////////////////////////////////
     $api->get($base.'contacts', ['as' => 'contacts.index', 'uses' => 'ContactController@all']);
@@ -50,10 +51,13 @@ $api->version($version, [
     $api->put($base. 'contacts/{contact}', ['as' => 'contacts.update', 'uses' => 'ContactController@update']);
     $api->delete($base. 'contacts/{contact}', ['as' => 'contacts.delete', 'uses' => 'ContactController@delete']);
 
+
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
     $api->post($base.'rollcalls', ['as' => 'rollcalls.create', 'uses' => 'RollCallController@create']);
     $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);
     $api->put($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.update', 'uses' => 'RollCallController@update']);
+
 });
+
