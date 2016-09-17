@@ -1,57 +1,69 @@
-# Group Organizations
+# Group Users
 
-## Register [/api/organizations]
-### Create an Entity [POST]
+### Create a User [POST /api/users]
 + Request
     + Headers
+
             Content-Type: application/json
+
     + Body
+
             {
-                "name": "Ushahidi",
-                "url": "ushahidi@rollcall.io"
+                "email": "test@ushahidi.com",
+                "password": "foobar",
+                "password_confirm": "foobar"
             }
 
 + Response 201
 
-## Find [/api/organizations/{id}]
-### Show an organization details [GET]
+### Fetch a user profile [GET /api/users/{id}]
 + Request
     + Headers
-            Authorization Bearer 
+
+            Authorization: Bearer
             Content-Type: application/json
 
 + Response 200 (application/json)
     + Body
+
             {
                 "data": {
-                    "name": "Ushahidi",
-                    "url": "ushahidi.rollcall.io",
+                    "name": "Testing Testing",
+                    "email": "test@ushahidi.com",
+                    "username": "ushahidi",
                     "created_at": "2016-03-30 16:11:36",
                     "updated_at": "2016-03-30 16:11:36"
                 }
             }
 
-## Update [/api/organizations/{id}]
-### Update an organization's details [PUT]
+### Update user profile [PUT /api/users/{id}]
 + Request
     + Headers
-            Authoriation Bearer 
+
+            Authorization: Bearer authToken
             Content-Type: application/json
-    +Body
+
+    + Body
+
             {
                 "data": {
-                    "name": "RollCall Inc",
-                    "url": "rollcall@rollcall.io"	
+                    "email": "tester@ushahidi.com",
+                    "name": "Tester tester",
+                    "username": "tester"
                 }
             }
+
 + Response 200 (application/json)
     + Body
+
             {
                 "data": {
                     "id": 3
-                    "name": "RollCall Inc",
-                    "url": "rollcall@rollcall.io"   
+                    "email": "tester@ushahidi.com",
+                    "name": "Tester tester",
+                    "username": "tester"
                     "created_at": "2016-03-30 16:11:36",
                     "updated_at": "2016-03-30 16:11:36"
                 }
             }
+

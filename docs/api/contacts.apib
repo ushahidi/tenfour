@@ -1,11 +1,13 @@
 # Group Contacts
 
-## Register [/api/contacts]
-### Create an Entity [POST]
+### Create a Contact [POST /api/contacts]
 + Request
     + Headers
+
             Content-Type: application/json
+
     + Body
+
             {
                 "type": "email",
                 "contact": "linda@ushahidi.com",
@@ -14,15 +16,16 @@
 
 + Response 201
 
-## Find [/api/contacts/{id}]
-### Show a contact details [GET]
+### Show a contact details [GET /api/contacts/{id}]
 + Request
     + Headers
-            Authorization Bearer 
+
+            Authorization: Bearer
             Content-Type: application/json
 
 + Response 200 (application/json)
     + Body
+
             {
                 "data": {
                     "type": "email",
@@ -34,30 +37,34 @@
                 }
             }
 
-## Update [/api/contacts/{id}]
-### Update a contact's details [PUT]
+### Update a contact's details [PUT /api/contacts/{id}]
 + Request
     + Headers
-            Authoriation Bearer 
+
+            Authorization: Bearer authToken
             Content-Type: application/json
-    +Body
+
+    + Body
+
             {
                 "data": {
                     "type": "phonenumber",
                     "contact": "0721674180",
                     "can_receive": "1",
-                    "user_id": "NULL"	
+                    "user_id": "NULL"
                 }
             }
+
 + Response 200 (application/json)
     + Body
+
             {
                 "data": {
                     "id": 3
                     "type": "phonenumber",
                     "contact": "0721674180",
-                    "can_receive": "1",  
-                    "user_id": "NULL", 
+                    "can_receive": "1",
+                    "user_id": "NULL",
                     "created_at": "2016-03-30 16:11:36",
                     "updated_at": "2016-03-30 16:11:36"
                 }
