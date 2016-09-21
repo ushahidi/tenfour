@@ -31,7 +31,14 @@ class OrganizationController extends ApiController
      */
     public function all(GetOrganizationsRequest $request)
     {
-        $organizations = $this->organizations->all();
+        $user_id = $request->query('user_id');
+
+        if ($user_id) {
+            $organizations = $this->organizations->filterByUserId($user_id);
+        } else {
+            $organizations = $this->organizations->all();
+        }
+
         return $this->response->collection($organizations, new OrganizationTransformer, 'organizations');
     }
 

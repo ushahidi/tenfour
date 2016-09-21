@@ -48,19 +48,19 @@ INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organizati
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 
 -- Add test organizations
-INSERT INTO organizations (id, name, url) VALUES ('1', 'Test organization', 'test.rollcall.io');
 INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall.rollcall.io');
 INSERT INTO organizations (id, name, url) VALUES ('3', 'Ushahidi', 'ushahidi.rollcall.io');
 
 -- Add test organization members
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '4', 'owner');
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '5', 'admin');
+INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '1', 'member');
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '3', 'member');
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('3', '4', 'owner');
+INSERT INTO organization_user (organization_id, user_id, role) VALUES ('3', '1', 'admin');
 
 --Add test contacts
 INSERT INTO contacts (user_id, can_receive, type, contact) VALUES ('1', '1', 'phone', '0721674180'), ('2','0', 'email', 'linda@ushahidi.com');
 
 --Add test rollcalls
 INSERT INTO rollcalls (message, organization_id, status, contact_id, sent) VALUES ('Westgate under seige', '2', 'pending', '4','0');
-

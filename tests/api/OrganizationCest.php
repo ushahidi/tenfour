@@ -40,6 +40,43 @@ class OrganizationCest
     }
 
     /*
+     * List organizations that a user belongs to
+     *
+     */
+    public function filterOrganizationsByUser(ApiTester $I)
+    {
+        $endpoint = $this->endpoint . '/?user_id=1';
+        $I->wantTo('Get a list of all organizations that a user belongs to');
+        $I->amAuthenticatedAsUser();
+        $I->sendGET($endpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            [
+                'name'    => 'RollCall',
+                'url'     => 'rollcall.rollcall.io',
+                'members' => [
+                    [
+                        'id'   => 1,
+                        'role' => 'member',
+                    ]
+                ]
+            ],
+            [
+                'name'    => 'Ushahidi',
+                'url'     => 'ushahidi.rollcall.io',
+                'members' => [
+                    [
+                        'id'   => 1,
+                        'role' => 'admin',
+                    ]
+                ]
+            ]
+
+        ]);
+    }
+
+    /*
      * View organization as an org admin
      *
      */

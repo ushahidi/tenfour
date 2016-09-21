@@ -11,8 +11,13 @@ class GetOrganizationsRequest extends GetOrganizationRequest
      */
     public function authorize()
     {
-        // Only admin can list organizations
+        // Admin can list all organizations
         if ($this->isAdmin()) {
+            return true;
+        }
+
+        // A user can list their own orgs;
+        if ($this->isSelf($this->query('user_id'))) {
             return true;
         }
 

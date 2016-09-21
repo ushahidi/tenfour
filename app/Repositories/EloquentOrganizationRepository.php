@@ -9,27 +9,23 @@ class EloquentOrganizationRepository implements OrganizationRepository
 {
     public function all()
     {
-        $organizations = Organization::join('organization_user', 'organizations.id', '=', 'organization_id')
-                       ->select('organizations.*', 'user_id', 'role')
+        // List Organizations and their owners
+        $organizations = $this->getOrganizations()
                        ->where('role', '=', 'owner')
                        ->get()
                        ->toArray();
 
-        // Show organization owners in listing
-        foreach($organizations as &$organization)
-        {
-            $organization['members'] = [
-                [
-                    'id'   => $organization['user_id'],
-                    'role' => $organization['role']
-                ]
-            ];
+        return $this->formatListing($organizations);
+    }
 
-            unset($organization['role']);
-            unset($organization['user_id']);
-        }
+    public function filterByUserId($user_id)
+    {
+        $organizations = $this->getOrganizations()
+                       ->where('user_id', '=', $user_id)
+                       ->get()
+                       ->toArray();
 
-        return $organizations;
+        return $this->formatListing($organizations);
     }
 
     public function update(array $input, $id)
@@ -55,10 +51,10 @@ class EloquentOrganizationRepository implements OrganizationRepository
                       ->value('user_id');
 
                     // ...and assign member role before transferring ownership
-                    $organization->users()->updateExistingPivot($owner_id, ['role' => 'member']); 
+                    $organization->users()->updateExistingPivot($owner_id, ['role' => 'member']);
                 }
 
-                $organization->users()->updateExistingPivot($member['id'], ['role' => $member['role']]); 
+                $organization->users()->updateExistingPivot($member['id'], ['role' => $member['role']]);
             }
         });
 
@@ -187,5 +183,30 @@ class EloquentOrganizationRepository implements OrganizationRepository
               ->value('role');
 
         return $role;
+    }
+
+    protected function formatListing($organizations)
+    {
+        // Show organization owner/ member in listing
+        foreach($organizations as &$organization)
+        {
+            $organization['members'] = [
+                [
+                    'id'   => $organization['user_id'],
+                    'role' => $organization['role']
+                ]
+            ];
+
+            unset($organization['role']);
+            unset($organization['user_id']);
+        }
+
+        return $organizations;
+    }
+
+    protected function getOrganizations()
+    {
+        return Organization::join('organization_user', 'organizations.id', '=', 'organization_id')
+                       ->select('organizations.*', 'user_id', 'role');
     }
 }
