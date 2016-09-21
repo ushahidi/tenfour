@@ -7,16 +7,17 @@ use RollCall\Http\Requests\User\DeleteUserRequest;
 use RollCall\Http\Requests\User\CreateUserRequest;
 use RollCall\Http\Requests\User\UpdateUserRequest;
 use RollCall\Http\Requests\User\GetUsersRequest;
-
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
+use Dingo\Api\Auth\Auth;
 
 class UserController extends ApiController
 {
-    public function __construct(UserRepository $users, Response $response)
+    public function __construct(UserRepository $users, Response $response, Auth $auth)
     {
         $this->users = $users;
         $this->response = $response;
+        $this->auth = $auth;
     }
 
     /**
@@ -49,7 +50,7 @@ class UserController extends ApiController
     }
 
     /**
-     * Get a single user 
+     * Get a single user
      *
      * @param Request $request
      * @param int $id
@@ -58,6 +59,10 @@ class UserController extends ApiController
      */
     public function find(GetUserRequest $request, $id)
     {
+        if ($id === 'me') {
+            $id = $this->auth->user()['id'];
+        }
+
         $user = $this->users->find($id);
 
         return $this->response->item($user, new UserTransformer, 'user');
@@ -67,13 +72,13 @@ class UserController extends ApiController
      *
      * @param Request $request
      * @param int $id
-     * 
+     *
      * @return Response
      */
     public function update(UpdateUserRequest $request, $id)
     {
         $user = $this->users->update($request->all(), $id);
-        
+
         return $this->response->item($user, new UserTransformer, 'user');
     }
 
@@ -88,7 +93,7 @@ class UserController extends ApiController
     public function delete(DeleteUserRequest $request, $id)
     {
         $user = $this->users->delete($id);
-        
+
         return $this->response->item($user, new UserTransformer, 'user');
     }
 }

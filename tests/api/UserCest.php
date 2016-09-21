@@ -26,7 +26,7 @@ class UserCest
                 ]
             ]
         ]);
-    } 
+    }
 
     /*
      * Attempt to get all users as a user
@@ -62,7 +62,28 @@ class UserCest
         ]);
     }
 
-    /* 
+    /*
+     * Get user details as 'me'
+     *
+     */
+    public function getUserAsMe(ApiTester $I)
+    {
+        $id = 'me';
+        $I->wantTo('Get user details as a user');
+        $I->amAuthenticatedAsUser();
+        $I->sendGET($this->endpoint."/$id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'user' => [
+                'name' => 'Test user',
+                'email' => 'test@ushahidi.com'
+            ]
+        ]);
+    }
+
+
+    /*
      * Attempt to get user details as an anonymous user
      *
      *//*

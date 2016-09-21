@@ -22,6 +22,10 @@ class GetUserRequest extends FormRequest
         }
 
         // A user can access their own details
+        if ($this->route('user') === 'me') {
+            return true;
+        }
+
         if ($this->isSelf($this->route('user'))) {
             return true;
         }
