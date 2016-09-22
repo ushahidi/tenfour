@@ -17,6 +17,10 @@ class GetOrganizationsRequest extends GetOrganizationRequest
         }
 
         // A user can list their own orgs;
+        if ($this->query('user') === 'me') {
+            return true;
+        }
+
         if ($this->isSelf($this->query('user_id'))) {
             return true;
         }

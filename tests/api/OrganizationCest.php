@@ -40,13 +40,50 @@ class OrganizationCest
     }
 
     /*
-     * List organizations that a user belongs to
+     * List organizations that belong to a user id
      *
      */
     public function filterOrganizationsByUser(ApiTester $I)
     {
         $endpoint = $this->endpoint . '/?user_id=1';
-        $I->wantTo('Get a list of all organizations that a user belongs to');
+        $I->wantTo('Get a list of all organizations that a user id belongs to');
+        $I->amAuthenticatedAsUser();
+        $I->sendGET($endpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            [
+                'name'    => 'RollCall',
+                'url'     => 'rollcall.rollcall.io',
+                'members' => [
+                    [
+                        'id'   => 1,
+                        'role' => 'member',
+                    ]
+                ]
+            ],
+            [
+                'name'    => 'Ushahidi',
+                'url'     => 'ushahidi.rollcall.io',
+                'members' => [
+                    [
+                        'id'   => 1,
+                        'role' => 'admin',
+                    ]
+                ]
+            ]
+
+        ]);
+    }
+
+    /*
+     * List organizations that a user belong to the current user
+     *
+     */
+    public function filterOrganizationsByCurrentUser(ApiTester $I)
+    {
+        $endpoint = $this->endpoint . '/?user=me';
+        $I->wantTo('Get a list of all organizations that the current user belongs to');
         $I->amAuthenticatedAsUser();
         $I->sendGET($endpoint);
         $I->seeResponseCodeIs(200);

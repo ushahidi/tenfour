@@ -31,7 +31,13 @@ class OrganizationController extends ApiController
      */
     public function all(GetOrganizationsRequest $request)
     {
-        $user_id = $request->query('user_id');
+        $user_id = null;
+
+        if ($request->query('user') === 'me') {
+            $user_id = $this->auth->user()['id'];
+        } else if ($request->query('user_id')) {
+            $user_id = $request->query('user_id');
+        }
 
         if ($user_id) {
             $organizations = $this->organizations->filterByUserId($user_id);
