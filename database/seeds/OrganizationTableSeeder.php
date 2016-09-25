@@ -27,28 +27,5 @@ class OrganizationTableSeeder extends Seeder
             'user_id' => $user->id,
             'role' => 'owner',
         ]);
-
-        // Add OAuth token for Ushahidi organization owner
-        $session_id = DB::table('oauth_sessions')->insertGetId([
-            'client_id' => 'webapp',
-            'owner_type' => 'user',
-            'owner_id' => $user->id,
-        ]);
-
-        DB::table('oauth_access_tokens')->insert([
-            'id' => 'ushahidiownertoken',
-            'session_id' => $session_id,
-            'expire_time' => '1856429714',
-        ]);
-
-        DB::table('oauth_access_token_scopes')->insert([
-            'access_token_id' => 'ushahidiownertoken',
-            'scope_id' => 'organization',
-        ]);
-
-        DB::table('oauth_session_scopes')->insert([
-            'session_id' => $session_id,
-            'scope_id' => 'organization',
-        ]);
     }
 }
