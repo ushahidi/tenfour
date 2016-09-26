@@ -49,7 +49,7 @@ INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'0000-00-00
 
 -- Add test organizations
 INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall.rollcall.io');
-INSERT INTO organizations (id, name, url) VALUES ('3', 'Ushahidi', 'ushahidi.rollcall.io');
+INSERT INTO organizations (id, name, url) VALUES ('3', 'Testers', 'testers.rollcall.io');
 
 -- Add test organization members
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '4', 'owner');

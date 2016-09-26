@@ -32,6 +32,6 @@ class CreateOrganizationUserTable extends Migration
      */
     public function down()
     {
-        Schema::drop('organization_users');
+        Schema::drop('organization_user');
     }
 }

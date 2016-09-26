@@ -1,31 +1,34 @@
 <?php
 use Illuminate\Database\Seeder;
 use RollCall\Models\User;
+use RollCall\Models\Organization;
 
 class OrganizationTableSeeder extends Seeder
 {
     // Create user that owns Ushahidi organization
     public function run() {
-        $user = User::firstOrCreate([
-            'username' => 'ushahidi',
-            'name' => 'ushahidi',
-            'email' => 'rollcall@ushahidi.com',
-        ]);
+
+        $user = User::firstOrCreate(
+            ['email' => 'rollcall@ushahidi.com']
+        );
 
         $user->update([
+            'name' => 'ushahidi',
             'password' => 'westgate'
         ]);
 
-        // Create Ushahidi organization
-        $organization_id = DB::table('organizations')->insertGetId([
-            'name' => 'Ushahidi',
+        $organization = Organization::firstOrCreate(
+            ['name' => 'Ushahidi']
+        );
+
+        $organization->update([
             'url' => 'ushahidi.rollcall.io',
         ]);
 
-        DB::table('organization_user')->insert([
-            'organization_id' => $organization_id,
-            'user_id' => $user->id,
-            'role' => 'owner',
-        ]);
+        $user->organizations()->sync([
+                $organization->id =>[
+                    'user_id' => $user->id, 'role' => 'owner'
+                ]
+            ]);
     }
 }

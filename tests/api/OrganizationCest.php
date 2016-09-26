@@ -27,8 +27,8 @@ class OrganizationCest
                 ]
             ],
             [
-                'name'    => 'Ushahidi',
-                'url'     => 'ushahidi.rollcall.io',
+                'name'    => 'Testers',
+                'url'     => 'testers.rollcall.io',
                 'members' => [
                     [
                         'id'   => 4,
@@ -63,8 +63,8 @@ class OrganizationCest
                 ]
             ],
             [
-                'name'    => 'Ushahidi',
-                'url'     => 'ushahidi.rollcall.io',
+                'name'    => 'Testers',
+                'url'     => 'testers.rollcall.io',
                 'members' => [
                     [
                         'id'   => 1,
@@ -100,8 +100,8 @@ class OrganizationCest
                 ]
             ],
             [
-                'name'    => 'Ushahidi',
-                'url'     => 'ushahidi.rollcall.io',
+                'name'    => 'Testers',
+                'url'     => 'testers.rollcall.io',
                 'members' => [
                     [
                         'id'   => 1,

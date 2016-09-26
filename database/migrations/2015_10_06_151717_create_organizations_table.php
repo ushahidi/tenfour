@@ -17,8 +17,8 @@ class CreateOrganizationsTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->increments('id')->unsigned();
-            $table->string('name', 255)->nullable()->default(null);
-            $table->string('url')->nullable()->default(null);
+            $table->string('name', 255)->unique();
+            $table->string('url')->unique();
 
             $table->timestamps();
         });
