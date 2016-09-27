@@ -154,6 +154,24 @@ class EloquentOrganizationRepository implements OrganizationRepository
         ];
     }
 
+    public function listMembers($id)
+    {
+        $organization = Organization::findorFail($id);
+
+        DB::setFetchMode(\PDO::FETCH_ASSOC);
+
+        $members = DB::table('organization_user')
+                 ->join('users','organization_user.user_id', '=', 'users.id')
+                 ->select('users.id', 'users.name', 'organization_user.role')
+                 ->where('organization_user.organization_id', '=', $id)
+                 ->get();
+
+        return $organization->toArray() +
+        [
+            'members' => $members
+        ];
+    }
+
     public function deleteMembers(array $input, $id)
     {
         $organization = Organization::findorFail($id);

@@ -147,14 +147,14 @@ class OrganizationCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'name' => 'Ushahidi Inc',
-            'url' => 'ushahidi.rollcall.io'
+            'name' => 'Test org',
+            'url' => 'test.rollcall.io'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'Ushahidi Inc',
-            'url' => 'ushahidi.rollcall.io',
+            'name' => 'Test org',
+            'url' => 'test.rollcall.io',
             'members' => [
                 [
                     'id'   => 1,
@@ -390,6 +390,47 @@ class OrganizationCest
             ]
         ]);
         $I->seeResponseCodeIs(403);
+    }
+
+    /*
+     * List members in an organization
+     *
+     */
+    public function listMembersAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('List members of an organization as org Admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$id/members");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'name' => 'RollCall',
+            'url'  => 'rollcall.rollcall.io',
+            'members' => [
+                [
+                    'id' => 4,
+                    'role' => 'owner',
+                    'name' => 'Org owner',
+                ],
+                [
+                    'id' => 5,
+                    'role' => 'admin',
+                    'name' => 'Org admin',
+                ],
+                [
+                    'id' => 1,
+                    'role' => 'member',
+                    'name' => 'Test user',
+                ],
+                [
+                    'id' => 3,
+                    'role' => 'member',
+                    'name' => 'Org member',
+                ]
+            ]
+        ]);
     }
 
     /*

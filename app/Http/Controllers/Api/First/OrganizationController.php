@@ -10,6 +10,7 @@ use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\AddMembersRequest;
 use RollCall\Http\Requests\Organization\DeleteMembersRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
+use RollCall\Http\Requests\Organization\ListMembersRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Response;
@@ -75,6 +76,18 @@ class OrganizationController extends ApiController
     {
         return $this->response->item($this->organizations->addMembers($request->all(), $organization_id),
                                      new OrganizationTransformer, 'organization');
+    }
+
+    /**
+     * List members of an organization
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function listMembers(ListMembersRequest $request, $organization_id)
+    {
+        return $this->response->item($this->organizations->listMembers($organization_id),
+                                           new OrganizationTransformer, 'organization');
     }
 
     /**
