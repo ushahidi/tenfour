@@ -13,6 +13,14 @@ class EloquentRollcallRepository implements RollcallRepository
         return $rollcalls->toArray();
     }
 
+    public function filterByOrganizationId($org_id)
+    {
+        $rollcalls = Rollcall::where('organization_id', $org_id)
+                   ->get();
+
+        return $rollcalls->toArray();
+    }
+
     public function find($id)
     {
         $rollcall = Rollcall::find($id);
@@ -31,7 +39,7 @@ class EloquentRollcallRepository implements RollcallRepository
     {
         $rollcall = Rollcall::findorFail($id);
         $rollcall->update($input);
-        
+
         return $rollcall->toArray();
     }
 
@@ -39,5 +47,4 @@ class EloquentRollcallRepository implements RollcallRepository
     {
 
     }
-    
 }

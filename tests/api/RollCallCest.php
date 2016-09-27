@@ -16,12 +16,42 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            ['message' => 'Westgate under seige',
-             'organization' => ['id' => 2],
-             'contact' => ['id' => 4]
+            [
+                'message' => 'Westgate under seige',
+                'organization' => [
+                    'id' => 2
+                ],
+                'contact' => [
+                    'id' => 4
+                ]
             ]
-
         ]);
+    }
+
+    /*
+     * Filter rollcalls by organization
+     *
+     */
+    public function filterRollCallsbyOrg(ApiTester $I)
+    {
+        $endpoint = $this->endpoint . '/?org_id=2';
+        $I->wantTo('Get a list of all rollcalls for an organization as an organization admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($endpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            [
+                'message' => 'Westgate under seige',
+                'organization' => [
+                    'id' => 2
+                ],
+                'contact' => [
+                    'id' => 4
+                ]
+            ]
+        ]);
+
     }
 
     /*
@@ -50,9 +80,14 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
-            ['message' => 'Westgate under seige',
-             'organization' => ['id' => 2],
-             'contact' => ['id' => 4]
+            [
+                'message' => 'Westgate under seige',
+                'organization' => [
+                    'id' => 2
+                ],
+                'contact' => [
+                    'id' => 4
+                ]
             ]
          );
     }
@@ -74,9 +109,14 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
-            ['message' => 'Westgate under seige, are you ok?', 
-             'organization' => ['id' => 1],
-             'contact' => ['id' => 1 ]
+            [
+                'message' => 'Westgate under seige, are you ok?',
+                'organization' => [
+                    'id' => 1
+                ],
+                'contact' => [
+                    'id' => 1
+                ]
             ]
         );
     }
@@ -98,7 +138,7 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
-            ['message' => 'Westgate under seige, are you ok?', 
+            ['message' => 'Westgate under seige, are you ok?',
              'organization' => ['id' => 1],
              'contact' => ['id' => 1 ]
             ]
@@ -123,9 +163,14 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
-            ['message' => 'Westgate has been cordoned',
-             'contact' => ['id' => 1],
-             'organization' => ['id' => 1]
+            [
+                'message' => 'Westgate has been cordoned',
+                'contact' => [
+                    'id' => 1
+                ],
+                'organization' => [
+                    'id' => 1
+                ]
             ]
         );
     }
