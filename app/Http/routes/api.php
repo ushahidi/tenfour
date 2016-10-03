@@ -57,8 +57,8 @@ $api->version($version, [
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
     $api->post($base.'rollcalls', ['as' => 'rollcalls.create', 'uses' => 'RollCallController@create']);
+    $api->post($base.'rollcalls/{rollcall}/contacts', ['uses' => 'RollCallController@addContacts']);
+    $api->get($base.'rollcalls/{rollcall}/contacts', ['uses' => 'RollCallController@listContacts']);
     $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);
     $api->put($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.update', 'uses' => 'RollCallController@update']);
-
 });
-

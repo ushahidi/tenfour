@@ -203,6 +203,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $role;
     }
 
+    public function isMember($user_id, $org_id)
+    {
+        return (bool) Organization::with('users')->findOrFail($org_id)->users()
+             ->where('user_id', '=', $user_id)
+             ->count();
+    }
+
     protected function formatListing($organizations)
     {
         // Show organization owner/ member in listing

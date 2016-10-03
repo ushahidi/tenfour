@@ -7,20 +7,21 @@ use RollCall\Http\Requests\RollCall\GetRollCallsRequest;
 use RollCall\Http\Requests\RollCall\GetRollCallRequest;
 use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
 use RollCall\Http\Requests\RollCall\UpdateRollCallRequest;
+use RollCall\Http\Requests\RollCall\AddContactsRequest;
 
 use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Response;
 
 class RollCallController extends ApiController
 {
-    public function __construct(RollCallRepository $rollcalls, Response $response)
+    public function __construct(RollCallRepository $rollCalls, Response $response)
     {
-        $this->rollcalls = $rollcalls;
+        $this->rollCalls = $rollCalls;
         $this->response = $response;
     }
 
     /**
-     * Get all rollcalls for an organization
+     * Get all roll calls for an organization
      *
      * @param Request $request
      * @param org_id
@@ -28,17 +29,17 @@ class RollCallController extends ApiController
      */
     public function all(GetRollCallsRequest $request)
     {
-        if ($request->query('org_id')) {
-            $rollcalls = $this->rollcalls->filterByOrganizationId($request->query('org_id'));
+        if ($request->query('organization')) {
+            $rollCalls = $this->rollCalls->filterByOrganizationId($request->query('organization'));
         } else {
-            $rollcalls = $this->rollcalls->all();
+            $rollCalls = $this->rollCalls->all();
         }
 
-        return $this->response->collection($rollcalls, new RollCallTransformer, 'rollcalls');
+        return $this->response->collection($rollCalls, new RollCallTransformer, 'rollcalls');
     }
 
     /**
-     * Get a single rollcall
+     * Get a single roll call
      *
      * @param Request $request
      * @param int $id
@@ -47,29 +48,30 @@ class RollCallController extends ApiController
      */
     public function find(GetRollCallRequest $request, $id)
     {
-        $rollcall = $this->rollcalls->find($id);
-        return $this->response->item($rollcall, new RollCallTransformer, 'rollcall');
+        $rollCall = $this->rollCalls->find($id);
+        return $this->response->item($rollCall, new RollCallTransformer, 'rollcall');
     }
 
     /**
-     * Create a rollcall
+     * Create a roll call
+     *
      * @param Request $request
      * @return Response
      *
      */
     public function create(CreateRollCallRequest $request)
     {
-        $rollcall = $this->rollcalls->create([
+        $rollCall = $this->rollCalls->create([
             'message'          => $request->input('message'),
-            'contact_id'       => $request->input('contact_id'),
-            'organization_id'  => $request->input('organization_id'),
+            'organization_id'  => $request->input('organization'),
         ]);
 
-        return $this->response->item($rollcall, new RollCallTransformer, 'rollcall');
+        return $this->response->item($rollCall, new RollCallTransformer, 'rollcall');
     }
 
     /**
-     * Update a rollcall
+     * Update a roll call
+     *
      * @param Request $request
      * @param int $id
      *
@@ -77,17 +79,44 @@ class RollCallController extends ApiController
      */
     public function update(UpdateRollCallRequest $request, $id)
     {
-        $rollcall = $this->rollcalls->update($request->all(), $id);
+        $rollCall = $this->rollCalls->update($request->all(), $id);
 
-        return $this->response->item($rollcall, new RollCallTransformer, 'rollcall');
+        return $this->response->item($rollCall, new RollCallTransformer, 'rollcall');
     }
 
     /**
-     * Delete a rollcall
+     * Add contacts to a roll call
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function addContacts(AddContactsRequest $request, $id)
+    {
+        $rollCall = $this->rollCalls->addContacts($request->all(), $id);
+
+        return $this->response->item($rollCall, new RollCallTransformer, 'rollcall');
+    }
+
+    /**
+     * List roll call contacs
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function listContacts(GetRollCallRequest $request, $id)
+    {
+        return $this->response->item($this->rollCalls->listContacts($id),
+                                     new RollCallTransformer, 'rollcall');
+    }
+
+    /**
+     * Delete a roll call
      */
     public function delete()
     {
-
+        //
     }
 
 }

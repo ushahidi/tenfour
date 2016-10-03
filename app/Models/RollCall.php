@@ -4,21 +4,21 @@ namespace RollCall\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Rollcall extends Model
+class RollCall extends Model
 {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'rollcalls';
+    protected $table = 'roll_calls';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['message', 'contact_id', 'organization_id', 'user_id'];
+    protected $fillable = ['message', 'organization_id'];
 
     /**
      *
@@ -31,10 +31,10 @@ class Rollcall extends Model
 
     /**
      *
-     * Rollcalls belong to a user
+     * Rollcalls belong to contact
      */
-    public function user()
+    public function contacts()
     {
-        return $this->belongsTo('RollCall\Models\User');
+        return $this->belongsToMany('RollCall\Models\Contact');
     }
 }

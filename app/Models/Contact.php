@@ -12,6 +12,7 @@ class Contact extends Model
      * @var string
      */
 	protected $table = 'contacts';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -19,4 +20,20 @@ class Contact extends Model
      */
     protected $fillable = ['type', 'can_receive', 'user_id', 'contact'];
 
+    /**
+     *
+     * Rollcalls that belong to the contac.t
+     */
+    public function rollcalls()
+    {
+        return $this->belongsToMany('RollCall\Models\RollCall');
+    }
+
+    /**
+     * Get the user that owns the contact.
+     */
+    public function user()
+    {
+        return $this->belongsTo('RollCall\Models\User');
+    }
 }

@@ -60,7 +60,14 @@ INSERT INTO organization_user (organization_id, user_id, role) VALUES ('3', '4',
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('3', '1', 'admin');
 
 --Add test contacts
-INSERT INTO contacts (user_id, can_receive, type, contact) VALUES ('1', '1', 'phone', '0721674180'), ('2','0', 'email', 'linda@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('1', '1', '1', 'phone', '0721674180');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('2', '1', '1', 'email', 'test@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('3', '2', '0', 'email', 'linda@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('4', '4', '0', 'phone', '0792999999');
 
---Add test rollcalls
-INSERT INTO rollcalls (message, organization_id, status, contact_id, sent) VALUES ('Westgate under seige', '2', 'pending', '4','0');
+--Add test roll calls
+INSERT INTO roll_calls (id, message, organization_id, status, sent) VALUES ('1', 'Westgate under siege', '2', 'pending', '0');
+
+-- Add test contacts
+INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('3', '1');
+INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('4', '1');

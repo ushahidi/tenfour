@@ -56,7 +56,7 @@ class User extends Model implements AuthenticatableContract,
 	}
 
 	/**
-	 * A user belongs to an organization 
+	 * A user belongs to an organization
 	 *
 	 **/
 	public function organizations()
@@ -66,11 +66,10 @@ class User extends Model implements AuthenticatableContract,
 
 	/**
      *
-     * A user has rollcalls
+     * A user has contacts
      */
-    public function rollcalls()
+    public function contacts()
     {
-        return $this->hasMany('RollCall\Models\Rollcall');
+        return $this->hasMany('RollCall\Models\Contact');
     }
-	
 }

@@ -50,4 +50,14 @@ interface OrganizationRepository extends CrudRepository
      * @return array
      */
     public function filterByUserId($user_id);
+
+    /**
+     * Check if user is a member of an organization
+     *
+     * @param int $user_id
+     * @param int $org_id
+     *
+     * @return bool
+     */
+    public function isMember($user_id, $org_id);
 }

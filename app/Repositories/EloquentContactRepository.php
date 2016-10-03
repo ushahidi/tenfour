@@ -17,7 +17,7 @@ class EloquentContactRepository implements ContactRepository
     {
 		$contact = Contact::findorFail($id);
         $contact->update($input);
-		
+
         return $contact->toArray();
     }
 
@@ -39,8 +39,16 @@ class EloquentContactRepository implements ContactRepository
     {
 		$contact = Contact::findorFail($id);
 		$contact->delete();
-        
+
         return $contact->toArray();
     }
-    
+
+    public function getUser($id)
+    {
+        $contact = Contact::findorFail($id);
+        return $contact->user()
+            ->get()
+            ->first()
+            ->toArray();
+    }
 }

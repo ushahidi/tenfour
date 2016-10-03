@@ -9,7 +9,7 @@ use App;
 class GetRollCallRequest extends FormRequest
 {
     use UserAccess;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -22,13 +22,18 @@ class GetRollCallRequest extends FormRequest
             return true;
         }
 
-        $rollcall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
+        $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
                  ->find($this->route('rollcall'));
 
-        // A user is an organization admin
-        if ($this->isOrganizationAdmin($rollcall->organization_id)) {
+        // Organization admins and owners have access to roll calls
+        if ($this->isOrganizationAdmin($rollCall['organization_id'])) {
             return true;
         }
+
+        if ($this->isOrganizationAdmin($rollCall['organization_id'])) {
+            return true;
+        }
+
 
         return false;
     }

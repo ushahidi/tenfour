@@ -21,21 +21,12 @@ class CreateRollCallRequest extends FormRequest
             return true;
         }
 
-        $rollcall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
-                 ->find($this->route('rollcall'));
-
-        $organization = $rollcall->organization_id;
-                 
-        // An organization admin can send rollcalls
-        if ($this->isOrganizationAdmin($organization)) {
+        // An organization owner/ admin can send rollcalls
+        if ($this->isOrganizationAdmin($this->input('organization'))) {
             return true;
         }
 
-        if ($this->isMember($organization)) {
-            return true;
-        }
-
-        if ($this->isOwner($organization)) {
+        if ($this->isOrganizationOwner($this->input('organization'))) {
             return true;
         }
 
@@ -51,8 +42,7 @@ class CreateRollCallRequest extends FormRequest
     {
         return [
             'message'         => 'required',
-            'contact_id'      => 'required',
-            'organization_id' => 'required'
+            'organization' => 'required|integer'
         ];
     }
 }

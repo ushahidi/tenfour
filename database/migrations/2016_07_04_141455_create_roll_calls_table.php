@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRollcallsTable extends Migration
+class CreateRollCallsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,20 +12,18 @@ class CreateRollcallsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rollcalls', function (Blueprint $table) {
+        Schema::create('roll_calls', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('message', 255)->nullable()->default(null);
-            $table->integer('contact_id')->default(0);
-            $table->integer('organization_id')->default(0);
+            $table->string('message', 255);
+            $table->integer('organization_id')->unsigned()->default(0);
             $table->enum('status', array(
                 'pending', 'received', 'expired', 'cancelled', 'failed'
             ))->default('pending');
-            $table->integer('sent')->default(0);
+            $table->boolean('sent');
             $table->timestamps();
 
-            $table->index('contact_id');
-
-            $table->index('organization_id');
+            $table->foreign('organization_id')->references('id')->on('organizations')
+                ->onDelete('cascade');
 
         });
     }
@@ -37,6 +35,6 @@ class CreateRollcallsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('rollcalls');
+        Schema::drop('roll_calls');
     }
 }

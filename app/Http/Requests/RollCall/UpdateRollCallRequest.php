@@ -2,10 +2,13 @@
 
 namespace RollCall\Http\Requests\RollCall;
 
-use RollCall\Http\Requests\Request;
-use App;
-
 class UpdateRollCallRequest extends GetRollCallRequest
 {
-    //
+    public function rules()
+    {
+        return [
+            'sent'   => 'integer',
+            'status' => 'in:pending,received,expired,cancelled,failed',
+        ];
+    }
 }

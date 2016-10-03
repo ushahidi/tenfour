@@ -5,20 +5,27 @@ use League\Fractal\TransformerAbstract;
 
 class RollCallTransformer extends TransformerAbstract
 {
-    public function transform(array $rollcall)
+    public function transform(array $rollCall)
     {
-        return [
-            'id'      => (int) $rollcall['id'],
-            'message' => $rollcall['message'],
-            'organization' => [
-                'id'  => (int) $rollcall['organization_id'],
-                'uri' => '/organizations/' . $rollcall['organization_id'],
-            ],      
-            'contact' => [
-                'id'  => (int) $rollcall['contact_id'],
-                'uri' => '/contacts/' . $rollcall['contact_id'],
-            ],
-            
+        // Format contacts if they are present
+        if (isset($rollCall['contacts'])) {
+            foreach ($rollCall['contacts'] as &$contact)
+            {
+                $contact['id'] = (int) $contact['id'];
+                $contact['uri'] = '/contacts/' . $contact['id'];
+            }
+        }
+
+        $rollCall['organization'] = [
+            'id'  => (int) $rollCall['organization_id'],
+            'uri' => '/organizations/' . $rollCall['organization_id'],
         ];
+
+        unset($rollCall['organization_id']);
+
+        $rollCall['id'] = (int) $rollCall['id'];
+        $rollCall['uri'] = '/rollcalls/' . $rollCall['id'];
+
+        return $rollCall;
     }
 }
