@@ -288,14 +288,12 @@ class OrganizationCest
         $I->wantTo('Add members as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members", [
-            [
-                'id'   => 6,
-                'role' => 'member',
-            ],
-            [
-                'id'   => 2,
-                'role' => 'member',
+        $I->sendPOST($this->endpoint."/$id/members/add", [
+            'members' => [
+                [
+                    'id'   => 6,
+                    'role' => 'member',
+                ]
             ]
         ]);
         $I->seeResponseCodeIs(200);
@@ -306,10 +304,6 @@ class OrganizationCest
             'members' => [
                 [
                     'id'   => 6,
-                    'role' => 'member',
-                ],
-                [
-                    'id'   => 2,
                     'role' => 'member',
                 ]
             ]
@@ -326,8 +320,12 @@ class OrganizationCest
         $I->wantTo('Add member with unspecified role');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members", [
-            'id' => 6,
+        $I->sendPOST($this->endpoint."/$id/members/add", [
+            'members' => [
+                [
+                    'id'   => 6,
+                ]
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -344,17 +342,22 @@ class OrganizationCest
     }
 
     /*
-     * Delete member from an organization as org admin
+     * Delete members from an organization as org admin
      *
      */
-    public function deleteMemberAsOrgAdmin(ApiTester $I)
+    public function deleteMembersAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
-        $user_id = 3;
-        $I->wantTo('Delete member as an org admin');
+        $I->wantTo('Delete members as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDelete($this->endpoint."/$id/members/$user_id");
+        $I->sendPOST($this->endpoint."/$id/members/delete", [
+            'members' => [
+                [
+                    'id'   => 3,
+                ]
+            ]
+        ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -363,25 +366,9 @@ class OrganizationCest
             'members' => [
                 [
                     'id'   => 3,
-                    'name' => 'Org member'
                 ]
             ]
         ]);
-    }
-
-    /*
-     * Delete owner from an organization as org admin
-     *
-     */
-    public function deleteOwnerAsOrgAdmin(ApiTester $I)
-    {
-        $id = 2;
-        $user_id = 4;
-        $I->wantTo('Delete owner as an org admin');
-        $I->amAuthenticatedAsOrgAdmin();
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDelete($this->endpoint."/$id/members/$user_id");
-        $I->seeResponseCodeIs(403);
     }
 
     /*
@@ -394,9 +381,13 @@ class OrganizationCest
         $I->wantTo('Add members as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members", [
-            'id'   => 6,
-            'role' => 'admin',
+        $I->sendPOST($this->endpoint."/$id/members/add", [
+            'members' => [
+                [
+                    'id'   => 6,
+                    'role' => 'admin',
+                ]
+            ]
         ]);
         $I->seeResponseCodeIs(403);
     }

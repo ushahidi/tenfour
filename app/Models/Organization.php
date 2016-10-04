@@ -35,6 +35,6 @@ class Organization extends Model
      */
     public function rollcalls()
     {
-        return $this->hasMany('RollCall\Models\RollCall');
+        return $this->hasMany('RollCall\Models\Rollcall');
     }
 }

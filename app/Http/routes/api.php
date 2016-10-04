@@ -37,8 +37,8 @@ $api->version($version, [
 
     $api->get($base.'organizations', ['as' => 'organizations.index', 'uses' => 'OrganizationController@all']);
     $api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
-    $api->post($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@addMembers']);
-    $api->delete($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@deleteMember']);
+    $api->post($base.'organizations/{organization}/members/add', ['uses' => 'OrganizationController@addMembers']);
+    $api->post($base.'organizations/{organization}/members/delete', ['uses' => 'OrganizationController@deleteMembers']);
     $api->get($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@listMembers']);
     $api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
     $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);

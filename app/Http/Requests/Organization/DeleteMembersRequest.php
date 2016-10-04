@@ -4,8 +4,9 @@ namespace RollCall\Http\Requests\Organization;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
+use App;
 
-class AddMembersRequest extends FormRequest
+class DeleteMembersRequest extends FormRequest
 {
     use UserAccess;
 
@@ -25,10 +26,14 @@ class AddMembersRequest extends FormRequest
 
         if ($this->isOrganizationAdmin($organization_id)) {
 
-            // Admin can only add members with 'member' role
+			$org_repo = App::make('RollCall\Contracts\Repositories\OrganizationRepository');
+
+            // Admin can only delete members with 'member' role
             foreach($this->input('members') as $member)
             {
-                if (isset($member['role']) && $member['role'] !== 'member') {
+				$role = $org_repo->getMemberRole($organization_id, $member['id']);
+						
+                if ($role !== 'member') {
                     return false;
                 }
             }
@@ -45,11 +50,9 @@ class AddMembersRequest extends FormRequest
 
         foreach($this->input('members') as $key => $val)
         {
-            $rules['members.'.$key.'.id'] = 'required|exists:users,id';
-            $rules['members.'.$key.'.role'] = 'in:member,admin';
+            $rules['members.'.$key.'.id'] = 'required|int';
         }
 
         return $rules;
-           
     }
 }
