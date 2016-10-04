@@ -131,19 +131,31 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function addMembers(array $input, $id)
     {
         $organization = Organization::findorFail($id);
-
-        $members = array_get($input, 'members');
-
+        $members = [];
         $ids = [];
 
-        foreach($members as &$member)
-        {
-            // Assign default 'member' role if unspecified
-            if (!isset($member['role'])) {
-                $member['role'] = 'member';
+        if (is_array(head($input))) {
+            foreach($input as &$member)
+            {
+                // Assign default 'member' role if unspecified
+                if (!isset($member['role'])) {
+                    $member['role'] = 'member';
+                }
+
+                $ids[$member['id']] = ['role' => $member['role']];
             }
 
-            $ids[$member['id']] = ['role' => $member['role']];
+            // Add members to response
+            $members = $input;
+        } else {
+            if(!isset($input['role'])) {
+                $input['role'] = 'member';
+            }
+
+            $ids[$input['id']] = ['role' => $input['role']];
+
+            // Add contact to response
+            $members = [$input];
         }
 
         $organization->users()->attach($ids);
@@ -156,15 +168,24 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function listMembers($id)
     {
-        $organization = Organization::findorFail($id);
+        $organization = Organization::
+                      with(['users' => function($query) {
+                          $query->select('name');
+                      }])
+                      ->findOrFail($id);
 
-        DB::setFetchMode(\PDO::FETCH_ASSOC);
+        $members = $organization
+                 ->users
+                 ->toArray();
 
-        $members = DB::table('organization_user')
-                 ->join('users','organization_user.user_id', '=', 'users.id')
-                 ->select('users.id', 'users.name', 'organization_user.role')
-                 ->where('organization_user.organization_id', '=', $id)
-                 ->get();
+        foreach($members as &$member)
+        {
+            $member = [
+                'id'   => $member['pivot']['user_id'],
+                'name' => $member['name'],
+                'role' => $member['pivot']['role'],
+            ];
+        }
 
         return $organization->toArray() +
         [
@@ -172,24 +193,25 @@ class EloquentOrganizationRepository implements OrganizationRepository
         ];
     }
 
-    public function deleteMembers(array $input, $id)
+    public function deleteMember($id, $user_id)
     {
-        $organization = Organization::findorFail($id);
+        $organization = Organization::findOrFail($id);
 
-        $members = array_get($input, 'members');
+        $member = $organization->users()
+                ->select('name')
+                ->findOrFail($user_id);
 
-        $ids = [];
-
-        foreach($members as $member)
-        {
-            array_push($ids, $member['id']);
-        }
-
-        $organization->users()->detach($ids);
+        $organization->users()->detach($user_id);
 
         return $organization->toArray() +
         [
-            'members' => $members
+            'members' => [
+                [
+                    'id'   => $member->pivot->user_id,
+                    'role' => $member->pivot->role,
+                    'name' => $member->name
+                ]
+            ]
         ];
     }
 
@@ -205,9 +227,10 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function isMember($user_id, $org_id)
     {
-        return (bool) Organization::with('users')->findOrFail($org_id)->users()
-             ->where('user_id', '=', $user_id)
-             ->count();
+        return (bool) DB::table('organization_user')
+            ->where('user_id', $user_id)
+            ->where('organization_id', $org_id)
+            ->count();
     }
 
     protected function formatListing($organizations)
