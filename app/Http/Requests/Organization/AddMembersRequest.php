@@ -18,19 +18,20 @@ class AddMembersRequest extends FormRequest
 
         $organization_id = $this->route('organization');
 
-    
+
         if ($this->isOrganizationOwner($organization_id)) {
             return true;
         }
 
         if ($this->isOrganizationAdmin($organization_id)) {
-
             // Admin can only add members with 'member' role
-            foreach($this->input('members') as $member)
-            {
-                if (isset($member['role']) && $member['role'] !== 'member') {
-                    return false;
+            if (is_array(head($this->all()))) {
+                foreach($this->all() as $member)
+                {
+                    return $this->orgAdminCanAddMember($member);
                 }
+            } else {
+                return $this->orgAdminCanAddMember($this->all());
             }
 
             return true;
@@ -41,15 +42,34 @@ class AddMembersRequest extends FormRequest
 
     public function rules()
     {
-        $rules = [];
+        $rules = [
+            'id'   => 'required|exists:users,id',
+            'role' => 'in:member,admin',
+        ];
 
-        foreach($this->input('members') as $key => $val)
-        {
-            $rules['members.'.$key.'.id'] = 'required|exists:users,id';
-            $rules['members.'.$key.'.role'] = 'in:member,admin';
+        // Validate request with multiple members
+        if (is_array(head($this->all()))) {
+            $members = [];
+
+            foreach($this->all() as $key => $val)
+            {
+                $members[$key.'.id'] = $rules['id'];
+                $members[$key.'.role'] = $rules['role'];
+            }
+
+            return $members;
         }
 
+        // ...else validate request with single member
         return $rules;
-           
+    }
+
+    private function orgAdminCanAddMember($member)
+    {
+        if (isset($member['role']) && $member['role'] != 'member') {
+            return false;
+        }
+
+        return true;
     }
 }
