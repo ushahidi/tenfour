@@ -37,4 +37,9 @@ class RollCall extends Model
     {
         return $this->belongsToMany('RollCall\Models\Contact');
     }
+
+    public function replies()
+    {
+        return $this->hasMany('RollCall\Models\Reply');
+    }
 }

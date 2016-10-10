@@ -2,6 +2,7 @@
 namespace RollCall\Repositories;
 
 use RollCall\Models\RollCall;
+use RollCall\Models\Reply;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
@@ -58,6 +59,17 @@ class EloquentRollCallRepository implements RollCallRepository
             ->toArray();
     }
 
+    public function getReplies($id, $reply_id = null)
+    {
+        return RollCall::with([
+            'replies' => function($query) use ($reply_id) {
+                if ($reply_id) {
+                    $query->where('replies.id', $reply_id);
+                }
+            }
+        ])
+            ->findOrFail($id)
+            ->toArray();
     }
 
     public function addContacts(array $input, $id)
@@ -93,6 +105,23 @@ class EloquentRollCallRepository implements RollCallRepository
             ];
     }
 
+    public function addReply(array $input, $id)
+    {
+        $roll_call = RollCall::findorFail($id);
+
+        $reply = Reply::create($input);
+
+        return $roll_call->toArray() +
+            [
+                'replies' => [
+                    [
+                        'id'         => $reply->id,
+                        'message'    => $reply->message,
+                        'contact_id' => $input['contact_id']
+                    ]
+                ]
+            ];
+    }
 
     public function delete($id)
     {
