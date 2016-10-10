@@ -23,11 +23,30 @@ interface RollCallRepository extends CrudRepository
     public function addContacts(array $input, $id);
 
     /**
-     * list roll call contacts
+     * Get roll call contacts
      *
      * @param int $id
 
      * @return array
      */
-    public function listContacts($id);
+    public function getContacts($id);
+
+    /**
+     * Get roll call replies
+     *
+     * @param int $id
+     * @parom int $reply_id
+     * @return array
+     */
+    public function getReplies($id);
+
+    /**
+     * Add roll call reply
+     *
+     * @param array $input
+     * @param int $id
+
+     * @return array
+     */
+    public function addReply(array $input, $id);
 }

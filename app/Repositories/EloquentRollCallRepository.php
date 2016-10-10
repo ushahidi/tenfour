@@ -47,7 +47,7 @@ class EloquentRollCallRepository implements RollCallRepository
         return $rollCall->toArray();
     }
 
-    public function listContacts($id)
+    public function getContacts($id)
     {
         $rollCall = RollCall::findorFail($id);
 
