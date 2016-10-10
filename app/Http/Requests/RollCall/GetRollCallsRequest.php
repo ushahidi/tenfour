@@ -23,13 +23,9 @@ class GetRollCallsRequest extends FormRequest
 
         // If filtering by organization check whether user is org owner/ org admin
         if ($this->query('organization')) {
-            if ($this->isOrganizationOwner($this->query('organization'))) {
-                return true;
-            }
+            $org_role = $this->getOrganizationRole($this->query('organization'));
 
-            if ($this->isOrganizationAdmin($this->query('organization'))) {
-                return true;
-            }
+            return in_array($org_role, $this->getAllowedOrgRoles());
         }
 
         return false;
@@ -39,6 +35,13 @@ class GetRollCallsRequest extends FormRequest
     {
         return [
             //
+        ];
+    }
+
+    protected function getAllowedOrgRoles()
+    {
+        return [
+            'owner', 'admin'
         ];
     }
 }

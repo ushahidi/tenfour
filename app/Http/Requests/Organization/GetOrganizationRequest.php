@@ -21,17 +21,10 @@ class GetOrganizationRequest extends FormRequest
             return true;
         }
 
-        // An org owner can get view an organization
-        if ($this->isOrganizationOwner($this->route('organization'))) {
-            return true;
-        }
+        $org_role = $this->getOrganizationRole($this->route('organization'));
 
-        // An org admin can get view an organization
-        if ($this->isOrganizationAdmin($this->route('organization'))) {
-            return true;
-        }
-
-        return false;
+        // An org owner/ admin can view an organization
+        return in_array($org_role, $this->getAllowedOrgRoles());
     }
 
     /**
@@ -42,5 +35,12 @@ class GetOrganizationRequest extends FormRequest
     public function rules()
     {
         return [];
+    }
+
+    protected function getAllowedOrgRoles()
+    {
+        return [
+            'owner', 'admin'
+        ];
     }
 }

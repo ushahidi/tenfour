@@ -2,33 +2,9 @@
 
 namespace RollCall\Http\Requests\Organization;
 
-use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
 
-class UpdateOrganizationRequest extends FormRequest
+class UpdateOrganizationRequest extends GetOrganizationRequest
 {
-    use UserAccess;
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        // Admin can update all organizations
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        // An organization owner can update their own organization
-        if ($this->isOrganizationOwner($this->route('organization'))) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function rules()
     {
         $rules = [
@@ -44,5 +20,12 @@ class UpdateOrganizationRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    protected function getAllowedOrgRoles()
+    {
+        return [
+            'owner'
+        ];
     }
 }

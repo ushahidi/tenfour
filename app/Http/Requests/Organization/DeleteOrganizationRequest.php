@@ -4,18 +4,15 @@ namespace RollCall\Http\Requests\Organization;
 
 class DeleteOrganizationRequest extends GetOrganizationRequest
 {
-    public function authorize()
+    public function rules()
     {
-        // Admin has full access
-        if ($this->isAdmin()) {
-            return true;
-        }
+        return [];
+    }
 
-        // An org owner can delete an organization
-        if ($this->isOrganizationOwner($this->route('organization'))) {
-            return true;
-        }
-
-        return false;
+    protected function getAllowedOrgRoles()
+    {
+        return [
+            'owner'
+        ];
     }
 }

@@ -16,14 +16,13 @@ class AddMembersRequest extends FormRequest
             return true;
         }
 
-        $organization_id = $this->route('organization');
+        $org_role = $this->getOrganizationRole($this->route('organization'));
 
-
-        if ($this->isOrganizationOwner($organization_id)) {
+        if ($org_role == 'owner') {
             return true;
         }
 
-        if ($this->isOrganizationAdmin($organization_id)) {
+        if ($org_role == 'admin') {
             // Admin can only add members with 'member' role
             if (is_array(head($this->all()))) {
                 foreach($this->all() as $member)
