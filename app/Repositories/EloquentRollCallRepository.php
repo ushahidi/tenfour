@@ -9,42 +9,42 @@ class EloquentRollCallRepository implements RollCallRepository
 {
     public function all()
     {
-        $rollCalls = RollCall::all();
+        $roll_calls = RollCall::all();
 
-        return $rollCalls->toArray();
+        return $roll_calls->toArray();
     }
 
     public function filterByOrganizationId($org_id)
     {
-        $rollCalls = RollCall::where('organization_id', $org_id)
+        $roll_calls = RollCall::where('organization_id', $org_id)
                    ->get();
 
-        return $rollCalls->toArray();
+        return $roll_calls->toArray();
     }
 
     public function find($id)
     {
-        $rollCall = RollCall::find($id);
+        $roll_call = RollCall::find($id);
 
-        return $rollCall->toArray();
+        return $roll_call->toArray();
     }
 
     public function create(array $input)
     {
-        $rollCall = RollCall::create($input);
+        $roll_call = RollCall::create($input);
 
-        return $rollCall->toArray();
+        return $roll_call->toArray();
     }
 
     public function update(array $input, $id)
     {
         $input = array_only($input, ['status', 'sent']);
+        $roll_call = RollCall::findorFail($id);
 
-        $rollCall = RollCall::findorFail($id);
-        $rollCall->status = $input['status'];
-        $rollCall->sent = $input['sent'];
-        $rollCall->save();
-        return $rollCall->toArray();
+        $roll_call->sent = $input['sent'];
+        $roll_call->status = $input['status'];
+        $roll_call->save();
+        return $roll_call->toArray();
     }
 
     public function getContacts($id)
@@ -70,7 +70,7 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function addContacts(array $input, $id)
     {
-        $rollCall = RollCall::findorFail($id);
+        $roll_call = RollCall::findorFail($id);
         $ids = [];
         $contacts = [];
 
@@ -91,14 +91,14 @@ class EloquentRollCallRepository implements RollCallRepository
             $contacts = [$input];
         }
 
-        DB::transaction(function () use ($rollCall, $ids) {
-            $rollCall->contacts()->attach($ids);
+        DB::transaction(function () use ($roll_call, $ids) {
+            $roll_call->contacts()->attach($ids);
         });
 
-        return $rollCall->toArray() +
-        [
-            'contacts' => $contacts
-        ];
+        return $roll_call->toArray() +
+            [
+                'contacts' => $contacts
+            ];
     }
 
 
