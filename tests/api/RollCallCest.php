@@ -66,12 +66,22 @@ class RollCallCest
             ],
             'contacts' => [
                 [
-                    'id'   => 3,
-                    'contact' => 'linda@ushahidi.com'
+                    'id'      => 3,
+                    'contact' => 'linda@ushahidi.com',
+                    'user'    => [
+                        'id' => 2,
+                    ]
                 ],
                 [
                     'id'   => 4,
-                    'contact' => '0792999999'
+                    'contact' => '0792999999',
+                     'user'    => [
+                        'id' => 4,
+                    ]
+                ]
+            ]
+        ]);
+    }
                 ]
             ]
         ]);

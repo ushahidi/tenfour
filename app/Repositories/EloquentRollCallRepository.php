@@ -49,23 +49,15 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function getContacts($id)
     {
-        $rollCall = RollCall::findorFail($id);
+        return RollCall::with([
+            'contacts' => function($query) {
+                $query->select('contacts.id', 'contacts.contact', 'contacts.user_id');
+            }
+        ])
+            ->findOrFail($id)
+            ->toArray();
+    }
 
-        $contacts = RollCall::with('contacts')
-                  ->findOrFail($id)
-                  ->contacts()
-                  ->select('contacts.id', 'contacts.contact')
-                  ->get()
-                  ->toArray();
-
-        foreach($contacts as &$contact)
-        {
-            unset($contact['pivot']);
-        }
-
-        return $rollCall->toArray() + [
-            'contacts' => $contacts
-        ];
     }
 
     public function addContacts(array $input, $id)
