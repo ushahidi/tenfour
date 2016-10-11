@@ -42,13 +42,4 @@ class EloquentContactRepository implements ContactRepository
 
         return $contact->toArray();
     }
-
-    public function getUser($id)
-    {
-        $contact = Contact::findorFail($id);
-        return $contact->user()
-            ->get()
-            ->first()
-            ->toArray();
-    }
 }

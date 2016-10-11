@@ -21,8 +21,8 @@ class OrgMemberValidator
         $contact_id = $value;
 
         $rollcall = $this->roll_call_repo->find($roll_call_id);
-        $user = $this->contact_repo->getUser($contact_id);
+        $contact = $this->contact_repo->find($contact_id);
 
-        return $this->org_repo->isMember($user['id'], $rollcall['organization_id']);
+        return $this->org_repo->isMember($contact['user_id'], $rollcall['organization_id']);
     }
 }
