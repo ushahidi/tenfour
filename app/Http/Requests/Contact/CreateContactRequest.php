@@ -33,8 +33,7 @@ class CreateContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'      => 'required',
-            'can_receive'  => 'required',
+            'user_id'      => 'exists:users,id',
             'type'         => 'required',
             'contact'      => 'required'
         ];
