@@ -9,6 +9,7 @@ use RollCall\Traits\UserAccess;
 class CreateContactRequest extends FormRequest
 {
     use UserAccess;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,10 +19,6 @@ class CreateContactRequest extends FormRequest
     {
         // Admin has full permissions
         if ($this->isAdmin()) {
-            return true;
-        }
-        // An organization admin has access to all contacts for their organization
-        if ($this->isOrganizationAdmin($this->route('organization'))) {
             return true;
         }
 
