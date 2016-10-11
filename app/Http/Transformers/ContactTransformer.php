@@ -7,15 +7,18 @@ class ContactTransformer extends TransformerAbstract
 {
     public function transform(array $contact)
     {
-        return [
-            //'id'      => (int) $contact['id'],
-            'receive' => $contact['can_receive'],
-            'type' => $contact['type'],
-            'contact' => $contact['contact'],
-            'user' => [
-                'id'  => (int) $contact['user_id'],
-                'uri' => '/users/' . $contact['user_id'],
-            ],           
-        ];
+
+        $contact['id'] =  (int) $contact['id'];
+        $contact['uri'] = '/contacts/' . $contact['id'];
+
+        if (! isset($contact['user'])) {
+            $contact['user']['id'] = $contact['user_id'];
+        }
+
+        unset($contact['user_id']);
+        $contact['user']['id'] = (int) $contact['user']['id'];
+        $contact['user']['uri'] = '/users/' . $contact['user']['id'];
+
+        return $contact;
     }
 }
