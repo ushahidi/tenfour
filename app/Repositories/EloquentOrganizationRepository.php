@@ -13,10 +13,9 @@ class EloquentOrganizationRepository implements OrganizationRepository
 {
     public function all()
     {
-        return Organization::with([
-            'members' => function($query) {
-                $query->select('users.id', 'role')->where('role', 'owner');
-            }])
+        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->where('organization_user.role', 'owner')
             ->get()
             ->toArray();
     }
@@ -97,12 +96,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function find($id)
     {
-        $organization = Organization::with([
-            'members' => function($query) {
-                $query->select('users.id', 'role')->where('role', 'owner');
-            }])->findOrFail($id);
-
-        return $organization->toArray();
+        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->where('role', 'owner')
+            ->findOrFail($id)
+            ->toArray();
     }
 
     public function delete($id)
