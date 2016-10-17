@@ -3,6 +3,7 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
 use RollCall\Models\User;
+use RollCall\Models\Contact;
 use RollCall\Contracts\Repositories\OrganizationRepository;
 use DB;
 
@@ -118,19 +119,57 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $organization->toArray();
     }
 
+    public function getMemberContacts($id, $user_id)
     {
         $organization = Organization::with([
             'members' => function($query) use ($user_id) {
                 $query->select('users.id')->where('users.id', $user_id);
             }])->findOrFail($id);
 
-
-
-
-
+        if ($organization->members->isEmpty()) {
+            throw (new ModelNotFoundException)->setModel('User');
         }
 
+        $contacts  = Contact::where('user_id', $user_id)->get();
 
+        if ($contacts->isEmpty()) {
+            throw (new ModelNotFoundException)->setModel('Contact');
+        }
+
+        $organization = $organization->toArray();
+        $organization['members'][0]['contacts'] = $contacts->toArray();
+
+        return $organization;
+    }
+
+    public function addContacts(array $input, $id, $user_id)
+    {
+        $organization = Organization::with([
+            'members' => function($query) use ($user_id) {
+                $query->select('users.id')->where('users.id', $user_id);
+            }])->findOrFail($id);
+
+        if ($organization->members->isEmpty()) {
+            throw (new ModelNotFoundException)->setModel('User');
+        }
+
+        $contacts = [];
+
+        if (is_array(head($input))) {
+            DB::transaction(function () use ($input, &$contacts, $user_id) {
+                foreach($input as $contact)
+                {
+                    array_push($contacts, $this->addContact($contact, $user_id));
+                }
+            });
+        } else {
+            array_push($contacts, $this->addContact($input, $user_id));
+        }
+
+        $organization = $organization->toArray();
+        $organization['members'][0]['contacts'] = $contacts;
+
+        return $organization;
     }
 
     public function addMembers(array $input, $id)
@@ -219,7 +258,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->count();
     }
 
+    protected function addContact($input, $user_id)
     {
+        $input['can_receive'] = 1;
+        $input['user_id'] = $user_id;
 
+        return Contact::create($input)->toArray();
     }
 }

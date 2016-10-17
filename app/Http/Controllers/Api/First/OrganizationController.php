@@ -8,6 +8,7 @@ use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\AddMembersRequest;
+use RollCall\Http\Requests\Organization\AddMemberContactsRequest;
 use RollCall\Http\Requests\Organization\DeleteMemberRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationMemberRequest;
@@ -79,6 +80,18 @@ class OrganizationController extends ApiController
     }
 
     /**
+     * Add member contacts
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function addContacts(AddMemberContactsRequest $request, $organization_id, $user_id)
+    {
+        return $this->response->item($this->organizations->addContacts($request->all(), $organization_id, $user_id),
+                                     new OrganizationTransformer, 'organization');
+    }
+
+    /**
      * List members of an organization
      *
      * @param Request $request
@@ -90,6 +103,15 @@ class OrganizationController extends ApiController
                                            new OrganizationTransformer, 'organization');
     }
 
+    /**
+     * List contacts of an organization member
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function listMemberContacts(GetOrganizationRequest $request, $organization_id, $user_id)
+    {
+        return $this->response->item($this->organizations->getMemberContacts($organization_id, $user_id),
                                            new OrganizationTransformer, 'organization');
     }
 
