@@ -39,6 +39,7 @@ $api->version($version, [
     $api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
     $api->post($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@addMembers']);
     $api->delete($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@deleteMember']);
+    $api->put($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@updateMember']);
     $api->post($base.'organizations/{organization}/members/{member}/contacts', ['uses' => 'OrganizationController@addContacts']);
     $api->get($base.'organizations/{organization}/members/{member}/contacts', ['uses' => 'OrganizationController@listMemberContacts']);
     $api->get($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@listMembers']);
