@@ -118,7 +118,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function getMemberContacts($id, $user_id)
     {
         $organization = Organization::with([
-            'members' => function($query) use ($user_id) {
+            'members' => function ($query) use ($user_id) {
                 $query->select('users.id')->where('users.id', $user_id);
             }])->findOrFail($id);
 
@@ -141,7 +141,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function addContacts(array $input, $id, $user_id)
     {
         $organization = Organization::with([
-            'members' => function($query) use ($user_id) {
+            'members' => function ($query) use ($user_id) {
                 $query->select('users.id')->where('users.id', $user_id);
             }])->findOrFail($id);
 
@@ -213,7 +213,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function getMembers($id)
     {
         return Organization::with([
-            'members' => function($query) {
+            'members' => function ($query) {
                 $query->select('users.id', 'name', 'users.email', 'role');
         }])
             ->findOrFail($id)
@@ -223,7 +223,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function deleteMember($id, $user_id)
     {
         $organization = Organization::with([
-            'members' => function($query) use ($user_id) {
+            'members' => function ($query) use ($user_id) {
                 $query->select('users.id', 'users.name')->where('users.id', $user_id);
             }])->findOrFail($id);
 
