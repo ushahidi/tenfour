@@ -7,19 +7,10 @@ class UpdateOrganizationRequest extends GetOrganizationRequest
 {
     public function rules()
     {
-        $rules = [
+        return [
             'name' => 'required',
             'url'  => 'required',
         ];
-
-        if ($this->has('members')) {
-            foreach($this->input('members') as $key => $val)
-            {
-                $rules['members.'.$key.'.role'] = 'required|in:member,admin,owner';
-            }
-        }
-
-        return $rules;
     }
 
     protected function getAllowedOrgRoles()
