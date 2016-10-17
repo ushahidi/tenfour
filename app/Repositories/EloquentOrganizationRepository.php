@@ -166,7 +166,6 @@ class EloquentOrganizationRepository implements OrganizationRepository
         ];
     }
 
-    public function listMembers($id)
     {
         $organization = Organization::
                       with(['users' => function($query) {
@@ -193,6 +192,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         ];
     }
 
+    public function getMembers($id)
     public function deleteMember($id, $user_id)
     {
         $organization = Organization::findOrFail($id);

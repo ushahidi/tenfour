@@ -86,7 +86,10 @@ class OrganizationController extends ApiController
      */
     public function listMembers(GetOrganizationRequest $request, $organization_id)
     {
-        return $this->response->item($this->organizations->listMembers($organization_id),
+        return $this->response->item($this->organizations->getMembers($organization_id),
+                                           new OrganizationTransformer, 'organization');
+    }
+
                                            new OrganizationTransformer, 'organization');
     }
 

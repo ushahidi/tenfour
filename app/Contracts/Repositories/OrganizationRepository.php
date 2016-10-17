@@ -30,7 +30,8 @@ interface OrganizationRepository extends CrudRepository
      *
      * @return array
      */
-    public function listMembers($organization_id);
+    public function getMembers($organization_id);
+
 
     /**
      * Delete member from an organization
