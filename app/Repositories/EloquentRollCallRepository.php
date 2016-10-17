@@ -10,22 +10,21 @@ class EloquentRollCallRepository implements RollCallRepository
 {
     public function all()
     {
-        $roll_calls = RollCall::all();
-
-        return $roll_calls->toArray();
+        return RollCall::all()
+            ->toArray();
     }
 
     public function filterByOrganizationId($org_id)
     {
-        $roll_calls = RollCall::where('organization_id', $org_id)
-                   ->get();
-
-        return $roll_calls->toArray();
+        return RollCall::where('organization_id', $org_id)
+            ->get()
+            ->toArray();
     }
 
     public function find($id)
     {
-        $roll_call = RollCall::find($id);
+        $roll_call = RollCall::findOrFail($id)
+                   ->toArray();
 
         return $roll_call->toArray();
     }
@@ -51,7 +50,7 @@ class EloquentRollCallRepository implements RollCallRepository
     public function getContacts($id)
     {
         return RollCall::with([
-            'contacts' => function($query) {
+            'contacts' => function ($query) {
                 $query->select('contacts.id', 'contacts.contact', 'contacts.user_id');
             }
         ])
@@ -62,7 +61,7 @@ class EloquentRollCallRepository implements RollCallRepository
     public function getReplies($id, $reply_id = null)
     {
         return RollCall::with([
-            'replies' => function($query) use ($reply_id) {
+            'replies' => function ($query) use ($reply_id) {
                 if ($reply_id) {
                     $query->where('replies.id', $reply_id);
                 }
