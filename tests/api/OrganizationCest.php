@@ -45,7 +45,7 @@ class OrganizationCest
      */
     public function filterOrganizationsByUser(ApiTester $I)
     {
-        $endpoint = $this->endpoint . '/?user_id=1';
+        $endpoint = $this->endpoint . '/?user=1';
         $I->wantTo('Get a list of all organizations that a user id belongs to');
         $I->amAuthenticatedAsUser();
         $I->sendGET($endpoint);

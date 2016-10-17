@@ -23,11 +23,9 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function filterByUserId($user_id)
     {
-        return Organization::with([
-            'members' => function($query) use ($user_id) {
-                $query->select('users.id', 'role')
-                    ->where('user_id', $user_id);
-            }])
+        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->where('organization_user.user_id', $user_id)
             ->get()
             ->toArray();
     }

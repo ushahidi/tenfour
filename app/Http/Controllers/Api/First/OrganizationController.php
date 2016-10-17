@@ -37,8 +37,8 @@ class OrganizationController extends ApiController
 
         if ($request->query('user') === 'me') {
             $user_id = $this->auth->user()['id'];
-        } else if ($request->query('user_id')) {
-            $user_id = $request->query('user_id');
+        } else {
+            $user_id = $request->query('user');
         }
 
         if ($user_id) {
