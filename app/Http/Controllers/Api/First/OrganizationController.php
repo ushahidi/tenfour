@@ -10,6 +10,7 @@ use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\AddMembersRequest;
 use RollCall\Http\Requests\Organization\DeleteMemberRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
+use RollCall\Http\Requests\Organization\UpdateOrganizationMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Response;
@@ -116,7 +117,7 @@ class OrganizationController extends ApiController
     }
 
     /**
-    * Update organization details
+     * Update organization details
      *
      * @param Request $request
      * @param int $id
@@ -126,6 +127,20 @@ class OrganizationController extends ApiController
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
         $organization = $this->organizations->update($request->all(), $organization_id);
+        return $this->response->item($organization, new OrganizationTransformer, 'organization');
+    }
+
+    /**
+     * Update organization member
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function updateMember(UpdateOrganizationMemberRequest $request, $organization_id, $user_id)
+    {
+        $organization = $this->organizations->updateMember($request->all(), $organization_id, $user_id);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 
