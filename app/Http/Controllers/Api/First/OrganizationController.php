@@ -8,9 +8,10 @@ use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\AddMembersRequest;
+use RollCall\Http\Requests\Organization\AddMemberContactsRequest;
 use RollCall\Http\Requests\Organization\DeleteMemberRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
-use RollCall\Http\Requests\Organization\ListMembersRequest;
+use RollCall\Http\Requests\Organization\UpdateOrganizationMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Response;
@@ -60,7 +61,7 @@ class OrganizationController extends ApiController
         $organization = $this->organizations->create([
                  'name'    => $request->input('name'),
                  'url'     => $request->input('url'),
-                 'user_id' => $request->input('user_id', $this->auth->user()['id']),
+                 'user_id' => $request->input('user', $this->auth->user()['id']),
         ]);
 
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
@@ -79,6 +80,18 @@ class OrganizationController extends ApiController
     }
 
     /**
+     * Add member contacts
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function addContacts(AddMemberContactsRequest $request, $organization_id, $user_id)
+    {
+        return $this->response->item($this->organizations->addContacts($request->all(), $organization_id, $user_id),
+                                     new OrganizationTransformer, 'organization');
+    }
+
+    /**
      * List members of an organization
      *
      * @param Request $request
@@ -86,7 +99,19 @@ class OrganizationController extends ApiController
      */
     public function listMembers(GetOrganizationRequest $request, $organization_id)
     {
-        return $this->response->item($this->organizations->listMembers($organization_id),
+        return $this->response->item($this->organizations->getMembers($organization_id),
+                                           new OrganizationTransformer, 'organization');
+    }
+
+    /**
+     * List contacts of an organization member
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function listMemberContacts(GetOrganizationRequest $request, $organization_id, $user_id)
+    {
+        return $this->response->item($this->organizations->getMemberContacts($organization_id, $user_id),
                                            new OrganizationTransformer, 'organization');
     }
 
@@ -117,7 +142,7 @@ class OrganizationController extends ApiController
     }
 
     /**
-    * Update organization details
+     * Update organization details
      *
      * @param Request $request
      * @param int $id
@@ -127,6 +152,20 @@ class OrganizationController extends ApiController
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
         $organization = $this->organizations->update($request->all(), $organization_id);
+        return $this->response->item($organization, new OrganizationTransformer, 'organization');
+    }
+
+    /**
+     * Update organization member
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function updateMember(UpdateOrganizationMemberRequest $request, $organization_id, $user_id)
+    {
+        $organization = $this->organizations->updateMember($request->all(), $organization_id, $user_id);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 

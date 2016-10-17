@@ -25,17 +25,9 @@ class GetRollCallRequest extends FormRequest
         $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
                  ->find($this->route('rollcall'));
 
-        // Organization admins and owners have access to roll calls
-        if ($this->isOrganizationAdmin($rollCall['organization_id'])) {
-            return true;
-        }
+        $org_role = $this->getOrganizationRole($rollCall['organization_id']);
 
-        if ($this->isOrganizationAdmin($rollCall['organization_id'])) {
-            return true;
-        }
-
-
-        return false;
+        return in_array($org_role, $this->getAllowedOrgRoles());
     }
 
     /**
@@ -47,6 +39,13 @@ class GetRollCallRequest extends FormRequest
     {
         return [
             //
+        ];
+    }
+
+    protected function getAllowedOrgRoles()
+    {
+        return [
+            'owner', 'admin'
         ];
     }
 }

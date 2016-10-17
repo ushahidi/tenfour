@@ -21,16 +21,9 @@ class CreateRollCallRequest extends FormRequest
             return true;
         }
 
-        // An organization owner/ admin can send rollcalls
-        if ($this->isOrganizationAdmin($this->input('organization'))) {
-            return true;
-        }
+        $org_role = $this->getOrganizationRole($this->input('organization'));
 
-        if ($this->isOrganizationOwner($this->input('organization'))) {
-            return true;
-        }
-
-        return false;
+        return in_array($org_role, $this->getAllowedOrgRoles());
     }
 
     /**
@@ -43,6 +36,13 @@ class CreateRollCallRequest extends FormRequest
         return [
             'message'         => 'required',
             'organization' => 'required|integer'
+        ];
+    }
+
+    protected function getAllowedOrgRoles()
+    {
+        return [
+            'owner', 'admin'
         ];
     }
 }

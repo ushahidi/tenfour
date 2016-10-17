@@ -3,9 +3,15 @@
 namespace RollCall\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class ApiServiceProvider extends ServiceProvider
 {
+    public function boot()
+    {
+        Validator::extend('org_contact', 'RollCall\Validators\OrgMemberValidator@validateContact');
+    }
+
     public function register()
     {
         $this->app->bind('RollCall\Contracts\Repositories\UserRepository',

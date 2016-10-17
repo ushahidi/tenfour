@@ -71,3 +71,7 @@ INSERT INTO roll_calls (id, message, organization_id, status, sent) VALUES ('1',
 -- Add test contacts
 INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('3', '1');
 INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('4', '1');
+
+-- Add test replies
+INSERT INTO replies (id, message, contact_id, roll_call_id) VALUES ('1', 'I am OK', '1', '1');
+INSERT INTO replies (id, message, contact_id, roll_call_id) VALUES ('2', 'I am OK', '4', '1');

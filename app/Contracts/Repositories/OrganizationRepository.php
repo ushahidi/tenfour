@@ -24,13 +24,33 @@ interface OrganizationRepository extends CrudRepository
     public function addMembers(array $input, $organization_id);
 
     /**
-     * List members to an organization
+     * Add organization member contacts
+     *
+     * @param array $input
+     * @param int $organization_id
+     *
+     * @return array
+     */
+    public function addContacts(array $input, $organization_id, $user_id);
+
+    /**
+     * Get members of an organization
      *
      * @param int $organization_id
      *
      * @return array
      */
-    public function listMembers($organization_id);
+    public function getMembers($organization_id);
+
+    /**
+     * Get contacts of an organization member
+     *
+     * @param int $organization_id
+     * @param int $user_id
+     *
+     * @return array
+     */
+    public function getMemberContacts($organization_id, $user_id);
 
     /**
      * Delete member from an organization

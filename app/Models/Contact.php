@@ -22,7 +22,7 @@ class Contact extends Model
 
     /**
      *
-     * Rollcalls that belong to the contac.t
+     * Rollcalls that belong to the contact
      */
     public function rollcalls()
     {
@@ -35,5 +35,10 @@ class Contact extends Model
     public function user()
     {
         return $this->belongsTo('RollCall\Models\User');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany('RollCall\Models\Reply');
     }
 }

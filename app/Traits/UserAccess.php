@@ -26,15 +26,8 @@ trait UserAccess
         return in_array('admin', $roles);
     }
 
-    protected function isOrganizationOwner($org_id)
+    protected function getOrganizationRole($org_id)
     {
-        $role = $this->organizations->getMemberRole($org_id, $this->auth->user()['id']);
-        return $role === 'owner';
-    }
-
-    protected function isOrganizationAdmin($org_id)
-    {
-        $role = $this->organizations->getMemberRole($org_id, $this->auth->user()['id']);
-        return $role === 'admin';
+        return $this->organizations->getMemberRole($org_id, $this->auth->user()['id']);
     }
 }

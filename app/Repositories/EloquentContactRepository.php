@@ -8,9 +8,13 @@ class EloquentContactRepository implements ContactRepository
 {
     public function all()
     {
-        $contacts = Contact::all();
-
-        return $contacts->toArray();
+        return Contact::with([
+            'user' => function($query) {
+                $query->select('users.id', 'users.name', 'users.email');
+            }
+        ])
+            ->get()
+            ->toArray();
     }
 
     public function update(array $input, $id)
@@ -30,9 +34,13 @@ class EloquentContactRepository implements ContactRepository
 
     public function find($id)
     {
-        $contact = Contact::find($id);
-
-        return $contact->toArray();
+        return Contact::with([
+            'user' => function($query) {
+                $query->select('users.id', 'users.name', 'users.email');
+            }
+        ])
+            ->findOrFail($id)
+            ->toArray();
     }
 
     public function delete($id)
@@ -41,14 +49,5 @@ class EloquentContactRepository implements ContactRepository
 		$contact->delete();
 
         return $contact->toArray();
-    }
-
-    public function getUser($id)
-    {
-        $contact = Contact::findorFail($id);
-        return $contact->user()
-            ->get()
-            ->first()
-            ->toArray();
     }
 }

@@ -15,18 +15,46 @@ class ContactCest
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            ['receive' => 1, 
-             'type' => 'phone',
-             'contact' => '0721674180',
-             'user' => ['id' => 1],
-            ],
-            ['receive' => 0,
-             'type' => 'email',
-             'contact' => 'linda@ushahidi.com',
-             'user' => ['id' => 2]
+        $I->seeResponseContainsJson([
+            'contacts' => [
+                [
+                    'can_receive' => 1,
+                    'type' => 'phone',
+                    'contact' => '0721674180',
+                    'user' => [
+                        'id'   => 1,
+                        'name' => 'Test user'
+                    ],
+                ],
+                [
+                    'can_receive' => 1,
+                    'type' => 'email',
+                    'contact' => 'test@ushahidi.com',
+                    'user' => [
+                        'id'   => 1,
+                        'name' => 'Test user'
+                    ]
+                ],
+                [
+                    'can_receive' => 0,
+                    'type' => 'email',
+                    'contact' => 'linda@ushahidi.com',
+                    'user' => [
+                        'id'   => 2,
+                        'name' => 'Admin user'
+                    ]
+                ],
+                [
+                    'can_receive' => 0,
+                    'type' => 'phone',
+                    'contact' => '0792999999',
+                    'user' => [
+                        'id'   => 4,
+                        'name' => 'Org owner'
+                    ]
+                ]
             ]
-        );
+        ]);
     }
     /*
      * Create contact as admin
@@ -38,7 +66,7 @@ class ContactCest
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'can_receive' => 1, 
+            'can_receive' => 1,
             'type' => 'email',
             'contact' => 'test@ushahidi.com',
             'user_id' => 3
@@ -47,10 +75,12 @@ class ContactCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'receive' => 1, 
+                'can_receive' => 1,
                 'type' => 'email',
                 'contact' => 'test@ushahidi.com',
-                'user' => ['id' => 3]
+                'user' => [
+                    'id' => 3
+                ]
             ]
         ]);
     }
@@ -74,10 +104,12 @@ class ContactCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'receive' => 0, 
+                'can_receive' => 0,
                 'type' => 'email',
                 'contact' => 'test@ushahidi.com',
-                'user' => ['id' => 3]
+                'user' => [
+                    'id' => 3
+                ]
             ]
         ]);
     }
@@ -102,7 +134,7 @@ class ContactCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'receive' => 0, 
+                'can_receive' => 0,
                 'type' => 'email',
                 'contact' => 'test@ushahidi.com',
                 'user' => ['id' => 3]

@@ -16,14 +16,13 @@ class AddMembersRequest extends FormRequest
             return true;
         }
 
-        $organization_id = $this->route('organization');
+        $org_role = $this->getOrganizationRole($this->route('organization'));
 
-
-        if ($this->isOrganizationOwner($organization_id)) {
+        if ($org_role == 'owner') {
             return true;
         }
 
-        if ($this->isOrganizationAdmin($organization_id)) {
+        if ($org_role == 'admin') {
             // Admin can only add members with 'member' role
             if (is_array(head($this->all()))) {
                 foreach($this->all() as $member)
@@ -43,8 +42,8 @@ class AddMembersRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id'   => 'required|exists:users,id',
-            'role' => 'in:member,admin',
+            'email' => 'email',
+            'role'  => 'in:member,admin',
         ];
 
         // Validate request with multiple members
@@ -53,7 +52,7 @@ class AddMembersRequest extends FormRequest
 
             foreach($this->all() as $key => $val)
             {
-                $members[$key.'.id'] = $rules['id'];
+                $members[$key.'.email'] = $rules['email'];
                 $members[$key.'.role'] = $rules['role'];
             }
 

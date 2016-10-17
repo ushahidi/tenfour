@@ -28,13 +28,15 @@ class DeleteMemberRequest extends FormRequest
             return true;
         }
 
-        if ($this->isOrganizationOwner($organization_id)) {
+        $org_role = $this->getOrganizationRole($organization_id);
+
+        if ($org_role == 'owner') {
             return true;
         }
 
-        if ($this->isOrganizationAdmin($organization_id)) {
+        if ($org_role == 'admin') {
             // Admin can only delete users with 'member' role
-            if ($member_role != 'member') {
+            if (in_array($member_role, ['admin', 'owner'])) {
                 return false;
             }
 
