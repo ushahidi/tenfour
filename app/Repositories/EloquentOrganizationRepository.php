@@ -13,21 +13,18 @@ class EloquentOrganizationRepository implements OrganizationRepository
 {
     public function all()
     {
-        return Organization::with([
-            'members' => function($query) {
-                $query->select('users.id', 'role')->where('role', 'owner');
-            }])
+        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->where('organization_user.role', 'owner')
             ->get()
             ->toArray();
     }
 
     public function filterByUserId($user_id)
     {
-        return Organization::with([
-            'members' => function($query) use ($user_id) {
-                $query->select('users.id', 'role')
-                    ->where('user_id', $user_id);
-            }])
+        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->where('organization_user.user_id', $user_id)
             ->get()
             ->toArray();
     }
@@ -99,12 +96,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function find($id)
     {
-        $organization = Organization::with([
-            'members' => function($query) {
-                $query->select('users.id', 'role')->where('role', 'owner');
-            }])->findOrFail($id);
-
-        return $organization->toArray();
+        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->where('role', 'owner')
+            ->findOrFail($id)
+            ->toArray();
     }
 
     public function delete($id)
@@ -122,7 +118,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function getMemberContacts($id, $user_id)
     {
         $organization = Organization::with([
-            'members' => function($query) use ($user_id) {
+            'members' => function ($query) use ($user_id) {
                 $query->select('users.id')->where('users.id', $user_id);
             }])->findOrFail($id);
 
@@ -145,7 +141,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function addContacts(array $input, $id, $user_id)
     {
         $organization = Organization::with([
-            'members' => function($query) use ($user_id) {
+            'members' => function ($query) use ($user_id) {
                 $query->select('users.id')->where('users.id', $user_id);
             }])->findOrFail($id);
 
@@ -217,7 +213,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function getMembers($id)
     {
         return Organization::with([
-            'members' => function($query) {
+            'members' => function ($query) {
                 $query->select('users.id', 'name', 'users.email', 'role');
         }])
             ->findOrFail($id)
@@ -227,7 +223,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function deleteMember($id, $user_id)
     {
         $organization = Organization::with([
-            'members' => function($query) use ($user_id) {
+            'members' => function ($query) use ($user_id) {
                 $query->select('users.id', 'users.name')->where('users.id', $user_id);
             }])->findOrFail($id);
 

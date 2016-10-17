@@ -21,7 +21,7 @@ class GetOrganizationsRequest extends GetOrganizationRequest
             return true;
         }
 
-        if ($this->isSelf($this->query('user_id'))) {
+        if ($this->isSelf($this->query('user'))) {
             return true;
         }
 
