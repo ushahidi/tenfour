@@ -21,7 +21,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ]
-            ]
+            ],
         ]);
     }
 
@@ -146,7 +146,9 @@ class RollCallCest
                 'status'  => 'pending',
                 'organization' => [
                     'id' => 2
-                ]
+                ],
+                'sent_count'  => 2,
+                'reply_count' => 2,
             ]
          );
     }
@@ -238,7 +240,6 @@ class RollCallCest
         ]);
     }
 
-
     /*
      * Add contacts to roll call
      *
@@ -277,8 +278,6 @@ class RollCallCest
             ]
         );
     }
-
-
 
     /*
      * Create a rollcall as a registered member
