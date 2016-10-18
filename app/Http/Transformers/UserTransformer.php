@@ -7,10 +7,16 @@ class UserTransformer extends TransformerAbstract
 {
     public function transform(array $user)
     {
-        return [
-            'id'      => (int) $user['id'],
-            'name' => $user['name'],
-            'email' => $user['email']            
-        ];
+        // Format contacts if present
+        if (isset($user['contacts'])) {
+            foreach($user['contacts'] as &$contact)
+            {
+                $contact['id'] = (int) $contact['id'];
+                $contact['uri'] = '/contact/' . $contact['id'];
+                unset($contact['user_id']);
+            }
+        }
+
+        return $user;
     }
 }

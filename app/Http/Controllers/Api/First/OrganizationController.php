@@ -14,6 +14,7 @@ use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
+use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
 
 class OrganizationController extends ApiController
@@ -104,15 +105,15 @@ class OrganizationController extends ApiController
     }
 
     /**
-     * List contacts of an organization member
+     * Find a member
      *
      * @param Request $request
      * @return Response
      */
-    public function listMemberContacts(GetOrganizationRequest $request, $organization_id, $user_id)
+    public function findMember(GetOrganizationRequest $request, $organization_id, $user_id)
     {
-        return $this->response->item($this->organizations->getMemberContacts($organization_id, $user_id),
-                                           new OrganizationTransformer, 'organization');
+        return $this->response->item($this->organizations->getMember($organization_id, $user_id),
+                                           new UserTransformer, 'user');
     }
 
     /**

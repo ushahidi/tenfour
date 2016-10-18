@@ -115,27 +115,21 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $organization->toArray();
     }
 
-    public function getMemberContacts($id, $user_id)
+    public function getMember($id, $user_id)
     {
         $organization = Organization::with([
             'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
+                $query->select('users.id')
+                    ->where('users.id', $user_id);
             }])->findOrFail($id);
 
         if ($organization->members->isEmpty()) {
             throw (new ModelNotFoundException)->setModel('User');
         }
 
-        $contacts  = Contact::where('user_id', $user_id)->get();
-
-        if ($contacts->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('Contact');
-        }
-
-        $organization = $organization->toArray();
-        $organization['members'][0]['contacts'] = $contacts->toArray();
-
-        return $organization;
+        return User::with('contacts')
+              ->find($user_id)
+              ->toArray();
     }
 
     public function addContacts(array $input, $id, $user_id)
