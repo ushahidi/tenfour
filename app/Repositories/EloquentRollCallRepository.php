@@ -65,6 +65,8 @@ class EloquentRollCallRepository implements RollCallRepository
     {
         return RollCall::with([
             'replies' => function ($query) use ($reply_id) {
+                $query->with('contact.user');
+
                 if ($reply_id) {
                     $query->where('replies.id', $reply_id);
                 }

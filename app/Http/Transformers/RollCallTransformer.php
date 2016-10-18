@@ -29,16 +29,21 @@ class RollCallTransformer extends TransformerAbstract
         if (isset($roll_call['replies'])) {
             foreach ($roll_call['replies'] as &$reply)
             {
-                $reply['url'] = '/rollcalls/' . $roll_call['id'] . '/replies/' . $reply['id'];
+                $reply['uri'] = '/rollcalls/' . $roll_call['id'] . '/replies/' . $reply['id'];
 
                 // Format contact
                 $reply['contact']['id'] = (int) $reply['contact_id'];
                 $reply['contact']['uri'] = '/contacts/' . $reply['contact_id'];
                 unset($reply['contact_id']);
                 unset($reply['roll_call_id']);
+
+                // Format user
+                if (isset($reply['contact']['user'])) {
+                    $reply['contact']['user']['id'] = (int) $reply['contact']['user']['id'];
+                    $reply['contact']['user']['uri'] = '/users/' . $reply['contact']['user']['id'];
+                }
             }
         }
-
 
         $roll_call['organization'] = [
             'id'  => (int) $roll_call['organization_id'],

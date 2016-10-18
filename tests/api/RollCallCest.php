@@ -102,13 +102,21 @@ class RollCallCest
                     'message'  => 'I am OK',
                     'contact'  => [
                         'id'   => 1,
+                        'user' => [
+                            'id' => 1,
+                            'name' => 'Test user'
+                        ]
                     ]
                 ],
                 [
                     'id'       => 2,
                     'message'  => 'I am OK',
                     'contact'  => [
-                        'id'      => 4,
+                        'id' => 4,
+                        'user' => [
+                            'id' => 4,
+                            'name' => 'Org owner'
+                        ]
                     ]
                 ]
             ]
