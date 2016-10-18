@@ -119,7 +119,9 @@ class RollCallCest
                         ]
                     ]
                 ]
-            ]
+            ],
+            'sent_count'  => 2,
+            'reply_count' => 2,
         ]);
     }
 
@@ -154,9 +156,7 @@ class RollCallCest
                 'status'  => 'pending',
                 'organization' => [
                     'id' => 2
-                ],
-                'sent_count'  => 2,
-                'reply_count' => 2,
+                ]
             ]
          );
     }
