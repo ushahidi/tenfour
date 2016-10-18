@@ -371,34 +371,31 @@ class OrganizationCest
     }
 
     /*
-     * Add member contacts to an organization as org admin
+     * Get organization member
      *
      */
-    public function getMemberContactsAsOrgAdmin(ApiTester $I)
+    public function getMemberAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
         $user_id = 1;
         $I->wantTo('Add member contacts as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendGET($this->endpoint."/$id/members/$user_id/contacts");
+        $I->sendGET($this->endpoint."/$id/members/$user_id");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'id'       => 1,
-                    'contacts' => [
-                        [
-                            'contact' => '0721674180',
-                            'type'    => 'phone',
-                        ],
-                        [
-                            'contact' => 'test@ushahidi.com',
-                            'type'    => 'email',
-                        ]
+            'user' => [
+                'name' => 'Test user',
+                'email' => 'test@ushahidi.com',
+                'contacts' => [
+                    [
+                        'contact' => '0721674180',
+                        'type'    => 'phone',
+                    ],
+                    [
+                        'contact' => 'test@ushahidi.com',
+                        'type'    => 'email',
                     ]
                 ]
             ]
