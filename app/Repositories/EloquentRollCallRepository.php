@@ -31,15 +31,16 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function find($id)
     {
-        return RollCall::findOrFail($id)
+        $roll_call = RollCall::findOrFail($id)
                    ->toArray();
+
+        return $this->addCounts($roll_call);
     }
 
     public function create(array $input)
     {
-        $roll_call = RollCall::create($input);
-
-        return $roll_call->toArray();
+        return RollCall::create($input)
+            ->toArray();
     }
 
     public function update(array $input, $id)
@@ -78,10 +79,7 @@ class EloquentRollCallRepository implements RollCallRepository
             ->findOrFail($id)
             ->toArray();
 
-        $roll_call['reply_count'] = $this->getReplyCounts($id);
-        $roll_call['sent_count'] = $this->getSentCounts($id);
-
-        return $roll_call;
+        return $this->addCounts($roll_call);
     }
 
     public function addContacts(array $input, $id)
@@ -151,5 +149,13 @@ class EloquentRollCallRepository implements RollCallRepository
         return DB::table('contact_roll_call')
             ->where('roll_call_id', $id)
             ->count();
+    }
+
+    protected function addCounts($roll_call)
+    {
+        $roll_call['reply_count'] = $this->getReplyCounts($roll_call['id']);
+        $roll_call['sent_count'] = $this->getSentCounts($roll_call['id']);
+
+        return $roll_call;
     }
 }
