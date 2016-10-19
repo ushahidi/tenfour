@@ -8,30 +8,39 @@ use DB;
 
 class EloquentRollCallRepository implements RollCallRepository
 {
-    public function all()
+    public function all($org_id = null)
     {
-        return RollCall::all()
-            ->toArray();
-    }
+        $roll_calls = null;
+        if ($org_id) {
+            $roll_calls =  RollCall::where('organization_id', $org_id)
+                        ->get()
+                        ->toArray();
+        } else {
+            $roll_calls = RollCall::all()
+                        ->toArray();
+        }
 
-    public function filterByOrganizationId($org_id)
-    {
-        return RollCall::where('organization_id', $org_id)
-            ->get()
-            ->toArray();
+        // Add reply and sent counts
+        foreach($roll_calls as &$roll_call)
+        {
+            $roll_call = $this->addCounts($roll_call);
+        }
+
+        return $roll_calls;
     }
 
     public function find($id)
     {
-        return RollCall::findOrFail($id)
+        $roll_call = RollCall::findOrFail($id)
                    ->toArray();
+
+        return $this->addCounts($roll_call);
     }
 
     public function create(array $input)
     {
-        $roll_call = RollCall::create($input);
-
-        return $roll_call->toArray();
+        return RollCall::create($input)
+            ->toArray();
     }
 
     public function update(array $input, $id)
@@ -70,10 +79,7 @@ class EloquentRollCallRepository implements RollCallRepository
             ->findOrFail($id)
             ->toArray();
 
-        $roll_call['reply_count'] = $this->getReplyCounts($id);
-        $roll_call['sent_count'] = $this->getSentCounts($id);
-
-        return $roll_call;
+        return $this->addCounts($roll_call);
     }
 
     public function addContacts(array $input, $id)
@@ -143,5 +149,13 @@ class EloquentRollCallRepository implements RollCallRepository
         return DB::table('contact_roll_call')
             ->where('roll_call_id', $id)
             ->count();
+    }
+
+    protected function addCounts($roll_call)
+    {
+        $roll_call['reply_count'] = $this->getReplyCounts($roll_call['id']);
+        $roll_call['sent_count'] = $this->getSentCounts($roll_call['id']);
+
+        return $roll_call;
     }
 }

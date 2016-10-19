@@ -30,11 +30,7 @@ class RollCallController extends ApiController
      */
     public function all(GetRollCallsRequest $request)
     {
-        if ($request->query('organization')) {
-            $roll_calls = $this->roll_calls->filterByOrganizationId($request->query('organization'));
-        } else {
-            $roll_calls = $this->roll_calls->all();
-        }
+        $roll_calls = $this->roll_calls->all($request->query('organization'));
 
         return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
     }

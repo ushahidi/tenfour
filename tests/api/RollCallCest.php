@@ -20,7 +20,9 @@ class RollCallCest
                 'message' => 'Westgate under siege',
                 'organization' => [
                     'id' => 2
-                ]
+                ],
+                'sent_count'  => 2,
+                'reply_count' => 2,
             ],
         ]);
     }
@@ -42,7 +44,9 @@ class RollCallCest
                 'message' => 'Westgate under siege',
                 'organization' => [
                     'id' => 2
-                ]
+                ],
+                'sent_count'  => 2,
+                'reply_count' => 2,
             ]
         ]);
     }
