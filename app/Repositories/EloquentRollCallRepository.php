@@ -8,17 +8,25 @@ use DB;
 
 class EloquentRollCallRepository implements RollCallRepository
 {
-    public function all()
+    public function all($org_id = null)
     {
-        return RollCall::all()
-            ->toArray();
-    }
+        $roll_calls = null;
+        if ($org_id) {
+            $roll_calls =  RollCall::where('organization_id', $org_id)
+                        ->get()
+                        ->toArray();
+        } else {
+            $roll_calls = RollCall::all()
+                        ->toArray();
+        }
 
-    public function filterByOrganizationId($org_id)
-    {
-        return RollCall::where('organization_id', $org_id)
-            ->get()
-            ->toArray();
+        // Add reply and sent counts
+        foreach($roll_calls as &$roll_call)
+        {
+            $roll_call = $this->addCounts($roll_call);
+        }
+
+        return $roll_calls;
     }
 
     public function find($id)

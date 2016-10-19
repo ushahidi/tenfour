@@ -4,15 +4,6 @@ namespace RollCall\Contracts\Repositories;
 interface RollCallRepository extends CrudRepository
 {
     /**
-     * Filter roll calls by organization id
-     *
-     * @param int $org_id
-     *
-     * @return array
-     */
-    public function filterByOrganizationId($org_id);
-
-    /**
      * Add contacts to roll call
      *
      * @param array $input
