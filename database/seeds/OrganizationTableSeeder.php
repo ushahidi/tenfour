@@ -1,4 +1,6 @@
 <?php
+namespace RollCall\Seeders;
+
 use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;

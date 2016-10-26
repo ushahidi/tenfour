@@ -1,4 +1,5 @@
 <?php
+namespace RollCall\Seeders;
 
 use Illuminate\Database\Seeder;
 use RollCall\Models\User;
@@ -23,7 +24,7 @@ class OrgMemberSeeder extends Seeder
             [
                 'username' => 'jason',
                 'name'     => 'Jason Mule',
-                'email'    => 'jason@ushahidi.com' 
+                'email'    => 'jason@ushahidi.com'
             ],
             [
                 'username' => 'linda',
@@ -38,7 +39,7 @@ class OrgMemberSeeder extends Seeder
                 'username' => $member['username'],
                 'name'     => $member['name']
             ]);
-        
+
             $ids[$member['id']] = ['role' => 'member'];
 
         }

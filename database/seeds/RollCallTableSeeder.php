@@ -1,4 +1,5 @@
 <?php
+namespace RollCall\Seeders;
 
 use Illuminate\Database\Seeder;
 
