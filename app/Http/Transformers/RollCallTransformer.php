@@ -15,12 +15,12 @@ class RollCallTransformer extends TransformerAbstract
                 $contact['uri'] = '/contacts/' . $contact['id'];
 
                 // Format contact user
-                if (isset($contact['user_id'])) {
-                    $contact['user']['id'] = (int) $contact['user_id'];
-                    $contact['user']['uri'] = '/users/' . $contact['user_id'];
-                    unset($contact['user_id']);
+                if (isset($contact['user']['id'])) {
+                    $contact['user']['id'] = (int) $contact['user']['id'];
+                    $contact['user']['uri'] = '/users/' . $contact['user']['id'];
                 }
 
+                unset($contact['user_id']);
                 unset($contact['pivot']);
             }
         }

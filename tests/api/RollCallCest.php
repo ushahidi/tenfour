@@ -21,7 +21,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 2,
+                'sent_count'  => 3,
                 'reply_count' => 2,
             ],
         ]);
@@ -45,7 +45,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 2,
+                'sent_count'  => 3,
                 'reply_count' => 2,
             ]
         ]);
@@ -72,6 +72,7 @@ class RollCallCest
                 [
                     'id'      => 3,
                     'contact' => 'linda@ushahidi.com',
+                    'type'    => 'email',
                     'user'    => [
                         'id' => 2,
                     ]
@@ -79,8 +80,39 @@ class RollCallCest
                 [
                     'id'   => 4,
                     'contact' => '0792999999',
+                    'type'    => 'phone',
                      'user'    => [
                         'id' => 4,
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    /*
+     * Filter contacts who have not responded to a roll call
+     *
+     */
+    public function filterUnresponsiveContacts(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Get a list of contacts who have not responded to a roll call');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint.'/'.$id.'/contacts?unresponsive=true');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'message' => 'Westgate under siege',
+            'organization' => [
+                'id' => 2
+            ],
+            'contacts' => [
+                [
+                    'id'      => 3,
+                    'contact' => 'linda@ushahidi.com',
+                    'type'    => 'email',
+                    'user'    => [
+                        'id' => 2,
                     ]
                 ]
             ]
@@ -124,7 +156,7 @@ class RollCallCest
                     ]
                 ]
             ],
-            'sent_count'  => 2,
+            'sent_count'  => 3,
             'reply_count' => 2,
         ]);
     }

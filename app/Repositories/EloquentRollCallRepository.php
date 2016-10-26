@@ -12,7 +12,7 @@ class EloquentRollCallRepository implements RollCallRepository
     {
         $roll_calls = null;
         if ($org_id) {
-            $roll_calls =  RollCall::where('organization_id', $org_id)
+            $roll_calls = RollCall::where('organization_id', $org_id)
                         ->get()
                         ->toArray();
         } else {
@@ -54,11 +54,18 @@ class EloquentRollCallRepository implements RollCallRepository
         return $roll_call->toArray();
     }
 
-    public function getContacts($id)
+    public function getContacts($id, $unresponded=null)
     {
         return RollCall::with([
-            'contacts' => function ($query) {
-                $query->select('contacts.id', 'contacts.contact', 'contacts.user_id');
+            'contacts' => function ($query) use ($unresponded) {
+                $query->with('user');
+
+                if ($unresponded) {
+                    $query->leftJoin('replies', 'contacts.id', '=', 'replies.contact_id')
+                        ->where('replies.contact_id', '=', null);
+                }
+
+                $query->select('contacts.id', 'contacts.contact', 'contacts.user_id', 'contacts.type');
             }
         ])
             ->findOrFail($id)
@@ -76,8 +83,8 @@ class EloquentRollCallRepository implements RollCallRepository
                 }
             }
         ])
-            ->findOrFail($id)
-            ->toArray();
+                   ->findOrFail($id)
+                   ->toArray();
 
         return $this->addCounts($roll_call);
     }
