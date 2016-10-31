@@ -122,7 +122,7 @@ class RollCallController extends ApiController
      */
     public function listContacts(GetRollCallRequest $request, $id)
     {
-        return $this->response->item($this->roll_calls->getContacts($id),
+        return $this->response->item($this->roll_calls->getContacts($id, $request->query('unresponsive')),
                                      new RollCallTransformer, 'rollcall');
     }
 
