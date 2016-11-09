@@ -37,11 +37,13 @@ $api->version($version, [
 
     $api->get($base.'organizations', ['as' => 'organizations.index', 'uses' => 'OrganizationController@all']);
     $api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
-    $api->post($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@addMembers']);
+    $api->post($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@addMember']);
     $api->delete($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@deleteMember']);
     $api->put($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@updateMember']);
     $api->get($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@findMember']);
-    $api->post($base.'organizations/{organization}/members/{member}/contacts', ['uses' => 'OrganizationController@addContacts']);
+    $api->post($base.'organizations/{organization}/members/{member}/contacts', ['uses' => 'OrganizationController@addContact']);
+    $api->put($base.'organizations/{organization}/members/{member}/contacts/{contact}', ['uses' => 'OrganizationController@updateContact']);
+    $api->delete($base.'organizations/{organization}/members/{member}/contacts/{contact}', ['uses' => 'OrganizationController@deleteContact']);
     $api->get($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@listMembers']);
     $api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
     $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);

@@ -19,21 +19,17 @@ class OrganizationCest
             [
                 'name'    => 'RollCall',
                 'url'     => 'rollcall.rollcall.io',
-                'members' => [
-                    [
-                        'id'   => 4,
-                        'role' => 'owner',
-                    ]
+                'user' => [
+                    'id'   => 4,
+                    'role' => 'owner',
                 ]
             ],
             [
                 'name'    => 'Testers',
                 'url'     => 'testers.rollcall.io',
-                'members' => [
-                    [
-                        'id'   => 4,
-                        'role' => 'owner',
-                    ]
+                'user' => [
+                    'id'   => 4,
+                    'role' => 'owner',
                 ]
             ]
         ]);
@@ -55,29 +51,24 @@ class OrganizationCest
             [
                 'name'    => 'RollCall',
                 'url'     => 'rollcall.rollcall.io',
-                'members' => [
-                    [
-                        'id'   => 1,
-                        'role' => 'member',
-                    ]
+                'user' => [
+                    'id'   => 1,
+                    'role' => 'member',
                 ]
             ],
             [
                 'name'    => 'Testers',
                 'url'     => 'testers.rollcall.io',
-                'members' => [
-                    [
-                        'id'   => 1,
-                        'role' => 'admin',
-                    ]
+                'user' => [
+                    'id'   => 1,
+                    'role' => 'admin',
                 ]
             ]
-
         ]);
     }
 
     /*
-     * List organizations that a user belong to the current user
+     * List organizations that belong to the current user
      *
      */
     public function filterOrganizationsByCurrentUser(ApiTester $I)
@@ -92,21 +83,17 @@ class OrganizationCest
             [
                 'name'    => 'RollCall',
                 'url'     => 'rollcall.rollcall.io',
-                'members' => [
-                    [
-                        'id'   => 1,
-                        'role' => 'member',
-                    ]
+                'user' => [
+                    'id'   => 1,
+                    'role' => 'member',
                 ]
             ],
             [
                 'name'    => 'Testers',
                 'url'     => 'testers.rollcall.io',
-                'members' => [
-                    [
-                        'id'   => 1,
-                        'role' => 'admin',
-                    ]
+                'user' => [
+                    'id'   => 1,
+                    'role' => 'admin',
                 ]
             ]
 
@@ -128,11 +115,9 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             'name'    => 'RollCall',
             'url'     => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'id'   => 4,
-                    'role' => 'owner',
-                ]
+            'user' => [
+                'id'   => 4,
+                'role' => 'owner',
             ]
         ]);
     }
@@ -148,18 +133,16 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
             'name' => 'Test org',
-            'url' => 'test.rollcall.io'
+            'url'  => 'test.rollcall.io'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Test org',
             'url' => 'test.rollcall.io',
-            'members' => [
-                [
-                    'id'   => 1,
-                    'role' => 'owner',
-                ]
+            'user' => [
+                'id'   => 1,
+                'role' => 'owner',
             ]
         ]);
     }
@@ -198,18 +181,16 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id/members/$user_id", [
+            'name' => 'Updated org member',
             'role' => 'admin'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'id'   => 3,
-                    'role' => 'admin'
-                ]
+            'user' => [
+                'id'   => 3,
+                'name' => 'Updated org member',
+                'role' => 'admin'
             ]
         ]);
     }
@@ -231,13 +212,9 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'id'   => 3,
-                    'role' => 'owner'
-                ]
+            'user' => [
+                'id'   => 3,
+                'role' => 'owner'
             ]
         ]);
     }
@@ -289,83 +266,122 @@ class OrganizationCest
     }
 
     /*
-     * Add members to an organization as org admin
+     * Add member to an organization as org admin
      *
      */
-    public function addMembersAsOrgAdmin(ApiTester $I)
+    public function addMemberAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
-        $I->wantTo('Add members as an org admin');
+        $I->wantTo('Add member as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/members", [
-            [
-                'email' => 'mary@rollcall.io',
-                'role'  => 'member',
-            ],
-            [
-                'email' => 'jack@rollcall.io',
-                'role'  => 'member',
-            ]
+            'email' => 'mary@rollcall.io',
+            'role'  => 'member',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'email' => 'mary@rollcall.io',
-                    'role' => 'member',
-                ],
-                [
-                    'email' => 'jack@rollcall.io',
-                    'role' => 'member',
-                ]
+            'email' => 'mary@rollcall.io',
+            'role'  => 'member',
+        ]);
+    }
+
+    /*
+     * Add member contact email to an organization as org admin
+     *
+     */
+    public function addMemberContactEmailAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $I->wantTo('Add member contact email as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$id/members/$user_id/contacts", [
+            'contact' => 'mary@example.com',
+            'type'    => 'email',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'contact' => 'mary@example.com',
+                'type'    => 'email',
             ]
         ]);
     }
 
     /*
-     * Add member contacts to an organization as org admin
+     * Add member contact phone to an organization as org admin
      *
      */
-    public function addMemberContactsAsOrgAdmin(ApiTester $I)
+    public function addMemberContactPhoneAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
         $user_id = 1;
-        $I->wantTo('Add member contacts as an org admin');
+        $I->wantTo('Add member contact phone as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/members/$user_id/contacts", [
-            [
-                'contact' => 'mary@example.com',
-                'type'    => 'email',
-            ],
-            [
-                'contact' => '077242424',
-                'type'    => 'phone',
-            ]
+            'contact' => '077242424',
+            'type'    => 'phone',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'id'       => 1,
-                    'contacts' => [
-                        [
-                            'contact' => 'mary@example.com',
-                            'type'    => 'email',
-                        ],
-                        [
-                            'contact' => '077242424',
-                            'type'    => 'phone',
-                        ]
-                    ]
-                ]
+            'contact' => [
+                'contact' => '077242424',
+                'type'    => 'phone',
+            ]
+        ]);
+    }
+
+    /*
+     * Update member contact
+     *
+     */
+    public function updateMemberContactAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $contact_id = 4;
+        $I->wantTo('Update member contact as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$id/members/$user_id/contacts/$contact_id", [
+            'contact' => '087242424',
+            'type'    => 'phone',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'contact' => '087242424',
+                'type'    => 'phone',
+            ]
+        ]);
+    }
+
+    /*
+     * Delete member contact
+     *
+     */
+    public function deleteMemberContactAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $contact_id = 4;
+        $I->wantTo('Delete member contact org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendDelete($this->endpoint."/$id/members/$user_id/contacts/$contact_id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'contact' => '0792999999',
+                'type'    => 'phone',
             ]
         ]);
     }
@@ -397,7 +413,8 @@ class OrganizationCest
                         'contact' => 'test@ushahidi.com',
                         'type'    => 'email',
                     ]
-                ]
+                ],
+                'role' => 'member'
             ]
         ]);
     }
@@ -418,13 +435,9 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'email' => 'mary@rollcall.io',
-                    'role' => 'member',
-                ]
+            'user' => [
+                'email' => 'mary@rollcall.io',
+                'role' => 'member',
             ]
         ]);
     }
@@ -444,13 +457,9 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
-                [
-                    'id'   => 3,
-                    'name' => 'Org member'
-                ]
+            'user' => [
+                'id'   => 3,
+                'name' => 'Org member'
             ]
         ]);
     }
