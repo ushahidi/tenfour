@@ -161,6 +161,37 @@ class RollCallCest
         ]);
     }
 
+    public function getRepliesFilteredByContacts(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Get a list of replies filtered by contacts');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint.'/'.$id.'/replies?contacts=4');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'message' => 'Westgate under siege',
+            'organization' => [
+                'id' => 2
+            ],
+            'replies' => [
+                [
+                    'id'       => 2,
+                    'message'  => 'I am OK',
+                    'contact'  => [
+                        'id' => 4,
+                        'user' => [
+                            'id' => 4,
+                            'name' => 'Org owner'
+                        ]
+                    ]
+                ]
+            ],
+            'sent_count'  => 3,
+            'reply_count' => 2,
+        ]);
+    }
+
     /*
      * Get all roll calls in an organization as an authenticated user
      *
@@ -237,19 +268,11 @@ class RollCallCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'message' => 'Westgate under siege',
-                'organization' => [
-                    'id' => 2
-                ],
-                'contacts' => [
-                    [
-                        'id' => 1,
-                    ]
-                ]
+        $I->seeResponseContainsJson([
+            'contact' => [
+                'id' => 1,
             ]
-        );
+        ]);
     }
 
     /*
@@ -269,16 +292,13 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'message' => 'Westgate under siege',
-            'organization' => [
-                'id' => 2
-            ],
-            'replies' => [
-                [
-                    'message' => 'Test response',
-                    'contact' => [
-                        'id'   => 1,
-                    ]
+            'reply' => [
+                'message'  => 'Test response',
+                'contact'  => [
+                    'id' => 1,
+                ],
+                'rollcall' => [
+                    'id' => 1,
                 ]
             ]
         ]);
@@ -305,22 +325,16 @@ class RollCallCest
         );
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'message' => 'Westgate under siege',
-                'organization' => [
-                    'id' => 2
+        $I->seeResponseContainsJson([
+            'contacts' => [
+                [
+                    'id' => 1,
                 ],
-                'contacts' => [
-                    [
-                        'id' => 1,
-                    ],
-                    [
-                        'id' => 2,
-                    ]
+                [
+                    'id' => 2,
                 ]
             ]
-        );
+        ]);
     }
 
     /*

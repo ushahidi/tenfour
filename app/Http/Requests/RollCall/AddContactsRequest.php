@@ -2,9 +2,6 @@
 
 namespace RollCall\Http\Requests\RollCall;
 
-use App;
-use Validator;
-
 class AddContactsRequest extends GetRollCallRequest
 {
     /**

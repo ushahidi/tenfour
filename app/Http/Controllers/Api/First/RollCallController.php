@@ -11,6 +11,8 @@ use RollCall\Http\Requests\RollCall\AddContactsRequest;
 use RollCall\Http\Requests\RollCall\AddReplyRequest;
 
 use RollCall\Http\Transformers\RollCallTransformer;
+use RollCall\Http\Transformers\ContactTransformer;
+use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Response;
 
 class RollCallController extends ApiController
@@ -90,9 +92,15 @@ class RollCallController extends ApiController
      */
     public function addContacts(AddContactsRequest $request, $id)
     {
-        $roll_call = $this->roll_calls->addContacts($request->all(), $id);
+        $input = $request->all();
 
-        return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
+        if (is_array(head($input))) {
+            return $this->response->collection($this->roll_calls->addContacts($input, $id),
+                                               new ContactTransformer, 'contacts');
+        }
+
+        return $this->response->item($this->roll_calls->addContact($input, $id),
+                                     new ContactTransformer, 'contact');
     }
 
     /**
@@ -104,13 +112,13 @@ class RollCallController extends ApiController
      */
     public function addReply(AddReplyRequest $request, $id)
     {
-        $roll_call = $this->roll_calls->addReply([
+        $reply = $this->roll_calls->addReply([
             'message'      => $request->input('message'),
             'contact_id'   => $request->input('contact'),
             'roll_call_id' => $id,
         ], $id);
 
-        return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
+        return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
     /**
@@ -135,7 +143,7 @@ class RollCallController extends ApiController
      */
     public function listReplies(GetRollCallRequest $request, $id)
     {
-        return $this->response->item($this->roll_calls->getReplies($id),
+        return $this->response->item($this->roll_calls->getReplies($id, $request->query('contacts')),
                                      new RollCallTransformer, 'rollcall');
     }
 
