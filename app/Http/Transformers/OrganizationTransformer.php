@@ -8,12 +8,12 @@ class OrganizationTransformer extends TransformerAbstract
     public function transform(array $organization)
     {
         if (isset($organization['user_id'])) {
-            $organization['members'][0]['id'] = $organization['user_id'];
+            $organization['user']['id'] = $organization['user_id'];
             unset($organization['user_id']);
         }
 
         if (isset($organization['role'])) {
-            $organization['members'][0]['role'] = $organization['role'];
+            $organization['user']['role'] = $organization['role'];
             unset($organization['role']);
         }
 

@@ -30,9 +30,9 @@ class EloquentUserRepository implements UserRepository
 
     public function find($id)
     {
-        $user = User::find($id);
-
-        return $user->toArray();
+        return User::with('contacts')
+            ->find($id)
+            ->toArray();
     }
 
     public function delete($id)

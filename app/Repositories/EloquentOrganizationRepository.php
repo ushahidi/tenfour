@@ -3,7 +3,8 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
 use RollCall\Models\User;
-use RollCall\Models\Contact;
+use RollCall\Contracts\Repositories\ContactRepository;
+use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
 use DB;
 
@@ -11,6 +12,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
+    public function __construct(ContactRepository $contacts, UserRepository $users)
+    {
+        $this->contacts = $contacts;
+        $this->users = $users;
+    }
+
     public function all()
     {
         return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
@@ -39,29 +46,40 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function updateMember(array $input, $id, $user_id)
     {
-        $organization = Organization::findorFail($id);
+        $organization = Organization::with([
+            'members' => function ($query) use ($user_id) {
+                $query->select('users.id')->where('users.id', $user_id);
+            }])->findOrFail($id);
 
-        if ($input['role'] == 'owner') {
-            // Get current owner
-            $owner_id = DB::table('organization_user')
-                      ->where('organization_id', '=', $organization->id)
-                      ->where('role', '=', 'owner')
-                      ->value('user_id');
-
-            // ...and assign member role before transferring ownership
-            $organization->members()->updateExistingPivot($owner_id, ['role' => 'member']);
+        if ($organization->members->isEmpty()) {
+            throw (new ModelNotFoundException)->setModel('User');
         }
 
-        $organization->members()->updateExistingPivot($user_id, ['role' => $input['role']]);
+        $user = null;
 
-        return $organization->toArray() +
-        [
-            'members' => [
-                [
-                    'id'   => $user_id,
-                    'role' => $input['role']
-                ]
-            ]
+        // Update user and role details
+        DB::transaction(function () use ($input, $user_id, $organization, &$user) {
+            if ($input['role'] == 'owner') {
+                // Get current owner
+                $owner_id = DB::table('organization_user')
+                          ->where('organization_id', '=', $organization->id)
+                          ->where('role', '=', 'owner')
+                          ->value('user_id');
+
+                // ...and assign member role before transferring ownership
+                $organization->members()->updateExistingPivot($owner_id, ['role' => 'member']);
+            }
+
+            $organization->members()->updateExistingPivot($user_id, ['role' => $input['role']]);
+
+            // Update user
+            $user_input = array_except($input, ['role']);
+
+            $user = $this->users->update($user_input, $user_id);
+        });
+
+        return $user + [
+            'role' => $input['role']
         ];
     }
 
@@ -85,12 +103,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         return $organization->toArray() +
         [
-            'members' => [
-                [
-                    'id'   => $owner_id,
-                    'role' => 'owner'
-                ]
-            ]
+            'user_id' => $owner_id,
+            'role'    => 'owner'
         ];
     }
 
@@ -127,12 +141,14 @@ class EloquentOrganizationRepository implements OrganizationRepository
             throw (new ModelNotFoundException)->setModel('User');
         }
 
-        return User::with('contacts')
-              ->find($user_id)
-              ->toArray();
+        $role = $organization->members->first()->pivot->role;
+
+        return $this->users->find($user_id) + [
+            'role' => $role
+        ];
     }
 
-    public function addContacts(array $input, $id, $user_id)
+    public function addContact(array $input, $id, $user_id)
     {
         $organization = Organization::with([
             'members' => function ($query) use ($user_id) {
@@ -143,64 +159,63 @@ class EloquentOrganizationRepository implements OrganizationRepository
             throw (new ModelNotFoundException)->setModel('User');
         }
 
-        $contacts = [];
+        $input['can_receive'] = 1;
+        $input['user_id'] = $user_id;
 
-        if (is_array(head($input))) {
-            DB::transaction(function () use ($input, &$contacts, $user_id) {
-                foreach($input as $contact)
-                {
-                    array_push($contacts, $this->addContact($contact, $user_id));
-                }
-            });
-        } else {
-            array_push($contacts, $this->addContact($input, $user_id));
-        }
-
-        $organization = $organization->toArray();
-        $organization['members'][0]['contacts'] = $contacts;
-
-        return $organization;
+        return $this->contacts->create($input);
     }
 
-    public function addMembers(array $input, $id)
+    public function updateContact(array $input, $id, $user_id, $contact_id)
+    {
+        $organization = Organization::with([
+            'members' => function ($query) use ($user_id) {
+                $query->select('users.id')->where('users.id', $user_id);
+            }])->findOrFail($id);
+
+        if ($organization->members->isEmpty()) {
+            throw (new ModelNotFoundException)->setModel('User');
+        }
+
+        return $this->contacts->update($input, $contact_id);
+    }
+
+    public function deleteContact($id, $user_id, $contact_id)
+    {
+        $organization = Organization::with([
+            'members' => function ($query) use ($user_id) {
+                $query->select('users.id')->where('users.id', $user_id);
+            }])->findOrFail($id);
+
+        if ($organization->members->isEmpty()) {
+            throw (new ModelNotFoundException)->setModel('User');
+        }
+
+        return $this->contacts->delete($contact_id);
+    }
+
+    public function addMember(array $input, $id)
     {
         $organization = Organization::findorFail($id);
-        $members = [];
-        $ids = [];
 
-        if (! is_array(head($input))) {
-            $input = [$input];
+        $user = null;
+
+        if (!isset($input['role'])) {
+            $input['role'] = 'member';
         }
 
-        foreach($input as &$member)
-        {
-            $member = array_only($member, ['email']);
+        DB::transaction(function () use (&$user, $input, $organization) {
+            $user_input = array_except($input, ['email', 'role']);
+            $email = array_only($input, ['email'])['email'];
 
-            // Create user with email as username
-            $user = User::firstOrCreate([
-                    'email'    => $member['email'],
-                    'username' => $member['email'],
-            ]);
+            $user_id = User::firstOrCreate(['email' => $email])->id;
 
-            // Assign default 'member' role if unspecified
-            if (!isset($member['role'])) {
-                $member['role'] = 'member';
-            }
+            $user = $this->users->update($user_input, $user_id);
 
-            $ids[$user->id] = [
-                'role' => $member['role']
-            ];
-
-            $member['id'] = $user->id;
-        }
-
-        DB::transaction(function () use ($organization, $ids) {
-            $organization->members()->sync($ids, false);
+            $organization->members()->attach($user_id, ['role' => $input['role']]);
         });
 
-        return $organization->toArray() +
-        [
-            'members' => $input
+        return $user + [
+            'role' => $input['role']
         ];
     }
 
@@ -225,9 +240,21 @@ class EloquentOrganizationRepository implements OrganizationRepository
             throw (new ModelNotFoundException)->setModel('User');
         }
 
-        $organization->members()->detach($organization->members->first()->id);
+        $user_id = $organization->members->first()->id;
+        $role = $organization->members->first()->pivot->role;
 
-        return $organization->toArray();
+        $user = null;
+
+        DB::transaction(function () use (&$user, $organization, $user_id) {
+            $organization->members()->detach($user_id);
+
+            // Delete user
+            $user = $this->users->delete($user_id);
+        });
+
+        return $user + [
+            'role' => $role
+        ];
     }
 
     public function getMemberRole($organization_id, $user_id)
@@ -246,13 +273,5 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->where('user_id', $user_id)
             ->where('organization_id', $org_id)
             ->count();
-    }
-
-    protected function addContact($input, $user_id)
-    {
-        $input['can_receive'] = 1;
-        $input['user_id'] = $user_id;
-
-        return Contact::create($input)->toArray();
     }
 }

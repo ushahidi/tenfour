@@ -7,14 +7,17 @@ use RollCall\Http\Requests\Organization\GetOrganizationsRequest;
 use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
-use RollCall\Http\Requests\Organization\AddMembersRequest;
-use RollCall\Http\Requests\Organization\AddMemberContactsRequest;
+use RollCall\Http\Requests\Organization\AddMemberRequest;
+use RollCall\Http\Requests\Organization\AddContactRequest;
+use RollCall\Http\Requests\Organization\DeleteContactRequest;
+use RollCall\Http\Requests\Organization\UpdateContactRequest;
 use RollCall\Http\Requests\Organization\DeleteMemberRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
-use RollCall\Http\Requests\Organization\UpdateOrganizationMemberRequest;
+use RollCall\Http\Requests\Organization\UpdateMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Transformers\UserTransformer;
+use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Response;
 
 class OrganizationController extends ApiController
@@ -69,27 +72,51 @@ class OrganizationController extends ApiController
     }
 
     /**
-     * Add members to an organization
+     * Add member to an organization
      *
      * @param Request $request
      * @return Response
      */
-    public function addMembers(AddMembersRequest $request, $organization_id)
+    public function addMember(AddMemberRequest $request, $organization_id)
     {
-        return $this->response->item($this->organizations->addMembers($request->all(), $organization_id),
-                                     new OrganizationTransformer, 'organization');
+        return $this->response->item($this->organizations->addMember($request->all(), $organization_id),
+                                     new UserTransformer, 'user');
     }
 
     /**
-     * Add member contacts
+     * Add member contact
      *
      * @param Request $request
      * @return Response
      */
-    public function addContacts(AddMemberContactsRequest $request, $organization_id, $user_id)
+    public function addContact(AddContactRequest $request, $organization_id, $user_id)
     {
-        return $this->response->item($this->organizations->addContacts($request->all(), $organization_id, $user_id),
-                                     new OrganizationTransformer, 'organization');
+        return $this->response->item($this->organizations->addContact($request->all(), $organization_id, $user_id),
+                                     new ContactTransformer, 'contact');
+    }
+
+    /**
+     * Update member contact
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function updateContact(UpdateContactRequest $request, $organization_id, $user_id, $contact_id)
+    {
+        return $this->response->item($this->organizations->updateContact($request->all(), $organization_id, $user_id, $contact_id),
+                                     new ContactTransformer, 'contact');
+    }
+
+    /**
+     * Delete member contact
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function deleteContact(DeleteContactRequest $request, $organization_id, $user_id, $contact_id)
+    {
+        return $this->response->item($this->organizations->deleteContact($organization_id, $user_id, $contact_id),
+                                     new ContactTransformer, 'contact');
     }
 
     /**
@@ -125,7 +152,7 @@ class OrganizationController extends ApiController
     public function deleteMember(DeleteMemberRequest $request, $organization_id, $user_id)
     {
         return $this->response->item($this->organizations->deleteMember($organization_id, $user_id),
-                                     new OrganizationTransformer, 'organization');
+                                     new UserTransformer, 'user');
     }
 
     /**
@@ -164,10 +191,10 @@ class OrganizationController extends ApiController
      *
      * @return Response
      */
-    public function updateMember(UpdateOrganizationMemberRequest $request, $organization_id, $user_id)
+    public function updateMember(UpdateMemberRequest $request, $organization_id, $user_id)
     {
-        $organization = $this->organizations->updateMember($request->all(), $organization_id, $user_id);
-        return $this->response->item($organization, new OrganizationTransformer, 'organization');
+        $member = $this->organizations->updateMember($request->all(), $organization_id, $user_id);
+        return $this->response->item($member, new UserTransformer, 'user');
     }
 
     /**
