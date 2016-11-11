@@ -4,7 +4,7 @@ namespace RollCall\Contracts\Repositories;
 interface RollCallRepository extends CrudRepository
 {
     /**
-     * Add contacts to roll call
+     * Add contacts to a roll call
      *
      * @param array $input
      * @param int $id
@@ -12,6 +12,16 @@ interface RollCallRepository extends CrudRepository
      * @return array
      */
     public function addContacts(array $input, $id);
+
+    /**
+     * Add contact to a roll call
+     *
+     * @param array $input
+     * @param int $id
+
+     * @return array
+     */
+    public function addContact(array $input, $id);
 
     /**
      * Get roll call contacts

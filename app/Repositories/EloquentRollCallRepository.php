@@ -54,13 +54,13 @@ class EloquentRollCallRepository implements RollCallRepository
         return $roll_call->toArray();
     }
 
-    public function getContacts($id, $unresponded=null)
+    public function getContacts($id, $unresponsive=null)
     {
         return RollCall::with([
-            'contacts' => function ($query) use ($unresponded) {
+            'contacts' => function ($query) use ($unresponsive) {
                 $query->with('user');
 
-                if ($unresponded) {
+                if ($unresponsive) {
                     $query->leftJoin('replies', 'contacts.id', '=', 'replies.contact_id')
                         ->where('replies.contact_id', '=', null);
                 }
@@ -72,14 +72,18 @@ class EloquentRollCallRepository implements RollCallRepository
             ->toArray();
     }
 
-    public function getReplies($id, $reply_id = null)
+    public function getReplies($id, $contacts = null)
     {
+        if ($contacts) {
+            $contacts = explode(',', $contacts);
+        }
+
         $roll_call = RollCall::with([
-            'replies' => function ($query) use ($reply_id) {
+            'replies' => function ($query) use ($contacts) {
                 $query->with('contact.user');
 
-                if ($reply_id) {
-                    $query->where('replies.id', $reply_id);
+                if ($contacts) {
+                    $query->whereIn('replies.contact_id', $contacts);
                 }
             }
         ])
@@ -93,51 +97,37 @@ class EloquentRollCallRepository implements RollCallRepository
     {
         $roll_call = RollCall::findorFail($id);
         $ids = [];
-        $contacts = [];
 
-        // If working with a list of contacts
-        if (is_array(head($input))) {
-            foreach ($input as $contact)
-            {
-                array_push($ids, $contact['id']);
-            }
-
-            // Add contacts to response
-            $contacts = $input;
-        }
-        else {
-            array_push($ids, $input['id']);
-
-            // Add contact to response
-            $contacts = [$input];
+        foreach ($input as &$contact)
+        {
+            $contact = array_only($contact, ['id']);
+            array_push($ids, $contact['id']);
         }
 
         DB::transaction(function () use ($roll_call, $ids) {
             $roll_call->contacts()->attach($ids);
         });
 
-        return $roll_call->toArray() +
-            [
-                'contacts' => $contacts
-            ];
+        return $input;
     }
+
+    public function addContact(array $input, $id)
+    {
+        $input = array_only($input, ['id']);
+
+        RollCall::findorFail($id)
+            ->contacts()
+            ->attach($input['id']);
+
+        return $input;
+    }
+
 
     public function addReply(array $input, $id)
     {
         $roll_call = RollCall::findorFail($id);
 
-        $reply = Reply::create($input);
-
-        return $roll_call->toArray() +
-            [
-                'replies' => [
-                    [
-                        'id'         => $reply->id,
-                        'message'    => $reply->message,
-                        'contact_id' => $input['contact_id']
-                    ]
-                ]
-            ];
+        return Reply::create($input)->toArray();
     }
 
     public function delete($id)
