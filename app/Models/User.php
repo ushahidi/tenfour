@@ -49,7 +49,7 @@ class User extends Model implements AuthenticatableContract,
 	/**
 	 * A user can have many roles
 	 *
-	 **/
+	 */
 	public function roles()
 	{
 		return $this->belongsToMany('RollCall\Models\Role');
@@ -58,18 +58,27 @@ class User extends Model implements AuthenticatableContract,
 	/**
 	 * A user belongs to an organization
 	 *
-	 **/
+	 */
 	public function organizations()
 	{
 		return $this->belongsToMany('RollCall\Models\Organization')->withPivot('role');
 	}
 
 	/**
-     *
      * A user has contacts
+     *
      */
     public function contacts()
     {
         return $this->hasMany('RollCall\Models\Contact');
+    }
+
+    /**
+     * An user has rollcalls
+     *
+     */
+    public function rollcalls()
+    {
+        return $this->hasMany('RollCall\Models\RollCall');
     }
 }

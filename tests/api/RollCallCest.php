@@ -5,12 +5,12 @@ class RollCallCest
     protected $endpoint = '/rollcalls';
 
     /*
-     * Get all roll calls in an organization as an admin
+     * Get all roll calls as an admin
      *
      */
     public function getAllRollCalls(ApiTester $I)
     {
-        $I->wantTo('Get a list of all roll calls for an organization as an admin');
+        $I->wantTo('Get a list of all roll calls as an admin');
         $I->amAuthenticatedAsAdmin();
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
@@ -24,6 +24,13 @@ class RollCallCest
                 'sent_count'  => 3,
                 'reply_count' => 2,
             ],
+            [
+                'message' => 'Another test roll call',
+                'organization' => [
+                    'id' => 3
+                ],
+                'sent_count'  => 1
+            ],
         ]);
     }
 
@@ -36,6 +43,30 @@ class RollCallCest
         $endpoint = $this->endpoint.'/?organization=2';
         $I->wantTo('Get a list of all roll calls for an organization as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($endpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            [
+                'message' => 'Westgate under siege',
+                'organization' => [
+                    'id' => 2
+                ],
+                'sent_count'  => 3,
+                'reply_count' => 2,
+            ]
+        ]);
+    }
+
+    /*
+     * Filter roll calls by user.
+     *
+     */
+    public function filterRollCallsbyUser(ApiTester $I)
+    {
+        $endpoint = $this->endpoint.'/?organization=2&user=me';
+        $I->wantTo('Get a list of all roll calls sent out by a user');
+        $I->amAuthenticatedAsOrgOwner();
         $I->sendGET($endpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -335,30 +366,6 @@ class RollCallCest
                 ]
             ]
         ]);
-    }
-
-    /*
-     * Create a rollcall as a registered member
-     *
-     *//*
-    public function createRollCallAsMember(ApiTester $I)
-    {
-        $I->wantTo('Create a rollcall as a registered member');
-        $I->amAuthenticatedAsUser();
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
-            'message' => 'Westgate under siege, are you ok?',
-            'contact_id' => 1,
-            'organization_id' => 1
-        ]);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            ['message' => 'Westgate under siege, are you ok?',
-             'organization' => ['id' => 1],
-             'contact' => ['id' => 1 ]
-            ]
-        );
     }
 
     /*
