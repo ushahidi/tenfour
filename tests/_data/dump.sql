@@ -67,12 +67,14 @@ INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('3', '2',
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('4', '4', '0', 'phone', '0792999999');
 
 --Add test roll calls
-INSERT INTO roll_calls (id, message, organization_id, status, sent) VALUES ('1', 'Westgate under siege', '2', 'pending', '0');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
 
 -- Add test contacts
 INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('1', '1');
 INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('3', '1');
 INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('4', '1');
+INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('4', '2');
 
 -- Add test replies
 INSERT INTO replies (id, message, contact_id, roll_call_id) VALUES ('1', 'I am OK', '1', '1');

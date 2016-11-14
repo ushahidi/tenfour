@@ -9,17 +9,18 @@ use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
 use RollCall\Http\Requests\RollCall\UpdateRollCallRequest;
 use RollCall\Http\Requests\RollCall\AddContactsRequest;
 use RollCall\Http\Requests\RollCall\AddReplyRequest;
-
 use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Response;
+use Dingo\Api\Auth\Auth;
 
 class RollCallController extends ApiController
 {
-    public function __construct(RollCallRepository $roll_calls, Response $response)
+    public function __construct(RollCallRepository $roll_calls, Auth $auth, Response $response)
     {
         $this->roll_calls = $roll_calls;
+        $this->auth = $auth;
         $this->response = $response;
     }
 
@@ -32,7 +33,15 @@ class RollCallController extends ApiController
      */
     public function all(GetRollCallsRequest $request)
     {
-        $roll_calls = $this->roll_calls->all($request->query('organization'));
+        $user_id = null;
+
+        if ($request->query('user') === 'me') {
+            $user_id = $this->auth->user()['id'];
+        } else {
+            $user_id = $request->query('user');
+        }
+
+        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id);
 
         return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
     }
@@ -63,6 +72,7 @@ class RollCallController extends ApiController
         $roll_call = $this->roll_calls->create([
             'message'          => $request->input('message'),
             'organization_id'  => $request->input('organization'),
+            'user_id'          => $this->auth->user()['id'],
         ]);
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');

@@ -18,11 +18,11 @@ class RollCall extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id'];
+    protected $fillable = ['message', 'organization_id', 'user_id'];
 
     /**
      *
-     * Rollcalls belong to an organization
+     * Roll calls belong to an organization
      */
     public function organization()
     {
@@ -30,8 +30,17 @@ class RollCall extends Model
     }
 
     /**
+     * Roll calls belong to a user
      *
-     * Rollcalls belong to contact
+     */
+    public function user()
+    {
+        return $this->belongsTo('RollCall\Models\User');
+    }
+
+    /**
+     *
+     * Roll calls belong to contact
      */
     public function contacts()
     {
