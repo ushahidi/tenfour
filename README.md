@@ -1,6 +1,6 @@
 ## RollCall API
 
-[Get started](docs/getting-started.md)
+[Get started](docs/getting_started.md)
 
 ## Official Documentation
 
