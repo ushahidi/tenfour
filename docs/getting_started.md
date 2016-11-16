@@ -21,6 +21,9 @@ vagrant up
 ./artisan db:seed
 ```
 
+#### Log in as an organization owner
+Use the email `rollcall@ushahidi.com` with password `westgate`
+
 #### Environment configuration
 
 Copy the environment configuration.
