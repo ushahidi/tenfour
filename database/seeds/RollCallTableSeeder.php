@@ -18,25 +18,26 @@ class RollCallTableSeeder extends Seeder
      */
     public function run()
     {
+        $users = User::where('username', 'charlie')
+               ->orwhere('username', 'linda')
+               ->select('id', 'email')
+               ->get();
+
         // Grab seeded organization
         $organization = Organization::where('name', 'Ushahidi')
                       ->select('id')
                       ->firstOrFail();
 
-        $rollCall = RollCall::firstOrCreate(
-            ['organization_id' => $organization->id]
-        );
+        $rollCall = RollCall::firstOrCreate([
+            'organization_id' => $organization->id,
+            'user_id' => $users[0]->id
+        ]);
 
         $rollCall->update([
             'message' => 'Test rollcall',
         ]);
 
         // Add contacts
-        $users = User::where('username', 'charlie')
-               ->orwhere('username', 'linda')
-               ->select('id', 'email')
-               ->get();
-
         $contacts = [];
 
         foreach ($users as $user) {
