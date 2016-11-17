@@ -131,6 +131,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function getMember($id, $user_id)
     {
+        // This should probably be passed in as param but there
+        // might not be any benefit of showing a user's full
+        // roll call activity here.
+        $history_limit = 5;
+
         $organization = Organization::with([
             'members' => function ($query) use ($user_id) {
                 $query->select('users.id')
@@ -143,9 +148,19 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         $role = $organization->members->first()->pivot->role;
 
-        return $this->users->find($user_id) + [
-            'role' => $role
-        ];
+        return User::with([
+            'rollcalls' => function ($query) use ($history_limit) {
+                $query->limit($history_limit);
+            },
+            'contacts.replies' => function ($query) use ($history_limit) {
+                $query->limit($history_limit);
+            }
+        ])
+              ->find($user_id)
+              ->toArray() + [
+                  'role' => $role
+              ];
+
     }
 
     public function addContact(array $input, $id, $user_id)

@@ -23,13 +23,19 @@ class RollCallCest
                 ],
                 'sent_count'  => 3,
                 'reply_count' => 2,
+                'user' => [
+                    'id' => 4
+                ]
             ],
             [
                 'message' => 'Another test roll call',
                 'organization' => [
                     'id' => 3
                 ],
-                'sent_count'  => 1
+                'sent_count' => 1,
+                'user' => [
+                    'id' => 1
+                ]
             ],
         ]);
     }
@@ -54,6 +60,9 @@ class RollCallCest
                 ],
                 'sent_count'  => 3,
                 'reply_count' => 2,
+                'user' => [
+                    'id' => 4
+                ]
             ]
         ]);
     }
@@ -78,6 +87,9 @@ class RollCallCest
                 ],
                 'sent_count'  => 3,
                 'reply_count' => 2,
+                'user' => [
+                    'id' => 4
+                ]
             ]
         ]);
     }
@@ -254,6 +266,9 @@ class RollCallCest
                 'status'  => 'pending',
                 'organization' => [
                     'id' => 2
+                ],
+                'user' => [
+                    'id' => 4
                 ]
             ]
          );
@@ -279,6 +294,9 @@ class RollCallCest
                 'message' => 'Westgate under siege, are you ok?',
                 'organization' => [
                     'id' => 2
+                ],
+                'user' => [
+                    'id' => 5
                 ]
             ]
         );
