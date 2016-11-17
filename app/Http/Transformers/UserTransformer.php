@@ -14,6 +14,33 @@ class UserTransformer extends TransformerAbstract
                 $contact['id'] = (int) $contact['id'];
                 $contact['uri'] = '/contact/' . $contact['id'];
                 unset($contact['user_id']);
+
+                // Format replies
+                if (isset($contact['replies'])) {
+                    $reply_transformer = new ReplyTransformer;
+
+                    foreach($contact['replies'] as &$reply)
+                    {
+                        $reply = $reply_transformer->transform($reply);
+
+                        // Remove contact and roll call info form reply
+                        unset($reply['rollcall']);
+                        unset($reply['contact']);
+                    }
+                }
+            }
+        }
+
+        // Format roll calls
+        if (isset($user['rollcalls'])) {
+            $roll_call_transformer = new RollCallTransformer;
+
+            foreach($user['rollcalls'] as &$roll_call)
+            {
+                $roll_call = $roll_call_transformer->transform($roll_call);
+
+                // Remove user information
+                unset($roll_call['user']);
             }
         }
 

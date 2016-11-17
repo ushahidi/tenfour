@@ -408,10 +408,20 @@ class OrganizationCest
                     [
                         'contact' => '0721674180',
                         'type'    => 'phone',
+                        'replies' => [
+                            [
+                                'message' => 'I am OK'
+                            ]
+                        ]
                     ],
                     [
                         'contact' => 'test@ushahidi.com',
                         'type'    => 'email',
+                    ]
+                ],
+                'rollcalls' => [
+                    [
+                        'message' => 'Another test roll call'
                     ]
                 ],
                 'role' => 'member'
