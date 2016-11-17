@@ -18,7 +18,7 @@ use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Transformers\ContactTransformer;
-use RollCall\Http\Transformers\RollCallTransformer;
+//use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Response;
 
 class OrganizationController extends ApiController
@@ -140,8 +140,6 @@ class OrganizationController extends ApiController
      */
     public function findMember(GetOrganizationRequest $request, $organization_id, $user_id)
     {
-        $roll_call_tranformer = new RollCallTransformer;
-
         return $this->response->item($this->organizations->getMember($organization_id, $user_id),
                                      new UserTransformer, 'user');
     }
