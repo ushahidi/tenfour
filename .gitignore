@@ -15,3 +15,7 @@ Thumbs.db
 
 
 tests/_output/*
+
+codeship.aes
+deployment.env
+
