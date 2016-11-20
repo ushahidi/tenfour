@@ -1,0 +1,28 @@
+version: "2"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/run.Dockerfile
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=rollcall
+      - DB_USERNAME=rollcall
+      - DB_PASSWORD=rollcall
+      - APP_ENV=testing
+      - APP_API_DOMAIN=localhost
+    extra_hosts:  # TODO: how things break if we take these out?
+      - "rollcall.dev:127.0.0.1"
+      - "api.rollcall.dev:127.0.0.1"
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=rollcall
+      - MYSQL_USER=rollcall
+      - MYSQL_PASSWORD=rollcall
+      - MYSQL_ROOT_PASSWORD=root
