@@ -1,6 +1,6 @@
 FROM ubuntu:trusty
 
-ENV ANSIBLE_VERSION 2.1.2.0-1
+ENV ANSIBLE_VERSION 2.1.2.0
 ENV TERRAFORM_VERSION 0.7.10
 
 RUN apt-get update && \
@@ -14,6 +14,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY docker/deploy.run.sh /deploy.run.sh
+
+ENV ANSIBLE_HOST_KEY_CHECKING False
 
 ENTRYPOINT [ "/bin/bash", "/deploy.run.sh" ]
 CMD [ "/bin/bash" ]

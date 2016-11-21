@@ -9,14 +9,24 @@ fi
 git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf git@github.com:
 
 # ==> Copy ansible scripts into container
+[ ! -d $HOME/.ssh ] || true && mkdir -m 0700 $HOME/.ssh
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 git clone git@github.com:ushahidi/rollcall-infra.git /playbooks --depth=5
 
 if [ -n "${ANSIBLE_VAULT_PASSWORD}" ]; then
-  /bin/echo -e "${ANSIBLE_VAULT_PASSWORD}" > /playbooks/vpass
+	printf "%s" "${ANSIBLE_VAULT_PASSWORD}" > /playbooks/vpass
+fi
+
+# Set up key
+if [ -n "${ANSIBLE_ROLLCALL_SSH_KEY}" ]; then
+	echo -e "${ANSIBLE_ROLLCALL_SSH_KEY}" > /playbooks/id_ansible
+	chmod 600 /playbooks/id_ansible
 fi
 
 # Append to ansible.cfg
-envsubst >> /opt/ansible.cfg << EOM
+envsubst >> /playbooks/ansible.cfg << EOM
+
+private_key_file=/playbooks/id_ansible
 
 [ssh_connection]
 control_path=/dev/shm/ansible-ssh-${CI_BUILD_ID}-%%h-%%p-%%r

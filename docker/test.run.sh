@@ -3,7 +3,7 @@ set -e
 
 function sync {
   echo "Sync files from /vols/src"
-  rsync -ar --delete-during /vols/src/ ./
+  rsync -ar --exclude vendor --delete-during /vols/src/ ./
   echo "Clean uncommited files"
   git clean -fx
 }
