@@ -2,14 +2,14 @@
   service: test
   command: composer test -- --env=testing
 - name: "Deploy (develop)"
-  service: Deploy
+  service: deploy
   command: >
     ansible-playbook -i ./hosts -l staging
       -e API_VERSION_SRC=/vols/src
       api-deploy-version.yml
   tag: develop
 - name: "Deploy (master)"
-  service: Deploy
+  service: deploy
   command: >
     ansible-playbook -i ./hosts -l staging
       -e API_VERSION_SRC=/vols/src
