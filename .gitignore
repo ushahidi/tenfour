@@ -18,4 +18,5 @@ tests/_output/*
 
 codeship.aes
 deployment.env
+docs/api/index.html
 
