@@ -50,4 +50,12 @@ interface RollCallRepository extends CrudRepository
      * @return array
      */
     public function addReply(array $input, $id);
+
+    /**
+     * Add counts to roll call
+     *
+     * @param array $roll_call
+     * @return array
+     */
+    public function addCounts($roll_call);
 }
