@@ -134,7 +134,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         // This should probably be passed in as param but there
         // might not be any benefit of showing a user's full
         // roll call activity here.
-        $history_limit = 5;
+        $history_limit = 1;
 
         $organization = Organization::with([
             'members' => function ($query) use ($user_id) {
