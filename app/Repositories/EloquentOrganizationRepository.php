@@ -6,16 +6,18 @@ use RollCall\Models\User;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
-    public function __construct(ContactRepository $contacts, UserRepository $users)
+    public function __construct(ContactRepository $contacts, UserRepository $users, RollCallRepository $roll_calls)
     {
         $this->contacts = $contacts;
         $this->users = $users;
+        $this->roll_calls = $roll_calls;
     }
 
     public function all()
@@ -148,7 +150,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         $role = $organization->members->first()->pivot->role;
 
-        return User::with([
+        $user = User::with([
             'rollcalls' => function ($query) use ($history_limit) {
                 $query->limit($history_limit);
             },
@@ -161,6 +163,12 @@ class EloquentOrganizationRepository implements OrganizationRepository
                   'role' => $role
               ];
 
+        foreach ($user['rollcalls'] as &$roll_call)
+        {
+            $roll_call = $this->roll_calls->addCounts($roll_call);
+        }
+
+        return $user;
     }
 
     public function addContact(array $input, $id, $user_id)

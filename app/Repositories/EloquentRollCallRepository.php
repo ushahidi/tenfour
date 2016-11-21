@@ -150,7 +150,7 @@ class EloquentRollCallRepository implements RollCallRepository
             ->count();
     }
 
-    protected function addCounts($roll_call)
+    public function addCounts($roll_call)
     {
         $roll_call['reply_count'] = $this->getReplyCounts($roll_call['id']);
         $roll_call['sent_count'] = $this->getSentCounts($roll_call['id']);
