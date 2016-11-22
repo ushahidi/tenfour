@@ -23,8 +23,7 @@ class UserTransformer extends TransformerAbstract
                     {
                         $reply = $reply_transformer->transform($reply);
 
-                        // Remove contact and roll call info form reply
-                        unset($reply['rollcall']);
+                        // Remove contact info form reply
                         unset($reply['contact']);
                     }
                 }

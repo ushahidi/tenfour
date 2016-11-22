@@ -152,10 +152,10 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         $user = User::with([
             'rollcalls' => function ($query) use ($history_limit) {
-                $query->limit($history_limit);
+                $query->latest()->limit($history_limit);
             },
             'contacts.replies' => function ($query) use ($history_limit) {
-                $query->limit($history_limit);
+                $query->latest()->limit($history_limit);
             }
         ])
               ->find($user_id)
