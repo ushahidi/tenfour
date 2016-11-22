@@ -25,4 +25,4 @@
       command: aglio -i /vols/src/docs/api/_meta.apib -o /vols/src/docs/api/index.html
     - name: "Deploy Docs (develop)"
       service: awscli
-      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/rollcall/develop
+      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/rollcall/develop --acl public-read
