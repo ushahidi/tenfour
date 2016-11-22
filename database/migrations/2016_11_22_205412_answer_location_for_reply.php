@@ -16,7 +16,6 @@ class AnswerLocationForReply extends Migration
             $table->string('location_text')->nullable();
             $table->string('answer')->nullable();
         });
-        DB::statement('ALTER TABLE replies ADD location_point POINT' );
     }
 
     /**
@@ -27,7 +26,7 @@ class AnswerLocationForReply extends Migration
     public function down()
     {
         Schema::table('replies', function (Blueprint $table) {
-            $table->dropColumn(['location_text', 'location_point', 'answer']);
+            $table->dropColumn(['location_text', 'answer']);
         });
     }
 }
