@@ -42,6 +42,15 @@ interface RollCallRepository extends CrudRepository
     public function getReplies($id);
 
     /**
+     * Get specific reply for a given roll call
+     *
+     * @param int $id
+     * @parom int $reply_id
+     * @return array
+     */
+    public function getReply($id, $replyId);
+    
+    /**
      * Add roll call reply
      *
      * @param array $input

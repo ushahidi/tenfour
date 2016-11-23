@@ -95,6 +95,14 @@ class EloquentRollCallRepository implements RollCallRepository
         return $this->addCounts($roll_call);
     }
 
+    public function getReply($id, $replyId)
+    {
+        $reply = Reply::findOrFail($replyId)
+                 ->toArray();
+
+        return $reply;
+    }
+
     public function addContacts(array $input, $id)
     {
         $roll_call = RollCall::findorFail($id);

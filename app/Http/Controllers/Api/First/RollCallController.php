@@ -9,6 +9,7 @@ use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
 use RollCall\Http\Requests\RollCall\UpdateRollCallRequest;
 use RollCall\Http\Requests\RollCall\AddContactsRequest;
 use RollCall\Http\Requests\RollCall\AddReplyRequest;
+use RollCall\Http\Requests\RollCall\GetReplyRequest;
 use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
@@ -128,6 +129,19 @@ class RollCallController extends ApiController
             'roll_call_id' => $id,
         ], $id);
 
+        return $this->response->item($reply, new ReplyTransformer, 'reply');
+    }
+
+    /**
+     * Retrieve reply for given roll call
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function getReply(GetReplyRequest $request, $id, $replyId)
+    {
+        $reply = $this->roll_calls->getReply($id, $replyId);
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
