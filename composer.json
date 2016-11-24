@@ -6,7 +6,7 @@
     "require": {
         "php": ">=5.5.9",
         "dingo/api": "1.0.*@dev",
-        "laravel/framework": "5.1.*",
+        "laravel/framework": "5.3.*",
         "lucadegasperi/oauth2-server-laravel": "^5.0",
         "league/oauth2-server": "^4.1",
         "barryvdh/laravel-cors": "^0.8.2",
@@ -14,11 +14,13 @@
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
-        "laravel/homestead": "^2.1",
+        "laravel/homestead": "^2.2",
         "mockery/mockery": "0.9.*",
         "phpspec/phpspec": "~2.1",
         "phpunit/phpunit": "~4.0",
-        "codeception/codeception": "2.0.13"
+        "codeception/codeception": "2.2.*",
+        "symfony/dom-crawler": "3.1.*",
+        "symfony/css-selector": "3.1.*"
     },
     "autoload": {
         "classmap": [

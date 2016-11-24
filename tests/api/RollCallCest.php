@@ -31,24 +31,18 @@ class RollCallCest
                         'id' => 1,
                         'name' => 'Test user',
                         'email' => 'test@ushahidi.com',
-                        'created_at' => '-0001-11-30 00:00:00',
-                        'updated_at' => '-0001-11-30 00:00:00',
                         'uri' => '/users/1',
                     ],
                     [
                         'id' => 2,
                         'name' => 'Admin user',
                         'email' => 'admin@ushahidi.com',
-                        'created_at' => '-0001-11-30 00:00:00',
-                        'updated_at' => '-0001-11-30 00:00:00',
                         'uri' => '/users/2',
                     ],
                     [
                         'id' => 4,
                         'name' => 'Org owner',
                         'email' => 'org_owner@ushahidi.com',
-                        'created_at' => '-0001-11-30 00:00:00',
-                        'updated_at' => '-0001-11-30 00:00:00',
                         'uri' => '/users/4',
                     ]
                 ]
@@ -67,8 +61,6 @@ class RollCallCest
                         'id' => 4,
                         'name' => 'Org owner',
                         'email' => 'org_owner@ushahidi.com',
-                        'created_at' => '-0001-11-30 00:00:00',
-                        'updated_at' => '-0001-11-30 00:00:00',
                         'uri' => '/users/4'
                     ]
                 ]
@@ -190,22 +182,16 @@ class RollCallCest
                     'id' => 1,
                     'name' => 'Test user',
                     'email' => 'test@ushahidi.com',
-                    'created_at' => '-0001-11-30 00:00:00',
-                    'updated_at' => '-0001-11-30 00:00:00',
                 ],
                 [
                     'id' => 2,
                     'name' => 'Admin user',
                     'email' => 'admin@ushahidi.com',
-                    'created_at' => '-0001-11-30 00:00:00',
-                    'updated_at' => '-0001-11-30 00:00:00',
                 ],
                 [
                     'id' => 4,
                     'name' => 'Org owner',
                     'email' => 'org_owner@ushahidi.com',
-                    'created_at' => '-0001-11-30 00:00:00',
-                    'updated_at' => '-0001-11-30 00:00:00',
                 ]
             ]
         ]);
@@ -229,8 +215,6 @@ class RollCallCest
                     'id' => 2,
                     'name' => 'Admin user',
                     'email' => 'admin@ushahidi.com',
-                    'created_at' => '-0001-11-30 00:00:00',
-                    'updated_at' => '-0001-11-30 00:00:00',
                 ],
             ]
         ]);

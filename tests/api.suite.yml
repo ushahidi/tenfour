@@ -3,6 +3,7 @@ modules:
     enabled: [ApiHelper, DbHelper, Laravel5, REST]
     config:
       REST:
+           depends: PhpBrowser
            url: 'http://api.rollcall.dev/api/v1'
       DbHelper:
            dsn: 'mysql:host=localhost;dbname=rollcall'
