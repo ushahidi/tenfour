@@ -66,9 +66,10 @@ $api->version($version, [
     $api->post($base.'rollcalls/{rollcall}/contacts', ['uses' => 'RollCallController@addContacts']);
     $api->get($base.'rollcalls/{rollcall}/contacts', ['uses' => 'RollCallController@listContacts']);
 
-    $api->post($base.'rollcalls/{rollcall}/reply', ['uses' => 'RollCallController@addReply']);
-    $api->get($base.'rollcalls/{rollcall}/reply/{reply}', ['uses' => 'RollCallController@getReply']);
+    $api->put($base.'rollcalls/{rollcall}/reply/{reply}', ['uses' => 'ReplyController@update']);
+    $api->get($base.'rollcalls/{rollcall}/reply/{reply}', ['uses' => 'ReplyController@find']);
 
+    $api->post($base.'rollcalls/{rollcall}/reply', ['uses' => 'RollCallController@addReply']);
     $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'RollCallController@listReplies']);
 
     $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);

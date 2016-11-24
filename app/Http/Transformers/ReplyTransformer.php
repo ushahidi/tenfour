@@ -7,7 +7,7 @@ class ReplyTransformer extends TransformerAbstract
 {
     public function transform(array $reply)
     {
-        $reply['uri'] = '/rollcalls/' . $reply['roll_call_id'] . '/replies/' . $reply['id'];
+        $reply['uri'] = '/rollcalls/' . $reply['roll_call_id'] . '/reply/' . $reply['id'];
 
         $reply['rollcall']['id'] = (int) $reply['roll_call_id'];
         $reply['rollcall']['uri'] = '/rollcalls/' . $reply['roll_call_id'];
