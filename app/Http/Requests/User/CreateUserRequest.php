@@ -16,7 +16,7 @@ class CreateUserRequest extends FormRequest
         // Anyone can register as a user
         return true;
     }
-    
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -29,6 +29,7 @@ class CreateUserRequest extends FormRequest
             'email' => 'required|unique:users|max:255',
             'password' => 'required|min:8',
             'password_confirm' => 'required|same:password',
+            'person_type' => 'required|in:member,user,external',
         ];
     }
 }
