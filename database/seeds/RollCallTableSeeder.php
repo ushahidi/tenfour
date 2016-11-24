@@ -35,7 +35,7 @@ class RollCallTableSeeder extends Seeder
 
         $rollCall->update([
             'message' => 'Test rollcall',
-            'answers' => ['yes', 'no']
+            'answers' => ['no', 'yes']
         ]);
 
         // Add contacts
