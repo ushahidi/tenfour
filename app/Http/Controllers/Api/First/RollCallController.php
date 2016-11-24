@@ -12,6 +12,7 @@ use RollCall\Http\Requests\RollCall\AddReplyRequest;
 use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
+use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
 use Dingo\Api\Auth\Auth;
 
@@ -69,10 +70,8 @@ class RollCallController extends ApiController
      */
     public function create(CreateRollCallRequest $request)
     {
-        $roll_call = $this->roll_calls->create([
-            'message'          => $request->input('message'),
-            'organization_id'  => $request->input('organization'),
-            'user_id'          => $this->auth->user()['id'],
+        $roll_call = $this->roll_calls->create($request->input() + [
+            'user_id' => $this->auth->user()['id'],
         ]);
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
@@ -94,26 +93,6 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Add contacts to a roll call
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function addContacts(AddContactsRequest $request, $id)
-    {
-        $input = $request->all();
-
-        if (is_array(head($input))) {
-            return $this->response->collection($this->roll_calls->addContacts($input, $id),
-                                               new ContactTransformer, 'contacts');
-        }
-
-        return $this->response->item($this->roll_calls->addContact($input, $id),
-                                     new ContactTransformer, 'contact');
-    }
-
-    /**
      * Add reply to a roll call
      *
      * @param Request $request
@@ -124,24 +103,37 @@ class RollCallController extends ApiController
     {
         $reply = $this->roll_calls->addReply([
             'message'      => $request->input('message'),
-            'contact_id'   => $request->input('contact'),
             'roll_call_id' => $id,
+            'user_id'      => $this->auth->user()['id'],
         ], $id);
 
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
     /**
-     * List roll call contacts
+     * List roll call recipients
      *
      * @param Request $request
      *
      * @return Response
      */
-    public function listContacts(GetRollCallRequest $request, $id)
+    public function listRecipients(GetRollCallRequest $request, $id)
     {
-        return $this->response->item($this->roll_calls->getContacts($id, $request->query('unresponsive')),
-                                     new RollCallTransformer, 'rollcall');
+        return $this->response->collection($this->roll_calls->getRecipients($id, $request->query('unresponsive')),
+                                     new UserTransformer, 'recipients');
+    }
+
+    /**
+     * List roll call messages
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function listMessages(GetRollCallRequest $request, $id)
+    {
+        return $this->response->collection($this->roll_calls->getMessages($id),
+                                     new ContactTransformer, 'messages');
     }
 
     /**
@@ -153,8 +145,8 @@ class RollCallController extends ApiController
      */
     public function listReplies(GetRollCallRequest $request, $id)
     {
-        return $this->response->item($this->roll_calls->getReplies($id, $request->query('contacts')),
-                                     new RollCallTransformer, 'rollcall');
+        return $this->response->collection($this->roll_calls->getReplies($id, $request->query('users'), $request->query('contacts')),
+                                     new ReplyTransformer, 'replies');
     }
 
     /**

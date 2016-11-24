@@ -36,7 +36,7 @@ class User extends Model implements AuthenticatableContract,
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token'];
+	protected $hidden = ['password', 'remember_token', 'pivot'];
 
 	/**
 	 * @param string $value
@@ -80,5 +80,19 @@ class User extends Model implements AuthenticatableContract,
     public function rollcalls()
     {
         return $this->hasMany('RollCall\Models\RollCall');
+    }
+
+    /**
+     *
+     * Rollcalls that belong to the contact
+     */
+    public function receivedRollcalls()
+    {
+        return $this->belongsToMany('RollCall\Models\RollCall', 'roll_call_recipients');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany('Rollcall\Models\Reply');
     }
 }

@@ -46,8 +46,9 @@ class DbHelper extends \Codeception\Module\Db
         // Delete test roll calls
         $dbh->exec('TRUNCATE TABLE roll_calls');
 
-        // Delete contact_roll_call pivot data
-        $dbh->exec('TRUNCATE TABLE contact_roll_call');
+        // Delete roll_call_messages, roll_call_recipients pivot data
+        $dbh->exec('TRUNCATE TABLE roll_call_messages');
+        $dbh->exec('TRUNCATE TABLE roll_call_recipients');
 
         // Delete roll call replies
         $dbh->exec('TRUNCATE TABLE replies');

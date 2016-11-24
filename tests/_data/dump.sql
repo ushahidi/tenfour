@@ -71,11 +71,17 @@ INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VAL
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
 
 -- Add test contacts
-INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('1', '1');
-INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('3', '1');
-INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('4', '1');
-INSERT INTO contact_roll_call (contact_id, roll_call_id) VALUES ('4', '2');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('3', '1');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '1');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '2');
+
+-- Add test contacts
+INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('1', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('2', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
 
 -- Add test replies
-INSERT INTO replies (id, message, contact_id, roll_call_id) VALUES ('1', 'I am OK', '1', '1');
-INSERT INTO replies (id, message, contact_id, roll_call_id) VALUES ('2', 'I am OK', '4', '1');
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('1', 'I am OK', '1', '1', '1');
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('2', 'I am OK', '4', '1', '4');
