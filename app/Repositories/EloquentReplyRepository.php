@@ -5,7 +5,7 @@ use RollCall\Models\Reply;
 use RollCall\Contracts\Repositories\ReplyRepository;
 use DB;
 
-class EloquentReplyRepository implements RollCallRepository
+class EloquentReplyRepository implements ReplyRepository
 {
     public function create(array $input)
     {
@@ -27,5 +27,14 @@ class EloquentReplyRepository implements RollCallRepository
                  ->toArray();
 
         return $reply;
+    }
+
+    public function delete($id)
+    {
+
+    }
+
+    public function all() {
+
     }
 }

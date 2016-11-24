@@ -22,5 +22,7 @@ class ApiServiceProvider extends ServiceProvider
                          'RollCall\Repositories\EloquentContactRepository');
         $this->app->bind('RollCall\Contracts\Repositories\RollCallRepository',
                          'RollCall\Repositories\EloquentRollCallRepository');
+        $this->app->bind('RollCall\Contracts\Repositories\ReplyRepository',
+                         'RollCall\Repositories\EloquentReplyRepository');
     }
 }
