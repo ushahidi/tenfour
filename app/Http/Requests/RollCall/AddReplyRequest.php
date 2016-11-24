@@ -15,7 +15,6 @@ class AddReplyRequest extends GetRollCallRequest
     public function rules()
     {
         return [
-            'contact' =>'required|integer|org_contact:'.$this->route('rollcall'),
             'message' => 'required|string',
         ];
     }

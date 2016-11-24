@@ -21,12 +21,18 @@ class Contact extends Model
     protected $fillable = ['type', 'can_receive', 'user_id', 'contact'];
 
     /**
+     * The attributes excluded from the model's JSON form.
      *
-     * Rollcalls that belong to the contact
+     * @var array
+     */
+    protected $hidden = ['pivot'];
+
+    /**
+     * Messages sent to contact
      */
     public function rollcalls()
     {
-        return $this->belongsToMany('RollCall\Models\RollCall');
+        return $this->belongsToMany('RollCall\Models\RollCall', 'roll_call_messages');
     }
 
     /**
@@ -36,6 +42,7 @@ class Contact extends Model
     {
         return $this->belongsTo('RollCall\Models\User');
     }
+
 
     public function replies()
     {

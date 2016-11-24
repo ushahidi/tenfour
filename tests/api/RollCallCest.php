@@ -25,6 +25,35 @@ class RollCallCest
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
+                ],
+                'recipients' => [
+                    [
+                        'id' => 1,
+                        'name' => 'Test user',
+                        'email' => 'test@ushahidi.com',
+                        'username' => 'test@ushahidi.com',
+                        'created_at' => '-0001-11-30 00:00:00',
+                        'updated_at' => '-0001-11-30 00:00:00',
+                        'uri' => '/users/1',
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'Admin user',
+                        'email' => 'admin@ushahidi.com',
+                        'username' => 'admin@ushahidi.com',
+                        'created_at' => '-0001-11-30 00:00:00',
+                        'updated_at' => '-0001-11-30 00:00:00',
+                        'uri' => '/users/2',
+                    ],
+                    [
+                        'id' => 4,
+                        'name' => 'Org owner',
+                        'email' => 'org_owner@ushahidi.com',
+                        'username' => 'org_owner@ushahidi.com',
+                        'created_at' => '-0001-11-30 00:00:00',
+                        'updated_at' => '-0001-11-30 00:00:00',
+                        'uri' => '/users/4',
+                    ]
                 ]
             ],
             [
@@ -35,6 +64,17 @@ class RollCallCest
                 'sent_count' => 1,
                 'user' => [
                     'id' => 1
+                ],
+                'recipients' => [
+                    [
+                        'id' => 4,
+                        'name' => 'Org owner',
+                        'email' => 'org_owner@ushahidi.com',
+                        'username' => 'org_owner@ushahidi.com',
+                        'created_at' => '-0001-11-30 00:00:00',
+                        'updated_at' => '-0001-11-30 00:00:00',
+                        'uri' => '/users/4'
+                    ]
                 ]
             ],
         ]);
@@ -98,20 +138,24 @@ class RollCallCest
      * Get contacts for a roll call
      *
      */
-    public function getContacts(ApiTester $I)
+    public function getMessages(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Get a list of contacts for a roll call as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id.'/contacts');
+        $I->sendGET($this->endpoint.'/'.$id.'/messages');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'message' => 'Westgate under siege',
-            'organization' => [
-                'id' => 2
-            ],
-            'contacts' => [
+            'messages' => [
+                [
+                    'id'      => 1,
+                    'contact' => '0721674180',
+                    'type'    => 'phone',
+                    'user'    => [
+                        'id' => 1,
+                    ]
+                ],
                 [
                     'id'      => 3,
                     'contact' => 'linda@ushahidi.com',
@@ -133,6 +177,48 @@ class RollCallCest
     }
 
     /*
+     * Get contacts for a roll call
+     *
+     */
+    public function getRecipients(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Get a list of contacts for a roll call as an organization admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint.'/'.$id.'/recipients');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'recipients' => [
+                [
+                    'id' => 1,
+                    'name' => 'Test user',
+                    'email' => 'test@ushahidi.com',
+                    'username' => 'test@ushahidi.com',
+                    'created_at' => '-0001-11-30 00:00:00',
+                    'updated_at' => '-0001-11-30 00:00:00',
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'Admin user',
+                    'email' => 'admin@ushahidi.com',
+                    'username' => 'admin@ushahidi.com',
+                    'created_at' => '-0001-11-30 00:00:00',
+                    'updated_at' => '-0001-11-30 00:00:00',
+                ],
+                [
+                    'id' => 4,
+                    'name' => 'Org owner',
+                    'email' => 'org_owner@ushahidi.com',
+                    'username' => 'org_owner@ushahidi.com',
+                    'created_at' => '-0001-11-30 00:00:00',
+                    'updated_at' => '-0001-11-30 00:00:00',
+                ]
+            ]
+        ]);
+    }
+
+    /*
      * Filter contacts who have not responded to a roll call
      *
      */
@@ -141,23 +227,19 @@ class RollCallCest
         $id = 1;
         $I->wantTo('Get a list of contacts who have not responded to a roll call');
         $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id.'/contacts?unresponsive=true');
+        $I->sendGET($this->endpoint.'/'.$id.'/recipients?unresponsive=true');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'message' => 'Westgate under siege',
-            'organization' => [
-                'id' => 2
-            ],
-            'contacts' => [
+            'recipients' => [
                 [
-                    'id'      => 3,
-                    'contact' => 'linda@ushahidi.com',
-                    'type'    => 'email',
-                    'user'    => [
-                        'id' => 2,
-                    ]
-                ]
+                    'id' => 2,
+                    'name' => 'Admin user',
+                    'email' => 'admin@ushahidi.com',
+                    'username' => 'admin@ushahidi.com',
+                    'created_at' => '-0001-11-30 00:00:00',
+                    'updated_at' => '-0001-11-30 00:00:00',
+                ],
             ]
         ]);
     }
@@ -171,36 +253,30 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'message' => 'Westgate under siege',
-            'organization' => [
-                'id' => 2
-            ],
             'replies' => [
                 [
                     'id'       => 1,
                     'message'  => 'I am OK',
                     'contact'  => [
                         'id'   => 1,
-                        'user' => [
-                            'id' => 1,
-                            'name' => 'Test user'
-                        ]
+                    ],
+                    'user' => [
+                        'id' => 1,
+                        'name' => 'Test user'
                     ]
                 ],
                 [
                     'id'       => 2,
                     'message'  => 'I am OK',
                     'contact'  => [
+                        'id' => 4
+                    ],
+                    'user' => [
                         'id' => 4,
-                        'user' => [
-                            'id' => 4,
-                            'name' => 'Org owner'
-                        ]
+                        'name' => 'Org owner'
                     ]
                 ]
-            ],
-            'sent_count'  => 3,
-            'reply_count' => 2,
+            ]
         ]);
     }
 
@@ -213,25 +289,44 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'message' => 'Westgate under siege',
-            'organization' => [
-                'id' => 2
-            ],
             'replies' => [
                 [
                     'id'       => 2,
                     'message'  => 'I am OK',
                     'contact'  => [
+                        'id' => 4
+                    ],
+                    'user' => [
                         'id' => 4,
-                        'user' => [
-                            'id' => 4,
-                            'name' => 'Org owner'
-                        ]
+                        'name' => 'Org owner'
                     ]
                 ]
-            ],
-            'sent_count'  => 3,
-            'reply_count' => 2,
+            ]
+        ]);
+    }
+
+    public function getRepliesFilteredByUsers(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Get a list of replies filtered by user');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint.'/'.$id.'/replies?users=4');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'replies' => [
+                [
+                    'id'       => 2,
+                    'message'  => 'I am OK',
+                    'contact'  => [
+                        'id' => 4
+                    ],
+                    'user' => [
+                        'id' => 4,
+                        'name' => 'Org owner'
+                    ]
+                ]
+            ]
         ]);
     }
 
@@ -285,7 +380,15 @@ class RollCallCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
             'message' => 'Westgate under siege, are you ok?',
-            'organization' => 2
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -297,6 +400,14 @@ class RollCallCest
                 ],
                 'user' => [
                     'id' => 5
+                ],
+                'recipients' => [
+                    [
+                        'id' => 3
+                    ],
+                    [
+                        'id' => 1
+                    ]
                 ]
             ]
         );
@@ -306,7 +417,7 @@ class RollCallCest
      * Add contact to roll call
      *
      */
-    public function addContact(ApiTester $I)
+    /*public function addContact(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Add contact to roll call');
@@ -322,7 +433,7 @@ class RollCallCest
                 'id' => 1,
             ]
         ]);
-    }
+    }*/
 
     /*
      * Add reply to roll call
@@ -335,17 +446,16 @@ class RollCallCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/replies', [
-            'message'  => 'Test response',
-            'contact'  => 1
+            'message'  => 'Test response'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'reply' => [
-                'message'  => 'Test response',
-                'contact'  => [
-                    'id' => 1,
+                'user' => [
+                    'id' => 5
                 ],
+                'message'  => 'Test response',
                 'rollcall' => [
                     'id' => 1,
                 ]
@@ -357,7 +467,7 @@ class RollCallCest
      * Add contacts to roll call
      *
      */
-    public function addContacts(ApiTester $I)
+    /*public function addContacts(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Add contact to roll call');
@@ -384,7 +494,7 @@ class RollCallCest
                 ]
             ]
         ]);
-    }
+    }*/
 
     /*
      * Update a rollcall as admin
@@ -398,7 +508,15 @@ class RollCallCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint.'/'.$id, [
             'sent' => 1,
-            'status' => 'received'
+            'status' => 'received',
+            'recipients' => [
+                [
+                    'id' => 1,
+                ],
+                [
+                    'id' => 2
+                ]
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -409,6 +527,14 @@ class RollCallCest
                 'sent' => 1,
                 'organization' => [
                     'id' => 2
+                ],
+                'recipients' => [
+                    [
+                        'id' => 1,
+                    ],
+                    [
+                        'id' => 2
+                    ]
                 ]
             ]
         );

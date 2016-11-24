@@ -21,7 +21,7 @@ class CreateRollCallRequest extends FormRequest
             return true;
         }
 
-        $org_role = $this->getOrganizationRole($this->input('organization'));
+        $org_role = $this->getOrganizationRole($this->input('organization_id'));
 
         return in_array($org_role, $this->getAllowedOrgRoles());
     }
@@ -33,10 +33,20 @@ class CreateRollCallRequest extends FormRequest
      */
     public function rules()
     {
+        // Workaround until Laravel 5.3
+        $recipient_rules = [];
+        foreach($this->request->get('recipients') as $key => $val)
+        {
+            $rules['recipients.'.$key] = 'required|exists:users,id';
+        }
+
         return [
             'message'         => 'required',
-            'organization' => 'required|integer'
-        ];
+            'organization_id' => 'required|integer',
+            'recipients'      => 'required',
+            // This doesn't work in Laravel 5.1
+            // 'recipients.*.id'   => 'required|exists:users,id'
+        ] + $recipient_rules;
     }
 
     protected function getAllowedOrgRoles()
