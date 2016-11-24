@@ -5,11 +5,12 @@ use League\Fractal\TransformerAbstract;
 
 class RollCallTransformer extends TransformerAbstract
 {
+
     public function transform(array $roll_call)
     {
         // Format contacts if they are present
-        if (isset($roll_call['contacts'])) {
-            foreach ($roll_call['contacts'] as &$contact)
+        if (isset($roll_call['messages'])) {
+            foreach ($roll_call['messages'] as &$contact)
             {
                 $contact['id'] = (int) $contact['id'];
                 $contact['uri'] = '/contacts/' . $contact['id'];
@@ -25,6 +26,17 @@ class RollCallTransformer extends TransformerAbstract
             }
         }
 
+        // Format recipients if they are present
+        if (isset($roll_call['recipients'])) {
+            foreach ($roll_call['recipients'] as &$user)
+            {
+                $user['id'] = (int) $user['id'];
+                $user['uri'] = '/users/' . $user['id'];
+
+                unset($user['pivot']);
+            }
+        }
+
         // Format replies if present
         if (isset($roll_call['replies'])) {
             foreach ($roll_call['replies'] as &$reply)
@@ -36,6 +48,10 @@ class RollCallTransformer extends TransformerAbstract
                 $reply['contact']['uri'] = '/contacts/' . $reply['contact_id'];
                 unset($reply['contact_id']);
                 unset($reply['roll_call_id']);
+
+                $reply['user']['id'] = (int) $reply['user_id'];
+                $reply['user']['uri'] = '/users/' . $reply['user_id'];
+                unset($reply['user_id']);
 
                 // Format user
                 if (isset($reply['contact']['user'])) {

@@ -44,6 +44,7 @@ class UserController extends ApiController
             'name'     => $request->input('name'),
             'email'    => $request->input('email'),
             'password' => $request->input('password'),
+            'person_type' => $request->input('person_type'),
         ]);
 
         return $this->response->item($user, new UserTransformer, 'user');

@@ -38,8 +38,8 @@ class RollCallTableSeeder extends Seeder
             'answers' => ['no', 'yes']
         ]);
 
-        // Add contacts
-        $contacts = [];
+        // Add recipients
+        $recipients = [];
 
         foreach ($users as $user) {
             $contact = Contact::firstOrCreate([
@@ -49,23 +49,23 @@ class RollCallTableSeeder extends Seeder
                 'contact'     => $user->email
             ]);
 
-            array_push($contacts, $contact->id);
+            array_push($recipients, $user->id);
         }
 
-        $rollCall->contacts()->sync($contacts, false);
+        $rollCall->recipients()->sync($recipients, false);
 
         // Add replies
         $no_of_replies = 1;
         $reply_count = 0;
 
-        foreach($contacts as $contact) {
+        foreach($users as $user) {
             if ($reply_count === $no_of_replies) {
                 break;
             }
 
             Reply::firstOrCreate([
                 'message'      => 'I am OK',
-                'contact_id'   => $contact,
+                'user_id'      => $user->id,
                 'roll_call_id' => $rollCall->id,
             ]);
 

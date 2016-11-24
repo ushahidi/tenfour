@@ -8,10 +8,16 @@ use Dingo\Api\Auth\Auth;
 
 trait UserAccess
 {
-    public function __construct(Auth $auth, UserRepository $users, OrganizationRepository $organizations)
-    {
+
+    public function setAuth(Auth $auth) {
         $this->auth = $auth;
+    }
+
+    public function setUsers(UserRepository $users) {
         $this->users = $users;
+    }
+
+    public function setOrganizations(OrganizationRepository $organizations) {
         $this->organizations = $organizations;
     }
 

@@ -4,33 +4,22 @@ namespace RollCall\Contracts\Repositories;
 interface RollCallRepository extends CrudRepository
 {
     /**
-     * Add contacts to a roll call
+     * Get roll call recipients
      *
-     * @param array $input
      * @param int $id
 
      * @return array
      */
-    public function addContacts(array $input, $id);
+    public function getRecipients($id, $unresponsive=null);
 
     /**
-     * Add contact to a roll call
-     *
-     * @param array $input
-     * @param int $id
-
-     * @return array
-     */
-    public function addContact(array $input, $id);
-
-    /**
-     * Get roll call contacts
+     * Get roll call sent messages
      *
      * @param int $id
 
      * @return array
      */
-    public function getContacts($id);
+    public function getMessages($id);
 
     /**
      * Get roll call replies
@@ -39,7 +28,7 @@ interface RollCallRepository extends CrudRepository
      * @parom int $reply_id
      * @return array
      */
-    public function getReplies($id);
+    public function getReplies($id, $users = null, $contacts = null);
 
     /**
      * Get specific reply for a given roll call
@@ -61,10 +50,10 @@ interface RollCallRepository extends CrudRepository
     public function addReply(array $input, $id);
 
     /**
-     * Add counts to roll call
+     * Get counts for rollcall
      *
-     * @param array $roll_call
+     * @param int $rollCallId
      * @return array
      */
-    public function addCounts($roll_call);
+    public function getCounts($rollCallId);
 }

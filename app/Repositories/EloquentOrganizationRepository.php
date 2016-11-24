@@ -165,7 +165,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         foreach ($user['rollcalls'] as &$roll_call)
         {
-            $roll_call = $this->roll_calls->addCounts($roll_call);
+            $roll_call += $this->roll_calls->getCounts($roll_call['id']);
         }
 
         return $user;

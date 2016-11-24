@@ -25,7 +25,7 @@ class EloquentRollCallRepository implements RollCallRepository
         // Add reply and sent counts
         foreach($roll_calls as &$roll_call)
         {
-            $roll_call = $this->addCounts($roll_call);
+            $roll_call += $this->getCounts($roll_call['id']);
         }
 
         return $roll_calls;
@@ -36,63 +36,64 @@ class EloquentRollCallRepository implements RollCallRepository
         $roll_call = RollCall::findOrFail($id)
                    ->toArray();
 
-        return $this->addCounts($roll_call);
+        return $roll_call + $this->getCounts($roll_call['id']);
     }
 
     public function create(array $input)
     {
-        return RollCall::create($input)
+        $rollcall = RollCall::create($input);
+
+        $userIds = collect($input['recipients'])->pluck('id')->all();
+        $rollcall->recipients()->sync($userIds);
+
+        return $rollcall->fresh()
             ->toArray();
     }
 
     public function update(array $input, $id)
     {
         $input = array_only($input, ['status', 'sent']);
-        $roll_call = RollCall::findorFail($id);
 
+        $roll_call = RollCall::findorFail($id);
         $roll_call->sent = $input['sent'];
         $roll_call->status = $input['status'];
         $roll_call->save();
-        return $roll_call->toArray();
-    }
 
-    public function getContacts($id, $unresponsive=null)
-    {
-        return RollCall::with([
-            'contacts' => function ($query) use ($unresponsive) {
-                $query->with('user');
-
-                if ($unresponsive) {
-                    $query->leftJoin('replies', 'contacts.id', '=', 'replies.contact_id')
-                        ->where('replies.contact_id', '=', null);
-                }
-
-                $query->select('contacts.id', 'contacts.contact', 'contacts.user_id', 'contacts.type');
-            }
-        ])
-            ->findOrFail($id)
-            ->toArray();
-    }
-
-    public function getReplies($id, $contacts = null)
-    {
-        if ($contacts) {
-            $contacts = explode(',', $contacts);
+        if (isset($input['recipients'])) {
+            $userIds = collect($input['recipients'])->pluck('id')->all();
+            $rollcall->recipients()->sync($userIds);
         }
 
-        $roll_call = RollCall::with([
-            'replies' => function ($query) use ($contacts) {
-                $query->with('contact.user');
+        return $roll_call->fresh()->toArray();
+    }
 
-                if ($contacts) {
-                    $query->whereIn('replies.contact_id', $contacts);
-                }
-            }
-        ])
-                   ->findOrFail($id)
-                   ->toArray();
+    public function getMessages($id)
+    {
+        return RollCall::findOrFail($id)->messages()->with('user')->get()->toArray();
+    }
 
-        return $this->addCounts($roll_call);
+    public function getRecipients($id, $unresponsive=null)
+    {
+        $query = RollCall::findOrFail($id)->recipients();
+
+        if ($unresponsive) {
+            $query->leftJoin('replies', 'users.id', '=', 'replies.user_id')
+                ->where('replies.user_id', '=', null);
+        }
+
+        return $query->get()->toArray();
+
+
+        // return RollCall::with([
+        //     'recipients' => function ($query) use ($unresponsive) {
+        //         if ($unresponsive) {
+        //             $query->leftJoin('replies', 'users.id', '=', 'replies.user_id')
+        //                 ->where('replies.user_id', '=', null);
+        //         }
+        //     }
+        // ])
+        // ->findOrFail($id)
+        // ->toArray();
     }
 
     public function getReply($id, $replyId)
@@ -103,35 +104,23 @@ class EloquentRollCallRepository implements RollCallRepository
         return $reply;
     }
 
-    public function addContacts(array $input, $id)
-    {
-        $roll_call = RollCall::findorFail($id);
-        $ids = [];
 
-        foreach ($input as &$contact)
-        {
-            $contact = array_only($contact, ['id']);
-            array_push($ids, $contact['id']);
+    public function getReplies($id, $users = null, $contacts = null)
+    {
+        $query = RollCall::findOrFail($id)->replies()->with('user');
+
+        if ($users) {
+            $users = explode(',', $users);
+            $query->whereIn('replies.user_id', $users);
         }
 
-        DB::transaction(function () use ($roll_call, $ids) {
-            $roll_call->contacts()->attach($ids);
-        });
+        if ($contacts) {
+            $contacts = explode(',', $contacts);
+            $query->whereIn('replies.contact_id', $contacts);
+        }
 
-        return $input;
+        return $query->get()->toArray();
     }
-
-    public function addContact(array $input, $id)
-    {
-        $input = array_only($input, ['id']);
-
-        RollCall::findorFail($id)
-            ->contacts()
-            ->attach($input['id']);
-
-        return $input;
-    }
-
 
     public function addReply(array $input, $id)
     {
@@ -153,16 +142,16 @@ class EloquentRollCallRepository implements RollCallRepository
 
     protected function getSentCounts($id)
     {
-        return DB::table('contact_roll_call')
+        return DB::table('roll_call_messages')
             ->where('roll_call_id', $id)
             ->count();
     }
 
-    public function addCounts($roll_call)
+    public function getCounts($rollCallId)
     {
-        $roll_call['reply_count'] = $this->getReplyCounts($roll_call['id']);
-        $roll_call['sent_count'] = $this->getSentCounts($roll_call['id']);
-
-        return $roll_call;
+        return [
+            'reply_count' => $this->getReplyCounts($rollCallId),
+            'sent_count' => $this->getSentCounts($rollCallId)
+        ];
     }
 }

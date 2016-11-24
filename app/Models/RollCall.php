@@ -29,6 +29,20 @@ class RollCall extends Model
     protected $fillable = ['message', 'organization_id', 'user_id'];
 
     /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = ['recipients'];
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['pivot'];
+
+    /**
      *
      * Roll calls belong to an organization
      */
@@ -48,13 +62,25 @@ class RollCall extends Model
 
     /**
      *
-     * Roll calls belong to contact
+     * Roll calls belong to user
      */
-    public function contacts()
+    public function recipients()
     {
-        return $this->belongsToMany('RollCall\Models\Contact');
+        return $this->belongsToMany('RollCall\Models\User', 'roll_call_recipients');
     }
 
+    /**
+     *
+     * Roll calls send to contacts
+     */
+    public function messages()
+    {
+        return $this->belongsToMany('RollCall\Models\Contact', 'roll_call_messages');
+    }
+
+    /**
+     * Replies received to rollcall
+     */
     public function replies()
     {
         return $this->hasMany('RollCall\Models\Reply');

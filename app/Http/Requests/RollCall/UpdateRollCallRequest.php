@@ -9,6 +9,7 @@ class UpdateRollCallRequest extends GetRollCallRequest
         return [
             'sent'   => 'integer',
             'status' => 'in:pending,received,expired,cancelled,failed',
+            'recipients.*.id'   => 'exists:users,id'
         ];
     }
 }
