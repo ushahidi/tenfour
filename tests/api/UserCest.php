@@ -109,7 +109,8 @@ class UserCest
             'name' => 'Nat Manning',
             'email' => 'nat@ushahidi.com',
             'password' => 'dancer01',
-            'password_confirm' => 'dancer01'
+            'password_confirm' => 'dancer01',
+            'person_type' => 'user'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -135,7 +136,8 @@ class UserCest
             'name' => 'Team RollCall',
             'email' => 'rollcall@ushahidi.com',
             'password' => 'rollcall',
-            'password_confirm' => 'rollcall'
+            'password_confirm' => 'rollcall',
+            'person_type' => 'user'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
