@@ -17,12 +17,18 @@ class ReplyCest
             'reply' => [
                 'id'       => 1,
                 'message'  => 'I am OK',
+                'created_at' => '-0001-11-30 00:00:00',
+                'updated_at' => '-0001-11-30 00:00:00',
+                'location_text' => NULL,
+                'answer' => NULL,
+                'uri' => '/rollcalls/1/reply/1',
+                'rollcall' => [
+                    'id' => 1,
+                    'uri' => '/rollcalls/1',
+                ],
                 'contact'  => [
                     'id'   => 1,
-                    'user' => [
-                        'id' => 1,
-                        'name' => 'Test user'
-                      ]
+                    'uri' => '/contacts/1',
                   ]
             ]
         ]);
