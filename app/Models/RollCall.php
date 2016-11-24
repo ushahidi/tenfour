@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class RollCall extends Model
 {
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'answers' => 'array',
+    ];
+    /**
      * The database table used by the model.
      *
      * @var string
