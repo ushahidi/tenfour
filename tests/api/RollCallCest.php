@@ -334,7 +334,7 @@ class RollCallCest
         $I->wantTo('Add reply to roll call');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint.'/'.$id.'/replies', [
+        $I->sendPOST($this->endpoint.'/'.$id.'/reply', [
             'message'  => 'Test response',
             'contact'  => 1
         ]);

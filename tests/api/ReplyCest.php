@@ -14,7 +14,7 @@ class ReplyCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-             [
+            'reply' => [
                 'id'       => 1,
                 'message'  => 'I am OK',
                 'contact'  => [
@@ -22,8 +22,8 @@ class ReplyCest
                     'user' => [
                         'id' => 1,
                         'name' => 'Test user'
-                    ]
-                ]
+                      ]
+                  ]
             ]
         ]);
     }
