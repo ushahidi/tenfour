@@ -94,14 +94,15 @@ class ReplyCest
      * Add reply
      *
      */
-    public function create(ApiTester $I)
+    public function addReply(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Add reply to roll call');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/replies', [
-            'message'  => 'Test response'
+            'message'  => 'Test response',
+            'answer'   => 'yes'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();

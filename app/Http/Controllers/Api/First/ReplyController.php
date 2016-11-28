@@ -40,12 +40,32 @@ class ReplyController extends ApiController
      * @return Response
      *
      */
-    public function create(CreateReplyRequest $request)
+    public function create(CreateReplyRequest $request, $id)
     {
         $reply = $this->reply->create(
-          $request->input() + ['user_id' => $this->auth->user()['id']]
+          $request->input() + [
+            'user_id' => $this->auth->user()['id'],
+            'roll_call_id' => $id
+          ]
         );
 
+        return $this->response->item($reply, new ReplyTransformer, 'reply');
+    }
+
+    /**
+     * Add reply
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function addReply(AddReplyRequest $request, $id)
+    {
+        $reply = $this->reply->addReply(
+          $request->input() + [
+            'user_id' => $this->auth->user()['id'],
+            'roll_call_id' => $id
+          ], $id);
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 

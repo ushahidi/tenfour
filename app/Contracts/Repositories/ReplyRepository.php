@@ -18,7 +18,15 @@ interface ReplyRepository extends CrudRepository
      * @param array $reply
      * @return array
      */
-    public function create(array $input);
+    public function create(array $input, $id);
+
+    /**
+     * Add reply
+     *
+     * @param array $reply
+     * @return array
+     */
+    public function addReply(array $input, $id);
 
     /**
      * Get roll call replies

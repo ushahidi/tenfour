@@ -15,6 +15,12 @@ class EloquentReplyRepository implements ReplyRepository
             ->toArray();
     }
 
+    public function addReply(array $input, $id)
+    {
+        return Reply::create($input)
+            ->toArray();
+    }
+
     public function update(array $input, $id)
     {
         $reply = Reply::findorFail($id);
