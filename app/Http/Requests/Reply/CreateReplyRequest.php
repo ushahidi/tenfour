@@ -18,8 +18,8 @@ class CreateReplyRequest extends GetReplyRequest
     {
         return [
           'location_text'  => 'string',
-          'answer'         => 'string',
-          'message'        => 'string',
+          'answer'         => 'required_without: message|string',
+          'message'        => 'required_without: answer|string',
         ];
     }
 }
