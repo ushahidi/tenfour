@@ -76,7 +76,7 @@ class ReplyController extends ApiController
      */
     public function listReplies(GetReplyRequest $request, $id)
     {
-        return $this->response->collection($this->roll_calls->getReplies($id, $request->query('users'), $request->query('contacts')),
+        return $this->response->collection($this->reply->getReplies($id, $request->query('users'), $request->query('contacts')),
                                      new ReplyTransformer, 'replies');
     }
 
