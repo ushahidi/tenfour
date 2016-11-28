@@ -58,7 +58,7 @@ class ReplyController extends ApiController
      */
     public function addReply(AddReplyRequest $request, $id)
     {
-        $reply = $this->roll_calls->addReply([
+        $reply = $this->reply->addReply([
             'message'      => $request->input('message'),
             'roll_call_id' => $id,
             'user_id'      => $this->auth->user()['id'],
