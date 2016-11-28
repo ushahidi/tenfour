@@ -91,10 +91,10 @@ class ReplyCest
     }
 
     /*
-     * Add reply to roll call
+     * Add reply
      *
      */
-    public function addReply(ApiTester $I)
+    public function create(ApiTester $I)
     {
         $id = 1;
         $I->wantTo('Add reply to roll call');
