@@ -2,7 +2,9 @@
 namespace RollCall\Repositories;
 
 use RollCall\Models\Reply;
+use RollCall\Models\RollCall;
 use RollCall\Contracts\Repositories\ReplyRepository;
+use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
 class EloquentReplyRepository implements ReplyRepository
