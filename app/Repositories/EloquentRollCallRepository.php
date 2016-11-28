@@ -96,30 +96,6 @@ class EloquentRollCallRepository implements RollCallRepository
         // ->toArray();
     }
 
-    public function getReplies($id, $users = null, $contacts = null)
-    {
-        $query = RollCall::findOrFail($id)->replies()->with('user');
-
-        if ($users) {
-            $users = explode(',', $users);
-            $query->whereIn('replies.user_id', $users);
-        }
-
-        if ($contacts) {
-            $contacts = explode(',', $contacts);
-            $query->whereIn('replies.contact_id', $contacts);
-        }
-
-        return $query->get()->toArray();
-    }
-
-    public function addReply(array $input, $id)
-    {
-        $roll_call = RollCall::findorFail($id);
-
-        return Reply::create($input)->toArray();
-    }
-
     public function delete($id)
     {
         //

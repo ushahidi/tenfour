@@ -9,6 +9,7 @@ use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
 use RollCall\Http\Requests\RollCall\UpdateRollCallRequest;
 use RollCall\Http\Requests\RollCall\AddContactsRequest;
 use RollCall\Http\Requests\RollCall\AddReplyRequest;
+use RollCall\Http\Requests\RollCall\GetReplyRequest;
 use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
@@ -93,24 +94,6 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Add reply to a roll call
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function addReply(AddReplyRequest $request, $id)
-    {
-        $reply = $this->roll_calls->addReply([
-            'message'      => $request->input('message'),
-            'roll_call_id' => $id,
-            'user_id'      => $this->auth->user()['id'],
-        ], $id);
-
-        return $this->response->item($reply, new ReplyTransformer, 'reply');
-    }
-
-    /**
      * List roll call recipients
      *
      * @param Request $request
@@ -134,19 +117,6 @@ class RollCallController extends ApiController
     {
         return $this->response->collection($this->roll_calls->getMessages($id),
                                      new ContactTransformer, 'messages');
-    }
-
-    /**
-     * List roll call replies
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function listReplies(GetRollCallRequest $request, $id)
-    {
-        return $this->response->collection($this->roll_calls->getReplies($id, $request->query('users'), $request->query('contacts')),
-                                     new ReplyTransformer, 'replies');
     }
 
     /**
