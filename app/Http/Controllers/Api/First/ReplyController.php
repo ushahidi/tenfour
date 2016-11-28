@@ -4,6 +4,7 @@ namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\ReplyRepository;
 use RollCall\Http\Requests\Reply\GetReplyRequest;
+use RollCall\Http\Requests\Reply\AddReplyRequest;
 use RollCall\Http\Requests\Reply\CreateReplyRequest;
 use RollCall\Http\Requests\Reply\UpdateReplyRequest;
 use RollCall\Http\Transformers\ReplyTransformer;
