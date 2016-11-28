@@ -40,12 +40,11 @@ class ReplyController extends ApiController
      * @return Response
      *
      */
-    public function create(CreateReplyRequest $request, $id)
+    public function create(CreateReplyRequest $request)
     {
         $reply = $this->reply->create(
           $request->input() + [
-            'user_id' => $this->auth->user()['id'],
-            'roll_call_id' => $id
+            'user_id' => $this->auth->user()['id']
           ]
         );
 
