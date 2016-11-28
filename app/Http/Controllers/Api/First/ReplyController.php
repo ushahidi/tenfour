@@ -42,14 +42,42 @@ class ReplyController extends ApiController
      */
     public function create(CreateReplyRequest $request)
     {
-        $reply = $this->reply->create([
-            'message'          => $request->input('message'),
-            'location_text'    => $request->input('location_text'),
-            'answer'           => $request->input('answer'),
-            'user_id'          => $this->auth->user()['id']
-        ]);
+        $reply = $this->reply->create(
+          $request->input() + ['user_id' => $this->auth->user()['id']]
+        );
 
         return $this->response->item($reply, new ReplyTransformer, 'reply');
+    }
+
+    /**
+     * Add reply to a roll call
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function addReply(AddReplyRequest $request, $id)
+    {
+        $reply = $this->roll_calls->addReply([
+            'message'      => $request->input('message'),
+            'roll_call_id' => $id,
+            'user_id'      => $this->auth->user()['id'],
+        ], $id);
+
+        return $this->response->item($reply, new ReplyTransformer, 'reply');
+    }
+
+    /**
+     * List roll call replies
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function listReplies(GetReplyRequest $request, $id)
+    {
+        return $this->response->collection($this->roll_calls->getReplies($id, $request->query('users'), $request->query('contacts')),
+                                     new ReplyTransformer, 'replies');
     }
 
     /**

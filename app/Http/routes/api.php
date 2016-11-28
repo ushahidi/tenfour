@@ -63,14 +63,13 @@ $api->version($version, [
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
     $api->post($base.'rollcalls', ['as' => 'rollcalls.create', 'uses' => 'RollCallController@create']);
 
-    $api->put($base.'rollcalls/{rollcall}/reply/{reply}', ['uses' => 'ReplyController@update']);
-    $api->get($base.'rollcalls/{rollcall}/reply/{reply}', ['uses' => 'ReplyController@find']);
+    $api->put($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@update']);
+    $api->get($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@find']);
 
-    $api->post($base.'rollcalls/{rollcall}/reply', ['uses' => 'RollCallController@addReply']);
+    $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'RollCallController@addReply']);
 
     $api->get($base.'rollcalls/{rollcall}/messages', ['uses' => 'RollCallController@listMessages']);
     $api->get($base.'rollcalls/{rollcall}/recipients', ['uses' => 'RollCallController@listRecipients']);
-    $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'RollCallController@addReply']);
 
     $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'RollCallController@listReplies']);
 
