@@ -20,32 +20,32 @@ INSERT INTO oauth_scopes (id, description) VALUES ('user', 'user'),('organizatio
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('anonusertoken', 'user');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp', 'client', 'webapp');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('1', 'user');
-INSERT INTO oauth_access_tokens VALUES ('anonusertoken',1,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO oauth_access_tokens VALUES ('anonusertoken',1,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Password grants
 -- User
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('usertoken', 'user'), ('usertoken','contact');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','1');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('2','user'),('6', 'contact');
-INSERT INTO oauth_access_tokens VALUES ('usertoken',2,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO oauth_access_tokens VALUES ('usertoken',2,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Admin
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('admintoken', 'user');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','2');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('3','user');
-INSERT INTO oauth_access_tokens VALUES ('admintoken',3,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO oauth_access_tokens VALUES ('admintoken',3,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Organization Owner
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgownertoken', 'organization');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','4');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('4', 'organization');
-INSERT INTO oauth_access_tokens VALUES ('orgownertoken',4,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO oauth_access_tokens VALUES ('orgownertoken',4,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Organization Admin
 INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgadmintoken', 'organization');
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','5');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organization');
-INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Add test organizations
 INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall.rollcall.io');
