@@ -17,17 +17,14 @@ class OrgMemberSeeder extends Seeder
         $ids = [];
         $members = [
            [
-                'username' => 'charlie',
                 'name'     => 'Charlie Harding',
                 'email'    => 'charlie@ushahidi.com'
             ],
             [
-                'username' => 'jason',
                 'name'     => 'Jason Mule',
                 'email'    => 'jason@ushahidi.com'
             ],
             [
-                'username' => 'linda',
                 'name'     => 'Linda Kamau',
                 'email'    => 'linda@ushahidi.com'
             ]
@@ -36,7 +33,6 @@ class OrgMemberSeeder extends Seeder
         foreach ($members as $member) {
             $member = User::firstOrCreate([
                 'email'    => $member['email'],
-                'username' => $member['username'],
                 'name'     => $member['name']
             ]);
 

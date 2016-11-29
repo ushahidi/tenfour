@@ -18,10 +18,7 @@ class RollCallTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::where('username', 'charlie')
-               ->orwhere('username', 'linda')
-               ->select('id', 'email')
-               ->get();
+        $users = User::select('id', 'email')->get();
 
         // Grab seeded organization
         $organization = Organization::where('name', 'Ushahidi')

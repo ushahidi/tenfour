@@ -10,7 +10,6 @@ class UserTableSeeder extends Seeder
 {
     public function run() {
         $user = User::firstOrCreate([
-            'username' => 'admin',
             'name' => 'Team Ushahidi',
             'email' => 'team@ushahidi.com',
         ]);
