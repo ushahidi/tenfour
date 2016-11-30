@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+ROLLCALL_INFRA_BRANCH=${ROLLCALL_INFRA_BRANCH:-master}
+
 if [ -z "${GITHUB_TOKEN}" ]; then
 	echo "please configure a github token to perform deploy"
 	exit 1
@@ -11,7 +13,7 @@ git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf git@gith
 # ==> Copy ansible scripts into container
 [ ! -d $HOME/.ssh ] || true && mkdir -m 0700 $HOME/.ssh
 ssh-keyscan github.com >> $HOME/.ssh/known_hosts
-git clone git@github.com:ushahidi/rollcall-infra.git /playbooks --depth=5
+git clone -b ${ROLLCALL_INFRA_BRANCH} git@github.com:ushahidi/rollcall-infra.git /playbooks --depth=5
 
 if [ -n "${ANSIBLE_VAULT_PASSWORD}" ]; then
 	printf "%s" "${ANSIBLE_VAULT_PASSWORD}" > /playbooks/vpass

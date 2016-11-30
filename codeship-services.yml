@@ -30,6 +30,8 @@ deploy:
   build:
     image: deploy
     dockerfile_path: docker/deploy.Dockerfile
+  environment:
+    - ROLLCALL_INFRA_BRANCH=master
   encrypted_env_file: deployment.env.encrypted
   volumes:
     - .:/vols/src
