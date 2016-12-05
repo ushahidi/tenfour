@@ -32,7 +32,7 @@ class RollCallTableSeeder extends Seeder
 
         $rollCall->update([
             'message' => 'Test rollcall',
-            'answers' => ['no', 'yes']
+            'answers' => ['No', 'Yes']
         ]);
 
         // Add recipients
@@ -62,6 +62,7 @@ class RollCallTableSeeder extends Seeder
 
             Reply::firstOrCreate([
                 'message'      => 'I am OK',
+                'answer'       => 'Yes',
                 'user_id'      => $user->id,
                 'roll_call_id' => $rollCall->id,
             ]);
