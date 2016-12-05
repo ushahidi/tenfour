@@ -13,7 +13,7 @@ class AnswersRollcalls extends Migration
     public function up()
     {
         Schema::table('roll_calls', function (Blueprint $table) {
-            $table->json('answers')->nullable();
+            $table->text('answers')->nullable();
         });
     }
 
