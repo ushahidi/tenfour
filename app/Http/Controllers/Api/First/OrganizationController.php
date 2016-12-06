@@ -211,4 +211,5 @@ class OrganizationController extends ApiController
         $organization = $this->organizations->delete($organization_id);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
+
 }

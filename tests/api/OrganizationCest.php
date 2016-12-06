@@ -548,6 +548,36 @@ class OrganizationCest
     }
 
     /*
+     * Set an organization's setting
+     *
+     */
+    public function setSetting(ApiTester $I)
+    {
+      $id = 2;
+      $I->wantTo('Set an organization\'s setting');
+      $I->amAuthenticatedAsOrgOwner();
+      $I->haveHttpHeader('Content-Type', 'application/json');
+      $I->sendPUT($this->endpoint."/$id", [
+          'name' => 'Rollcall Org',
+          'url'  => 'rollcall.rollcall.io',
+          'settings'  => ['channels' => ['email' => true]],
+      ]);
+      $I->seeResponseCodeIs(200);
+      $I->seeResponseIsJson();
+      $I->seeResponseContainsJson(["organization" => ["settings" => [
+        [
+          "key" => 'channels',
+          "values" => ['email' => true]
+        ],
+        [
+          "key" => 'organization_types',
+          "values" => ['election']
+        ]
+      ]]]);
+    }
+
+
+    /*
      * Delete organization as an org owner
      *
      */

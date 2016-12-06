@@ -37,4 +37,13 @@ class Organization extends Model
     {
         return $this->hasMany('RollCall\Models\RollCall');
     }
+
+    /**
+     *
+     * An organization has settings
+     */
+    public function settings()
+    {
+        return $this->hasMany('RollCall\Models\Setting');
+    }
 }

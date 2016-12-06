@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use RollCall\Seeders\OauthTableSeeder;
 use RollCall\Seeders\UserTableSeeder;
 use RollCall\Seeders\RoleTableSeeder;
+use RollCall\Seeders\SettingsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
          $this->call(RollCall\Seeders\OrganizationTableSeeder::class);
          $this->call(RollCall\Seeders\OrgMemberSeeder::class);
          $this->call(RollCall\Seeders\RollCallTableSeeder::class);
+         $this->call(RollCall\Seeders\SettingsTableSeeder::class);
 
         Model::reguard();
     }

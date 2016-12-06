@@ -104,4 +104,6 @@ interface OrganizationRepository extends CrudRepository
      * @return bool
      */
     public function isMember($user_id, $org_id);
+
+
 }

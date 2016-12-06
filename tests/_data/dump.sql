@@ -85,3 +85,6 @@ INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
 -- Add test replies
 INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('1', 'I am OK', '1', '1', '1');
 INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('2', 'I am OK', '4', '1', '4');
+
+-- Add test settings
+INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';

@@ -49,7 +49,6 @@ $api->version($version, [
     $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
     $api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
 
-
     //Contacts
     ////////////////////////////////////////////////////////////////////
     $api->get($base.'contacts', ['as' => 'contacts.index', 'uses' => 'ContactController@all']);

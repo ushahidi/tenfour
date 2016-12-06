@@ -3,6 +3,7 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
 use RollCall\Models\User;
+use RollCall\Models\Setting;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
@@ -43,7 +44,18 @@ class EloquentOrganizationRepository implements OrganizationRepository
         $organization = Organization::findorFail($id);
         $organization->update($input);
 
-        return $organization->toArray();
+        if (isset($input['settings'])) {
+          foreach ($input['settings'] as $key => $setting) {
+            Setting::updateOrCreate([
+              'organization_id' => $organization->id,
+              'key' => $key
+            ], [
+              'values' => $setting
+            ]);
+          };
+        }
+
+        return $this->find($id);
     }
 
     public function updateMember(array $input, $id, $user_id)
@@ -112,7 +124,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function find($id)
     {
-        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
+        return Organization::with('settings')
+            ->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
             ->select('organizations.id', 'name', 'url', 'user_id', 'role')
             ->where('role', 'owner')
             ->findOrFail($id)
@@ -297,4 +310,5 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->where('organization_id', $org_id)
             ->count();
     }
+
 }
