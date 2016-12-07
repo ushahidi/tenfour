@@ -2,7 +2,7 @@
 
 class ReplyCest
 {
-    protected $endpoint = '/rollcalls';
+    protected $endpoint = '/api/v1/rollcalls';
 
     public function getRepliesFilteredByUsers(ApiTester $I)
     {

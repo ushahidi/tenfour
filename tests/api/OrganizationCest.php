@@ -2,7 +2,7 @@
 
 class OrganizationCest
 {
-    protected $endpoint = '/organizations';
+    protected $endpoint = '/api/v1/organizations';
 
     /*
      * Get all organizations as an admin

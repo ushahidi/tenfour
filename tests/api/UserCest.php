@@ -2,7 +2,7 @@
 
 class UserCest
 {
-    protected $endpoint = '/users';
+    protected $endpoint = '/api/v1/users';
 
     /*
      * Get all users as an admin

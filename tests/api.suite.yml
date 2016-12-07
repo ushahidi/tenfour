@@ -4,7 +4,7 @@ modules:
     config:
       REST:
            depends: PhpBrowser
-           url: 'http://api.rollcall.dev/api/v1'
+           url: 'http://api.rollcall.dev/'
       DbHelper:
            dsn: 'mysql:host=localhost;dbname=rollcall'
            user: 'root'
@@ -15,7 +15,7 @@ env:
     modules:
       config:
         REST:
-             url: 'http://api.rollcall.dev/api/v1'
+             url: 'http://api.rollcall.dev/'
         DbHelper:
           dsn: 'mysql:host=mysql;dbname=rollcall'
           user: rollcall

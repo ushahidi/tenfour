@@ -2,7 +2,7 @@
 
 class RollCallCest
 {
-    protected $endpoint = '/rollcalls';
+    protected $endpoint = '/api/v1/rollcalls';
 
     /*
      * Get all roll calls as an admin

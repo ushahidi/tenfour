@@ -2,7 +2,7 @@
 
 class ContactCest
 {
-    protected $endpoint = '/contacts';
+    protected $endpoint = '/api/v1/contacts';
 
     /*
      * Get all contacts as an admin
