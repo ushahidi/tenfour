@@ -39,7 +39,6 @@ class UpdateUserRequest extends FormRequest
         return [
             'email' => 'max:255|unique:users,email,'.$this->id,
             'password' => 'min:8',
-            'password_confirm' => 'same:password',
             'person_type' => 'in:member,user,external',
         ];
     }

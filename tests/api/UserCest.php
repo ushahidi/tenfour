@@ -137,7 +137,6 @@ class UserCest
             'name' => 'Team RollCall',
             'email' => 'rollcall@ushahidi.com',
             'password' => 'rollcall',
-            'password_confirm' => 'rollcall',
             'person_type' => 'user'
         ]);
         $I->seeResponseCodeIs(200);
