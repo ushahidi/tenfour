@@ -304,6 +304,41 @@ class RollCallCest
     }
 
     /*
+     * Create a roll call with errors
+     *
+     */
+    public function createRollCallWithErrors(ApiTester $I)
+    {
+        $I->wantTo('Create an invalid roll call as admin and get errors');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => '',
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 9999
+                ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                "message" => "422 Unprocessable Entity",
+                "errors" =>  [
+                    "message" =>  ["The message field is required."],
+                    "recipients.1.id" => ["The selected recipients.1.id is invalid."]
+                ],
+                "status_code" => 422
+            ]
+        );
+    }
+
+    /*
      * Add contact to roll call
      *
      */

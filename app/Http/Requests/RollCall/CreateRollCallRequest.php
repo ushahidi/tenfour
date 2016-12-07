@@ -33,20 +33,12 @@ class CreateRollCallRequest extends FormRequest
      */
     public function rules()
     {
-        // Workaround until Laravel 5.3
-        $recipient_rules = [];
-        foreach($this->request->get('recipients') as $key => $val)
-        {
-            $rules['recipients.'.$key] = 'required|exists:users,id';
-        }
-
         return [
             'message'         => 'required',
-            'organization_id' => 'required|integer',
+            'organization_id' => 'required|integer|exists:organizations,id',
             'recipients'      => 'required',
-            // This doesn't work in Laravel 5.1
-            // 'recipients.*.id'   => 'required|exists:users,id'
-        ] + $recipient_rules;
+            'recipients.*.id' => 'required|exists:users,id'
+        ];
     }
 
     protected function getAllowedOrgRoles()
