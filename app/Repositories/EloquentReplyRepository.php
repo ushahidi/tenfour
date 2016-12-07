@@ -17,6 +17,7 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function addReply(array $input, $id)
     {
+
         return Reply::create($input)
             ->toArray();
     }
