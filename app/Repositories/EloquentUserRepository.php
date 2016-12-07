@@ -15,10 +15,10 @@ class EloquentUserRepository implements UserRepository
 
     public function update(array $input, $id)
     {
-		$user = User::findorFail($id);
+		    $user = User::findorFail($id);
         $user->update($input);
 
-		return $user->toArray();
+		    return $user->toArray();
     }
 
     public function create(array $input)

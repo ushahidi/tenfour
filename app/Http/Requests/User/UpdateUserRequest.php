@@ -3,8 +3,9 @@
 namespace RollCall\Http\Requests\User;
 
 use RollCall\Traits\UserAccess;
+use Dingo\Api\Http\FormRequest;
 
-class UpdateUserRequest extends CreateUserRequest
+class UpdateUserRequest extends FormRequest
 {
     use UserAccess;
 
@@ -26,5 +27,19 @@ class UpdateUserRequest extends CreateUserRequest
         }
 
         return false;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'email' => 'max:255|unique:users,email,'.$this->id,
+            'password' => 'min:8',
+            'person_type' => 'in:member,user,external',
+        ];
     }
 }
