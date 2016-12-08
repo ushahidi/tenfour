@@ -163,4 +163,31 @@ class UserCest
         $I->seeResponseCodeIs(200);
     }
 
+    /*
+     * Change a user's password
+     *
+     */
+    public function changePassword(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Change a user\'s pasword');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$id", [
+            'password' => 'another_password',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->sendPOST('/oauth/access_token', [
+            'client_id' => 'webapp',
+            'client_secret' => 'secret',
+            'scope' => 'user',
+            'username' => 'test@ushahidi.com',
+            'password' => 'another_password',
+            'grant_type' => 'password'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+    }
+
 }
