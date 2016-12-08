@@ -21,6 +21,8 @@ class ReplyTransformer extends TransformerAbstract
 
         $reply['user']['id'] = (int) $reply['user_id'];
         $reply['user']['uri'] = '/users/' . $reply['user_id'];
+        $reply['user']['gravatar'] = !empty($reply['user']['email']) ? md5(strtolower(trim($reply['user']['email']))) : '00000000000000000000000000000000';
+        // Set Gravatar ID
         unset($reply['user_id']);
 
         return $reply;

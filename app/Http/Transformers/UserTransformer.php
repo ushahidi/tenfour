@@ -13,6 +13,7 @@ class UserTransformer extends TransformerAbstract
             {
                 $contact['id'] = (int) $contact['id'];
                 $contact['uri'] = '/contact/' . $contact['id'];
+                $contact['user']['gravatar'] = !empty($contact['user']['email']) ? md5(strtolower(trim($contact['user']['email']))) : '00000000000000000000000000000000';
                 unset($contact['user_id']);
 
                 // Format replies
