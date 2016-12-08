@@ -43,6 +43,9 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
+        // Set Gravatar ID
+        $user['gravatar'] = !empty($user['email']) ? md5(strtolower(trim($user['email']))) : '00000000000000000000000000000000';
+
         return $user;
     }
 }
