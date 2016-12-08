@@ -57,12 +57,19 @@ class EloquentReplyRepository implements ReplyRepository
         return $reply;
     }
 
-    public function delete($id)
+    public function getLastReplyId()
     {
-
+        // Assumes the provider id is incremental
+        return Reply::max('message_id');
     }
 
-    public function all() {
+    public function delete($id)
+    {
+        //
+    }
 
+    public function all()
+    {
+        //
     }
 }

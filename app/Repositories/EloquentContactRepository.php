@@ -9,7 +9,7 @@ class EloquentContactRepository implements ContactRepository
     public function all()
     {
         return Contact::with([
-            'user' => function($query) {
+            'user' => function ($query) {
                 $query->select('users.id', 'users.name', 'users.email');
             }
         ])
@@ -35,7 +35,7 @@ class EloquentContactRepository implements ContactRepository
     public function find($id)
     {
         return Contact::with([
-            'user' => function($query) {
+            'user' => function ($query) {
                 $query->select('users.id', 'users.name', 'users.email');
             }
         ])
@@ -45,9 +45,40 @@ class EloquentContactRepository implements ContactRepository
 
     public function delete($id)
     {
-		$contact = Contact::findorFail($id);
+		$contact = Contact::findOrFail($id);
 		$contact->delete();
 
         return $contact->toArray();
+    }
+
+    public function getByUserId($user_id)
+    {
+        return Contact::with([
+            'user' => function ($query) {
+                $query->select('users.id', 'users.name', 'users.email');
+            }
+        ])
+            ->where('user_id', $user_id)
+            ->get()
+            ->toArray();
+    }
+
+    public function getByContact($contact)
+    {
+        $contact = Contact::with([
+            'user' => function ($query) {
+                $query->select('users.id', 'users.name', 'users.email');
+            }
+        ])
+            ->where('contact', $contact)
+            ->get();
+
+        if (!$contact->isEmpty()) {
+            $contact = $contact->first()->toArray();
+        } else {
+            $contact = $contact->toArray();
+        }
+
+        return $contact;
     }
 }

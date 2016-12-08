@@ -33,6 +33,9 @@ class ApiServiceProvider extends ServiceProvider
                          'RollCall\Repositories\EloquentRollCallRepository');
         $this->app->bind('RollCall\Contracts\Repositories\ReplyRepository',
                          'RollCall\Repositories\EloquentReplyRepository');
+        $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
+                         'RollCall\Messaging\MessageServiceFactory');
+
     }
 
     /** Recursively list all traits defined on final class */

@@ -3,6 +3,7 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Http\Requests\RollCall\GetRollCallsRequest;
 use RollCall\Http\Requests\RollCall\GetRollCallRequest;
 use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
@@ -15,13 +16,15 @@ use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
+use RollCall\Messaging\Dispatcher;
 use Dingo\Api\Auth\Auth;
 
 class RollCallController extends ApiController
 {
-    public function __construct(RollCallRepository $roll_calls, Auth $auth, Response $response)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, Auth $auth, Response $response)
     {
         $this->roll_calls = $roll_calls;
+        $this->contacts = $contacts;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -75,6 +78,14 @@ class RollCallController extends ApiController
             'user_id' => $this->auth->user()['id'],
         ]);
 
+        // Queue roll calls
+        $dispatcher = new Dispatcher($this->roll_calls, $this->contacts);
+
+        foreach($request->input('recipients') as $recipient)
+        {
+            $dispatcher->queue($roll_call['id'], $recipient);
+        }
+
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
     }
 
@@ -89,6 +100,16 @@ class RollCallController extends ApiController
     public function update(UpdateRollCallRequest $request, $id)
     {
         $roll_call = $this->roll_calls->update($request->all(), $id);
+
+        // Queue roll calls if available
+        if ($request->input('recipients')) {
+            $dispatcher = new Dispatcher($this->roll_calls, $this->contacts);
+
+            foreach($request->input('recipients') as $recipient)
+            {
+                $dispatcher->queue($roll_call['id'], $recipient);
+            }
+        }
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
     }

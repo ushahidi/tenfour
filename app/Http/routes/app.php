@@ -22,3 +22,6 @@ Route::post('oauth/access_token', function() {
 
 Route::get('health', 'HealthController@shallow');
 Route::get('health/deep', 'HealthController@deep');
+
+// Receive push emails
+Route::post('mail/receive', 'MailController@receive');

@@ -41,12 +41,12 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function create(array $input)
     {
-        $rollcall = RollCall::create($input);
+        $roll_call = RollCall::create($input);
 
         $userIds = collect($input['recipients'])->pluck('id')->all();
-        $rollcall->recipients()->sync($userIds);
+        $roll_call->recipients()->sync($userIds);
 
-        return $rollcall->fresh()
+        return $roll_call->fresh()
             ->toArray();
     }
 
@@ -61,15 +61,33 @@ class EloquentRollCallRepository implements RollCallRepository
 
         if (isset($input['recipients'])) {
             $userIds = collect($input['recipients'])->pluck('id')->all();
-            $rollcall->recipients()->sync($userIds);
+            $roll_call->recipients()->sync($userIds);
         }
 
         return $roll_call->fresh()->toArray();
     }
 
-    public function getMessages($id)
+    public function getMessages($id, $user_id = null, $contact_id = null)
     {
-        return RollCall::findOrFail($id)->messages()->with('user')->get()->toArray();
+        $query = RollCall::findOrFail($id)->messages()->with('user');
+
+        if ($user_id) {
+            $query->where('user_id', $user_id);
+        }
+
+        return $query->get()->toArray();
+    }
+
+    public function getLastSentMessageId($contact_id = null)
+    {
+        $query = DB::table('roll_call_messages')
+               ->select('roll_call_id');
+
+        if ($contact_id) {
+            $query->where('contact_id', $contact_id);
+        }
+
+        return $query->orderBy('roll_call_id', 'desc')->take(1)->value('roll_call_id');
     }
 
     public function getRecipients($id, $unresponsive=null)
@@ -94,6 +112,19 @@ class EloquentRollCallRepository implements RollCallRepository
         // ])
         // ->findOrFail($id)
         // ->toArray();
+    }
+
+    public function addMessage($id, $contact_id)
+    {
+        $roll_call = RollCall::findorFail($id);
+
+        $roll_call->messages()->attach($contact_id);
+
+        return RollCall::findorFail($id)
+            ->messages()
+            ->where('contact_id', $contact_id)
+            ->get()
+            ->toArray();
     }
 
     public function delete($id)

@@ -147,6 +147,7 @@ return [
         RollCall\Providers\RouteServiceProvider::class,
         RollCall\Providers\OAuthServiceProvider::class,
         RollCall\Providers\ApiServiceProvider::class,
+        RollCall\Messaging\SMSServiceProvider::class,
 
         /*
          * 3rd party Service Providers...
@@ -207,6 +208,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
+        'SMS' => SimpleSoftwareIO\SMS\Facades\SMS::class,
 
     ],
 

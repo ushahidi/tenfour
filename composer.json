@@ -10,7 +10,8 @@
         "lucadegasperi/oauth2-server-laravel": "^5.0",
         "league/oauth2-server": "^4.1",
         "barryvdh/laravel-cors": "^0.8.2",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "simplesoftwareio/simple-sms": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

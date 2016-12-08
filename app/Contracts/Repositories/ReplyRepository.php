@@ -47,4 +47,10 @@ interface ReplyRepository extends CrudRepository
      */
     public function update(array $input, $id);
 
+    /**
+     * Get last reply id from the provider
+     *
+     * @return int
+     */
+    public function getLastReplyId();
 }
