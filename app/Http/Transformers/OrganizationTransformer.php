@@ -9,6 +9,7 @@ class OrganizationTransformer extends TransformerAbstract
     {
         if (isset($organization['user_id'])) {
             $organization['user']['id'] = $organization['user_id'];
+            $organization['user']['gravatar'] = !empty($organization['user']['email']) ? md5(strtolower(trim($organization['user']['email']))) : '00000000000000000000000000000000';
             unset($organization['user_id']);
         }
 
@@ -23,7 +24,7 @@ class OrganizationTransformer extends TransformerAbstract
             {
                 $member['id'] = (int) $member['id'];
                 $member['uri'] = '/users/' . $member['id'];
-
+                $member['gravatar'] = !empty($member['email']) ? md5(strtolower(trim($member['email']))) : '00000000000000000000000000000000';
                 unset($member['pivot']);
             }
         }

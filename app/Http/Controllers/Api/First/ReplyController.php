@@ -30,7 +30,7 @@ class ReplyController extends ApiController
      */
     public function find(GetReplyRequest $request, $roll_call_id, $reply_id)
     {
-        $reply= $this->reply->find($reply_id);
+        $reply = $this->reply->find($reply_id);
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
