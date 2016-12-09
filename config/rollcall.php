@@ -5,4 +5,8 @@ return [
 		'client_id' => env('RC_CLIENT_ID', 'webapp'),
 		'client_secret' => env('RC_CLIENT_SECRET', 'T7913s89oGgJ478J73MRHoO2gcRRLQ'),
 	],
+
+    'messaging' => [
+        'incoming_driver' => env('RC_MESSAGING_INCOMING', 'aws-ses-sns')
+    ]
 ];

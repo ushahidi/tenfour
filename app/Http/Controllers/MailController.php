@@ -2,8 +2,16 @@
 
 namespace RollCall\Http\Controllers;
 
+use Log;
+use Route;
 use RollCall\Messaging\Storage\Reply as ReplyStorage;
 use Illuminate\Http\Request;
+
+use Aws\Sns\Message;
+use Aws\Sns\MessageValidator;
+use Aws\Sns\Exception\InvalidSnsMessageException;
+
+use Zend\Mail\Storage\Message as EmailMessage;
 
 class MailController extends Controller
 {
@@ -25,15 +33,79 @@ class MailController extends Controller
      */
     public function receive(Request $request)
     {
-        // Check if the request is authorized.
-        if (hash_hmac('sha256', $request->input('timestamp').$request->input('token'), config('mailgun.secret')) !== $request->input('signature')) {
-            return response('Rejected', 406);
+        if (config('rollcall.messaging.incoming_driver') == 'mailgun') {
+            // Check if the request is authorized.
+            if (hash_hmac('sha256', $request->input('timestamp').$request->input('token'), config('services.mailgun.secret')) !== $request->input('signature')) {
+                return response('Rejected', 406);
+            }
+
+            $message = strip_tags($request->input('body-plain'));
+
+            $this->reply_storage->save($request->input('from'), $message, null, 'mailgun');
+
+            return response('Accepted', 200);
         }
 
-        $message = strip_tags($request->input('body-plain'));
+        if (config('rollcall.messaging.incoming_driver') == 'aws-ses-sns') {
+            // Instantiate the Message and Validator
+            // @todo DI
+            $message = Message::fromRawPostData();
+            $validator = new MessageValidator();
 
-        $this->reply_storage->save($request->input('from'), $message);
+            // Validate the message and log errors if invalid.
+            try {
+                $validator->validate($message);
+            } catch (InvalidSnsMessageException $e) {
+                Log::info('SNS Message Validation Error: ' . $e->getMessage());
+                // Pretend we're not here if the message is invalid.
+                abort(404);
+            }
 
-        return response('Accepted', 200);
+            // Check the type of the message and handle the subscription.
+            if ($message['Type'] === 'SubscriptionConfirmation') {
+                Log::info('SNS Subscription Confirmed');
+                // Confirm the subscription by sending a GET request to the SubscribeURL
+                file_get_contents($message['SubscribeURL']);
+            }
+
+            if ($message['Type'] === 'UnsubscribeConfirmation') {
+                Log::info('SNS Unsubscribe');
+                // Confirm the subscription by sending a GET request to the SubscribeURL
+                file_get_contents($message['SubscribeURL']);
+            }
+
+            if ($message['Type'] === 'Notification') {
+                $emailMessage = json_decode($message['Message'], true);
+                $emailMessage = new EmailMessage(['raw' => $emailMessage['content']]);
+
+                // Output first text/plain part
+                $plainText = null;
+                $html = null;
+                foreach (new \RecursiveIteratorIterator($emailMessage) as $part) {
+                    try {
+                        if (strtok($part->contentType, ';') == 'text/plain') {
+                            $plainText = $part;
+                            break;
+                        }
+                        if (strtok($part->contentType, ';') == 'text/html') {
+                            $html = $part;
+                        }
+                    } catch (\Zend\Mail\Exception $e) {
+                        // ignore
+                    }
+                }
+
+                $from = $emailMessage->getHeader('From')->getAddressList()->current()->getEmail();
+
+                if ($plainText) {
+                    Log::info("Received message: ". $message['MessageId']);
+                    $this->reply_storage->save($from, $plainText->getContent(), $message['MessageId'], 'aws-ses-sns');
+                }
+
+                else {
+                    Log::info("No plain text found for " . $message['MessageId'], $emailMessage['content']);
+                }
+            }
+        }
     }
 }
