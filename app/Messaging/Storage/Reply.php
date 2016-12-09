@@ -31,7 +31,7 @@ class Reply
                     'user_id'      => $contact['user']['id'],
                     'roll_call_id' => $roll_call_id,
                     'contact_id'   => $contact['id'],
-                    'message_id'  => $message_id
+                    'message_id'   => $message_id
                 ];
 
                 $this->replies->create($input);
