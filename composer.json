@@ -14,7 +14,8 @@
         "simplesoftwareio/simple-sms": "^3.0",
         "aws/aws-php-sns-message-validator": "^1.1",
         "zendframework/zend-mail": "^2.7",
-        "aws/aws-sdk-php": "^3.20"
+        "aws/aws-sdk-php": "^3.20",
+        "league/csv": "^8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

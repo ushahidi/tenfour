@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \RollCall\Console\Commands\Inspire::class,
         \RollCall\Console\Commands\ReceiveSMS::class,
+        \RollCall\Console\Commands\ImportContacts::class,
     ];
 
     /**
