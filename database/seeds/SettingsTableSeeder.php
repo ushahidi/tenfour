@@ -15,13 +15,15 @@ class SettingsTableSeeder extends Seeder
 
         Setting::firstOrCreate([
           'organization_id' => $organization->id,
-          'key' => 'organization_types',
+          'key' => 'organization_types'
+        ])->update([
           'values' => ["election","firstresponders","humanrights","humanitarian","internationaldevelopment","anticorruption"]
         ]);
 
         Setting::firstOrCreate([
           'organization_id' => $organization->id,
           'key' => 'channels',
+        ])->update([
           'values' => ["email" => true]
         ]);
     }
