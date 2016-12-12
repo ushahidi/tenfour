@@ -169,7 +169,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
             },
             'contacts.replies' => function ($query) use ($history_limit) {
                 $query->latest()->limit($history_limit);
-            }
+            },
+            'contacts'
         ])
               ->find($user_id)
               ->toArray() + [
