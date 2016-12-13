@@ -44,23 +44,46 @@ class PasswordController extends Controller
 
         $response = Password::sendResetLink($request->only('email'), function (Message $message) {
             $message->subject($this->getEmailSubject());
-
         });
 
         switch ($response) {
             case Password::RESET_LINK_SENT:
-                // return redirect()->back()->with('status', trans($response));
-                // return 'ok';
                 return response('Accepted', 200);
 
-            // case Password::INVALID_USER:
             default:
-                // return redirect()->back()->withErrors(['email' => trans($response)]);
-                abort(404);
-
-
+                return response($response, 403);
         }
     }
 
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postReset(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed',
+        ]);
+
+        $credentials = $request->only(
+            'email', 'password', 'password_confirmation', 'token'
+        );
+
+        $response = Password::reset($credentials, function ($user, $password) {
+            $this->resetPassword($user, $password);
+        });
+
+        switch ($response) {
+            case Password::PASSWORD_RESET:
+                return response('Accepted', 200);
+
+            default:
+                return response($response, 403);
+        }
+    }
 
 }
