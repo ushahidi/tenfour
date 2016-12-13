@@ -25,3 +25,6 @@ Route::get('health/deep', 'HealthController@deep');
 
 // Receive push emails
 Route::post('mail/receive', 'MailController@receive');
+
+Route::post('password/email', ['uses' => 'Auth\PasswordController@postEmail']);
+Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
