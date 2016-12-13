@@ -41,6 +41,11 @@ class SendRollCall implements ShouldQueue
         $url = url('rollcalls/' . $this->roll_call['id']);
 
         $message_service = $message_service_factory->make($this->contact['type']);
+
+        if (config('sms.driver') == 'africastalking') {
+            $message_service->setView('sms.africastalking');
+        }
+
         $message_service->send($this->contact['contact'], $this->roll_call['message'], ['url' => $url]);
     }
 }
