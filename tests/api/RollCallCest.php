@@ -65,6 +65,17 @@ class RollCallCest
                     ]
                 ]
             ],
+            [
+                'message' => 'yet another test roll call',
+                'organization' => [
+                    'id' => 2
+                ],
+                'sent_count' => 0,
+                'user' => [
+                    'id' => 1
+                ],
+                'recipients' => []
+            ],
         ]);
     }
 
@@ -228,9 +239,55 @@ class RollCallCest
     {
         $I->wantTo('Get a list of all roll calls for an organization as an authenticated user');
         $I->amAuthenticatedAsUser();
-        $I->sendGET($this->endpoint);
-        $I->seeResponseCodeIs(403);
+        $I->sendGET($this->endpoint.'?organization=2');
+        $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            [
+                'message' => 'Westgate under siege',
+                'organization' => [
+                    'id' => 2
+                ],
+                'sent_count'  => 3,
+                'reply_count' => 2,
+                'user' => [
+                    'id' => 4
+                ],
+                'recipients' => [
+                    [
+                        'id' => 1,
+                        'name' => 'Test user',
+                        'email' => 'test@ushahidi.com',
+                        'uri' => '/users/1',
+                    ],
+                    [
+                        'id' => 2,
+                        'name' => 'Admin user',
+                        'email' => 'admin@ushahidi.com',
+                        'uri' => '/users/2',
+                    ],
+                    [
+                        'id' => 4,
+                        'name' => 'Org owner',
+                        'email' => 'org_owner@ushahidi.com',
+                        'uri' => '/users/4',
+                    ]
+                ]
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            [
+                'message' => 'Yet another test roll call',
+                'organization' => [
+                    'id' => 3
+                ],
+                'sent_count' => 1,
+                'user' => [
+                    'id' => 1
+                ],
+                'recipients' => []
+            ],
+        ]);
     }
 
     /*
@@ -257,6 +314,46 @@ class RollCallCest
                 ]
             ]
          );
+    }
+
+    /*
+     * Get roll call details as admin
+     *
+     */
+    public function getMyRollCallAsMember(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Get roll call details as an member');
+        $I->amAuthenticatedAsUser();
+        $I->sendGET($this->endpoint.'/'.$id);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'Westgate under siege',
+                'status'  => 'pending',
+                'organization' => [
+                    'id' => 2
+                ],
+                'user' => [
+                    'id' => 4
+                ]
+            ]
+         );
+    }
+
+    /*
+     * Get roll call details as admin
+     *
+     */
+    public function getOtherRollCallAsMember(ApiTester $I)
+    {
+        $id = 3;
+        $I->wantTo('Failed to get roll call details as an member');
+        $I->amAuthenticatedAsUser();
+        $I->sendGET($this->endpoint.'/'.$id);
+        $I->seeResponseCodeIs(403);
+        $I->seeResponseIsJson();
     }
 
     /*
