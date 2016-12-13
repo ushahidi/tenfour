@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
+use RollCall\Notifications\ResetPassword;
 
 class User extends Model implements AuthenticatableContract,
 	AuthorizableContract,
@@ -96,4 +97,8 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('Rollcall\Models\Reply');
     }
+
+		public function sendPasswordResetNotification($token) {
+		    $this->notify(new ResetPassword($token));
+		}
 }
