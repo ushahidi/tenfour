@@ -61,7 +61,6 @@ class ReplyController extends ApiController
      */
     public function addReply(AddReplyRequest $request, $id)
     {
-
         $reply = $this->reply->addReply(
           $request->input() + [
             'user_id' => $this->auth->user()['id'],
