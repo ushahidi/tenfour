@@ -48,10 +48,10 @@ class PasswordController extends Controller
 
         switch ($response) {
             case Password::RESET_LINK_SENT:
-                return response('Accepted', 200);
+                return response([$response], 200);
 
             default:
-                return response($response, 403);
+                return response([$response], 403);
         }
     }
 
@@ -81,10 +81,10 @@ class PasswordController extends Controller
 
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return response('Accepted', 200);
+                return response([$response], 200);
 
             default:
-                return response($response, 403);
+                return response([$response], 403);
         }
     }
 
