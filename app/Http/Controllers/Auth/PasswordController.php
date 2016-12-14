@@ -74,7 +74,9 @@ class PasswordController extends Controller
         );
 
         $response = Password::reset($credentials, function ($user, $password) {
-            $this->resetPassword($user, $password);
+            $user->forceFill([
+              'password' => $password,
+            ])->save();
         });
 
         switch ($response) {
