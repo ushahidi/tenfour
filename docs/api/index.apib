@@ -151,112 +151,6 @@ Get a JSON representation of all the registered users.
                 }
             }
 
-## Add member to an organization [POST /api/v1/organizations/{orgId}/members]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Add member contact [POST /api/v1/organizations/{orgId}/members/{memberId}/contacts]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Update member contact [PUT /api/v1/organizations/{orgId}/members/{memberId}/contacts/{contactId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Delete member contact [DELETE /api/v1/organizations/{orgId}/members/{memberId}/contacts/{contactId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## List members of an organization [GET /api/v1/organizations/{orgId}/members]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Find a member [GET /api/v1/organizations/{orgId}/members/{memberId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Delete members from an organization [DELETE /api/v1/organizations/{orgId}/members/{memberId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
 ## Get a single organization [GET /api/v1/organizations/{orgId}]
 
 
@@ -298,7 +192,7 @@ Get a JSON representation of all the registered users.
                 }
             }
 
-## Update organization member [PUT /api/v1/organizations/{orgId}/members/{memberId}]
+## Delete an organization [DELETE /api/v1/organizations/{orgId}]
 
 
 + Request (application/json)
@@ -314,7 +208,117 @@ Get a JSON representation of all the registered users.
 
             []
 
-## Delete an organization [DELETE /api/v1/organizations/{orgId}]
+# People [/api/v1/organizations/{orgId}/people]
+
+## Add member to an organization [POST /api/v1/organizations/{orgId}/people]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## List members of an organization [GET /api/v1/organizations/{orgId}/people]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Find a member [GET /api/v1/organizations/{orgId}/people/{memberId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Delete members from an organization [DELETE /api/v1/organizations/{orgId}/people/{memberId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Update organization member [PUT /api/v1/organizations/{orgId}/people/{memberId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+# Organizations [/api/v1/organizations/{orgId}/people/{personId}/contacts]
+
+## Add member contact [POST /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Update member contact [PUT /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts/{contactId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Delete member contact [DELETE /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts/{contactId}]
 
 
 + Request (application/json)

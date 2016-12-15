@@ -258,11 +258,10 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function getMembers($id)
     {
-        return Organization::with([
-            'members' => function ($query) {
-                $query->select('users.id', 'name', 'users.email', 'role');
-        }])
-            ->findOrFail($id)
+        return Organization::findOrFail($id)
+            ->members()
+            ->select('users.*','role')
+            ->get()
             ->toArray();
     }
 

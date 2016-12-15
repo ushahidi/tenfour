@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace RollCall\Http\Requests\Person;
 
 
-class UpdateMemberRequest extends AddMemberRequest
+class UpdatePersonRequest extends AddPersonRequest
 {
     public function rules()
     {
