@@ -12,18 +12,6 @@ $api->version($version, [
     'middleware' => 'api.auth',
     'scopes' => ['user','organization', 'contact', 'rollcall']
 ], function ($api) use ($base) {
-    // Authentication
-    //////////////////////////////////////////////////////////////////////
-    // XXX: handled through oauth endpoint
-    //$api->post('auth', ['protected' => false, 'uses' => 'AuthController@token']);
-
-    // Welcome
-    /*
-    $api->get($base, ['uses' => function () {
-
-    }]);
-    */
-
     //Users
     ////////////////////////////////////////////////////////////////////
     $api->get($base.'users', ['as' => 'users.index', 'uses' => 'UserController@all']);

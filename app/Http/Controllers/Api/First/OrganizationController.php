@@ -21,6 +21,9 @@ use RollCall\Http\Transformers\ContactTransformer;
 //use RollCall\Http\Transformers\RollCallTransformer;
 use RollCall\Http\Response;
 
+/**
+ * @Resource("Organizations", uri="/api/v1/organizations")
+ */
 class OrganizationController extends ApiController
 {
     public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
@@ -32,6 +35,16 @@ class OrganizationController extends ApiController
 
     /**
      * Get all organizations
+     *
+     * @Get("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "organizations": {{
+     *         "name": "Ushahidi",
+     *         "url": "ushahidi@rollcall.io"
+     *     }}
+     * })
      *
      * @param Request $request
      * @return Response
@@ -58,6 +71,19 @@ class OrganizationController extends ApiController
     /**
      * Create an organization
      *
+     * @Post("/")
+     * @Versions({"v1"})
+     * @Request({
+     *     "name": "Ushahidi",
+     *     "url": "ushahidi@rollcall.io"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "organization": {
+     *         "name": "Ushahidi",
+     *         "url": "ushahidi@rollcall.io"
+     *     }
+     * })
+     *
      * @param Request $request
      * @return Response
      */
@@ -75,6 +101,15 @@ class OrganizationController extends ApiController
     /**
      * Add member to an organization
      *
+     * @Post("/{orgId}/members")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      * @return Response
      */
@@ -86,6 +121,15 @@ class OrganizationController extends ApiController
 
     /**
      * Add member contact
+     *
+     * @Post("/{orgId}/members/{memberId}/contacts")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @return Response
@@ -99,6 +143,15 @@ class OrganizationController extends ApiController
     /**
      * Update member contact
      *
+     * @Put("/{orgId}/members/{memberId}/contacts/{contactId}")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      * @return Response
      */
@@ -110,6 +163,15 @@ class OrganizationController extends ApiController
 
     /**
      * Delete member contact
+     *
+     * @Delete("/{orgId}/members/{memberId}/contacts/{contactId}")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @return Response
@@ -123,6 +185,13 @@ class OrganizationController extends ApiController
     /**
      * List members of an organization
      *
+     * @Get("/{orgId}/members")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      * @return Response
      */
@@ -134,6 +203,13 @@ class OrganizationController extends ApiController
 
     /**
      * Find a member
+     *
+     * @Get("/{orgId}/members/{memberId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @return Response
@@ -147,6 +223,15 @@ class OrganizationController extends ApiController
     /**
      * Delete members from an organization
      *
+     * @Delete("/{orgId}/members/{memberId}")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      * @return Response
      */
@@ -158,6 +243,15 @@ class OrganizationController extends ApiController
 
     /**
      * Get a single organization
+     *
+     * @Get("/{orgId}")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @param int $id
@@ -173,6 +267,20 @@ class OrganizationController extends ApiController
     /**
      * Update organization details
      *
+     * @Put("/{orgId}")
+     * @Versions({"v1"})
+     * @Request({
+     *     "name": "Ushahidi",
+     *     "url": "ushahidi@rollcall.io"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "organization": {
+     *         "id": 3,
+     *         "name": "Ushahidi",
+     *         "url": "ushahidi@rollcall.io"
+     *     }
+     * })
+     *
      * @param Request $request
      * @param int $id
      *
@@ -187,6 +295,15 @@ class OrganizationController extends ApiController
     /**
      * Update organization member
      *
+     * @Put("/{orgId}/members/{memberId}")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      * @param int $id
      *
@@ -200,6 +317,15 @@ class OrganizationController extends ApiController
 
     /**
      * Delete an organization
+     *
+     * @Delete("/{orgId}")
+     * @Versions({"v1"})
+     * @Request({
+     *
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @param int $id
