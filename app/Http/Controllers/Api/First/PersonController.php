@@ -3,19 +3,19 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Http\Requests\Member\GetMemberRequest;
-use RollCall\Http\Requests\Member\GetMembersRequest;
-use RollCall\Http\Requests\Member\AddMemberRequest;
-use RollCall\Http\Requests\Member\DeleteMemberRequest;
-use RollCall\Http\Requests\Member\UpdateMemberRequest;
+use RollCall\Http\Requests\Person\GetPersonRequest;
+use RollCall\Http\Requests\Person\GetPeopleRequest;
+use RollCall\Http\Requests\Person\AddPersonRequest;
+use RollCall\Http\Requests\Person\DeletePersonRequest;
+use RollCall\Http\Requests\Person\UpdatePersonRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
 
 /**
- * @Resource("Members", uri="/api/v1/organizations/{orgId}/members")
+ * @Resource("People", uri="/api/v1/organizations/{orgId}/people")
  */
-class MemberController extends ApiController
+class PersonController extends ApiController
 {
     public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
     {
@@ -39,10 +39,10 @@ class MemberController extends ApiController
      * @param Request $request
      * @return Response
      */
-    public function store(AddMemberRequest $request, $organization_id)
+    public function store(AddPersonRequest $request, $organization_id)
     {
         return $this->response->item($this->organizations->addMember($request->all(), $organization_id),
-                                     new UserTransformer, 'user');
+                                     new UserTransformer, 'person');
     }
 
     /**
@@ -58,10 +58,10 @@ class MemberController extends ApiController
      * @param Request $request
      * @return Response
      */
-    public function index(GetMemberRequest $request, $organization_id)
+    public function index(GetPersonRequest $request, $organization_id)
     {
         return $this->response->collection($this->organizations->getMembers($organization_id),
-                                           new UserTransformer, 'users');
+                                           new UserTransformer, 'people');
     }
 
     /**
@@ -77,10 +77,10 @@ class MemberController extends ApiController
      * @param Request $request
      * @return Response
      */
-    public function show(GetMemberRequest $request, $organization_id, $user_id)
+    public function show(GetPersonRequest $request, $organization_id, $person_id)
     {
-        return $this->response->item($this->organizations->getMember($organization_id, $user_id),
-                                     new UserTransformer, 'user');
+        return $this->response->item($this->organizations->getMember($organization_id, $person_id),
+                                     new UserTransformer, 'person');
     }
 
     /**
@@ -98,10 +98,10 @@ class MemberController extends ApiController
      * @param Request $request
      * @return Response
      */
-    public function destroy(DeleteMemberRequest $request, $organization_id, $user_id)
+    public function destroy(DeletePersonRequest $request, $organization_id, $person_id)
     {
-        return $this->response->item($this->organizations->deleteMember($organization_id, $user_id),
-                                     new UserTransformer, 'user');
+        return $this->response->item($this->organizations->deleteMember($organization_id, $person_id),
+                                     new UserTransformer, 'person');
     }
 
     /**
@@ -121,10 +121,10 @@ class MemberController extends ApiController
      *
      * @return Response
      */
-    public function update(UpdateMemberRequest $request, $organization_id, $user_id)
+    public function update(UpdatePersonRequest $request, $organization_id, $person_id)
     {
-        $member = $this->organizations->updateMember($request->all(), $organization_id, $user_id);
-        return $this->response->item($member, new UserTransformer, 'user');
+        $member = $this->organizations->updateMember($request->all(), $organization_id, $person_id);
+        return $this->response->item($member, new UserTransformer, 'person');
     }
 
 

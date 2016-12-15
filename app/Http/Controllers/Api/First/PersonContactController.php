@@ -3,17 +3,17 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Http\Requests\Member\Contact\AddContactRequest;
-use RollCall\Http\Requests\Member\Contact\DeleteContactRequest;
-use RollCall\Http\Requests\Member\Contact\UpdateContactRequest;
+use RollCall\Http\Requests\Person\Contact\AddContactRequest;
+use RollCall\Http\Requests\Person\Contact\DeleteContactRequest;
+use RollCall\Http\Requests\Person\Contact\UpdateContactRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Response;
 
 /**
- * @Resource("Organizations", uri="/api/v1/organizations/{orgId}/members/{memberId}/contacts")
+ * @Resource("Organizations", uri="/api/v1/organizations/{orgId}/people/{personId}/contacts")
  */
-class MemberContactController extends ApiController
+class PersonContactController extends ApiController
 {
     public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
     {
@@ -25,7 +25,7 @@ class MemberContactController extends ApiController
     /**
      * Add member contact
      *
-     * @Post("/{orgId}/members/{memberId}/contacts")
+     * @Post("/{orgId}/members/{personId}/contacts")
      * @Versions({"v1"})
      * @Request({
      *
@@ -46,7 +46,7 @@ class MemberContactController extends ApiController
     /**
      * Update member contact
      *
-     * @Put("/{orgId}/members/{memberId}/contacts/{contactId}")
+     * @Put("/{orgId}/members/{personId}/contacts/{contactId}")
      * @Versions({"v1"})
      * @Request({
      *
@@ -67,7 +67,7 @@ class MemberContactController extends ApiController
     /**
      * Delete member contact
      *
-     * @Delete("/{orgId}/members/{memberId}/contacts/{contactId}")
+     * @Delete("/{orgId}/members/{personId}/contacts/{contactId}")
      * @Versions({"v1"})
      * @Request({
      *

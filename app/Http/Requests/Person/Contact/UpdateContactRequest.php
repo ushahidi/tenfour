@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Member\Contact;
+namespace RollCall\Http\Requests\Person\Contact;
 
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 

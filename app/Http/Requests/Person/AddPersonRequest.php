@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Http\Requests\Member;
+namespace RollCall\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
 
-class AddMemberRequest extends FormRequest
+class AddPersonRequest extends FormRequest
 {
     use UserAccess;
 

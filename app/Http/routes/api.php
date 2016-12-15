@@ -26,10 +26,10 @@ $api->version($version, [
     $api->resource($base.'organizations', 'OrganizationController');
 
     // Org members
-    $api->resource($base.'organizations/{organization}/members', 'MemberController');
+    $api->resource($base.'organizations/{organization}/people', 'PersonController');
 
     // Org member contacts
-    $api->resource($base.'organizations/{organization}/members/{member}/contacts', 'MemberContactController');
+    $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
 
     //Contacts
     ////////////////////////////////////////////////////////////////////
