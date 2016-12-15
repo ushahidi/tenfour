@@ -56,7 +56,7 @@ class RollCallController extends ApiController
             $user_id = $request->query('user');
         }
 
-        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id);
+        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id, $request->input('recipient_id'));
 
         return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
     }
