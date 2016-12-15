@@ -520,9 +520,7 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
+            'users' => [
                 [
                     'id' => 4,
                     'role' => 'owner',

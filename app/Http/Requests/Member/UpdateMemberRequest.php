@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace RollCall\Http\Requests\Member;
 
 
 class UpdateMemberRequest extends AddMemberRequest

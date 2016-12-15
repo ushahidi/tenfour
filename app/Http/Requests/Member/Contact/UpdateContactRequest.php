@@ -1,6 +1,8 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace RollCall\Http\Requests\Member\Contact;
+
+use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 
 class UpdateContactRequest extends GetOrganizationRequest
 {

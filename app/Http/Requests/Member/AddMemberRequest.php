@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace RollCall\Http\Requests\Member;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;

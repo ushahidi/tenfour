@@ -23,19 +23,13 @@ $api->version($version, [
     //Organizations
     ////////////////////////////////////////////////////////////////////
 
-    $api->get($base.'organizations', ['as' => 'organizations.index', 'uses' => 'OrganizationController@all']);
-    $api->post($base.'organizations', ['as' => 'organizations.create', 'uses' => 'OrganizationController@create']);
-    $api->post($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@addMember']);
-    $api->delete($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@deleteMember']);
-    $api->put($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@updateMember']);
-    $api->get($base.'organizations/{organization}/members/{member}', ['uses' => 'OrganizationController@findMember']);
-    $api->post($base.'organizations/{organization}/members/{member}/contacts', ['uses' => 'OrganizationController@addContact']);
-    $api->put($base.'organizations/{organization}/members/{member}/contacts/{contact}', ['uses' => 'OrganizationController@updateContact']);
-    $api->delete($base.'organizations/{organization}/members/{member}/contacts/{contact}', ['uses' => 'OrganizationController@deleteContact']);
-    $api->get($base.'organizations/{organization}/members', ['uses' => 'OrganizationController@listMembers']);
-    $api->get($base.'organizations/{organization}', ['as' => 'organizations.show', 'uses' => 'OrganizationController@find']);
-    $api->put($base.'organizations/{organization}', ['as' => 'organizations.update', 'uses' => 'OrganizationController@update']);
-    $api->delete($base. 'organizations/{organization}', ['as' => 'organization.delete', 'uses' => 'OrganizationController@delete']);
+    $api->resource($base.'organizations', 'OrganizationController');
+
+    // Org members
+    $api->resource($base.'organizations/{organization}/members', 'MemberController');
+
+    // Org member contacts
+    $api->resource($base.'organizations/{organization}/members/{member}/contacts', 'MemberContactController');
 
     //Contacts
     ////////////////////////////////////////////////////////////////////
@@ -49,17 +43,15 @@ $api->version($version, [
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
     $api->post($base.'rollcalls', ['as' => 'rollcalls.create', 'uses' => 'RollCallController@create']);
-
-    $api->put($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@update']);
-    $api->get($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@find']);
-    $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@listReplies']);
-    $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@addReply']);
+    $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);
+    $api->put($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.update', 'uses' => 'RollCallController@update']);
 
     $api->get($base.'rollcalls/{rollcall}/messages', ['uses' => 'RollCallController@listMessages']);
     $api->get($base.'rollcalls/{rollcall}/recipients', ['uses' => 'RollCallController@listRecipients']);
 
-
-
-    $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);
-    $api->put($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.update', 'uses' => 'RollCallController@update']);
+    // Rollcall Replies
+    $api->put($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@update']);
+    $api->get($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@find']);
+    $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@listReplies']);
+    $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@addReply']);
 });
