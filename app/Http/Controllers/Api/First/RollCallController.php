@@ -107,7 +107,7 @@ class RollCallController extends ApiController
 
         // Queue roll calls if available
         if ($request->input('recipients')) {
-            $dispatcher = new Dispatcher($this->roll_calls, $this->contacts);
+            $dispatcher = new Dispatcher($this->roll_calls, $this->contacts, $this->organizations, $this->users);
 
             foreach($request->input('recipients') as $recipient)
             {
