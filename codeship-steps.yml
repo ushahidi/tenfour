@@ -1,0 +1,28 @@
+- name: "Test"
+  service: test
+  command: composer test -- --env=testing
+- type: parallel
+  steps:
+  - name: "Deploy (develop)"
+    service: deploy
+    command: >
+      ansible-playbook -i ./hosts -l staging
+        -e API_VERSION_SRC=/vols/src
+        api-deploy-version.yml
+    tag: develop
+  - name: "Deploy (master)"
+    service: deploy
+    command: >
+      ansible-playbook -i ./hosts -l staging
+        -e API_VERSION_SRC=/vols/src
+        api-deploy-version.yml
+    tag: master
+  - type: serial
+    tag: develop
+    steps:
+    - name: "Docs (develop)"
+      service: aglio
+      command: aglio -i /vols/src/docs/api/_meta.apib -o /vols/src/docs/api/index.html
+    - name: "Deploy Docs (develop)"
+      service: awscli
+      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/rollcall/develop --acl public-read

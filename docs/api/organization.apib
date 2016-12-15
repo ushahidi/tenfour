@@ -1,0 +1,65 @@
+# Group Organizations
+
+### Create an Organization [POST /api/organizations]
++ Request
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "name": "Ushahidi",
+                "url": "ushahidi@rollcall.io"
+            }
+
++ Response 201
+
+### Show an organization details [GET /api/organizations/{id}]
++ Request
+    + Headers
+
+            Authorization: Bearer authToken
+            Content-Type: application/json
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "data": {
+                    "name": "Ushahidi",
+                    "url": "ushahidi.rollcall.io",
+                    "created_at": "2016-03-30 16:11:36",
+                    "updated_at": "2016-03-30 16:11:36"
+                }
+            }
+
+### Update an organization's details [PUT /api/organizations/{id}]
++ Request
+    + Headers
+
+            Authorization: Bearer authToken
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "data": {
+                    "name": "RollCall Inc",
+                    "url": "rollcall@rollcall.io"
+                }
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "data": {
+                    "id": 3
+                    "name": "RollCall Inc",
+                    "url": "rollcall@rollcall.io"
+                    "created_at": "2016-03-30 16:11:36",
+                    "updated_at": "2016-03-30 16:11:36"
+                }
+            }
+

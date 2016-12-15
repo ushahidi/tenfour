@@ -2,7 +2,7 @@
 
 namespace RollCall\Http\Controllers\Auth;
 
-use RollCall\User;
+use RollCall\Models\User;
 use Validator;
 use RollCall\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;

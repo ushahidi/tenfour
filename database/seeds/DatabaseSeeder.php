@@ -4,6 +4,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use RollCall\Seeders\OauthTableSeeder;
 use RollCall\Seeders\UserTableSeeder;
+use RollCall\Seeders\RoleTableSeeder;
+use RollCall\Seeders\SettingsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,8 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-         $this->call(OauthTableSeeder::class);
-         $this->call(UserTableSeeder::class);
+         $this->call(RollCall\Seeders\OauthTableSeeder::class);
+         $this->call(RollCall\Seeders\UserTableSeeder::class);
+         $this->call(RollCall\Seeders\RoleTableSeeder::class);
+         $this->call(RollCall\Seeders\OrganizationTableSeeder::class);
+         $this->call(RollCall\Seeders\OrgMemberSeeder::class);
+         $this->call(RollCall\Seeders\RollCallTableSeeder::class);
+         $this->call(RollCall\Seeders\SettingsTableSeeder::class);
 
         Model::reguard();
     }

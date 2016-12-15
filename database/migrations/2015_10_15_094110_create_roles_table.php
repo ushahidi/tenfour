@@ -5,29 +5,28 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateRolesTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 32)->unique();
+            $table->string('description', 255)->nullable();
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('roles', function (Blueprint $table) {
-			$table->bigIncrements('id')->unsigned();
-			$table->string('name', 32)->unique();
-			$table->string('description', 255)->nullable();
-		});
-	}
-
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('roles');
-	}
-
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('roles');
+    }
 }

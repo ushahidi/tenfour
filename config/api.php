@@ -136,9 +136,9 @@ return [
     |
     */
 
-    'auth' => [
-        'basic' => function ($app) {
-            return new Dingo\Api\Auth\Provider\Basic($app['auth']);
+	'auth' => [
+        'oauth' => function ($app) {
+            return new Dingo\Api\Auth\Provider\OAuth2($app['League\OAuth2\Server\ResourceServer']);
         },
     ],
 

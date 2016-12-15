@@ -11,6 +11,17 @@
 |
 */
 
+// @todo change this to a list of endpoints
 Route::get('/', function () {
 	return view('welcome');
 });
+
+Route::post('oauth/access_token', function() {
+    return Response::json(Authorizer::issueAccessToken());
+});
+
+Route::get('health', 'HealthController@shallow');
+Route::get('health/deep', 'HealthController@deep');
+
+// Receive push emails
+Route::post('mail/receive', 'MailController@receive');

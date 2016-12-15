@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \RollCall\Console\Commands\Inspire::class,
+        \RollCall\Console\Commands\ReceiveSMS::class,
+        \RollCall\Console\Commands\ImportContacts::class,
     ];
 
     /**
@@ -24,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
+        $schedule->command(\RollCall\Console\Commands\ReceiveSMS::class)
+                 ->everyMinute();
     }
 }

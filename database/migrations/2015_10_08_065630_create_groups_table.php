@@ -6,31 +6,31 @@ use Illuminate\Database\Schema\Blueprint;
 class CreateGroupsTable extends Migration
 {
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
+    /**
+     * Run the migrations.
+     *
+     * @return void
 	 */
-	public function up()
-	{
-		Schema::create('groups', function ($table) {
-			$table->engine = 'InnoDB';
+    public function up()
+    {
+        Schema::create('groups', function ($table) {
+            $table->engine = 'InnoDB';
 
-			$table->bigIncrements('id')->unsigned();
-			$table->string('name', 255)->nullable()->default(null);
+            $table->increments('id')->unsigned();
+            $table->string('name', 255)->nullable()->default(null);
 
-			$table->timestamps();
-		});
-	}
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('groups');
-	}
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('groups');
+    }
 
 }
