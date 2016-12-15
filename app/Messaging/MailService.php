@@ -3,29 +3,22 @@
 namespace RollCall\Messaging;
 
 use Mail;
+
 use RollCall\Contracts\Messaging\MessageService;
 
 class MailService implements MessageService
 {
-    protected $view = 'emails.rollcall';
-
-    public function setView($view)
-    {
-        $this->view = $view;
-    }
-
     public function send($to, $msg, $additional_params = [])
     {
-        $params = ['msg' => $msg] + $additional_params;
-        $subject = str_limit($msg, $limit = 50, $end = '...');
-
-        Mail::send($this->view, $params, function($message) use ($to, $subject) {
-            $message->to($to);
-            $message->subject($subject);
-        });
+        Mail::to($to)->send($msg);
     }
 
     public function getMessages(Array $options = [])
+    {
+        //
+    }
+
+    public function setView($view)
     {
         //
     }

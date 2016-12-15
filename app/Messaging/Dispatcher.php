@@ -3,6 +3,7 @@ namespace RollCall\Messaging;
 
 use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
+use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Jobs\SendRollCall;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -11,10 +12,12 @@ class Dispatcher
 {
     use DispatchesJobs;
 
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, OrganizationRepository $organizations, UserRepository $users)
     {
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
+        $this->organizations = $organizations;
+        $this->users = $users;
     }
 
      /**
@@ -29,13 +32,17 @@ class Dispatcher
     {
         $roll_call = $this->roll_calls->find($roll_call_id);
 
+        // Get organization details
+        $organization = $this->organizations->find($roll_call['organization_id']);
+        $creator = $this->users->find($roll_call['user_id']);
+
         // TODO: Filter by preferred method of sending
         if (!$this->roll_calls->getMessages($roll_call_id, $recipient['id'])) {
             $contacts = $this->contacts->getByUserId($recipient['id']);
 
             foreach($contacts as $contact)
             {
-                $this->dispatch(new SendRollCall($roll_call, $contact));
+                $this->dispatch(new SendRollCall($roll_call, $contact, $organization, $creator));
 
                 $this->roll_calls->addMessage($roll_call['id'], $contact['id']);
             }

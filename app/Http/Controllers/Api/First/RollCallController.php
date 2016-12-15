@@ -4,6 +4,8 @@ namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
+use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Http\Requests\RollCall\GetRollCallsRequest;
 use RollCall\Http\Requests\RollCall\GetRollCallRequest;
 use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
@@ -21,10 +23,12 @@ use Dingo\Api\Auth\Auth;
 
 class RollCallController extends ApiController
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, Auth $auth, Response $response)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, OrganizationRepository $organizations, UserRepository $users, Auth $auth, Response $response)
     {
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
+        $this->organizations = $organizations;
+        $this->users = $users;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -79,7 +83,7 @@ class RollCallController extends ApiController
         ]);
 
         // Queue roll calls
-        $dispatcher = new Dispatcher($this->roll_calls, $this->contacts);
+        $dispatcher = new Dispatcher($this->roll_calls, $this->contacts, $this->organizations, $this->users);
 
         foreach($request->input('recipients') as $recipient)
         {
