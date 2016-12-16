@@ -25,6 +25,14 @@ class GetRollCallsRequest extends FormRequest
         if ($this->query('organization')) {
             $org_role = $this->getOrganizationRole($this->query('organization'));
 
+            // If user is not an admin/owner, filter to just their rollcalls
+            // @todo find a better home for this?
+            if (!in_array($org_role, ['admin', 'owner'])) {
+                $this->merge([
+                    'recipient_id' => $this->auth->user()['id']
+                ]);
+            }
+
             return in_array($org_role, $this->getAllowedOrgRoles());
         }
 
@@ -41,7 +49,7 @@ class GetRollCallsRequest extends FormRequest
     protected function getAllowedOrgRoles()
     {
         return [
-            'owner', 'admin'
+            'owner', 'admin', 'member'
         ];
     }
 }

@@ -1,24 +1,24 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace RollCall\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
 use App;
 
-class DeleteMemberRequest extends FormRequest
+class DeletePersonRequest extends FormRequest
 {
     use UserAccess;
 
     public function authorize()
     {
         $organization_id = $this->route('organization');
-        $user_id = $this->route('member');
+        $user_id = $this->route('person');
 
         $org_repo = App::make('RollCall\Contracts\Repositories\OrganizationRepository');
         $member_role = $org_repo->getMemberRole($organization_id, $user_id);
 
-        // Member with owner role cannot be deleted
+        // Person with owner role cannot be deleted
         if ($member_role == 'owner') {
             return false;
         }
