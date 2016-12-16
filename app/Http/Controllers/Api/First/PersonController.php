@@ -8,15 +8,21 @@ use RollCall\Http\Requests\Person\GetPeopleRequest;
 use RollCall\Http\Requests\Person\AddPersonRequest;
 use RollCall\Http\Requests\Person\DeletePersonRequest;
 use RollCall\Http\Requests\Person\UpdatePersonRequest;
+use RollCall\Http\Requests\Person\InviteMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
+use RollCall\Jobs\SendInvite;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @Resource("People", uri="/api/v1/organizations/{orgId}/people")
  */
 class PersonController extends ApiController
 {
+    use DispatchesJobs;
+
     public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
     {
         $this->organizations = $organizations;
@@ -127,5 +133,46 @@ class PersonController extends ApiController
         return $this->response->item($member, new UserTransformer, 'person');
     }
 
+    /**
+     * Invite a member
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function invitePerson(GetPersonRequest $request, $organization_id, $user_id)
+    {
+        $member = $this->organizations->getMember($organization_id, $user_id);
+        $organization = $this->organizations->find($organization_id);
+        // Queue invite
+        $member['invite_token'] = Hash::Make(config('app.key'));
+        $member['invite_sent'] = true;
+
+        $this->organizations->updateMember($member, $organization_id, $user_id);
+        $this->dispatch(new SendInvite($member, $organization));
+
+        // Return up to date Member
+        return $this->response->item($member, new UserTransformer, 'user');
+    }
+
+    /**
+     * Accept member invite
+     *
+     * @param InviteMemberRequest $request
+     * @return Response
+     */
+    public function acceptInvite(InviteMemberRequest $request, $organization_id, $memberId)
+    {
+        $member = $this->organizations->getMember($organization_id, $memberId);
+
+        if ($this->organizations->testMemberInviteToken($member['id'], $request['invite_token'])) {
+            $member['password'] = $request['password'];
+            $member['role'] = 'user';
+            $member['invite_token'] = null;
+            $member = $this->organizations->updateMember($member, $organization_id, $memberId);
+
+            return $this->response->item($member, new UserTransformer, 'user');
+        }
+        abort(401, 'Not authenticated');
+    }
 
 }

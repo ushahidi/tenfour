@@ -14,10 +14,10 @@ class MailService implements MessageService
         $this->view = $view;
     }
 
-    public function send($to, $msg, $additional_params = [])
+    public function send($to, $msg, $additional_params = [], $subject = null)
     {
         $params = ['msg' => $msg] + $additional_params;
-        $subject = str_limit($msg, $limit = 50, $end = '...');
+        $subject = $subject ? $subject : str_limit($msg, $limit = 50, $end = '...');
 
         Mail::send($this->view, $params, function($message) use ($to, $subject) {
             $message->to($to);

@@ -8,6 +8,7 @@ use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
+use RollCall\Http\Requests\Organization\UpdateMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Response;
@@ -17,6 +18,7 @@ use RollCall\Http\Response;
  */
 class OrganizationController extends ApiController
 {
+
     public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
     {
         $this->organizations = $organizations;
@@ -99,7 +101,6 @@ class OrganizationController extends ApiController
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *
-     * })
      *
      * @param Request $request
      * @param int $id

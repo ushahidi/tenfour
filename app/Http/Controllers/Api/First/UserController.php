@@ -66,12 +66,7 @@ class UserController extends ApiController
      */
     public function create(CreateUserRequest $request)
     {
-        $user = $this->users->create([
-            'name'     => $request->input('name'),
-            'email'    => $request->input('email'),
-            'password' => $request->input('password'),
-            'person_type' => $request->input('person_type'),
-        ]);
+        $user = $this->users->create($request->all());
 
         return $this->response->item($user, new UserTransformer, 'user');
     }

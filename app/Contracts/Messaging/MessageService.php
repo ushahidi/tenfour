@@ -10,7 +10,7 @@ interface MessageService
      * @param string $message
      * @param array $additional_params
      */
-    public function send($to, $message, $additional_params = []);
+    public function send($to, $message,$additional_params = [], $subject = null);
 
     /**
      * Gets Messages from a server
