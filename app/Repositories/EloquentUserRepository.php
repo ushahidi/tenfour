@@ -31,6 +31,7 @@ class EloquentUserRepository implements UserRepository
     public function find($id)
     {
         return User::with('contacts')
+            ->with('notifications')
             ->find($id)
             ->toArray();
     }

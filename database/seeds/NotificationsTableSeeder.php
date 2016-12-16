@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;
 use RollCall\Notifications\PersonJoinedOrganization;
+use RollCall\Notifications\PersonLeftOrganization;
 use Illuminate\Support\Facades\Notification;
 
 class NotificationsTableSeeder extends Seeder
@@ -19,6 +20,15 @@ class NotificationsTableSeeder extends Seeder
             ['name' => 'Ushahidi']
         );
 
-        Notification::send($organization->members, new PersonJoinedOrganization($person, $organization));
+        $user = User::firstOrCreate(
+            ['email' => 'rollcall@ushahidi.com']
+        );
+
+        Notification::send($organization->members, new PersonJoinedOrganization($person));
+
+        $user->unreadNotifications->markAsRead();
+
+        Notification::send($organization->members, new PersonLeftOrganization($person));
+
     }
 }

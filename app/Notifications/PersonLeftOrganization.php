@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use RollCall\Models\User;
 
-class PersonJoinedOrganization extends Notification
+class PersonLeftOrganization extends Notification
 {
     use Queueable;
 
@@ -30,22 +30,8 @@ class PersonJoinedOrganization extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'/*, 'mail'*/];
+        return ['database'];
     }
-
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    // public function toMail($notifiable)
-    // {
-    //     return (new MailMessage)
-    //                 ->line('A new person has joined the organization.')
-    //                 // ->action('Notification Action', 'https://laravel.com')
-    //                 ->line('Thank you for using RollCall!');
-    // }
 
     /**
      * Get the array representation of the notification.
