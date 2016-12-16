@@ -19,6 +19,9 @@ use RollCall\Http\Response;
 use RollCall\Messaging\Dispatcher;
 use Dingo\Api\Auth\Auth;
 
+/**
+ * @Resource("RollCalls", uri="/api/v1/rollcalls")
+ */
 class RollCallController extends ApiController
 {
     public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, Auth $auth, Response $response)
@@ -31,6 +34,13 @@ class RollCallController extends ApiController
 
     /**
      * Get all roll calls for an organization
+     *
+     * @Get("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @param org_id
@@ -46,13 +56,20 @@ class RollCallController extends ApiController
             $user_id = $request->query('user');
         }
 
-        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id);
+        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id, $request->input('recipient_id'));
 
         return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
     }
 
     /**
      * Get a single roll call
+     *
+     * @Get("/{rollcallId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @param int $id
@@ -67,6 +84,13 @@ class RollCallController extends ApiController
 
     /**
      * Create a roll call
+     *
+     * @Post("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @return Response
@@ -91,6 +115,13 @@ class RollCallController extends ApiController
 
     /**
      * Update a roll call
+     *
+     * @Put("/{rollcallId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @param int $id
@@ -117,6 +148,13 @@ class RollCallController extends ApiController
     /**
      * List roll call recipients
      *
+     * @Get("/{rollcallId}/recipients")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      *
      * @return Response
@@ -130,6 +168,13 @@ class RollCallController extends ApiController
     /**
      * List roll call messages
      *
+     * @Get("/{rollcallId}/messages")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
+     *
      * @param Request $request
      *
      * @return Response
@@ -142,6 +187,11 @@ class RollCallController extends ApiController
 
     /**
      * Delete a roll call
+     *
+     * @Delete("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(201)
      */
     public function delete()
     {

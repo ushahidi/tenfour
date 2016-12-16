@@ -69,6 +69,7 @@ INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('4', '4',
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test roll call', '2', 'pending', '0', '1');
 
 -- Add test contacts
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');

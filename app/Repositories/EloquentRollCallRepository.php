@@ -8,7 +8,7 @@ use DB;
 
 class EloquentRollCallRepository implements RollCallRepository
 {
-    public function all($org_id = null, $user_id = null)
+    public function all($org_id = null, $user_id = null, $recipient_id = null)
     {
         $query = RollCall::query();
 
@@ -18,6 +18,12 @@ class EloquentRollCallRepository implements RollCallRepository
 
         if ($user_id) {
             $query->where('user_id', $user_id);
+        }
+
+        if ($recipient_id) {
+            $query->whereHas('recipients', function ($query) use ($recipient_id) {
+                $query->where('user_id', $recipient_id);
+            });
         }
 
         $roll_calls = $query->get()->toArray();
