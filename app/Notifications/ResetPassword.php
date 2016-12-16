@@ -20,9 +20,10 @@ class ResetPassword extends Notification
      * @param  string  $token
      * @return void
      */
-    public function __construct($token)
+    public function __construct($token, $organization_url)
     {
         $this->token = $token;
+        $this->organization_url = $organization_url;
     }
 
     /**
@@ -44,11 +45,9 @@ class ResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
-        $clientDomain = env('CLIENT_URL', null);
-
         return (new MailMessage)
             ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url($clientDomain . 'login/reset-password/' . $this->token))
+            ->action('Reset Password', url('https://' . $this->organization_url . '/login/reset-password/' . $this->token))
             ->line('If you did not request a password reset, no further action is required.');
     }
 }
