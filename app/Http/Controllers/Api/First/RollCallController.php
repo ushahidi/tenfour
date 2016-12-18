@@ -3,9 +3,6 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Http\Requests\RollCall\GetRollCallsRequest;
 use RollCall\Http\Requests\RollCall\GetRollCallRequest;
 use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
@@ -18,17 +15,15 @@ use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
-use RollCall\Messaging\Dispatcher;
 use Dingo\Api\Auth\Auth;
+
+use RollCall\Jobs\SendRollCall;
 
 class RollCallController extends ApiController
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, OrganizationRepository $organizations, UserRepository $users, Auth $auth, Response $response)
+    public function __construct(RollCallRepository $roll_calls, Auth $auth, Response $response)
     {
         $this->roll_calls = $roll_calls;
-        $this->contacts = $contacts;
-        $this->organizations = $organizations;
-        $this->users = $users;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -82,13 +77,8 @@ class RollCallController extends ApiController
             'user_id' => $this->auth->user()['id'],
         ]);
 
-        // Queue roll calls
-        $dispatcher = new Dispatcher($this->roll_calls, $this->contacts, $this->organizations, $this->users);
-
-        foreach($request->input('recipients') as $recipient)
-        {
-            $dispatcher->queue($roll_call['id'], $recipient);
-        }
+        // Send roll call
+        dispatch(new SendRollCall($roll_call));
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
     }
@@ -105,14 +95,12 @@ class RollCallController extends ApiController
     {
         $roll_call = $this->roll_calls->update($request->all(), $id);
 
-        // Queue roll calls if available
+        // Send roll call to new recipients
         if ($request->input('recipients')) {
-            $dispatcher = new Dispatcher($this->roll_calls, $this->contacts, $this->organizations, $this->users);
+            $roll_call_to_dispatch = $roll_call;
+            $roll_call_to_dispatch['recipients'] = $request->input('recipients');
 
-            foreach($request->input('recipients') as $recipient)
-            {
-                $dispatcher->queue($roll_call['id'], $recipient);
-            }
+            dispatch(new SendRollCall($roll_call_to_dispatch));
         }
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');

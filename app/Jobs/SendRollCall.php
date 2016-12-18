@@ -7,9 +7,12 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use RollCall\Mail\RollCall;
-
+use RollCall\Mail\RollCall as RollCallMail;
 use RollCall\Contracts\Messaging\MessageServiceFactory;
+use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Contracts\Repositories\ContactRepository;
+use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\UserRepository;
 
 class SendRollCall implements ShouldQueue
 {
@@ -17,28 +20,16 @@ class SendRollCall implements ShouldQueue
 
     protected $roll_call;
 
-    protected $contact;
-
-    protected $organization;
-
-    protected $creator;
-
     /**
      * Create a new job instance.
      *
      * @param array $roll_call
-     * @param array $contact
-     * @param array $organization
-     * @param array $creator
      *
      * @return void
      */
-    public function __construct(array $roll_call, array $contact, array $organization, array $creator)
+    public function __construct(array $roll_call)
     {
         $this->roll_call = $roll_call;
-        $this->contact = $contact;
-        $this->organization = $organization;
-        $this->creator = $creator;
     }
 
     /**
@@ -46,22 +37,35 @@ class SendRollCall implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory)
+    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, UserRepository $user_repo)
     {
-        $message = null;
+        $organization = $org_repo->find($this->roll_call['organization_id']);
+        $creator = $user_repo->find($this->roll_call['user_id']);
 
-        $message_service = $message_service_factory->make($this->contact['type']);
+        foreach($this->roll_call['recipients'] as $recipient)
+        {
+            if (! $roll_call_repo->getMessages($this->roll_call['id'], $recipient['id'])) {
 
-        if (config('sms.driver') == 'africastalking') {
-            $message_service->setView('sms.africastalking');
+                // TODO: Filter by preferred method of sending
+                $contacts = $contact_repo->getByUserId($recipient['id']);
+
+                foreach($contacts as $contact)
+                {
+                    $message_service = $message_service_factory->make($contact['type']);
+
+                    if (config('sms.driver') === 'africastalking') {
+                        $message_service->setView('sms.africastalking');
+                    }
+
+                    if ($contact['type'] === 'email') {
+                        $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator));
+                    } else {
+                        $message_service->send($contact['contact'], $this->roll_call['message']);
+                    }
+
+                    $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
+                }
+            }
         }
-
-        if ($this->contact['type'] === 'email') {
-            $message = new RollCall($this->roll_call, $this->organization, $this->creator);
-        } else {
-            $message = $this->roll_call['message'];
-        }
-
-        $message_service->send($this->contact['contact'], $message);
     }
 }
