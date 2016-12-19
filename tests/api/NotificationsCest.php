@@ -4,6 +4,7 @@ class NotificationsCest
 {
     protected $organizationsEndpoint = '/api/v1/organizations';
     protected $userEndpoint = '/api/v1/users/me';
+    protected $rollcallsEndpoint = '/api/v1/rollcalls';
 
     /*
      * Ensure that admins receive a notification when a person is added to the organization
@@ -120,4 +121,41 @@ class NotificationsCest
         ]);
     }
 
+    /*
+     * Ensure I get a notification if I am a recipient of a new rollcall
+     *
+     */
+    public function receiveRollCallReceivedNotification(ApiTester $I)
+    {
+        $org_id = 2;
+        $I->wantTo('When a rollcall is received, I get a notification as a recipient');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPost($this->rollcallsEndpoint, [
+            'message' => 'Westgate under siege, are you ok?',
+            'organization_id' => $org_id,
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->sendGet($this->userEndpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'notifications' => [
+                'type' => 'RollCall\\Notifications\\RollCallReceived',
+                'data' => [
+                  'rollcall_message' => 'Westgate under siege, are you ok?',
+                ]
+            ]
+        ]);
+    }
 }
