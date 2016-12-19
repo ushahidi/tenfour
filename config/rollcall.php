@@ -7,6 +7,7 @@ return [
 	],
 
     'messaging' => [
-        'incoming_driver' => env('RC_MESSAGING_INCOMING', 'aws-ses-sns')
+        'incoming_driver' => env('RC_MESSAGING_INCOMING', 'aws-ses-sns'),
+        'client_url' => env('CLIENT_URL', 'http://staging.rollcall.io'),
     ]
 ];
