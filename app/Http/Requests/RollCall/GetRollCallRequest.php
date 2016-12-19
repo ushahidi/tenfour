@@ -25,6 +25,16 @@ class GetRollCallRequest extends FormRequest
         $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
                  ->find($this->route('rollcall'));
 
+        // If user is a receipient, they can view the rollcall
+        // @todo this would be much easier with the full RollCall object
+        $userId = $this->auth->user()['id'];
+        $matchedRecipient = array_filter($rollCall['recipients'], function ($recipient) use ($userId) {
+            return $recipient['id'] === $userId;
+        });
+        if (count($matchedRecipient)) {
+            return true;
+        }
+
         $org_role = $this->getOrganizationRole($rollCall['organization_id']);
 
         return in_array($org_role, $this->getAllowedOrgRoles());

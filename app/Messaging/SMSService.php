@@ -12,7 +12,7 @@ class SMSService implements MessageService
         $this->view = $view;
     }
 
-    public function send($to, $msg, $additional_params = [])
+    public function send($to, $msg, $additional_params = [], $subject = null)
     {
         if (isset($this->view)) {
             SMS::send($this->view, ['msg' => $msg], function($sms) use ($to) {

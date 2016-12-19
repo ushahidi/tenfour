@@ -110,7 +110,9 @@ class UserCest
             'email' => 'nat@ushahidi.com',
             'password' => 'dancer01',
             'password_confirm' => 'dancer01',
-            'person_type' => 'user'
+            'person_type' => 'user',
+            'config_profile_reviewed' => true,
+            'config_self_test_sent' => false
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
