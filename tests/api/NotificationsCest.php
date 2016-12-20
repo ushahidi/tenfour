@@ -158,8 +158,7 @@ class NotificationsCest
             'notifications' => [
                 'type' => 'RollCall\\Notifications\\RollCallReceived',
                 'data' => [
-                  'rollcall_message' => $message,
-                  'rollcall_id' => $rollcall_id,
+                  'rollcall_message' => $message
                 ]
             ]
         ]);
