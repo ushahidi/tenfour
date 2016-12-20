@@ -128,11 +128,12 @@ class NotificationsCest
     public function receiveRollCallReceivedNotification(ApiTester $I)
     {
         $org_id = 2;
+        $message = 'Westgate under siege, are you ok?';
         $I->wantTo('When a rollcall is received, I get a notification as a recipient');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost($this->rollcallsEndpoint, [
-            'message' => 'Westgate under siege, are you ok?',
+            'message' => $message,
             'organization_id' => $org_id,
             'recipients' => [
                 [
@@ -153,9 +154,43 @@ class NotificationsCest
             'notifications' => [
                 'type' => 'RollCall\\Notifications\\RollCallReceived',
                 'data' => [
-                  'rollcall_message' => 'Westgate under siege, are you ok?',
+                  'rollcall_message' => $message,
                 ]
             ]
         ]);
     }
+
+    /*
+     * Ensure I get a notification if I am a recipient of a rollcall and someone replies
+     *
+     */
+    public function receiveReplyReceivedNotification(ApiTester $I)
+    {
+        $org_id = 2;
+        $rollcall_id = 1;
+        $I->wantTo('When a reply to a rollcall is received, I get a notification as a recipient');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPost($this->rollcallsEndpoint.'/'.$rollcall_id.'/replies', [
+            'message'  => 'Test response',
+            'answer'   => 'yes'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->amAuthenticatedAsOrgOwner();
+        $I->sendGet($this->userEndpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'notifications' => [
+                'type' => 'RollCall\\Notifications\\ReplyReceived',
+                'data' => [
+                  'rollcall_id' => $rollcall_id,
+                  'reply_from' => 'Org admin',
+                ]
+            ]
+        ]);
+    }
+
 }

@@ -6,9 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\RollCall;
+use RollCall\Models\Reply;
 
-class RollCallReceived extends Notification
+class ReplyReceived extends Notification
 {
     use Queueable;
 
@@ -17,9 +17,9 @@ class RollCallReceived extends Notification
      *
      * @return void
      */
-    public function __construct(Rollcall $rollcall)
+    public function __construct(Reply $reply)
     {
-        $this->rollcall = $rollcall;
+        $this->reply = $reply;
     }
 
     /**
@@ -42,8 +42,8 @@ class RollCallReceived extends Notification
     public function toArray($notifiable)
     {
         return [
-            'rollcall_message' => $this->rollcall->message,
-            'rollcall_id' => $this->rollcall->id,
+            'reply_from' => $this->reply->user->name,
+            'rollcall_id' => $this->reply->roll_call_id,
             'avatar' => 'http://www.gravatar.com/avatar/647a5458daa00a474a611a5b0d603b9b?d=identicon&s=40' // @todo replace with real avatar
         ];
     }
