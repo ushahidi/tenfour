@@ -147,6 +147,7 @@ class NotificationsCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
+        $I->amAuthenticatedAsOrgOwner();
         $I->sendGet($this->userEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
