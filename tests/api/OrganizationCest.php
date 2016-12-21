@@ -276,14 +276,14 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/members", [
-            'email' => 'mary@rollcall.io',
-            'role'  => 'member',
+            'name' => 'Mary Mata',
+            'role' => 'member',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'email' => 'mary@rollcall.io',
-            'role'  => 'member',
+            'name' => 'Mary Mata',
+            'role' => 'member',
         ]);
     }
 
@@ -403,7 +403,6 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             'user' => [
                 'name' => 'Test user',
-                'email' => 'test@ushahidi.com',
                 'contacts' => [
                     [
                         'contact' => '0721674180',
@@ -440,13 +439,13 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/members", [
-            'email' => 'mary@rollcall.io',
+            'name' => 'Mary Mata',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'user' => [
-                'email' => 'mary@rollcall.io',
+                'name' => 'Mary Mata',
                 'role' => 'member',
             ]
         ]);

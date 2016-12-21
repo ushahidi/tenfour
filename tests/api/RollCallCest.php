@@ -30,19 +30,16 @@ class RollCallCest
                     [
                         'id' => 1,
                         'name' => 'Test user',
-                        'email' => 'test@ushahidi.com',
                         'uri' => '/users/1',
                     ],
                     [
                         'id' => 2,
                         'name' => 'Admin user',
-                        'email' => 'admin@ushahidi.com',
                         'uri' => '/users/2',
                     ],
                     [
                         'id' => 4,
                         'name' => 'Org owner',
-                        'email' => 'org_owner@ushahidi.com',
                         'uri' => '/users/4',
                     ]
                 ]
@@ -60,7 +57,6 @@ class RollCallCest
                     [
                         'id' => 4,
                         'name' => 'Org owner',
-                        'email' => 'org_owner@ushahidi.com',
                         'uri' => '/users/4'
                     ]
                 ]
@@ -181,17 +177,14 @@ class RollCallCest
                 [
                     'id' => 1,
                     'name' => 'Test user',
-                    'email' => 'test@ushahidi.com',
                 ],
                 [
                     'id' => 2,
                     'name' => 'Admin user',
-                    'email' => 'admin@ushahidi.com',
                 ],
                 [
                     'id' => 4,
                     'name' => 'Org owner',
-                    'email' => 'org_owner@ushahidi.com',
                 ]
             ]
         ]);
@@ -214,7 +207,6 @@ class RollCallCest
                 [
                     'id' => 2,
                     'name' => 'Admin user',
-                    'email' => 'admin@ushahidi.com',
                 ],
             ]
         ]);

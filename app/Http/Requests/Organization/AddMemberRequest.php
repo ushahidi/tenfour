@@ -35,11 +35,14 @@ class AddMemberRequest extends FormRequest
         return false;
     }
 
+    /**
+     * @todo Merge rules from `CreateUserRequest`
+     */
     public function rules()
     {
         return [
-            'email' => 'email|required',
-            'role'  => 'in:member,admin',
+            'name' => 'required',
+            'role' => 'in:member,admin',
         ];
     }
 }

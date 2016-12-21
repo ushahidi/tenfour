@@ -241,14 +241,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
         }
 
         DB::transaction(function () use (&$user, $input, $organization) {
-            $user_input = array_except($input, ['email', 'role']);
-            $email = array_only($input, ['email'])['email'];
+            $user_input = array_except($input, ['role']);
 
-            $user_id = User::firstOrCreate(['email' => $email])->id;
+            $user = User::create($user_input)->toArray();
 
-            $user = $this->users->update($user_input, $user_id);
-
-            $organization->members()->attach($user_id, ['role' => $input['role']]);
+            $organization->members()->attach($user['id'], ['role' => $input['role']]);
         });
 
         return $user + [
@@ -260,7 +257,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     {
         return Organization::with([
             'members' => function ($query) {
-                $query->select('users.id', 'name', 'users.email', 'role');
+                $query->select('users.id', 'name', 'role');
         }])
             ->findOrFail($id)
             ->toArray();

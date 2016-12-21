@@ -2,6 +2,7 @@
 namespace RollCall\Repositories;
 
 use RollCall\Models\User;
+use RollCall\Models\Contact;
 use RollCall\Contracts\Repositories\UserRepository;
 
 class EloquentUserRepository implements UserRepository
@@ -15,17 +16,15 @@ class EloquentUserRepository implements UserRepository
 
     public function update(array $input, $id)
     {
-		    $user = User::findorFail($id);
+        $user = User::findorFail($id);
         $user->update($input);
 
-		    return $user->toArray();
+        return $user->toArray();
     }
 
     public function create(array $input)
     {
-        $user = User::create($input);
-
-        return $user->toArray();
+        return User::create($input)->toArray();
     }
 
     public function find($id)
