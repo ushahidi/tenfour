@@ -329,4 +329,12 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->count();
     }
 
+    public function testMemberInviteToken($memberId, $invite_token)
+    {
+        return (bool) DB::table('users')
+          ->where('id', $memberId)
+          ->where('invite_token', $invite_token)
+          ->count();
+    }
+
 }

@@ -33,6 +33,33 @@ class AuthCest
     }
 
     /*
+     *  Try to get a token with invalid credentials
+     */
+    public function getAuthTokenWithInvalidCredentials(ApiTester $I)
+    {
+        $I->wantTo('Get an oauth token with password grant');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'client_id' => 'webapp',
+            'client_secret' => 'secret',
+            'scope' => 'user',
+            'username' => 'admin@ushahidi.com',
+            'password' => 'invalid',
+            'grant_type' => 'password'
+        ]);
+        $I->seeResponseCodeIs(401);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            "message" => 'The user credentials were incorrect.',
+            "status_code" => 401
+        ]);
+        $I->seeResponseMatchesJsonType([
+            'message' => 'string',
+            'status_code' => 'integer',
+        ]);
+    }
+
+    /*
      * Get an auth token
      */
     public function getAuthTokenWithClientGrant(ApiTester $I)

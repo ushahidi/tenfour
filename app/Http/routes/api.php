@@ -22,14 +22,16 @@ $api->version($version, [
 
     //Organizations
     ////////////////////////////////////////////////////////////////////
-
     $api->resource($base.'organizations', 'OrganizationController');
 
     // Org members
     $api->resource($base.'organizations/{organization}/people', 'PersonController');
+    $api->get($base.'organizations/{organization}/people/{member}/invite', ['uses' => 'PersonController@invitePerson']);
+    $api->post($base.'organizations/{organization}/people/{member}/accept', ['uses' => 'PersonController@acceptInvite']);
 
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
+
 
     //Contacts
     ////////////////////////////////////////////////////////////////////

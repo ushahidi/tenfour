@@ -7,6 +7,10 @@ class UserTransformer extends TransformerAbstract
 {
     public function transform(array $user)
     {
+        // User config task
+        $user['configComplete'] = $user['config_profile_reviewed']
+                                    && $user['config_self_test_sent'];
+
         // Format contacts if present
         if (isset($user['contacts'])) {
             foreach($user['contacts'] as &$contact)
@@ -46,7 +50,6 @@ class UserTransformer extends TransformerAbstract
 
         // Set Gravatar ID
         $user['gravatar'] = !empty($user['email']) ? md5(strtolower(trim($user['email']))) : '00000000000000000000000000000000';
-
         return $user;
     }
 }
