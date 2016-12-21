@@ -13,7 +13,17 @@ class UserTransformer extends TransformerAbstract
             {
                 $contact['id'] = (int) $contact['id'];
                 $contact['uri'] = '/contact/' . $contact['id'];
-                $contact['user']['gravatar'] = !empty($contact['user']['email']) ? md5(strtolower(trim($contact['user']['email']))) : '00000000000000000000000000000000';
+                if ($contact['type'] === 'email') {
+
+                    // Set Gratar ID from the first email found?
+                    if (! empty($user['gravatar'])) {
+                        $contact['user']['gravatar'] = !empty($contact['contact']) ? md5(strtolower(trim($contact['contact']))) : '00000000000000000000000000000000';
+
+                        // Do we need to set this twice?
+                        $user['gravatar'] = $contact['user']['gravatar'];
+                    }
+                }
+
                 unset($contact['user_id']);
 
                 // Format replies
@@ -43,9 +53,6 @@ class UserTransformer extends TransformerAbstract
                 unset($roll_call['user']);
             }
         }
-
-        // Set Gravatar ID
-        $user['gravatar'] = !empty($user['email']) ? md5(strtolower(trim($user['email']))) : '00000000000000000000000000000000';
 
         return $user;
     }
