@@ -26,6 +26,8 @@ class NotificationsTableSeeder extends Seeder
 
         Notification::send($organization->members, new PersonJoinedOrganization($person));
 
+        sleep(1); // ensure Notifications appear in order
+
         $user->unreadNotifications->markAsRead();
 
         Notification::send($organization->members, new PersonLeftOrganization($person));
