@@ -199,7 +199,6 @@ class UserCest
     {
         $id = 1;
         $I->wantTo('Reset my password');
-        // $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/password/email', [
             'username' => 'test@ushahidi.com',
