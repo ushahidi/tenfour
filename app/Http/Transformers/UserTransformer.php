@@ -8,8 +8,10 @@ class UserTransformer extends TransformerAbstract
     public function transform(array $user)
     {
         // User config task
-        $user['configComplete'] = $user['config_profile_reviewed']
+        if (! empty($user['config_profile_reviewed']) && ! empty($user['config_self_test_sent'])) {
+            $user['configComplete'] = $user['config_profile_reviewed']
                                     && $user['config_self_test_sent'];
+        }
 
         // Format contacts if present
         if (isset($user['contacts'])) {
