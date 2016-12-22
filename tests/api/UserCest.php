@@ -202,14 +202,14 @@ class UserCest
         // $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/password/email', [
-            'email' => 'test@ushahidi.com',
+            'username' => 'test@ushahidi.com',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
         $record = $I->grabRecord('password_resets', array('email' => 'test@ushahidi.com'));
         $I->sendPOST('/password/reset', [
-            'email' => 'test@ushahidi.com',
+            'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
             'password_confirmation' => 'cake1234',
             'token' => $record['token']

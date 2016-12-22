@@ -37,6 +37,12 @@ class EloquentUserProvider extends IlluminateUserProvider
             }
         }
 
+        // Narrow to user details and contact address
+        $query->select('users.*', 'contacts.contact');
+
+        // @todo Maybe just set this in the model?
+        $query->with('organizations');
+
         return $query->first();
     }
 }
