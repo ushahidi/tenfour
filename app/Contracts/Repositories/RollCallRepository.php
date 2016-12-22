@@ -4,6 +4,15 @@ namespace RollCall\Contracts\Repositories;
 interface RollCallRepository extends CrudRepository
 {
     /**
+     * Get all
+     * @param  [int] $org_id
+     * @param  [int] $user_id
+     * @param  [int] $recipient_id
+     * @return [Array]
+     */
+    public function all($org_id = null, $user_id = null, $recipient_id = null);
+
+    /**
      * Get roll call recipients
      *
      * @param int $id

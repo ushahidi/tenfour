@@ -5,6 +5,8 @@ namespace RollCall\Providers;
 use Illuminate\Support\ServiceProvider;
 use Validator;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,17 @@ class ApiServiceProvider extends ServiceProvider
                 $object->setUsers($app['RollCall\Contracts\Repositories\UserRepository']);
                 $object->setOrganizations($app['RollCall\Contracts\Repositories\OrganizationRepository']);
             }
+        });
+
+        $exception = app('api.exception');
+
+
+        $exception->register(function(\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage(), $e);
+        });
+
+        $exception->register(function(\League\OAuth2\Server\Exception\InvalidCredentialsException $e) {
+            throw new UnauthorizedHttpException('Bearer', $e->getMessage(), $e);
         });
     }
 

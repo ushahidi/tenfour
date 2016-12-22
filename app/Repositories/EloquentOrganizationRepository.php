@@ -255,11 +255,10 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function getMembers($id)
     {
-        return Organization::with([
-            'members' => function ($query) {
-                $query->select('users.id', 'name', 'role');
-        }])
-            ->findOrFail($id)
+        return Organization::findOrFail($id)
+            ->members()
+            ->select('users.*','role')
+            ->get()
             ->toArray();
     }
 
@@ -307,6 +306,14 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->where('user_id', $user_id)
             ->where('organization_id', $org_id)
             ->count();
+    }
+
+    public function testMemberInviteToken($memberId, $invite_token)
+    {
+        return (bool) DB::table('users')
+          ->where('id', $memberId)
+          ->where('invite_token', $invite_token)
+          ->count();
     }
 
 }

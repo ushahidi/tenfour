@@ -17,9 +17,9 @@ class CreateReplyRequest extends GetReplyRequest
     public function rules()
     {
         return [
-          'location_text'  => 'string',
-          'answer'         => 'required_without: message|string',
-          'message'        => 'required_without: answer|string',
+          'location_text'  => 'string|nullable',
+          'answer'         => 'required_without:message|string|nullable',
+          'message'        => 'required_without:answer|string|nullable',
         ];
     }
 }

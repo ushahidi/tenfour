@@ -180,14 +180,14 @@ class OrganizationCest
         $I->wantTo('Update organization details as the admin');
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint."/$id/members/$user_id", [
+        $I->sendPUT($this->endpoint."/$id/people/$user_id", [
             'name' => 'Updated org member',
             'role' => 'admin'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'user' => [
+            'person' => [
                 'id'   => 3,
                 'name' => 'Updated org member',
                 'role' => 'admin'
@@ -206,13 +206,13 @@ class OrganizationCest
         $I->wantTo('Transfer org ownership');
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint."/$id/members/$user_id", [
+        $I->sendPUT($this->endpoint."/$id/people/$user_id", [
             'role' => 'owner'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'user' => [
+            'person' => [
                 'id'   => 3,
                 'role' => 'owner'
             ]
@@ -232,7 +232,7 @@ class OrganizationCest
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall',
             'url'  => 'rollcall.rollcall.io',
-            'members' => [
+            'people' => [
                 [
                     'id'   => '3',
                     'role' => 'admin'
@@ -255,7 +255,7 @@ class OrganizationCest
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall',
             'url'  => 'rollcall.rollcall.io',
-            'members' => [
+            'people' => [
                 [
                     'id'   => '3',
                     'role' => 'owner'
@@ -275,9 +275,9 @@ class OrganizationCest
         $I->wantTo('Add member as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members", [
-            'name' => 'Mary Mata',
-            'role' => 'member',
+        $I->sendPOST($this->endpoint."/$id/people", [
+            'email' => 'mary@rollcall.io',
+            'role'  => 'member',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -298,7 +298,7 @@ class OrganizationCest
         $I->wantTo('Add member contact email as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members/$user_id/contacts", [
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
             'contact' => 'mary@example.com',
             'type'    => 'email',
         ]);
@@ -323,7 +323,7 @@ class OrganizationCest
         $I->wantTo('Add member contact phone as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members/$user_id/contacts", [
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
             'contact' => '077242424',
             'type'    => 'phone',
         ]);
@@ -349,7 +349,7 @@ class OrganizationCest
         $I->wantTo('Update member contact as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint."/$id/members/$user_id/contacts/$contact_id", [
+        $I->sendPUT($this->endpoint."/$id/people/$user_id/contacts/$contact_id", [
             'contact' => '087242424',
             'type'    => 'phone',
         ]);
@@ -375,7 +375,7 @@ class OrganizationCest
         $I->wantTo('Delete member contact org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDelete($this->endpoint."/$id/members/$user_id/contacts/$contact_id");
+        $I->sendDelete($this->endpoint."/$id/people/$user_id/contacts/$contact_id");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -397,11 +397,11 @@ class OrganizationCest
         $I->wantTo('Add member contacts as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendGET($this->endpoint."/$id/members/$user_id");
+        $I->sendGET($this->endpoint."/$id/people/$user_id");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'user' => [
+            'person' => [
                 'name' => 'Test user',
                 'contacts' => [
                     [
@@ -438,6 +438,7 @@ class OrganizationCest
         $I->wantTo('Add member with unspecified role');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
+
         $I->sendPOST($this->endpoint."/$id/members", [
             'name' => 'Mary Mata',
         ]);
@@ -462,11 +463,11 @@ class OrganizationCest
         $I->wantTo('Delete member as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDelete($this->endpoint."/$id/members/$user_id");
+        $I->sendDelete($this->endpoint."/$id/people/$user_id");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'user' => [
+            'person' => [
                 'id'   => 3,
                 'name' => 'Org member'
             ]
@@ -484,7 +485,7 @@ class OrganizationCest
         $I->wantTo('Delete owner as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDelete($this->endpoint."/$id/members/$user_id");
+        $I->sendDelete($this->endpoint."/$id/people/$user_id");
         $I->seeResponseCodeIs(403);
     }
 
@@ -495,10 +496,10 @@ class OrganizationCest
     public function addAdminAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
-        $I->wantTo('Add members as an org admin');
+        $I->wantTo('Add people as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/members", [
+        $I->sendPOST($this->endpoint."/$id/people", [
             'id'   => 6,
             'role' => 'admin',
         ]);
@@ -506,22 +507,20 @@ class OrganizationCest
     }
 
     /*
-     * List members in an organization
+     * List people in an organization
      *
      */
     public function listMembersAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
-        $I->wantTo('List members of an organization as org Admin');
+        $I->wantTo('List people of an organization as org Admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendGET($this->endpoint."/$id/members");
+        $I->sendGET($this->endpoint."/$id/people");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
-            'members' => [
+            'people' => [
                 [
                     'id' => 4,
                     'role' => 'owner',

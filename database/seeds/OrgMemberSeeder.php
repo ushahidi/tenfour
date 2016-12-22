@@ -18,16 +18,20 @@ class OrgMemberSeeder extends Seeder
         $ids = [];
         $members = [
            [
-                'name'     => 'Charlie Harding',
-                'email'    => 'charlie@ushahidi.com'
+                'name'     => 'Charlie Test',
+                'email'    => 'charlie+test@ushahidi.com'
             ],
             [
-                'name'     => 'Jason Mule',
-                'email'    => 'jason@ushahidi.com'
+                'name'     => 'Jason Test',
+                'email'    => 'jason+test@ushahidi.com'
             ],
             [
-                'name'     => 'Linda Kamau',
-                'email'    => 'linda@ushahidi.com'
+                'name'     => 'Linda Test',
+                'email'    => 'linda+test@ushahidi.com'
+            ],
+            [
+                'name'     => 'David Test',
+                'email'    => 'dmcnamara+test@ushahidi.com'
             ]
         ];
 

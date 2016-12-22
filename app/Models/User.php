@@ -10,12 +10,14 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
+use RollCall\Notifications\ResetPassword;
 
 class User extends Model implements AuthenticatableContract,
 	AuthorizableContract,
 	CanResetPasswordContract
 {
-	use Authenticatable, Authorizable, CanResetPassword;
+	use Authenticatable, Authorizable, CanResetPassword, Notifiable;
 
 	/**
 	 * The database table used by the model.
@@ -29,14 +31,15 @@ class User extends Model implements AuthenticatableContract,
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'description', 'password', 'person_type'];
+
+    protected $fillable = ['name', 'description', 'email', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent', 'person_type'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'pivot'];
+	protected $hidden = ['password', 'remember_token', 'pivot', 'invite_token'];
 
 	/**
 	 * @param string $value
@@ -95,4 +98,8 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('Rollcall\Models\Reply');
     }
+
+		public function sendPasswordResetNotification($token) {
+		    $this->notify(new ResetPassword($token, $this->organizations[0]));
+		}
 }

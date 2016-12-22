@@ -71,7 +71,7 @@ class RollCall extends Model
 
     /**
      *
-     * Roll calls send to contacts
+     * Roll calls sent to contacts
      */
     public function messages()
     {
