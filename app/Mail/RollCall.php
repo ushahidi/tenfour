@@ -33,7 +33,8 @@ class RollCall extends Mailable
         $client_url = config('rollcall.messaging.client_url');
 
         // Use org domain for 'from' and 'reply to' addresses
-        list($name, $_) = explode('@', $this->creator['email']);
+        list($name,) = explode('@', $this->creator['email']);
+
         $from = $name .'@'. $this->organization['url'];
         $reply_to = $name . '-' . $this->roll_call['id'] .'@'. $this->organization['url'];
 
