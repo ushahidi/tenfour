@@ -50,6 +50,12 @@ class UserTransformer extends TransformerAbstract
 
         // Set Gravatar ID
         $user['gravatar'] = !empty($user['email']) ? md5(strtolower(trim($user['email']))) : '00000000000000000000000000000000';
+        // Generate user initials
+        $user['initials'] =
+            array_map(function ($word) {
+                return substr($word, 0, 1);
+            }, explode(' ', $user['name']));
+        $user['initials'] = strtoupper(implode('', $user['initials']));
         return $user;
     }
 }

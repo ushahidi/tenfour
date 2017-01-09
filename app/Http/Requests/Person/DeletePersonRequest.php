@@ -35,8 +35,8 @@ class DeletePersonRequest extends FormRequest
         }
 
         if ($org_role == 'admin') {
-            // Admin can only delete users with 'member' role
-            if (in_array($member_role, ['admin', 'owner'])) {
+            // Admin can only delete users with 'member' or 'admin' role
+            if ($member_role === 'owner') {
                 return false;
             }
 
