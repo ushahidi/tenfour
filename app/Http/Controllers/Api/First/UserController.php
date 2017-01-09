@@ -107,6 +107,9 @@ class UserController extends ApiController
     /**
      * Update a user
      *
+     * If a "notifications" property is present in the request, then the user's
+     * notifications will be marked as read.
+     *
      * @Put("/{id}")
      * @Versions({"v1"})
      * @Request({
