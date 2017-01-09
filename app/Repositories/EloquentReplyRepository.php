@@ -7,6 +7,9 @@ use RollCall\Contracts\Repositories\ReplyRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
+use Illuminate\Support\Facades\Notification;
+use RollCall\Notifications\ReplyReceived;
+
 class EloquentReplyRepository implements ReplyRepository
 {
     public function create(array $input)
@@ -17,9 +20,13 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function addReply(array $input, $id)
     {
+        $reply = Reply::create($input)->toArray();
+        $rollcall = RollCall::findOrFail($id);
 
-        return Reply::create($input)
-            ->toArray();
+        Notification::send($rollcall->recipients,
+            new ReplyReceived(new Reply($reply)));
+
+        return $reply;
     }
 
     public function update(array $input, $id)

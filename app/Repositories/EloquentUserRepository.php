@@ -18,6 +18,10 @@ class EloquentUserRepository implements UserRepository
 		    $user = User::findorFail($id);
         $user->update($input);
 
+        if (isset($input['notifications'])) {
+            $user->unreadNotifications->markAsRead();
+        }
+
 		    return $user->toArray();
     }
 
@@ -31,6 +35,7 @@ class EloquentUserRepository implements UserRepository
     public function find($id)
     {
         return User::with('contacts')
+            ->with('notifications')
             ->find($id)
             ->toArray();
     }

@@ -6,6 +6,9 @@ use RollCall\Models\Reply;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
+use Illuminate\Support\Facades\Notification;
+use RollCall\Notifications\RollCallReceived;
+
 class EloquentRollCallRepository implements RollCallRepository
 {
     public function all($org_id = null, $user_id = null, $recipient_id = null)
@@ -51,6 +54,9 @@ class EloquentRollCallRepository implements RollCallRepository
 
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $roll_call->recipients()->sync($userIds);
+
+        Notification::send($roll_call->recipients,
+            new RollCallReceived($roll_call));
 
         return $roll_call->fresh()
             ->toArray();
