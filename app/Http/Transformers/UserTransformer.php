@@ -35,6 +35,12 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
+        if (isset($user['notifications'])) {
+            foreach($user['notifications'] as &$notification) {
+                $notification['type'] = str_replace('RollCall\\Notifications\\', '', $notification['type']);
+            }
+        }
+
         // Format roll calls
         if (isset($user['rollcalls'])) {
             $roll_call_transformer = new RollCallTransformer;

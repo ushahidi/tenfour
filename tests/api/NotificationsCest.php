@@ -27,7 +27,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'RollCall\\Notifications\\PersonJoinedOrganization',
+                'type' => 'PersonJoinedOrganization',
                 'data' => [
                   'person_name' => 'Mary',
                 ]
@@ -57,7 +57,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
             'notifications' => [
-              'type' => 'RollCall\\Notifications\\PersonJoinedOrganization',
+              'type' => 'PersonJoinedOrganization',
               'data' => [
                   'person_name' => 'Mary',
                 ]
@@ -84,7 +84,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'RollCall\\Notifications\\PersonLeftOrganization',
+                'type' => 'PersonLeftOrganization',
                 'data' => [
                   'person_name' => 'Org member',
                 ]
@@ -113,7 +113,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
             'notifications' => [
-                'type' => 'RollCall\\Notifications\\PersonLeftOrganization',
+                'type' => 'PersonLeftOrganization',
                 'data' => [
                   'person_name' => 'Org member',
                 ]
@@ -156,7 +156,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'RollCall\\Notifications\\RollCallReceived',
+                'type' => 'RollCallReceived',
                 'data' => [
                   'rollcall_message' => $message
                 ]
@@ -188,7 +188,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'RollCall\\Notifications\\ReplyReceived',
+                'type' => 'ReplyReceived',
                 'data' => [
                   'rollcall_id' => $rollcall_id,
                   'reply_from' => 'Org admin',
