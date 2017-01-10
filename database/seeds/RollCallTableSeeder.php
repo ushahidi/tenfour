@@ -2,12 +2,15 @@
 namespace RollCall\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Notification;
 
 use RollCall\Models\Organization;
 use RollCall\Models\User;
 use RollCall\Models\Contact;
 use RollCall\Models\RollCall;
 use RollCall\Models\Reply;
+use RollCall\Notifications\RollCallReceived;
+use RollCall\Notifications\ReplyReceived;
 
 class RollCallTableSeeder extends Seeder
 {
@@ -44,6 +47,8 @@ class RollCallTableSeeder extends Seeder
 
         $rollCall->recipients()->sync($recipients, false);
 
+        Notification::send($rollCall->recipients, new RollCallReceived($rollCall));
+
         // Add replies
         $no_of_replies = 1;
         $reply_count = 0;
@@ -53,12 +58,14 @@ class RollCallTableSeeder extends Seeder
                 break;
             }
 
-            Reply::firstOrCreate([
+            $reply = Reply::firstOrCreate([
                 'message'      => 'I am OK',
                 'answer'       => 'Yes',
                 'user_id'      => $user->id,
                 'roll_call_id' => $rollCall->id,
             ]);
+
+            Notification::send($rollCall->recipients, new ReplyReceived($reply));
 
             $reply_count++;
         }

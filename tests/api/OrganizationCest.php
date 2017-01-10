@@ -523,21 +523,25 @@ class OrganizationCest
                     'id' => 4,
                     'role' => 'owner',
                     'name' => 'Org owner',
+                    'initials' => 'OO'
                 ],
                 [
                     'id' => 5,
                     'role' => 'admin',
                     'name' => 'Org admin',
+                    'initials' => 'OA'
                 ],
                 [
                     'id' => 1,
                     'role' => 'member',
                     'name' => 'Test user',
+                    'initials' => 'TU'
                 ],
                 [
                     'id' => 3,
                     'role' => 'member',
                     'name' => 'Org member',
+                    'initials' => 'OM'
                 ]
             ]
         ]);

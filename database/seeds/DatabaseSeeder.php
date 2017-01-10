@@ -6,6 +6,7 @@ use RollCall\Seeders\OauthTableSeeder;
 use RollCall\Seeders\UserTableSeeder;
 use RollCall\Seeders\RoleTableSeeder;
 use RollCall\Seeders\SettingsTableSeeder;
+use RollCall\Seeders\NotificationsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,13 +19,14 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-         $this->call(RollCall\Seeders\OauthTableSeeder::class);
-         $this->call(RollCall\Seeders\UserTableSeeder::class);
-         $this->call(RollCall\Seeders\RoleTableSeeder::class);
-         $this->call(RollCall\Seeders\OrganizationTableSeeder::class);
-         $this->call(RollCall\Seeders\OrgMemberSeeder::class);
-         $this->call(RollCall\Seeders\RollCallTableSeeder::class);
-         $this->call(RollCall\Seeders\SettingsTableSeeder::class);
+        $this->call(RollCall\Seeders\OauthTableSeeder::class);
+        $this->call(RollCall\Seeders\UserTableSeeder::class);
+        $this->call(RollCall\Seeders\RoleTableSeeder::class);
+        $this->call(RollCall\Seeders\OrganizationTableSeeder::class);
+        $this->call(RollCall\Seeders\OrgMemberSeeder::class);
+        $this->call(RollCall\Seeders\RollCallTableSeeder::class);
+        $this->call(RollCall\Seeders\SettingsTableSeeder::class);
+        $this->call(RollCall\Seeders\NotificationsTableSeeder::class);
 
         Model::reguard();
     }

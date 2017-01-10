@@ -21,12 +21,9 @@ class UserTransformer extends TransformerAbstract
                 $contact['uri'] = '/contact/' . $contact['id'];
                 if ($contact['type'] === 'email') {
 
-                    // Set Gratar ID from the first email found?
-                    if (! empty($user['gravatar'])) {
-                        $contact['user']['gravatar'] = !empty($contact['contact']) ? md5(strtolower(trim($contact['contact']))) : '00000000000000000000000000000000';
-
-                        // Do we need to set this twice?
-                        $user['gravatar'] = $contact['user']['gravatar'];
+                    // Set Gravatar ID from the first email found?
+                    if (! isset($contact['user']['gravatar'])) {
+                        $contact['user']['gravatar'] = ! empty($contact['contact']) ? md5(strtolower(trim($contact['contact']))) : '00000000000000000000000000000000';
                     }
                 }
 
@@ -47,6 +44,12 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
+        if (isset($user['notifications'])) {
+            foreach($user['notifications'] as &$notification) {
+                $notification['type'] = str_replace('RollCall\\Notifications\\', '', $notification['type']);
+            }
+        }
+
         // Format roll calls
         if (isset($user['rollcalls'])) {
             $roll_call_transformer = new RollCallTransformer;
@@ -59,6 +62,16 @@ class UserTransformer extends TransformerAbstract
                 unset($roll_call['user']);
             }
         }
+
+        // Set Gravatar ID from contact
+        $user['gravatar'] = $contact['user']['gravatar'];
+
+        // Generate user initials
+        $user['initials'] =
+            array_map(function ($word) {
+                return substr($word, 0, 1);
+            }, explode(' ', $user['name']));
+        $user['initials'] = strtoupper(implode('', $user['initials']));
 
         return $user;
     }

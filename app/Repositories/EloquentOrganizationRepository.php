@@ -11,6 +11,9 @@ use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Notification;
+use RollCall\Notifications\PersonJoinedOrganization;
+use RollCall\Notifications\PersonLeftOrganization;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
@@ -248,6 +251,9 @@ class EloquentOrganizationRepository implements OrganizationRepository
             $organization->members()->attach($user['id'], ['role' => $input['role']]);
         });
 
+        Notification::send($this->getAdmins($organization['id']),
+            new PersonJoinedOrganization(new User($user)));
+
         return $user + [
             'role' => $input['role']
         ];
@@ -260,6 +266,15 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->select('users.*','role')
             ->get()
             ->toArray();
+    }
+
+    public function getAdmins($id)
+    {
+        return Organization::findOrFail($id)
+            ->members()
+            ->select('users.*','role')
+            ->whereIn('role', ['admin', 'owner'])
+            ->get();
     }
 
     public function deleteMember($id, $user_id)
@@ -284,6 +299,9 @@ class EloquentOrganizationRepository implements OrganizationRepository
             // Delete user
             $user = $this->users->delete($user_id);
         });
+
+        Notification::send($this->getAdmins($organization['id']),
+            new PersonLeftOrganization(new User($user)));
 
         return $user + [
             'role' => $role
