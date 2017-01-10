@@ -24,6 +24,9 @@ class UserTransformer extends TransformerAbstract
                     // Set Gravatar ID from the first email found?
                     if (! isset($contact['user']['gravatar'])) {
                         $contact['user']['gravatar'] = ! empty($contact['contact']) ? md5(strtolower(trim($contact['contact']))) : '00000000000000000000000000000000';
+
+                        // Set Gravatar ID from contact
+                        $user['gravatar'] = $contact['user']['gravatar'];
                     }
                 }
 
@@ -62,9 +65,6 @@ class UserTransformer extends TransformerAbstract
                 unset($roll_call['user']);
             }
         }
-
-        // Set Gravatar ID from contact
-        $user['gravatar'] = $contact['user']['gravatar'];
 
         // Generate user initials
         $user['initials'] =
