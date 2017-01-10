@@ -243,7 +243,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         DB::transaction(function () use (&$user, $input, $organization) {
             $user_input = array_except($input, ['role']);
 
-            $user = User::create($user_input)->toArray();
+            $user = $this->users->create($user_input);
 
             $organization->members()->attach($user['id'], ['role' => $input['role']]);
         });
