@@ -44,7 +44,7 @@ class ReplyReceived extends Notification
         return [
             'reply_from' => $this->reply->user->name,
             'rollcall_id' => $this->reply->roll_call_id,
-            'avatar' => 'http://www.gravatar.com/avatar/647a5458daa00a474a611a5b0d603b9b?d=identicon&s=40' // @todo replace with real avatar
+            'gravatar' => ! empty($this->reply->user->email) ? md5(strtolower(trim($this->reply->user->email))) : '00000000000000000000000000000000',
         ];
     }
 }

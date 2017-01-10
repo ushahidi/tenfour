@@ -44,7 +44,7 @@ class RollCallReceived extends Notification
         return [
             'rollcall_message' => $this->rollcall->message,
             'rollcall_id' => $this->rollcall->id,
-            'avatar' => 'http://www.gravatar.com/avatar/647a5458daa00a474a611a5b0d603b9b?d=identicon&s=40' // @todo replace with real avatar
+            'gravatar' => ! empty($this->rollcall->user->email) ? md5(strtolower(trim($this->rollcall->user->email))) : '00000000000000000000000000000000',
         ];
     }
 }

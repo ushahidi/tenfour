@@ -58,7 +58,7 @@ class PersonJoinedOrganization extends Notification
         return [
             'person_name' => $this->person->name,
             'person_id' => $this->person->id,
-            'avatar' => 'http://api.randomuser.me/portraits/men/16.jpg' // @todo replace with real avatar
+            'gravatar' => ! empty($this->person->email) ? md5(strtolower(trim($this->person->email))) : '00000000000000000000000000000000',
         ];
     }
 }
