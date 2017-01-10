@@ -31,12 +31,9 @@ class RollCall extends Mailable
     public function build()
     {
         $client_url = config('rollcall.messaging.client_url');
+        $domain = config('rollcall.messaging.domain');
 
-        // Use org domain for 'from' and 'reply to' addresses
-        list($name,) = explode('@', $this->creator['email']);
-
-        $from = $name .'@'. $this->organization['url'];
-        $reply_to = $name . '-' . $this->roll_call['id'] .'@'. $this->organization['url'];
+        $from_address = 'rollcall-' . $this->roll_call['id'] .'@'. $domain;
 
         $gravatar = ! empty($this->creator['email']) ? md5(strtolower(trim($this->creator['email']))) : '00000000000000000000000000000000';
         $roll_call_url = $client_url .'/rollcalls/'. $this->roll_call['id'];
@@ -63,8 +60,7 @@ class RollCall extends Mailable
                         'answer_url_yes' => $answer_url_yes,
                     ])
                     ->subject($subject)
-                    ->from($from)
-                    ->replyTo($reply_to);
-
+                    ->from($from_address, $this->creator['name'])
+                    ->replyTo($from_address, $this->creator['name']);
     }
 }
