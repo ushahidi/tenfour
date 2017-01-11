@@ -57,6 +57,7 @@ class AfricasTalking extends AbstractSMS implements DriverInterface
         ];
 
         $body = [
+            'from'     => $message->getFrom(),
             'username' => $this->username,
             'message'  => $message->composeMessage(),
             'to'       => $numbers
