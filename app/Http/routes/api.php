@@ -6,6 +6,14 @@ $version = 'v1';
 $base = 'api/'.$version.'/';
 $api = app(Router::class);
 
+// Add routes with anonymous access
+$api->version($version, [
+    'namespace' => 'RollCall\Http\Controllers\Api\First'
+], function ($api) use ($base) {
+    $api->get($base.'organizations', 'OrganizationController@index');
+});
+
+// Add authenticated routes
 $api->version($version, [
     'namespace' => 'RollCall\Http\Controllers\Api\First',
     'protected' => true,
@@ -22,7 +30,7 @@ $api->version($version, [
 
     //Organizations
     ////////////////////////////////////////////////////////////////////
-    $api->resource($base.'organizations', 'OrganizationController');
+    $api->resource($base.'organizations', 'OrganizationController', ['except' => ['index']]);
 
     // Org members
     $api->resource($base.'organizations/{organization}/people', 'PersonController');

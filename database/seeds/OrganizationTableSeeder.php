@@ -24,12 +24,32 @@ class OrganizationTableSeeder extends Seeder
         );
 
         $organization->update([
-            'url' => 'ushahidi.rollcall.io',
+            'url' => 'ushahidi',
         ]);
 
         $user->organizations()->sync([
                 $organization->id =>[
                     'user_id' => $user->id, 'role' => 'owner'
+                ]
+            ]);
+
+        // Second test org: Waitak Tri Club
+        $triClub = Organization::firstOrCreate(
+            ['name' => 'Waitakere Tri Club']
+        );
+        $triClub->update([
+            'url' => 'waitaktri',
+        ]);
+
+        $user2 = User::firstOrCreate([
+            'email' => 'robbie+tri@ushahidi.com',
+            'name' => 'Robbie',
+            'password' => 'waitakere'
+        ]);
+
+        $user2->organizations()->sync([
+                $triClub->id => [
+                    'user_id' => $user2->id, 'role' => 'owner'
                 ]
             ]);
     }
