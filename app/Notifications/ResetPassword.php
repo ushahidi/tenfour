@@ -2,6 +2,7 @@
 
 namespace RollCall\Notifications;
 
+use App;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -45,8 +46,13 @@ class ResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
+        $resetLink = url('https://' .
+          (App::environment('staging') ? 'staging.rollcall.io' : $this->organization['url']) .
+          '/login/reset-password/' .
+          $this->token);
+
         $data = [
-            'link'              => url('https://' . $this->organization['url'] . '/login/reset-password/' . $this->token),
+            'link'              => $resetLink,
             'organization_url'  => $this->organization['url'],
             'organization_name' => $this->organization['name'],
         ];
