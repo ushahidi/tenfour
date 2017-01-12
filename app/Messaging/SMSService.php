@@ -5,6 +5,7 @@ namespace RollCall\Messaging;
 use SMS;
 use RollCall\Contracts\Messaging\MessageService;
 use libphonenumber\PhoneNumberUtil;
+use libphonenumber\NumberParseException;
 
 class SMSService implements MessageService
 {
@@ -25,7 +26,15 @@ class SMSService implements MessageService
 
         $phone_number_util = PhoneNumberUtil::getInstance();
 
-        $phone_number_obj = $phone_number_util->parse($phone_number, null);
+        try {
+            $phone_number_obj = $phone_number_util->parse($phone_number, null);
+        }
+
+        catch (NumberParseException $exception) {
+            // Can't send a message to an invalid number
+            return;
+        }
+
         $region_code = $phone_number_util->getRegionCodeForNumber($phone_number_obj);
 
         // Set SMS driver for the region code
