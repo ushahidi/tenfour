@@ -13,7 +13,7 @@
   - name: "Deploy (master)"
     service: deploy
     command: >
-      ansible-playbook -i ./hosts -l staging
+      ansible-playbook -i ./hosts -l production
         -e API_VERSION_SRC=/vols/src
         api-deploy-version.yml
     tag: master
