@@ -13,7 +13,7 @@ class EloquentRollCallRepository implements RollCallRepository
 {
     public function all($org_id = null, $user_id = null, $recipient_id = null)
     {
-        $query = RollCall::query();
+        $query = RollCall::query()->orderBy('created_at', 'desc');
 
         if ($org_id) {
             $query->where('organization_id', $org_id);
