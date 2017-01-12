@@ -31,7 +31,8 @@ class User extends Model implements AuthenticatableContract,
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'description', 'email', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent'];
+
+    protected $fillable = ['name', 'description', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent', 'person_type'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -98,7 +99,12 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('Rollcall\Models\Reply');
     }
 
-		public function sendPasswordResetNotification($token) {
-		    $this->notify(new ResetPassword($token, $this->organizations[0]));
-		}
+    public function sendPasswordResetNotification($token) {
+        $this->notify(new ResetPassword($token, $this->organizations[0]));
+    }
+
+    public function getEmailForPasswordReset()
+    {
+        return $this->contact;
+    }
 }

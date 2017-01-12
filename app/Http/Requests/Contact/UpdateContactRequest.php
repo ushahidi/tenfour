@@ -32,4 +32,18 @@ class UpdateContactRequest extends CreateContactRequest
 
         return false;
     }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+
+        $rules['contact'][1]->ignore($this->request->get('id'), 'id');
+
+        return $rules;
+    }
 }

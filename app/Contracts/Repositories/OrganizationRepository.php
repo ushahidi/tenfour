@@ -87,13 +87,13 @@ interface OrganizationRepository extends CrudRepository
     public function deleteMember($organization_id, $user_id);
 
     /**
-     * Filter list of organizations by user id
+     * Get list of organizations, optionally filtered by user or url
      *
-     * @param int $user_id
+     * @param string $url
      *
      * @return array
      */
-    public function filterByUserId($user_id);
+    public function all($url = false);
 
     /**
      * Check if user is a member of an organization

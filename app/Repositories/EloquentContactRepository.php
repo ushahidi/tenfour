@@ -10,7 +10,7 @@ class EloquentContactRepository implements ContactRepository
     {
         return Contact::with([
             'user' => function ($query) {
-                $query->select('users.id', 'users.name', 'users.email');
+                $query->select('users.id', 'users.name');
             }
         ])
             ->get()
@@ -36,7 +36,7 @@ class EloquentContactRepository implements ContactRepository
     {
         return Contact::with([
             'user' => function ($query) {
-                $query->select('users.id', 'users.name', 'users.email');
+                $query->select('users.id', 'users.name');
             }
         ])
             ->findOrFail($id)
@@ -55,7 +55,7 @@ class EloquentContactRepository implements ContactRepository
     {
         return Contact::with([
             'user' => function ($query) {
-                $query->select('users.id', 'users.name', 'users.email');
+                $query->select('users.id', 'users.name');
             }
         ])
             ->where('user_id', $user_id)
@@ -67,7 +67,7 @@ class EloquentContactRepository implements ContactRepository
     {
         $contact = Contact::with([
             'user' => function ($query) {
-                $query->select('users.id', 'users.name', 'users.email');
+                $query->select('users.id', 'users.name');
             }
         ])
             ->where('contact', $contact)

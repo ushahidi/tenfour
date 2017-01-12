@@ -42,6 +42,16 @@ class SendRollCall implements ShouldQueue
         $organization = $org_repo->find($this->roll_call['organization_id']);
         $creator = $user_repo->find($this->roll_call['user_id']);
 
+        // Get creator's contact
+        $creator_contacts = $contact_repo->getByUserId($this->roll_call['user_id']);
+
+        // Try to get an email address
+        $contact = array_first($creator_contacts, function($contact, $key) {
+            return $contact['type'] === 'email';
+        }, $creator_contacts[0]);
+
+        $creator['email'] = $contact['contact'];
+
         foreach($this->roll_call['recipients'] as $recipient)
         {
             if (! $roll_call_repo->getMessages($this->roll_call['id'], $recipient['id'])) {

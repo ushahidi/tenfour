@@ -4,7 +4,7 @@ namespace RollCall\Http\Requests\Contact;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
-
+use Illuminate\Validation\Rule;
 
 class CreateContactRequest extends FormRequest
 {
@@ -35,7 +35,12 @@ class CreateContactRequest extends FormRequest
         return [
             'user_id'      => 'exists:users,id',
             'type'         => 'required',
-            'contact'      => 'required'
+            'contact'      => [
+                'required',
+                Rule::unique('contacts')->where(function ($query) {
+                    $query->where('type', $this->request->get('type'));
+                })
+            ]
         ];
     }
 }

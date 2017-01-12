@@ -68,7 +68,7 @@ class ContactCest
         $I->sendPOST($this->endpoint, [
             'can_receive' => 1,
             'type' => 'email',
-            'contact' => 'test@ushahidi.com',
+            'contact' => 'testcreate@ushahidi.com',
             'user_id' => 3
         ]);
         $I->seeResponseCodeIs(200);
@@ -77,7 +77,7 @@ class ContactCest
             'contact' => [
                 'can_receive' => 1,
                 'type' => 'email',
-                'contact' => 'test@ushahidi.com',
+                'contact' => 'testcreate@ushahidi.com',
                 'user' => [
                     'id' => 3
                 ]
@@ -98,7 +98,7 @@ class ContactCest
             'user_id' => 3,
             'can_receive' => 0,
             'type' => 'email',
-            'contact' => 'test@ushahidi.com'
+            'contact' => 'testupdate@ushahidi.com'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -106,7 +106,7 @@ class ContactCest
             'contact' => [
                 'can_receive' => 0,
                 'type' => 'email',
-                'contact' => 'test@ushahidi.com',
+                'contact' => 'testupdate@ushahidi.com',
                 'user' => [
                     'id' => 3
                 ]
@@ -128,7 +128,7 @@ class ContactCest
             'user_id' => 3,
             'can_receive' => 0,
             'type' => 'email',
-            'contact' => 'test@ushahidi.com'
+            'contact' => 'testupdate@ushahidi.com'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -136,7 +136,7 @@ class ContactCest
             'contact' => [
                 'can_receive' => 0,
                 'type' => 'email',
-                'contact' => 'test@ushahidi.com',
+                'contact' => 'testupdate@ushahidi.com',
                 'user' => ['id' => 3]
             ]
         ]);

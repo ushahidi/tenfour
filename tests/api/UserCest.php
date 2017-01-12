@@ -17,12 +17,13 @@ class UserCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'users' => [
-                ['name' => 'Test user',
-                 'email' => 'test@ushahidi.com'
+                [
+                    'name'        => 'Test user',
+                    'person_type' => 'member'
                 ],
                 [
-                'name' => 'Admin user',
-                'email' => 'admin@ushahidi.com'
+                    'name'        => 'Admin user',
+                    'person_type' => 'member'
                 ]
             ]
         ]);
@@ -56,8 +57,8 @@ class UserCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'user' => [
-                'name' => 'Test user',
-                'email' => 'test@ushahidi.com'
+                'name'        => 'Test user',
+                'person_type' => 'member'
             ]
         ]);
     }
@@ -76,8 +77,8 @@ class UserCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'user' => [
-                'name' => 'Test user',
-                'email' => 'test@ushahidi.com'
+                'name'        => 'Test user',
+                'person_type' => 'member'
             ]
         ]);
     }
@@ -107,7 +108,6 @@ class UserCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
             'name' => 'Nat Manning',
-            'email' => 'nat@ushahidi.com',
             'password' => 'dancer01',
             'password_confirm' => 'dancer01',
             'person_type' => 'user',
@@ -118,8 +118,8 @@ class UserCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'user' => [
-                'name' => 'Nat Manning',
-                'email' => 'nat@ushahidi.com'
+                'name'        => 'Nat Manning',
+                'person_type' => 'user'
             ]
         ]);
     }
@@ -137,7 +137,6 @@ class UserCest
         $I->sendPUT($this->endpoint."/$id", [
             'id' => $id,
             'name' => 'Team RollCall',
-            'email' => 'rollcall@ushahidi.com',
             'password' => 'rollcall',
             'person_type' => 'user'
         ]);
@@ -145,8 +144,8 @@ class UserCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'user' => [
-                'name' => 'Team RollCall',
-                'email' => 'rollcall@ushahidi.com'
+                'name'        => 'Team RollCall',
+                'person_type' => 'user'
             ]
         ]);
     }
@@ -200,17 +199,16 @@ class UserCest
     {
         $id = 1;
         $I->wantTo('Reset my password');
-        // $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/password/email', [
-            'email' => 'test@ushahidi.com',
+            'username' => 'test@ushahidi.com',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
         $record = $I->grabRecord('password_resets', array('email' => 'test@ushahidi.com'));
         $I->sendPOST('/password/reset', [
-            'email' => 'test@ushahidi.com',
+            'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
             'password_confirmation' => 'cake1234',
             'token' => $record['token']

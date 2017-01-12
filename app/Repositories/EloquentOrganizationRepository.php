@@ -17,6 +17,8 @@ use RollCall\Notifications\PersonLeftOrganization;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
+    protected $currentUserId = NULL;
+
     public function __construct(ContactRepository $contacts, UserRepository $users, RollCallRepository $roll_calls)
     {
         $this->contacts = $contacts;
@@ -24,22 +26,28 @@ class EloquentOrganizationRepository implements OrganizationRepository
         $this->roll_calls = $roll_calls;
     }
 
-    public function all()
+    public function setCurrentUserId($currentUserId)
     {
-        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
-            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
-            ->where('organization_user.role', 'owner')
-            ->get()
-            ->toArray();
+        $this->currentUserId = $currentUserId;
     }
 
-    public function filterByUserId($user_id)
+    public function all($url = false)
     {
-        return Organization::leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
-            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
-            ->where('organization_user.user_id', $user_id)
-            ->get()
-            ->toArray();
+        $query = Organization::select('organizations.id', 'name', 'url');
+
+        // If we're authenticated, just return orgs we're a member of
+        if ($this->currentUserId) {
+            $query->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id');
+            $query->select('organizations.id', 'name', 'url', 'user_id', 'role');
+            $query->where('organization_user.user_id', $this->currentUserId);
+        }
+
+        // Filter by url
+        if ($url) {
+            $query->where('url', $url);
+        }
+
+        return $query->get()->toArray();
     }
 
     public function update(array $input, $id)
@@ -244,14 +252,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
         }
 
         DB::transaction(function () use (&$user, $input, $organization) {
-            $user_input = array_except($input, ['email', 'role']);
-            $email = array_only($input, ['email'])['email'];
+            $user_input = array_except($input, ['role']);
 
-            $user_id = User::firstOrCreate(['email' => $email])->id;
+            $user = $this->users->create($user_input);
 
-            $user = $this->users->update($user_input, $user_id);
-
-            $organization->members()->attach($user_id, ['role' => $input['role']]);
+            $organization->members()->attach($user['id'], ['role' => $input['role']]);
         });
 
         Notification::send($this->getAdmins($organization['id']),
