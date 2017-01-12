@@ -26,5 +26,12 @@ class SettingsTableSeeder extends Seeder
         ])->update([
           'values' => ["email" => true]
         ]);
+
+        Setting::firstOrCreate([
+          'organization_id' => $organization->id,
+          'key' => 'location',
+        ])->update([
+          'values' => ["name" => "Nairobi, Kenya"]
+        ]);
     }
 }

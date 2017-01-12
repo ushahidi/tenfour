@@ -105,5 +105,15 @@ interface OrganizationRepository extends CrudRepository
      */
     public function isMember($user_id, $org_id);
 
+    /**
+     * Check if invite token is correct for given user
+     *
+     * @param int $user_id
+     * @param string $invite_token
+     *
+     * @return bool
+     */
+    public function testMemberInviteToken($member_id, $invite_token);
+
 
 }

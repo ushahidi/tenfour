@@ -11,6 +11,9 @@ use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
 use Dingo\Api\Auth\Auth;
 
+/**
+ * @Resource("Users", uri="/api/v1/users")
+ */
 class UserController extends ApiController
 {
     public function __construct(UserRepository $users, Response $response, Auth $auth)
@@ -21,7 +24,19 @@ class UserController extends ApiController
     }
 
     /**
-     * Get all users
+     * Show all users
+     *
+     * Get a JSON representation of all the registered users.
+     *
+     * @Get("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+            "users": {{
+                "name": "Robbie",
+                "email": "robbie@ushahidi.com"
+            }}
+        })
      *
      * @param Request $request
      * @return Response
@@ -35,23 +50,43 @@ class UserController extends ApiController
     /**
      * Create a user
      *
+     * @Post("/")
+     * @Versions({"v1"})
+     * @Request({
+                "id": 3,
+                "name": "Testing Testing",
+                "email": "test@ushahidi.com",
+                "password": "newpassword",
+                "password_confirm": "newpassword"
+            }, headers={"Authorization": "Bearer token"})
+     * @Response(201)
+     *
      * @param Request $request
      * @return Response
      */
     public function create(CreateUserRequest $request)
     {
-        $user = $this->users->create([
-            'name'     => $request->input('name'),
-            'email'    => $request->input('email'),
-            'password' => $request->input('password'),
-            'person_type' => $request->input('person_type'),
-        ]);
+        $user = $this->users->create($request->all());
 
         return $this->response->item($user, new UserTransformer, 'user');
     }
 
     /**
      * Get a single user
+     *
+     * @Get("/{id}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+                "user": {
+                    "id": 3,
+                    "name": "Testing Testing",
+                    "email": "test@ushahidi.com",
+                    "username": "ushahidi",
+                    "created_at": "2016-03-30 16:11:36",
+                    "updated_at": "2016-03-30 16:11:36"
+                }
+            })
      *
      * @param Request $request
      * @param int $id
@@ -70,6 +105,29 @@ class UserController extends ApiController
     }
 
     /**
+     * Update a user
+     *
+     * If a "notifications" property is present in the request, then the user's
+     * notifications will be marked as read.
+     *
+     * @Put("/{id}")
+     * @Versions({"v1"})
+     * @Request({
+                "name": "Testing Testing",
+                "email": "test@ushahidi.com",
+                "password": "newpassword",
+                "password_confirm": "newpassword"
+            }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+                "user": {
+                    "id": 3,
+                    "name": "Testing Testing",
+                    "email": "test@ushahidi.com",
+                    "username": "ushahidi",
+                    "created_at": "2016-03-30 16:11:36",
+                    "updated_at": "2016-03-30 16:11:36"
+                }
+            })
      *
      * @param Request $request
      * @param int $id
@@ -85,6 +143,11 @@ class UserController extends ApiController
 
     /**
      * Delete a user
+     *
+     * @Delete("/{id}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(201)
      *
      * @param Request $request
      * @param int $id

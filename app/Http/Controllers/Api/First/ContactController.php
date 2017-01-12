@@ -12,6 +12,9 @@ use RollCall\Http\Requests\Contact\DeleteContactRequest;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Response;
 
+/**
+ * @Resource("Contacts", uri="/api/v1/contacts")
+ */
 class ContactController extends ApiController
 {
     public function __construct(ContactRepository $contacts, Response $response)
@@ -22,6 +25,13 @@ class ContactController extends ApiController
 
     /**
      * Get all contacts
+     *
+     * @Get("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *
+     * })
      *
      * @param Request $request
      * @return Response
@@ -36,11 +46,26 @@ class ContactController extends ApiController
     /**
      * Create a contact
      *
+     * @Post("/")
+     * @Versions({"v1"})
+     * @Request({
+            "type": "email",
+            "contact": "linda@ushahidi.com",
+            "can_receive": "1"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+            "contact": {
+                "type": "email",
+                "contact": "linda@ushahidi.com",
+                "can_receive": "1"
+            }
+        })
+     *
      * @param Request $request
      * @return Response
      */
     public function create(CreateContactRequest $request)
-    { 
+    {
         $contact = $this->contacts->create([
             'user_id'     => $request->input('user_id'),
             'can_receive' => $request->input('can_receive'),
@@ -53,6 +78,17 @@ class ContactController extends ApiController
 
     /**
      * Get a single contact
+     *
+     * @Get("/{contactId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+            "contact": {
+                "type": "email",
+                "contact": "linda@ushahidi.com",
+                "can_receive": "1"
+            }
+        })
      *
      * @param Request $request
      * @param int $id
@@ -71,20 +107,40 @@ class ContactController extends ApiController
     /**
      * Update a contact
      *
+     * @Put("/{contactId}")
+     * @Versions({"v1"})
+     * @Request({
+            "type": "email",
+            "contact": "linda@ushahidi.com",
+            "can_receive": "1"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+            "contact": {
+                "type": "email",
+                "contact": "linda@ushahidi.com",
+                "can_receive": "1"
+            }
+        })
+     *
      * @param Request $request
      * @param int $id
-     * 
+     *
      * @return Response
      */
     public function update(UpdateContactRequest $request, $id)
     {
         $contact = $this->contacts->update($request->all(), $id);
-        
+
         return $this->response->item($contact, new ContactTransformer, 'contact');
     }
 
     /**
      * Delete a contact
+     *
+     * @Delete("/{contactId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(201)
      *
      * @param Request $request
      * @param int $id
@@ -94,7 +150,7 @@ class ContactController extends ApiController
     public function delete(DeleteContactRequest $request, $id)
     {
         $contact = $this->contacts->delete($id);
-       
+
         return $this->response->item($contact, new ContactTransformer, 'contact');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace RollCall\Http\Requests\Person\Contact;
 
 class AddContactRequest extends UpdateContactRequest
 {

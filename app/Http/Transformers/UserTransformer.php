@@ -7,6 +7,10 @@ class UserTransformer extends TransformerAbstract
 {
     public function transform(array $user)
     {
+        // User config task
+        $user['configComplete'] = $user['config_profile_reviewed']
+                                    && $user['config_self_test_sent'];
+
         // Format contacts if present
         if (isset($user['contacts'])) {
             foreach($user['contacts'] as &$contact)
@@ -31,6 +35,12 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
+        if (isset($user['notifications'])) {
+            foreach($user['notifications'] as &$notification) {
+                $notification['type'] = str_replace('RollCall\\Notifications\\', '', $notification['type']);
+            }
+        }
+
         // Format roll calls
         if (isset($user['rollcalls'])) {
             $roll_call_transformer = new RollCallTransformer;
@@ -46,7 +56,12 @@ class UserTransformer extends TransformerAbstract
 
         // Set Gravatar ID
         $user['gravatar'] = !empty($user['email']) ? md5(strtolower(trim($user['email']))) : '00000000000000000000000000000000';
-
+        // Generate user initials
+        $user['initials'] =
+            array_map(function ($word) {
+                return substr($word, 0, 1);
+            }, explode(' ', $user['name']));
+        $user['initials'] = strtoupper(implode('', $user['initials']));
         return $user;
     }
 }

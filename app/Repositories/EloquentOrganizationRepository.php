@@ -11,6 +11,9 @@ use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Notification;
+use RollCall\Notifications\PersonJoinedOrganization;
+use RollCall\Notifications\PersonLeftOrganization;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
@@ -251,6 +254,9 @@ class EloquentOrganizationRepository implements OrganizationRepository
             $organization->members()->attach($user_id, ['role' => $input['role']]);
         });
 
+        Notification::send($this->getAdmins($organization['id']),
+            new PersonJoinedOrganization(new User($user)));
+
         return $user + [
             'role' => $input['role']
         ];
@@ -258,12 +264,20 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function getMembers($id)
     {
-        return Organization::with([
-            'members' => function ($query) {
-                $query->select('users.id', 'name', 'users.email', 'role');
-        }])
-            ->findOrFail($id)
+        return Organization::findOrFail($id)
+            ->members()
+            ->select('users.*','role')
+            ->get()
             ->toArray();
+    }
+
+    public function getAdmins($id)
+    {
+        return Organization::findOrFail($id)
+            ->members()
+            ->select('users.*','role')
+            ->whereIn('role', ['admin', 'owner'])
+            ->get();
     }
 
     public function deleteMember($id, $user_id)
@@ -289,6 +303,9 @@ class EloquentOrganizationRepository implements OrganizationRepository
             $user = $this->users->delete($user_id);
         });
 
+        Notification::send($this->getAdmins($organization['id']),
+            new PersonLeftOrganization(new User($user)));
+
         return $user + [
             'role' => $role
         ];
@@ -310,6 +327,14 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->where('user_id', $user_id)
             ->where('organization_id', $org_id)
             ->count();
+    }
+
+    public function testMemberInviteToken($memberId, $invite_token)
+    {
+        return (bool) DB::table('users')
+          ->where('id', $memberId)
+          ->where('invite_token', $invite_token)
+          ->count();
     }
 
 }

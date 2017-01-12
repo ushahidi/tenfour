@@ -110,7 +110,9 @@ class UserCest
             'email' => 'nat@ushahidi.com',
             'password' => 'dancer01',
             'password_confirm' => 'dancer01',
-            'person_type' => 'user'
+            'person_type' => 'user',
+            'config_profile_reviewed' => true,
+            'config_self_test_sent' => false
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -184,6 +186,44 @@ class UserCest
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
             'password' => 'another_password',
+            'grant_type' => 'password'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+    }
+
+    /*
+     * Reset password
+     *
+     */
+    public function resetPassword(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Reset my password');
+        // $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/password/email', [
+            'email' => 'test@ushahidi.com',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $record = $I->grabRecord('password_resets', array('email' => 'test@ushahidi.com'));
+        $I->sendPOST('/password/reset', [
+            'email' => 'test@ushahidi.com',
+            'password' => 'cake1234',
+            'password_confirmation' => 'cake1234',
+            'token' => $record['token']
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->sendPOST('/oauth/access_token', [
+            'client_id' => 'webapp',
+            'client_secret' => 'secret',
+            'scope' => 'user',
+            'username' => 'test@ushahidi.com',
+            'password' => 'cake1234',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(200);

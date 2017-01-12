@@ -26,7 +26,7 @@ class RollCall extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id'];
+    protected $fillable = ['message', 'organization_id', 'user_id', 'answers'];
 
     /**
      * The relations to eager load on every query.
@@ -71,7 +71,7 @@ class RollCall extends Model
 
     /**
      *
-     * Roll calls send to contacts
+     * Roll calls sent to contacts
      */
     public function messages()
     {
