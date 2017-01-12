@@ -39,12 +39,9 @@ class RollCall extends Mailable
         $roll_call_url = $client_url .'/rollcalls/'. $this->roll_call['id'];
         $subject = str_limit($this->roll_call['message'], $limit = 50, $end = '...');
 
-        // Assuming that we track both answers using the first index for 'No' and the
-        // second index for 'Yes'.
-        $no = $this->roll_call['answers'][0];
-        $yes = $this->roll_call['answers'][1];
         $answer_url_no = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/0';
         $answer_url_yes = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/1';
+        $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
 
         return $this->view('emails.rollcall')
                     ->text('emails.rollcall_plain')
@@ -52,12 +49,12 @@ class RollCall extends Mailable
                         'msg'            => $this->roll_call['message'],
                         'roll_call_url'  => $roll_call_url,
                         'gravatar'       => $gravatar,
-                        'no'             => $no,
-                        'yes'            => $yes,
+                        'answers'        => $this->roll_call['answers'],
                         'org_url'        => $this->organization['url'],
                         'author'         => $this->creator['name'],
                         'answer_url_no'  => $answer_url_no,
                         'answer_url_yes' => $answer_url_yes,
+                        'answer_url' => $answer_url,
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])

@@ -364,7 +364,53 @@ class RollCallCest
                 [
                     'id' => 1
                 ]
+            ],
+            'answers' => ['No', 'Yes']
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'Westgate under siege, are you ok?',
+                'organization' => [
+                    'id' => 2
+                ],
+                'user' => [
+                    'id' => 5
+                ],
+                'recipients' => [
+                    [
+                        'id' => 3
+                    ],
+                    [
+                        'id' => 1
+                    ]
+                ]
             ]
+        );
+    }
+
+    /*
+     * Create a roll call as org admin
+     *
+     */
+    public function createRollCallWithoutAnswers(ApiTester $I)
+    {
+        $I->wantTo('Create a roll call as admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Westgate under siege, are you ok?',
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
