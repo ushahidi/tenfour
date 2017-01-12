@@ -252,14 +252,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
         }
 
         DB::transaction(function () use (&$user, $input, $organization) {
-            $user_input = array_except($input, ['email', 'role']);
-            $email = array_only($input, ['email'])['email'];
+            $user_input = array_except($input, ['role']);
 
-            $user_id = User::firstOrCreate(['email' => $email])->id;
+            $user = $this->users->create($user_input);
 
-            $user = $this->users->update($user_input, $user_id);
-
-            $organization->members()->attach($user_id, ['role' => $input['role']]);
+            $organization->members()->attach($user['id'], ['role' => $input['role']]);
         });
 
         Notification::send($this->getAdmins($organization['id']),

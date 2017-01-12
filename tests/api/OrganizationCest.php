@@ -301,14 +301,14 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/people", [
-            'email' => 'mary@rollcall.io',
+            'name' => 'Mary Mata',
             'role'  => 'member',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'email' => 'mary@rollcall.io',
-            'role'  => 'member',
+            'name' => 'Mary Mata',
+            'role' => 'member',
         ]);
     }
 
@@ -428,7 +428,6 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             'person' => [
                 'name' => 'Test user',
-                'email' => 'test@ushahidi.com',
                 'contacts' => [
                     [
                         'contact' => '0721674180',
@@ -464,16 +463,15 @@ class OrganizationCest
         $I->wantTo('Add member with unspecified role');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
+
         $I->sendPOST($this->endpoint."/$id/people", [
-            'email' => 'mary@rollcall.io',
+            'name' => 'Mary Mata',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'person' => [
-                'email' => 'mary@rollcall.io',
-                'role' => 'member',
-            ]
+            'name' => 'Mary Mata',
+            'role' => 'member',
         ]);
     }
 

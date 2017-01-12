@@ -21,7 +21,7 @@ class RollCallTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::select('id', 'email')->get();
+        $users = User::select('id')->get();
 
         // Grab seeded organization
         $organization = Organization::where('name', 'Ushahidi')
@@ -42,13 +42,6 @@ class RollCallTableSeeder extends Seeder
         $recipients = [];
 
         foreach ($users as $user) {
-            $contact = Contact::firstOrCreate([
-                'user_id'     => $user->id,
-                'can_receive' => 1,
-                'type'        => 'email',
-                'contact'     => $user->email
-            ]);
-
             array_push($recipients, $user->id);
         }
 

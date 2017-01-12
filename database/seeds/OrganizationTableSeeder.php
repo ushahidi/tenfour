@@ -4,6 +4,7 @@ namespace RollCall\Seeders;
 use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;
+use RollCall\Models\Contact;
 
 class OrganizationTableSeeder extends Seeder
 {
@@ -11,12 +12,18 @@ class OrganizationTableSeeder extends Seeder
     public function run() {
 
         $user = User::firstOrCreate(
-            ['email' => 'rollcall@ushahidi.com']
+            ['name' => 'ushahidi']
         );
 
         $user->update([
-            'name' => 'ushahidi',
             'password' => 'westgate'
+        ]);
+
+        Contact::firstOrCreate([
+            'type'        => 'email',
+            'contact'     => 'rollcall@ushahidi.com',
+            'can_receive' => 1,
+            'user_id'     => $user->id
         ]);
 
         $organization = Organization::firstOrCreate(

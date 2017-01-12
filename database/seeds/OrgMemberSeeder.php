@@ -4,6 +4,7 @@ namespace RollCall\Seeders;
 use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;
+use RollCall\Models\Contact;
 
 class OrgMemberSeeder extends Seeder
 {
@@ -35,12 +36,18 @@ class OrgMemberSeeder extends Seeder
         ];
 
         foreach ($members as $member) {
-            $member = User::firstOrCreate([
-                'email'    => $member['email'],
+            $user = User::firstOrCreate([
                 'name'     => $member['name']
             ]);
 
-            $ids[$member['id']] = ['role' => 'member'];
+            Contact::firstOrCreate([
+                'type'        => 'email',
+                'contact'     => $member['email'],
+                'can_receive' => 1,
+                'user_id'     => $user->id
+            ]);
+
+            $ids[$user['id']] = ['role' => 'member'];
 
         }
 
