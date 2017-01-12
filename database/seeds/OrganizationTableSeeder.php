@@ -49,9 +49,15 @@ class OrganizationTableSeeder extends Seeder
         ]);
 
         $user2 = User::firstOrCreate([
-            'email' => 'robbie+tri@ushahidi.com',
             'name' => 'Robbie',
-            'password' => 'waitakere'
+            'password' => 'waitaktri'
+        ]);
+
+        Contact::firstOrCreate([
+            'type'        => 'email',
+            'contact'     => 'waitaktri@ushahidi.com',
+            'can_receive' => 1,
+            'user_id'     => $user2->id
         ]);
 
         $user2->organizations()->sync([
