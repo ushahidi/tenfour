@@ -16,7 +16,8 @@
         "zendframework/zend-mail": "^2.7",
         "aws/aws-sdk-php": "^3.20",
         "league/csv": "^8.0",
-        "dingo/blueprint": "dev-master"
+        "dingo/blueprint": "dev-master",
+        "giggsey/libphonenumber-for-php": "^8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

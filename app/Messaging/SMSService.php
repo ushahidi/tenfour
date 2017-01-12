@@ -4,6 +4,7 @@ namespace RollCall\Messaging;
 
 use SMS;
 use RollCall\Contracts\Messaging\MessageService;
+use libphonenumber\PhoneNumberUtil;
 
 class SMSService implements MessageService
 {
@@ -14,6 +15,22 @@ class SMSService implements MessageService
 
     public function send($to, $msg, $additional_params = [], $subject = null)
     {
+        // Get region code. The assumption is that all phone numbers are passed as
+        // international numbers
+        if (! starts_with($to, '+')) {
+            $phone_number = '+'.$to;
+        } else {
+            $phone_number = $to;
+        }
+
+        $phone_number_util = PhoneNumberUtil::getInstance();
+
+        $phone_number_obj = $phone_number_util->parse($phone_number, null);
+        $region_code = $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+
+        // Set SMS driver for the region code
+        SMS::driver(config('rollcall.messaging.sms_drivers.'.$region_code));
+
         if (isset($this->view)) {
             SMS::send($this->view, ['msg' => $msg], function($sms) use ($to) {
                 $sms->to($to);
