@@ -3,6 +3,17 @@ set -e
 
 ROLLCALL_INFRA_BRANCH=${ROLLCALL_INFRA_BRANCH:-master}
 
+# Parse environment assignations from arguments
+while true; do
+	if [[ "$1" =~ ^[^=]+=.*$ ]]; then
+		echo "+ ${1%%=*} <- ${1#*=}"
+		export ${1%%=*}=${1#*=}
+		shift
+		continue
+	fi
+	break
+done
+
 if [ -z "${GITHUB_TOKEN}" ]; then
 	echo "please configure a github token to perform deploy"
 	exit 1
@@ -40,11 +51,11 @@ cd /playbooks
 ansible-galaxy install -r roles.yml
 
 # ==> Obtain the latest state from terraform S3 bucket
-pushd tf
+pushd tf/${ENV}
 terraform remote config \
     -backend=s3 \
     -backend-config="bucket=ushahidi-terraform-states" \
-    -backend-config="key=rollcall/staging/terraform.tfstate" \
+    -backend-config="key=rollcall/${ENV}/terraform.tfstate" \
     -backend-config="region=us-east-1"
 terraform get
 terraform remote pull
