@@ -17,11 +17,12 @@ class GetOrganizationsRequest extends GetOrganizationRequest
         }
 
         // A user can list their own orgs;
-        if ($this->query('user') === 'me') {
+        if ($this->isUser()) {
             return true;
         }
 
-        if ($this->isSelf($this->query('user'))) {
+        // Anyone can query by subdomain
+        if ($this->query('url')) {
             return true;
         }
 
