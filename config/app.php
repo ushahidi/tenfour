@@ -208,7 +208,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
-        'SMS' => SimpleSoftwareIO\SMS\Facades\SMS::class,
+        'SMS' => RollCall\Messaging\Facades\SMS::class,
 
     ],
 

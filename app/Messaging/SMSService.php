@@ -4,6 +4,8 @@ namespace RollCall\Messaging;
 
 use SMS;
 use RollCall\Contracts\Messaging\MessageService;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\NumberParseException;
 
 class SMSService implements MessageService
 {
@@ -14,6 +16,44 @@ class SMSService implements MessageService
 
     public function send($to, $msg, $additional_params = [], $subject = null)
     {
+        // Get region code. The assumption is that all phone numbers are passed as
+        // international numbers
+        if (! starts_with($to, '+')) {
+            $phone_number = '+'.$to;
+        } else {
+            $phone_number = $to;
+        }
+
+        $phone_number_util = PhoneNumberUtil::getInstance();
+
+        try {
+            $phone_number_obj = $phone_number_util->parse($phone_number, null);
+        }
+
+        catch (NumberParseException $exception) {
+            // Can't send a message to an invalid number
+            return;
+        }
+
+        $region_code = $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+
+        // Get driver
+        $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
+        $from = config('rollcall.messaging.sms_providers.'.$region_code.'.from');
+
+        if (! $driver) {
+            $driver = config('rollcall.messaging.sms_providers.default.driver');
+            $from = config('rollcall.messaging.sms_providers.default.from');
+        }
+
+        // Set 'from' address if configured
+        if ($from) {
+            SMS::alwaysFrom($from);
+        }
+
+        // Set SMS driver for the region code
+        SMS::driver($driver);
+
         if (isset($this->view)) {
             SMS::send($this->view, ['msg' => $msg], function($sms) use ($to) {
                 $sms->to($to);
