@@ -37,8 +37,22 @@ class SMSService implements MessageService
 
         $region_code = $phone_number_util->getRegionCodeForNumber($phone_number_obj);
 
+        // Get driver
+        $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
+        $from = config('rollcall.messaging.sms_providers.'.$region_code.'.from');
+
+        if (! $driver) {
+            $driver = config('rollcall.messaging.sms_providers.default.driver');
+            $from = config('rollcall.messaging.sms_providers.default.from');
+        }
+
+        // Set 'from' address if configured
+        if ($from) {
+            SMS::alwaysFrom($from);
+        }
+
         // Set SMS driver for the region code
-        SMS::driver(config('rollcall.messaging.sms_drivers.'.$region_code));
+        SMS::driver($driver);
 
         if (isset($this->view)) {
             SMS::send($this->view, ['msg' => $msg], function($sms) use ($to) {

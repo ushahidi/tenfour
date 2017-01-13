@@ -11,9 +11,20 @@ return [
         'client_url' => env('CLIENT_URL', 'http://staging.rollcall.io'),
 
         // SMS drivers mapped by region code
-        'sms_drivers' => [
-            'KE' => 'africastalking',
-            'US' => 'nexmo',
+        'sms_providers' => [
+            'KE' => [
+                'driver' => 'africastalking',
+                'from' => '20880'
+            ],
+            'US' => [
+                'driver' => 'nexmo',
+                'from' => null
+            ],
+            'default' => [
+                'driver' => 'africastalking',
+                'from' => '20880'
+            ],
+
         ]
     ]
 ];
