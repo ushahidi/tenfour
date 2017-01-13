@@ -4,6 +4,7 @@ namespace RollCall\Seeders;
 use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;
+use RollCall\Models\Contact;
 
 class OrganizationTableSeeder extends Seeder
 {
@@ -11,12 +12,18 @@ class OrganizationTableSeeder extends Seeder
     public function run() {
 
         $user = User::firstOrCreate(
-            ['email' => 'rollcall@ushahidi.com']
+            ['name' => 'ushahidi']
         );
 
         $user->update([
-            'name' => 'ushahidi',
             'password' => 'westgate'
+        ]);
+
+        Contact::firstOrCreate([
+            'type'        => 'email',
+            'contact'     => 'rollcall@ushahidi.com',
+            'can_receive' => 1,
+            'user_id'     => $user->id
         ]);
 
         $organization = Organization::firstOrCreate(
@@ -24,12 +31,38 @@ class OrganizationTableSeeder extends Seeder
         );
 
         $organization->update([
-            'url' => 'ushahidi.rollcall.io',
+            'url' => 'ushahidi',
         ]);
 
         $user->organizations()->sync([
                 $organization->id =>[
                     'user_id' => $user->id, 'role' => 'owner'
+                ]
+            ]);
+
+        // Second test org: Waitak Tri Club
+        $triClub = Organization::firstOrCreate(
+            ['name' => 'Waitakere Tri Club']
+        );
+        $triClub->update([
+            'url' => 'waitaktri',
+        ]);
+
+        $user2 = User::firstOrCreate([
+            'name' => 'Robbie',
+            'password' => 'waitaktri'
+        ]);
+
+        Contact::firstOrCreate([
+            'type'        => 'email',
+            'contact'     => 'waitaktri@ushahidi.com',
+            'can_receive' => 1,
+            'user_id'     => $user2->id
+        ]);
+
+        $user2->organizations()->sync([
+                $triClub->id => [
+                    'user_id' => $user2->id, 'role' => 'owner'
                 ]
             ]);
     }

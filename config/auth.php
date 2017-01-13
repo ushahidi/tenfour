@@ -66,7 +66,7 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'rollcall',
             'model' => RollCall\Models\User::class,
         ],
 

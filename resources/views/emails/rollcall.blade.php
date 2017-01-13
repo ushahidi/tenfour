@@ -166,12 +166,19 @@
                                         <tr>
                     <td align="center" style="font-size: 25px; font-style: italic; font-family: Lato, Helvetica, Arial, sans-serif; color: #333333; padding: 0 20px 20px;" class="padding-copy"> {{ $msg }}</td>
                                         </tr>
-                                        <tr>
-                                            <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please select your answer below or reply directly to this email. If you send an email reply, you can simply write "{{ $yes }}," "{{ $no }}," or write more if you'd like to provide more detail.</td>
-                                        </tr>
+                                        @if (count($answers) > 0)
+                                            <tr>
+                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please select your answer below or reply directly to this email. If you send an email reply, you can simply write "{{ $answers[0] }}," "{{ $answers[1] }}," or write more if you'd like to provide more detail.</td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please reply <a href="{{ $answer_url }}">on Rollcall</a> or respond directly to this email.</td>
+                                            </tr>
+                                        @endif
                                     </table>
                                 </td>
                             </tr>
+                            @if (count($answers) > 0)
                             <tr>
                                 <td align="center">
                                     <!-- BULLETPROOF BUTTON -->
@@ -180,9 +187,9 @@
                                             <td align="center" class="padding-copy" style="padding: 20px;">
                                                 <table border="0" cellspacing="0" cellpadding="0" class="responsive-table">
                                                     <tr>
-                                                        <td align="center"><a href="{{ $answer_url_no }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 35px solid #e8bb4a; border-bottom: 35px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">{{ $no }}</a></td>
+                                                        <td align="center"><a href="{{ $answer_url_no }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 35px solid #e8bb4a; border-bottom: 35px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">{{ $answers[0] }}</a></td>
 
-                                                        <td align="center"><a href="{{ $answer_url_yes }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 35px solid #64b269; border-bottom: 35px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">{{ $yes }}</a></td>
+                                                        <td align="center"><a href="{{ $answer_url_yes }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 35px solid #64b269; border-bottom: 35px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">{{ $answers[1] }}</a></td>
                                                     </tr>
                                                 </table>
                                             </td>
@@ -190,6 +197,7 @@
                                     </table>
                                 </td>
                             </tr>
+                            @endif
                         </table>
                     </td>
                 </tr>

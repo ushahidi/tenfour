@@ -1,5 +1,12 @@
 -- Add test users
-INSERT INTO users (id, name, email, description, password) VALUES ('1', 'Test user','test@ushahidi.com', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'), ('2', 'Admin user','admin@ushahidi.com', 'Admin user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'), ('3', 'Org member','org_member@ushahidi.com', 'Org member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'), ('4', 'Org owner','org_owner@ushahidi.com', 'Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'), ('5', 'Org admin','org_admin@ushahidi.com', 'Org admin','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'), ('6', 'Org member 2','org_member2@ushahidi.com', 'Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC');
+INSERT INTO users (id, name, description, password)
+VALUES
+('1', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'),
+('2', 'Admin user','Admin user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'),
+('3', 'Org member','Org member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'),
+('4', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'),
+('5', 'Org admin','Org admin','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC'),
+('6', 'Org member 2','Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC');
 
 -- Add test user roles
 INSERT INTO roles (id, name) VALUES ('1', 'admin');
@@ -48,9 +55,9 @@ INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organizati
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Add test organizations
-INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall.rollcall.io');
-INSERT INTO organizations (id, name, url) VALUES ('3', 'Testers', 'testers.rollcall.io');
-INSERT INTO organizations (id, name, url) VALUES ('4', 'Dummy org', 'dummy.rollcall.io');
+INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall');
+INSERT INTO organizations (id, name, url) VALUES ('3', 'Testers', 'testers');
+INSERT INTO organizations (id, name, url) VALUES ('4', 'Dummy org', 'dummy');
 
 -- Add test organization members
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '4', 'owner');
@@ -65,6 +72,11 @@ INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('1', '1',
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('2', '1', '1', 'email', 'test@ushahidi.com');
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('3', '2', '0', 'email', 'linda@ushahidi.com');
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('4', '4', '0', 'phone', '0792999999');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('5', '2', '1', 'email', 'admin@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('6', '3', '1', 'email', 'org_member@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('7', '4', '1', 'email', 'org_owner@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('8', '5', '1', 'email', 'org_admin@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('9', '6', '1', 'email', 'org_member2@ushahidi.com');
 
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');

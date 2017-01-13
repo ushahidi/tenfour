@@ -24,7 +24,8 @@ return [
                 'driver' => 'africastalking',
                 'from' => '20880'
             ],
+        ],
 
-        ]
+        'domain' => env('APP_DOMAIN', 'rollcall.io'),
     ]
 ];

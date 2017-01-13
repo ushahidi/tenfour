@@ -32,6 +32,11 @@ trait UserAccess
         return in_array('admin', $roles);
     }
 
+    protected function isUser()
+    {
+        return !!$this->auth->user();
+    }
+
     protected function getOrganizationRole($org_id)
     {
         return $this->organizations->getMemberRole($org_id, $this->auth->user()['id']);
