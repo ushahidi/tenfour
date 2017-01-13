@@ -4,7 +4,6 @@ namespace RollCall\Services;
 use Illuminate\Support\Facades\Auth;
 use RollCall\Contracts\Repositories\UserRepository;
 
-
 class PasswordGrantVerifier
 {
     /**
@@ -27,7 +26,7 @@ class PasswordGrantVerifier
     public function verify($username, $password)
     {
         $credentials = [
-    	        'email'    => $username,
+    	        'username' => $username,
                 'password' => $password,
         ];
 

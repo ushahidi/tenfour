@@ -10,28 +10,51 @@ class OrganizationCest
      */
     public function getAllOrganizations(ApiTester $I)
     {
-        $I->wantTo('Get a list of all organizations as an admin');
-        $I->amAuthenticatedAsAdmin();
+        $I->wantTo('Get a list of my organizations as an admin');
+        $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            [
-                'name'    => 'RollCall',
-                'url'     => 'rollcall.rollcall.io',
-                'user' => [
-                    'id'   => 4,
-                    'role' => 'owner',
-                ]
-            ],
-            [
-                'name'    => 'Testers',
-                'url'     => 'testers.rollcall.io',
-                'user' => [
-                    'id'   => 4,
-                    'role' => 'owner',
-                ]
+            'organizations' => [
+                [
+                    'name'    => 'RollCall',
+                    'url'     => 'rollcall',
+                    'user' => [
+                        'id'   => 5,
+                        'role' => 'admin',
+                    ]
+                ],
             ]
+        ]);
+    }
+    /*
+     * Get all organizations as an admin
+     *
+     */
+    public function cannotGetAllOrganizationsWithoutAuth(ApiTester $I)
+    {
+        $I->wantTo('Can not a list of all organizations with out auth');
+        $I->sendGET($this->endpoint);
+        $I->seeResponseCodeIs(403);
+        $I->seeResponseIsJson();
+    }
+
+    /*
+     * Get all organizations as an admin
+     *
+     */
+    public function getOrganizationByUrl(ApiTester $I)
+    {
+        $I->wantTo('Get a list of all organizations by url');
+        $I->sendGET($this->endpoint  . '?url=testers');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'organizations' => [[
+                'name'    => 'Testers',
+                'url'     => 'testers'
+            ]]
         ]);
     }
 
@@ -48,20 +71,22 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            [
-                'name'    => 'RollCall',
-                'url'     => 'rollcall.rollcall.io',
-                'user' => [
-                    'id'   => 1,
-                    'role' => 'member',
-                ]
-            ],
-            [
-                'name'    => 'Testers',
-                'url'     => 'testers.rollcall.io',
-                'user' => [
-                    'id'   => 1,
-                    'role' => 'admin',
+            'organizations' => [
+                [
+                    'name'    => 'RollCall',
+                    'url'     => 'rollcall',
+                    'user' => [
+                        'id'   => 1,
+                        'role' => 'member',
+                    ]
+                ],
+                [
+                    'name'    => 'Testers',
+                    'url'     => 'testers',
+                    'user' => [
+                        'id'   => 1,
+                        'role' => 'admin',
+                    ]
                 ]
             ]
         ]);
@@ -82,7 +107,7 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             [
                 'name'    => 'RollCall',
-                'url'     => 'rollcall.rollcall.io',
+                'url'     => 'rollcall',
                 'user' => [
                     'id'   => 1,
                     'role' => 'member',
@@ -90,7 +115,7 @@ class OrganizationCest
             ],
             [
                 'name'    => 'Testers',
-                'url'     => 'testers.rollcall.io',
+                'url'     => 'testers',
                 'user' => [
                     'id'   => 1,
                     'role' => 'admin',
@@ -114,7 +139,7 @@ class OrganizationCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name'    => 'RollCall',
-            'url'     => 'rollcall.rollcall.io',
+            'url'     => 'rollcall',
             'user' => [
                 'id'   => 4,
                 'role' => 'owner',
@@ -133,13 +158,13 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
             'name' => 'Test org',
-            'url'  => 'test.rollcall.io'
+            'url'  => 'test'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Test org',
-            'url' => 'test.rollcall.io',
+            'url' => 'test',
             'user' => [
                 'id'   => 1,
                 'role' => 'owner',
@@ -159,13 +184,13 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall Org',
-            'url'  => 'rollcall.rollcall.io',
+            'url'  => 'rollcall',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Rollcall Org',
-            'url'  => 'rollcall.rollcall.io',
+            'url'  => 'rollcall',
         ]);
     }
 
@@ -231,7 +256,7 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall',
-            'url'  => 'rollcall.rollcall.io',
+            'url'  => 'rollcall',
             'people' => [
                 [
                     'id'   => '3',
@@ -254,7 +279,7 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall',
-            'url'  => 'rollcall.rollcall.io',
+            'url'  => 'rollcall',
             'people' => [
                 [
                     'id'   => '3',
@@ -276,14 +301,14 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/people", [
-            'email' => 'mary@rollcall.io',
+            'name' => 'Mary Mata',
             'role'  => 'member',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'email' => 'mary@rollcall.io',
-            'role'  => 'member',
+            'name' => 'Mary Mata',
+            'role' => 'member',
         ]);
     }
 
@@ -403,7 +428,6 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             'person' => [
                 'name' => 'Test user',
-                'email' => 'test@ushahidi.com',
                 'contacts' => [
                     [
                         'contact' => '0721674180',
@@ -439,16 +463,15 @@ class OrganizationCest
         $I->wantTo('Add member with unspecified role');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
+
         $I->sendPOST($this->endpoint."/$id/people", [
-            'email' => 'mary@rollcall.io',
+            'name' => 'Mary Mata',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'person' => [
-                'email' => 'mary@rollcall.io',
-                'role' => 'member',
-            ]
+            'name' => 'Mary Mata',
+            'role' => 'member',
         ]);
     }
 
@@ -561,7 +584,7 @@ class OrganizationCest
       $I->haveHttpHeader('Content-Type', 'application/json');
       $I->sendPUT($this->endpoint."/$id", [
           'name' => 'Rollcall Org',
-          'url'  => 'rollcall.rollcall.io',
+          'url'  => 'rollcall',
           'settings'  => ['channels' => ['email' => true]],
       ]);
       $I->seeResponseCodeIs(200);
@@ -594,7 +617,7 @@ class OrganizationCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'RollCall',
-            'url'  => 'rollcall.rollcall.io',
+            'url'  => 'rollcall',
         ]);
     }
 }

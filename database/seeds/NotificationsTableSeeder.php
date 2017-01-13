@@ -13,7 +13,7 @@ class NotificationsTableSeeder extends Seeder
 {
     public function run() {
         $person = User::firstOrCreate(
-            ['email' => 'dmcnamara+test@ushahidi.com']
+            ['name' => 'David Test']
         );
 
         $organization = Organization::firstOrCreate(
@@ -21,7 +21,7 @@ class NotificationsTableSeeder extends Seeder
         );
 
         $user = User::firstOrCreate(
-            ['email' => 'rollcall@ushahidi.com']
+            ['name' => 'Ushahidi']
         );
 
         Notification::send($organization->members, new PersonJoinedOrganization($person));

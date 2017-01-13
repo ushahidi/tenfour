@@ -44,19 +44,10 @@ class OrganizationController extends ApiController
      */
     public function index(GetOrganizationsRequest $request)
     {
-        $user_id = null;
+        // Pass current user ID to repo
+        $this->organizations->setCurrentUserId($this->auth->user()['id']);
 
-        if ($request->query('user') === 'me') {
-            $user_id = $this->auth->user()['id'];
-        } else {
-            $user_id = $request->query('user');
-        }
-
-        if ($user_id) {
-            $organizations = $this->organizations->filterByUserId($user_id);
-        } else {
-            $organizations = $this->organizations->all();
-        }
+        $organizations = $this->organizations->all($request->query('url'));
 
         return $this->response->collection($organizations, new OrganizationTransformer, 'organizations');
     }
