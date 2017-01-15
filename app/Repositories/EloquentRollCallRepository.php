@@ -107,7 +107,11 @@ class EloquentRollCallRepository implements RollCallRepository
         $query = RollCall::findOrFail($id)->recipients();
 
         if ($unresponsive) {
-            $query->leftJoin('replies', 'users.id', '=', 'replies.user_id')
+            $query
+                ->leftJoin('replies', function ($join) {
+                    $join->on('users.id', '=', 'replies.user_id');
+                    $join->on('roll_call_recipients.roll_call_id', '=', 'replies.roll_call_id');
+                })
                 ->where('replies.user_id', '=', null);
         }
 
