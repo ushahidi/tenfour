@@ -16,7 +16,7 @@ class ImportContacts extends Command
      *
      * @var string
      */
-    protected $signature = 'contacts:import {csv_file} {org=Ushahidi}';
+    protected $signature = 'contacts:import {csv_file} {org=Ushahidi} {--password=}';
 
     /**
      * The console command description.
@@ -69,6 +69,8 @@ class ImportContacts extends Command
             'url'  => $url,
         ]);
 
+        $password = $this->option('password');
+
         /* Expected field indexes:
            1 => "<First Name>"
            2 => "<Last Name>"
@@ -93,6 +95,7 @@ class ImportContacts extends Command
             if (!$member) {
                 $member = User::firstOrCreate([
                     'name'     => $name,
+                    'password' => $password
                 ]);
             }
 
