@@ -5,6 +5,7 @@ namespace RollCall\Messaging\Storage;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\ReplyRepository;
+use RollCall\Messaging\AnswerParser;
 
 class Reply
 {
@@ -26,12 +27,18 @@ class Reply
 
             // Add reply if roll call exists
             if ($roll_call_id) {
+
+                $roll_call = $this->roll_calls->find($roll_call_id);
+
+                $answer = AnswerParser::parse($message, $roll_call['answers']);
+
                 $input = [
                     'message'      => $message,
                     'user_id'      => $contact['user']['id'],
                     'roll_call_id' => $roll_call_id,
                     'contact_id'   => $contact['id'],
-                    'message_id'   => $message_id
+                    'answer'       => $answer,
+                    'message_id'   => $message_id,
                 ];
 
                 $this->replies->create($input);
