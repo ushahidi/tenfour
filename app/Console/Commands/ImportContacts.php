@@ -47,8 +47,16 @@ class ImportContacts extends Command
 
         $csv = Reader::createFromPath($this->argument('csv_file'));
 
+        $headers = $csv->fetchOne();
+
+        if (count(array_diff(['First Name', 'Last Name', 'Email Address', 'Phone Number'], $headers)) > 0) {
+            $this->error("CSV must have the following columns: 'First Name', 'Last Name', 'Email Address', 'Phone Number'");
+            return;
+        }
+
         // Assuming presence of header
-        $rows = $csv->setOffset(1)->fetchAll();
+        //$rows = $csv->setOffset(1)->fetchAll();
+        $rows = $csv->fetchAssoc(0);
 
         // Get organization
         $organization = Organization::firstOrCreate([
@@ -72,30 +80,35 @@ class ImportContacts extends Command
 
         foreach ($rows as $row)
         {
-            $name = $row[1] . ' ' . $row[2];
-            $email = $row[6];
-            $phone_number = $row[7];
+            $name = $row['First Name'] . ' ' . $row['Last Name'];
+            $email = $row['Email Address'];
+            $phone_number = $row['Phone Number'];
 
-            $member = User::firstOrCreate([
-                'email'    => $email,
-                'name'     => $name,
-            ]);
+            $member = User::whereHas('contacts', function ($query) use ($email, $phone_number) {
+                $query
+                ->where('contact', '=', $email)
+                ->orWhere('contact', '=', $phone_number);
+            })->first();
+
+            if (!$member) {
+                $member = User::firstOrCreate([
+                    'name'     => $name,
+                ]);
+            }
 
             // Add email contact
-            Contact::create([
+            Contact::updateOrCreate([
                 'user_id'     => $member['id'],
                 'type'        => 'email',
-                'can_receive' => 1,
-                'contact'     => $email,
-            ]);
+                'contact'     => $email
+            ], ['can_receive' => true]);
 
             // Add phone contact
-            Contact::create([
+            Contact::updateOrCreate([
                 'user_id'     => $member['id'],
                 'type'        => 'phone',
-                'can_receive' => 1,
-                'contact'     => $phone_number,
-            ]);
+                'contact'     => $phone_number
+            ], ['can_receive' => true]);
 
             $ids[$member['id']] = ['role' => 'member'];
         }
