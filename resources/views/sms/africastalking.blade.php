@@ -1,1 +1,1 @@
-{{ $msg }} Reply with Yes or No.
+{{ $msg }} Reply with “rollcall” and “Yes” or “No” in your response.
