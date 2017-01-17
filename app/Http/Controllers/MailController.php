@@ -76,7 +76,8 @@ class MailController extends Controller
 
             if ($message['Type'] === 'Notification') {
                 $emailMessage = json_decode($message['Message'], true);
-                $emailMessage = new EmailMessage(['raw' => $emailMessage['content']]);
+                $original_content = $emailMessage['content'];
+                $emailMessage = new EmailMessage(['raw' => $original_content]);
 
                 // Output first text/plain part
                 $plainText = null;
@@ -103,7 +104,7 @@ class MailController extends Controller
                 }
 
                 else {
-                    Log::info("No plain text found for " . $message['MessageId'], $emailMessage['content']);
+                    Log::info("No plain text found for " . $message['MessageId'], $original_content);
                 }
             }
         }
