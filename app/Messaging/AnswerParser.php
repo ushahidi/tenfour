@@ -15,7 +15,7 @@ class AnswerParser
 
         $tokens = preg_split('/\s+/', $message);
 
-        return array_first($tokens, function ($value, $key) {
+        return array_first($tokens, function ($value, $key) use ($expected_answers) {
             return strcasecmp($value, $expected_answers[0]) === 0 || strcasecmp($value, $expected_answers[1]) === 0;
         }, null);
     }
