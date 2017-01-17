@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use RollCall\Notifications\ResetPassword;
+use Illuminate\Support\Str;
 
 class User extends Model implements AuthenticatableContract,
 	AuthorizableContract,
@@ -107,4 +108,25 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->contact;
     }
+
+		/**
+		 * Get the notification routing information for the given driver.
+		 *
+		 * @param  string  $driver
+		 * @return mixed
+		 */
+		public function routeNotificationFor($driver)
+		{
+				if (method_exists($this, $method = 'routeNotificationFor'.Str::studly($driver))) {
+						return $this->{$method}();
+				}
+				switch ($driver) {
+						case 'database':
+								return $this->notifications();
+						case 'mail':
+								return $this->contact;
+						case 'nexmo':
+								return $this->phone_number;
+				}
+		}
 }

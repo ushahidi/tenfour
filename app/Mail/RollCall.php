@@ -31,7 +31,7 @@ class RollCall extends Mailable
     public function build()
     {
         $client_url = config('rollcall.messaging.client_url');
-        $domain = config('rollcall.messaging.domain');
+        $domain = config('rollcall.domain');
 
         $from_address = 'rollcall-' . $this->roll_call['id'] .'@'. $domain;
 

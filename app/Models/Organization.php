@@ -46,4 +46,13 @@ class Organization extends Model
     {
         return $this->hasMany('RollCall\Models\Setting');
     }
+
+    public function url()
+    {
+        return 'https://' .
+            $this->subdomain .
+            '.' .
+            config('rollcall.domain');
+    }
+
 }

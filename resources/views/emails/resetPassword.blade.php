@@ -152,7 +152,7 @@
                                     <td bgcolor="#EFECE8" width="400" align="right" class="mobile-hide">
                                         <table border="0" cellpadding="0" cellspacing="0">
                                             <tr>
-                                                <td align="right" style="padding: 0 0 5px 0; font-size: 14px; font-family: Lato, Arial, sans-serif; color: #666666; text-decoration: none;"><span style="color: #4A4A4A; text-decoration: none;">{{ $organization_url }}</td>
+                                                <td align="right" style="padding: 0 0 5px 0; font-size: 14px; font-family: Lato, Arial, sans-serif; color: #666666; text-decoration: none;"><span style="color: #4A4A4A; text-decoration: none;">{{ $organization_subdomain }}.rollcall.io</td>
                                             </tr>
                                         </table>
                                     </td>
