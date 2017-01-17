@@ -130,7 +130,7 @@
                                         <table border="0" cellpadding="0" cellspacing="0">
                                             <tr>
                                                 <td align="right" style="padding: 0 0 5px 0; font-size: 14px; font-family: Lato, Arial, sans-serif; color: #666666; text-decoration: none;"><span style="color: #4A4A4A; text-decoration: none;">
-                    {{ $org_url }}
+                    {{ $org_subdomain }}.rollcall.io
 </td>
                                             </tr>
                                         </table>

@@ -35,7 +35,7 @@ class OrganizationController extends ApiController
      * @Response(200, body={
      *     "organizations": {{
      *         "name": "Ushahidi",
-     *         "url": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi@rollcall.io"
      *     }}
      * })
      *
@@ -47,7 +47,7 @@ class OrganizationController extends ApiController
         // Pass current user ID to repo
         $this->organizations->setCurrentUserId($this->auth->user()['id']);
 
-        $organizations = $this->organizations->all($request->query('url'));
+        $organizations = $this->organizations->all($request->query('subdomain'));
 
         return $this->response->collection($organizations, new OrganizationTransformer, 'organizations');
     }
@@ -59,12 +59,12 @@ class OrganizationController extends ApiController
      * @Versions({"v1"})
      * @Request({
      *     "name": "Ushahidi",
-     *     "url": "ushahidi@rollcall.io"
+     *     "subdomain": "ushahidi@rollcall.io"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
      *         "name": "Ushahidi",
-     *         "url": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi@rollcall.io"
      *     }
      * })
      *
@@ -74,9 +74,9 @@ class OrganizationController extends ApiController
     public function store(CreateOrganizationRequest $request)
     {
         $organization = $this->organizations->create([
-                 'name'    => $request->input('name'),
-                 'url'     => $request->input('url'),
-                 'user_id' => $request->input('user', $this->auth->user()['id']),
+                 'name'         => $request->input('name'),
+                 'subdomain'    => $request->input('subdomain'),
+                 'user_id'      => $request->input('user', $this->auth->user()['id']),
         ]);
 
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
@@ -111,13 +111,13 @@ class OrganizationController extends ApiController
      * @Versions({"v1"})
      * @Request({
      *     "name": "Ushahidi",
-     *     "url": "ushahidi@rollcall.io"
+     *     "subdomain": "ushahidi@rollcall.io"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
      *         "id": 3,
      *         "name": "Ushahidi",
-     *         "url": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi@rollcall.io"
      *     }
      * })
      *

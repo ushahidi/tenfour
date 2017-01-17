@@ -22,7 +22,7 @@ class GetOrganizationsRequest extends GetOrganizationRequest
         }
 
         // Anyone can query by subdomain
-        if ($this->query('url')) {
+        if ($this->query('subdomain')) {
             return true;
         }
 

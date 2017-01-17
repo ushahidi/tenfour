@@ -31,7 +31,7 @@ class OrganizationTableSeeder extends Seeder
         );
 
         $organization->update([
-            'url' => 'ushahidi',
+            'subdomain' => 'ushahidi',
         ]);
 
         $user->organizations()->sync([
@@ -45,7 +45,7 @@ class OrganizationTableSeeder extends Seeder
             ['name' => 'Waitakere Tri Club']
         );
         $triClub->update([
-            'url' => 'waitaktri',
+            'subdomain' => 'waitaktri',
         ]);
 
         $user2 = User::firstOrCreate([

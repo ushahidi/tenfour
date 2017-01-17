@@ -43,9 +43,9 @@ class CreateOrganizationRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'    => 'required',
-            'url'     => 'required',
-            'user_id' => 'exists:users,id',
+            'name'      => 'required',
+            'subdomain' => 'required',
+            'user_id'   => 'exists:users,id',
         ];
     }
 }

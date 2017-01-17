@@ -31,20 +31,20 @@ class EloquentOrganizationRepository implements OrganizationRepository
         $this->currentUserId = $currentUserId;
     }
 
-    public function all($url = false)
+    public function all($subdomain = false)
     {
-        $query = Organization::select('organizations.id', 'name', 'url');
+        $query = Organization::select('organizations.id', 'name', 'subdomain');
 
         // If we're authenticated, just return orgs we're a member of
         if ($this->currentUserId) {
             $query->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id');
-            $query->select('organizations.id', 'name', 'url', 'user_id', 'role');
+            $query->select('organizations.id', 'name', 'subdomain', 'user_id', 'role');
             $query->where('organization_user.user_id', $this->currentUserId);
         }
 
-        // Filter by url
-        if ($url) {
-            $query->where('url', $url);
+        // Filter by subdomain
+        if ($subdomain) {
+            $query->where('subdomain', $subdomain);
         }
 
         return $query->get()->toArray();
@@ -137,7 +137,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     {
         return Organization::with('settings')
             ->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
-            ->select('organizations.id', 'name', 'url', 'user_id', 'role')
+            ->select('organizations.id', 'name', 'subdomain', 'user_id', 'role')
             ->where('role', 'owner')
             ->findOrFail($id)
             ->toArray();

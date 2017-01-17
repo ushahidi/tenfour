@@ -18,7 +18,7 @@ class Organization extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'url'];
+    protected $fillable = ['name', 'subdomain'];
 
     /**
      * An organization has users
@@ -46,4 +46,13 @@ class Organization extends Model
     {
         return $this->hasMany('RollCall\Models\Setting');
     }
+
+    public function url()
+    {
+        return 'https://' .
+            $this->subdomain .
+            '.' .
+            config('rollcall.domain');
+    }
+
 }

@@ -63,10 +63,10 @@ class ImportContacts extends Command
             'name' => $this->argument('org'),
         ]);
 
-        $url = strtolower($this->argument('org')) . '.' .$domain;
+        $subdomain = strtolower($this->argument('org')) . '.' .$domain;
 
         $organization->update([
-            'url'  => $url,
+            'subdomain'  => $subdomain,
         ]);
 
         $password = $this->option('password');
