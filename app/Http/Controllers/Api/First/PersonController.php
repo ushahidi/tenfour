@@ -129,7 +129,11 @@ class PersonController extends ApiController
      */
     public function update(UpdatePersonRequest $request, $organization_id, $person_id)
     {
-        $member = $this->organizations->updateMember($request->all(), $organization_id, $person_id);
+        $role = ['role' => $request->input('role', 'member')];
+
+        $input = array_merge($request->all(), $role);
+
+        $member = $this->organizations->updateMember($input, $organization_id, $person_id);
         return $this->response->item($member, new UserTransformer, 'person');
     }
 
