@@ -37,7 +37,7 @@ class SendInvite implements ShouldQueue
      */
     public function handle(MessageServiceFactory $message_service_factory)
     {
-        $client_url = env('CLIENT_URL', null);
+        $client_url = $this->organization->url();
         $url = secure_url(
           $client_url . 'login/invite/'
           .'?email=' . urlencode($this->member['email'])

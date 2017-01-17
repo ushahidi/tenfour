@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use RollCall\Models\Organization;
 
 class RollCall extends Mailable
 {
@@ -30,7 +31,9 @@ class RollCall extends Mailable
      */
     public function build()
     {
-        $client_url = config('rollcall.messaging.client_url');
+        $org = Organization::findOrFail($this->organization['id']);
+
+        $client_url = $org->url();
         $domain = config('rollcall.domain');
 
         $from_address = 'rollcall-' . $this->roll_call['id'] .'@'. $domain;
@@ -50,11 +53,11 @@ class RollCall extends Mailable
                         'roll_call_url'  => $roll_call_url,
                         'gravatar'       => $gravatar,
                         'answers'        => $this->roll_call['answers'],
-                        'org_url'        => $this->organization['subdomain'], //FIXME
+                        'org_subdomain'  => $this->organization['subdomain'],
                         'author'         => $this->creator['name'],
                         'answer_url_no'  => $answer_url_no,
                         'answer_url_yes' => $answer_url_yes,
-                        'answer_url' => $answer_url,
+                        'answer_url'     => $answer_url,
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])
