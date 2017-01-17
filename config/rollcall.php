@@ -17,10 +17,10 @@ return [
                 'driver' => 'africastalking',
                 'from' => '20880'
             ],
-            'US' => [
-                'driver' => 'nexmo',
-                'from' => null
-            ],
+            // 'US' => [
+            //     'driver' => 'nexmo',
+            //     'from' => null
+            // ],
             'default' => [
                 'driver' => 'africastalking',
                 'from' => '20880'

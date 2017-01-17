@@ -103,6 +103,7 @@ class MailController extends Controller
                     $this->reply_storage->save($from, $plainText->getContent(), $message['MessageId'], 'aws-ses-sns');
                 }
                 elseif ($html) {
+                    Log::info("Received message: ". $message['MessageId']);
                     $text = strip_tags($html->getContent());
                     $this->reply_storage->save($from, $text, $message['MessageId'], 'aws-ses-sns');
                 }
