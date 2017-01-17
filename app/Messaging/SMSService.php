@@ -67,13 +67,31 @@ class SMSService implements MessageService
 
     public function getMessages(Array $options = [])
     {
-        $incoming_messages = SMS::checkMessages($options);
+        // Get configured drivers
+        $sms_providers = config('rollcall.messaging.sms_providers');
+
+        $drivers = [];
+
+        foreach($sms_providers as $provider)
+        {
+            // XXX: Assumes that we are polling for messages for each configured driver
+            array_push($drivers, $provider['driver']);
+        }
+
+        $drivers = array_unique($drivers);
 
         $messages = [];
 
-        foreach($incoming_messages as $incoming_message)
+        foreach($drivers as $driver)
         {
-            array_push($messages, $this->transform($incoming_message));
+            SMS::driver($driver);
+
+            $incoming_messages = SMS::checkMessages($options);
+
+            foreach($incoming_messages as $incoming_message)
+            {
+                array_push($messages, $this->transform($incoming_message));
+            }
         }
 
         return $messages;
