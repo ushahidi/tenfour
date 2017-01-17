@@ -168,7 +168,7 @@
                                         </tr>
                                         @if (count($answers) > 0)
                                             <tr>
-                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please select your answer below or reply directly to this email. If you send an email reply, you can simply write "{{ $answers[0] }}," "{{ $answers[1] }}," or write more if you'd like to provide more detail.</td>
+                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please select your answer below or reply directly to this email and include "{{ $answers[0] }}," or "{{ $answers[1] }}," in your message.</td>
                                             </tr>
                                         @else
                                             <tr>
