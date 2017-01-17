@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use RollCall\Models\Organization;
 use RollCall\Models\User;
 use RollCall\Contracts\Messaging\MessageServiceFactory;
+use Log;
 
 class SendInvite implements ShouldQueue
 {
@@ -48,7 +49,7 @@ class SendInvite implements ShouldQueue
           }
         }
 
-        if ($email) {
+        if (isset($email)) {
           $url = secure_url(
             $client_url . '/login/invite/'
             .'?email=' . urlencode($email)
@@ -63,7 +64,7 @@ class SendInvite implements ShouldQueue
           $message_service->setView('emails.invite');
           $message_service->send($email, $msg, ['url' => $url], $subject);
         } else {
-          // TODO how to invite a user with no email?
+          Log::info('Cannot invite a member with no email address');
         }
 
     }
