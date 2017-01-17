@@ -13,7 +13,7 @@ class AnswerParser
             return null;
         }
 
-        $tokens = preg_split('/\s+/', $this->message);
+        $tokens = preg_split('/\s+/', $message);
 
         return array_first($tokens, function ($value, $key) {
             return strcasecmp($value, $expected_answers[0]) === 0 || strcasecmp($value, $expected_answers[1]) === 0;
