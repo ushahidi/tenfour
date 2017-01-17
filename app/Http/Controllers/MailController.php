@@ -102,9 +102,12 @@ class MailController extends Controller
                     Log::info("Received message: ". $message['MessageId']);
                     $this->reply_storage->save($from, $plainText->getContent(), $message['MessageId'], 'aws-ses-sns');
                 }
-
+                elseif ($html) {
+                    $text = strip_tags($html->getContent());
+                    $this->reply_storage->save($from, $text, $message['MessageId'], 'aws-ses-sns');
+                }
                 else {
-                    Log::info("No plain text found for " . $message['MessageId'], $original_content);
+                    Log::info("No plain text found for " . $message['MessageId'], ['original_content' => $original_content]);
                 }
             }
         }
