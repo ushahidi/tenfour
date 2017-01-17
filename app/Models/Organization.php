@@ -18,7 +18,7 @@ class Organization extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'url'];
+    protected $fillable = ['name', 'subdomain'];
 
     /**
      * An organization has users

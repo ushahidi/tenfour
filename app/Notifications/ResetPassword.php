@@ -46,14 +46,16 @@ class ResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
+        //FIXME
+
         $resetLink = url('https://' .
-          (App::environment('staging') ? 'staging.rollcall.io' : $this->organization['url']) .
+          (App::environment('staging') ? 'staging.rollcall.io' : $this->organization['domain']) .
           '/login/reset-password/' .
           $this->token);
 
         $data = [
             'link'              => $resetLink,
-            'organization_url'  => $this->organization['url'],
+            'organization_url'  => $this->organization['subdomain'],
             'organization_name' => $this->organization['name'],
         ];
 

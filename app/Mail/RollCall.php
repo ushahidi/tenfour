@@ -50,7 +50,7 @@ class RollCall extends Mailable
                         'roll_call_url'  => $roll_call_url,
                         'gravatar'       => $gravatar,
                         'answers'        => $this->roll_call['answers'],
-                        'org_url'        => $this->organization['url'],
+                        'org_url'        => $this->organization['subdomain'], //FIXME
                         'author'         => $this->creator['name'],
                         'answer_url_no'  => $answer_url_no,
                         'answer_url_yes' => $answer_url_yes,

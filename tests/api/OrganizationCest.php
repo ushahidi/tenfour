@@ -19,7 +19,7 @@ class OrganizationCest
             'organizations' => [
                 [
                     'name'    => 'RollCall',
-                    'url'     => 'rollcall',
+                    'subdomain'     => 'rollcall',
                     'user' => [
                         'id'   => 5,
                         'role' => 'admin',
@@ -44,16 +44,16 @@ class OrganizationCest
      * Get all organizations as an admin
      *
      */
-    public function getOrganizationByUrl(ApiTester $I)
+    public function getOrganizationBySubdomain(ApiTester $I)
     {
-        $I->wantTo('Get a list of all organizations by url');
-        $I->sendGET($this->endpoint  . '?url=testers');
+        $I->wantTo('Get a list of all organizations by subdomain');
+        $I->sendGET($this->endpoint  . '?subdomain=testers');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'organizations' => [[
                 'name'    => 'Testers',
-                'url'     => 'testers'
+                'subdomain'     => 'testers'
             ]]
         ]);
     }
@@ -74,7 +74,7 @@ class OrganizationCest
             'organizations' => [
                 [
                     'name'    => 'RollCall',
-                    'url'     => 'rollcall',
+                    'subdomain'     => 'rollcall',
                     'user' => [
                         'id'   => 1,
                         'role' => 'member',
@@ -82,7 +82,7 @@ class OrganizationCest
                 ],
                 [
                     'name'    => 'Testers',
-                    'url'     => 'testers',
+                    'subdomain'     => 'testers',
                     'user' => [
                         'id'   => 1,
                         'role' => 'admin',
@@ -107,7 +107,7 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             [
                 'name'    => 'RollCall',
-                'url'     => 'rollcall',
+                'subdomain'     => 'rollcall',
                 'user' => [
                     'id'   => 1,
                     'role' => 'member',
@@ -115,7 +115,7 @@ class OrganizationCest
             ],
             [
                 'name'    => 'Testers',
-                'url'     => 'testers',
+                'subdomain'     => 'testers',
                 'user' => [
                     'id'   => 1,
                     'role' => 'admin',
@@ -139,7 +139,7 @@ class OrganizationCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name'    => 'RollCall',
-            'url'     => 'rollcall',
+            'subdomain'     => 'rollcall',
             'user' => [
                 'id'   => 4,
                 'role' => 'owner',
@@ -158,13 +158,13 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
             'name' => 'Test org',
-            'url'  => 'test'
+            'subdomain'  => 'test'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Test org',
-            'url' => 'test',
+            'subdomain' => 'test',
             'user' => [
                 'id'   => 1,
                 'role' => 'owner',
@@ -184,13 +184,13 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall Org',
-            'url'  => 'rollcall',
+            'subdomain'  => 'rollcall',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Rollcall Org',
-            'url'  => 'rollcall',
+            'subdomain'  => 'rollcall',
         ]);
     }
 
@@ -256,7 +256,7 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall',
-            'url'  => 'rollcall',
+            'subdomain'  => 'rollcall',
             'people' => [
                 [
                     'id'   => '3',
@@ -279,7 +279,7 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall',
-            'url'  => 'rollcall',
+            'subdomain'  => 'rollcall',
             'people' => [
                 [
                     'id'   => '3',
@@ -584,7 +584,7 @@ class OrganizationCest
       $I->haveHttpHeader('Content-Type', 'application/json');
       $I->sendPUT($this->endpoint."/$id", [
           'name' => 'Rollcall Org',
-          'url'  => 'rollcall',
+          'subdomain'  => 'rollcall',
           'settings'  => ['channels' => ['email' => true]],
       ]);
       $I->seeResponseCodeIs(200);
@@ -617,7 +617,7 @@ class OrganizationCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'RollCall',
-            'url'  => 'rollcall',
+            'subdomain'  => 'rollcall',
         ]);
     }
 }

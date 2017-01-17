@@ -9,7 +9,7 @@ class UpdateOrganizationRequest extends GetOrganizationRequest
     {
         return [
             'name' => 'required',
-            'url'  => 'required',
+            'subdomain'  => 'required',
         ];
     }
 

@@ -55,9 +55,9 @@ INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organizati
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 -- Add test organizations
-INSERT INTO organizations (id, name, url) VALUES ('2', 'RollCall', 'rollcall');
-INSERT INTO organizations (id, name, url) VALUES ('3', 'Testers', 'testers');
-INSERT INTO organizations (id, name, url) VALUES ('4', 'Dummy org', 'dummy');
+INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'RollCall', 'rollcall');
+INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
+INSERT INTO organizations (id, name, subdomain) VALUES ('4', 'Dummy org', 'dummy');
 
 -- Add test organization members
 INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '4', 'owner');
