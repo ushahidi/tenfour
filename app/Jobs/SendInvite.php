@@ -6,7 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
+use RollCall\Models\Organization;
+use RollCall\Models\User;
 use RollCall\Contracts\Messaging\MessageServiceFactory;
 
 class SendInvite implements ShouldQueue
@@ -37,19 +38,33 @@ class SendInvite implements ShouldQueue
      */
     public function handle(MessageServiceFactory $message_service_factory)
     {
-        $client_url = $this->organization->url();
-        $url = secure_url(
-          $client_url . 'login/invite/'
-          .'?email=' . urlencode($this->member['email'])
-          .'&userId=' . $this->member['id']
-          .'&orgId=' . $this->organization['id']
-          .'&token=' . $this->member['invite_token']
-        );
-        $msg = 'You have been invited to join '.$this->organization['name'].'\'s Rollcall, please click the link below to complete registration';
-        $subject = $this->organization['name'] . ' invited you to join Rollcall';
+        $org = Organization::findOrFail($this->organization['id']);
+        $client_url = $org->url();
 
-        $message_service = $message_service_factory->make('email');
-        $message_service->setView('emails.invite');
-        $message_service->send($this->member['email'], $msg, ['url' => $url], $subject);
+        foreach($this->member['contacts'] as $contact)
+        {
+          if ($contact['type'] == 'email') {
+            $email = $contact['contact'];
+          }
+        }
+
+        if ($email) {
+          $url = secure_url(
+            $client_url . '/login/invite/'
+            .'?email=' . urlencode($email)
+            .'&userId=' . $this->member['id']
+            .'&orgId=' . $this->organization['id']
+            .'&token=' . $this->member['invite_token']
+          );
+          $msg = 'You have been invited to join '.$this->organization['name'].'\'s Rollcall, please click the link below to complete registration';
+          $subject = $this->organization['name'] . ' invited you to join Rollcall';
+
+          $message_service = $message_service_factory->make('email');
+          $message_service->setView('emails.invite');
+          $message_service->send($email, $msg, ['url' => $url], $subject);
+        } else {
+          // TODO how to invite a user with no email?
+        }
+
     }
 }
