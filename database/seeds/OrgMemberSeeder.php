@@ -49,6 +49,9 @@ class OrgMemberSeeder extends Seeder
 
             $ids[$user['id']] = ['role' => 'member'];
 
+            $user->update([
+                'password' => 'westgate'
+            ]);
         }
 
         $organization = Organization::where('name', '=', 'Ushahidi')->get()->first();
