@@ -271,6 +271,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     {
         return Organization::findOrFail($id)
             ->members()
+            ->with('contacts')
             ->select('users.*','role')
             ->get()
             ->toArray();
