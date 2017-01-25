@@ -202,7 +202,7 @@ class OrganizationCest
     {
         $id = 2;
         $user_id = 3;
-        $I->wantTo('Update organization details as the admin');
+        $I->wantTo('Update organization member as the admin');
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id/people/$user_id", [
@@ -216,6 +216,30 @@ class OrganizationCest
                 'id'   => 3,
                 'name' => 'Updated org member',
                 'role' => 'admin'
+            ]
+        ]);
+    }
+
+    /*
+     * Update Member
+     *
+     */
+    public function updateOrganizationMemberAsMember(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 1;
+        $I->wantTo('Update an organization member as the member');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$org_id/people/$user_id", [
+            'name' => 'Updated org member'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'id'   => $user_id,
+                'name' => 'Updated org member'
             ]
         ]);
     }
@@ -419,7 +443,7 @@ class OrganizationCest
     {
         $id = 2;
         $user_id = 1;
-        $I->wantTo('Add member contacts as an org admin');
+        $I->wantTo('Get member as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendGET($this->endpoint."/$id/people/$user_id");
@@ -449,6 +473,29 @@ class OrganizationCest
                     ]
                 ],
                 'role' => 'member'
+            ]
+        ]);
+    }
+
+    /*
+     * Get organization member
+     *
+     */
+    public function getMemberAsMember(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 1;
+        $I->wantTo('Get member as a member');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$org_id/people/$user_id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'id'    => $user_id,
+                'name'  => 'Test user',
+                'role'  => 'member'
             ]
         ]);
     }
