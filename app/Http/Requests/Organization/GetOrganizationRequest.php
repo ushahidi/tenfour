@@ -46,7 +46,13 @@ class GetOrganizationRequest extends FormRequest
     protected function getAllowedOrgRoles()
     {
         return [
-            'owner', 'admin'
+            'owner', 'admin',
+
+            // Temporary access given to members to view organization and people
+            // See: https://github.com/ushahidi/RollCall/issues/343
+            // @TODO remove this when user roles/permissions are in place
+            'member'
+
         ];
     }
 }
