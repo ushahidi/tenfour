@@ -167,7 +167,6 @@ class PersonController extends ApiController
     public function acceptInvite(InviteMemberRequest $request, $organization_id, $memberId)
     {
         $member = $this->organizations->getMember($organization_id, $memberId);
-
         if ($this->organizations->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
             $member['role'] = 'user';
