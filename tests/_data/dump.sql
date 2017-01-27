@@ -82,12 +82,14 @@ INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('9', '6',
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test roll call', '2', 'pending', '0', '1');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '["yes", "no"]');
 
 -- Add test contacts
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('3', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '2');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '4');
 
 -- Add test contacts
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('1', '1');

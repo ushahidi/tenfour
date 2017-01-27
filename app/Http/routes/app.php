@@ -28,3 +28,7 @@ Route::post('mail/receive', 'MailController@receive');
 
 Route::post('password/email', ['uses' => 'Auth\PasswordController@postEmail']);
 Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
+
+// Receive push MO SMS
+Route::post('sms/receive/africastalking', 'SMSController@receiveAfricasTalking');
+Route::match(['get', 'post'], 'sms/receive/nexmo', 'SMSController@receiveNexmo');
