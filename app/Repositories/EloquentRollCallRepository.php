@@ -113,7 +113,6 @@ class EloquentRollCallRepository implements RollCallRepository
             })
                 ->where('replies.user_id', '=', null);
         }
-        \Log::info(print_r($query->toSql() ,true));
 
         return $query->get()->toArray();
 
