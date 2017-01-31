@@ -174,7 +174,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         $role = $organization->members->first()->pivot->role;
 
-        $user = User::with([
+        $userModel = User::with([
             'rollcalls' => function ($query) use ($history_limit) {
                 $query->latest()->limit($history_limit);
             },
@@ -183,10 +183,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
             },
             'contacts'
         ])
-              ->find($user_id)
-              ->toArray() + [
+              ->find($user_id);
+
+        $user = $userModel->toArray() + [
                   'role' => $role
               ];
+
+        $user['has_logged_in'] = $userModel->hasLoggedIn();
 
         foreach ($user['rollcalls'] as &$roll_call)
         {
