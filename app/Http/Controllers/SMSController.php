@@ -4,6 +4,7 @@ namespace RollCall\Http\Controllers;
 
 use Log;
 use RollCall\Messaging\Storage\Reply as ReplyStorage;
+use RollCall\Messaging\Validators\NexmoMessageValidator;
 use Illuminate\Http\Request;
 use SMS;
 
@@ -60,8 +61,12 @@ class SMSController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function receiveNexmo()
+    public function receiveNexmo(Request $request, NexmoMessageValidator $validator)
     {
+        if (! $validator->isValid($request)) {
+            abort(404);
+        }
+
         return $this->receive('nexmo');
     }
 
