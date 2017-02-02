@@ -276,6 +276,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->members()
             ->with('contacts')
             ->select('users.*','role')
+            ->orderby('name', 'asc')
             ->get()
             ->toArray();
     }
