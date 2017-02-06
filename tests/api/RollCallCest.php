@@ -367,6 +367,11 @@ class RollCallCest
             ],
             'answers' => ['No', 'Yes']
         ]);
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 3,
+            'roll_call_id'    => 2,
+            'response_status' => 'unresponsive',
+        ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
