@@ -49,7 +49,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 3
                 ],
-                'sent_count' => 1,
+                'sent_count' => 2,
                 'user' => [
                     'id' => 1
                 ],
@@ -58,6 +58,11 @@ class RollCallCest
                         'id' => 4,
                         'name' => 'Org owner',
                         'uri' => '/users/4'
+                    ],
+                    [
+                        'id' => 3,
+                        'name' => 'Org member',
+                        'uri' => '/users/3'
                     ]
                 ]
             ],
