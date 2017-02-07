@@ -3,9 +3,7 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
 use RollCall\Models\Setting;
-use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,10 +15,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
 {
     protected $currentUserId = NULL;
 
-    public function __construct(ContactRepository $contacts, RollCallRepository $roll_calls)
+    public function __construct()
     {
-        $this->contacts = $contacts;
-        $this->roll_calls = $roll_calls;
     }
 
     public function setCurrentUserId($currentUserId)
@@ -111,51 +107,6 @@ class EloquentOrganizationRepository implements OrganizationRepository
         // ... then delete the organization
         $organization->delete();
         return $organization->toArray();
-    }
-
-    public function addContact(array $input, $id, $user_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $input['can_receive'] = 1;
-        $input['user_id'] = $user_id;
-
-        return $this->contacts->create($input);
-    }
-
-    public function updateContact(array $input, $id, $user_id, $contact_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        return $this->contacts->update($input, $contact_id);
-    }
-
-    public function deleteContact($id, $user_id, $contact_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        return $this->contacts->delete($contact_id);
     }
 
     // public function getAdmins($id)
