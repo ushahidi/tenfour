@@ -25,14 +25,20 @@ class PersonContactController extends ApiController
     /**
      * Add member contact
      *
-     * @Post("/{orgId}/members/{personId}/contacts")
+     * @Post("/")
      * @Versions({"v1"})
      * @Request({
-     *
+            "type": "email",
+            "contact": "linda@ushahidi.com",
+            "can_receive": "1"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
-     * })
+            "contact": {
+                "type": "email",
+                "contact": "linda@ushahidi.com",
+                "can_receive": "1"
+            }
+        })
      *
      * @param Request $request
      * @return Response
@@ -46,14 +52,20 @@ class PersonContactController extends ApiController
     /**
      * Update member contact
      *
-     * @Put("/{orgId}/members/{personId}/contacts/{contactId}")
+     * @Put("/{contactId}")
      * @Versions({"v1"})
      * @Request({
-     *
+            "type": "email",
+            "contact": "linda@ushahidi.com",
+            "can_receive": "1"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
-     * })
+            "contact": {
+                "type": "email",
+                "contact": "linda@ushahidi.com",
+                "can_receive": "1"
+            }
+        })
      *
      * @param Request $request
      * @return Response
@@ -67,14 +79,10 @@ class PersonContactController extends ApiController
     /**
      * Delete member contact
      *
-     * @Delete("/{orgId}/members/{personId}/contacts/{contactId}")
+     * @Delete("/{contactId}")
      * @Versions({"v1"})
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
-     * @Response(200, body={
-     *
-     * })
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(201)
      *
      * @param Request $request
      * @return Response

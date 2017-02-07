@@ -319,70 +319,7 @@ notifications will be marked as read.
 
 # Contacts [/api/v1/organizations/{orgId}/people/{personId}/contacts]
 
-## Add member contact [POST /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Update member contact [PUT /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts/{contactId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Delete member contact [DELETE /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts/{contactId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-# Contacts [/api/v1/contacts]
-
-## Get all contacts [GET /api/v1/contacts]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Create a contact [POST /api/v1/contacts]
+## Add member contact [POST /api/v1/organizations/{orgId}/people/{personId}/contacts]
 
 
 + Request (application/json)
@@ -408,7 +345,7 @@ notifications will be marked as read.
                 }
             }
 
-## Update a contact [PUT /api/v1/contacts/{contactId}]
+## Update member contact [PUT /api/v1/organizations/{orgId}/people/{personId}/contacts/{contactId}]
 
 
 + Request (application/json)
@@ -434,7 +371,7 @@ notifications will be marked as read.
                 }
             }
 
-## Delete a contact [DELETE /api/v1/contacts/{contactId}]
+## Delete member contact [DELETE /api/v1/organizations/{orgId}/people/{personId}/contacts/{contactId}]
 
 
 + Request (application/json)
