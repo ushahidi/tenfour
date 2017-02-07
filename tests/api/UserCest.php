@@ -78,7 +78,11 @@ class UserCest
         $I->seeResponseContainsJson([
             'user' => [
                 'name'        => 'Test user',
-                'person_type' => 'user'
+                'person_type' => 'user',
+                'organization' => [
+                    'id' => 2,
+                    'subdomain' => 'rollcall'
+                ]
             ]
         ]);
     }

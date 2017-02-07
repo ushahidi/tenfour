@@ -1,21 +1,19 @@
+-- Add test organizations
+INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'RollCall', 'rollcall');
+INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
+INSERT INTO organizations (id, name, subdomain) VALUES ('4', 'Dummy org', 'dummy');
+
 -- Add test users
-INSERT INTO users (id, name, description, password, person_type, invite_token)
+INSERT INTO users (id, name, description, password, person_type, invite_token, role, organization_id)
 VALUES
-('1', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL),
-('2', 'Admin user','Admin user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL),
-('3', 'Org member','Org member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL),
-('4', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL),
-('5', 'Org admin','Org admin','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL),
-('6', 'Org member 2','Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'member', 'asupersecrettoken');
-
--- Add test user roles
-INSERT INTO roles (id, name) VALUES ('1', 'admin');
-INSERT INTO roles (id, name) VALUES ('2', 'member');
-INSERT INTO roles (id, name) VALUES ('3', 'login');
-
--- Insert admin role
-INSERT INTO role_user (user_id, role_id) VALUES ('1', '2');
-INSERT INTO role_user (user_id, role_id) VALUES ('2', '1');
+('1', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2),
+('2', 'Admin user','Admin user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 2),
+('3', 'Org member','Org member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2),
+('4', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'owner', 2),
+('5', 'Org admin','Org admin','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 2),
+('6', 'Org member 2','Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'member', 'asupersecrettoken', 'member', 2),
+('7', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 3),
+('8', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'owner', 3);
 
 -- Add OAuth tokens and scopes
 -- Clients
@@ -53,20 +51,6 @@ INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgad
 INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','5');
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organization');
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
--- Add test organizations
-INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'RollCall', 'rollcall');
-INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
-INSERT INTO organizations (id, name, subdomain) VALUES ('4', 'Dummy org', 'dummy');
-
--- Add test organization members
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '4', 'owner');
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '5', 'admin');
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '1', 'member');
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '3', 'member');
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('3', '4', 'owner');
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('3', '1', 'admin');
-INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '6', 'member');
 
 --Add test contacts
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('1', '1', '1', 'phone', '0721674180');
