@@ -2,7 +2,7 @@
 
 namespace RollCall\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Http\Requests\Person\Contact\AddContactRequest;
 use RollCall\Http\Requests\Person\Contact\DeleteContactRequest;
 use RollCall\Http\Requests\Person\Contact\UpdateContactRequest;
@@ -15,9 +15,9 @@ use RollCall\Http\Response;
  */
 class PersonContactController extends ApiController
 {
-    public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
+    public function __construct(PersonRepository $people, Auth $auth, Response $response)
     {
-        $this->organizations = $organizations;
+        $this->people = $people;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -39,7 +39,7 @@ class PersonContactController extends ApiController
      */
     public function store(AddContactRequest $request, $organization_id, $user_id)
     {
-        return $this->response->item($this->organizations->addContact($request->all(), $organization_id, $user_id),
+        return $this->response->item($this->people->addContact($request->all(), $organization_id, $user_id),
                                      new ContactTransformer, 'contact');
     }
 
@@ -60,7 +60,7 @@ class PersonContactController extends ApiController
      */
     public function update(UpdateContactRequest $request, $organization_id, $user_id, $contact_id)
     {
-        return $this->response->item($this->organizations->updateContact($request->all(), $organization_id, $user_id, $contact_id),
+        return $this->response->item($this->people->updateContact($request->all(), $organization_id, $user_id, $contact_id),
                                      new ContactTransformer, 'contact');
     }
 
@@ -81,7 +81,7 @@ class PersonContactController extends ApiController
      */
     public function destroy(DeleteContactRequest $request, $organization_id, $user_id, $contact_id)
     {
-        return $this->response->item($this->organizations->deleteContact($organization_id, $user_id, $contact_id),
+        return $this->response->item($this->people->deleteContact($organization_id, $user_id, $contact_id),
                                      new ContactTransformer, 'contact');
     }
 

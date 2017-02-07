@@ -3,7 +3,7 @@
 namespace Rollcall\Traits;
 
 use RollCall\Contracts\Repositories\UserRepository;
-use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 use Dingo\Api\Auth\Auth;
 
 trait UserAccess
@@ -17,8 +17,8 @@ trait UserAccess
         $this->users = $users;
     }
 
-    public function setOrganizations(OrganizationRepository $organizations) {
-        $this->organizations = $organizations;
+    public function setPeople(PersonRepository $people) {
+        $this->people = $people;
     }
 
     protected function isSelf($id)
@@ -39,6 +39,6 @@ trait UserAccess
 
     protected function getOrganizationRole($org_id)
     {
-        return $this->organizations->getMemberRole($org_id, $this->auth->user()['id']);
+        return $this->people->getMemberRole($org_id, $this->auth->user()['id']);
     }
 }
