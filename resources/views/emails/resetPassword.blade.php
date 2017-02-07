@@ -217,7 +217,7 @@
                                             <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">If you did not request to reset your password, please ignore this email.</td>
                                         </tr>
                                         <tr>
-                                            <td align="center" style="padding: 20px 0 0 0; font-size: 14px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy"><hr />If you're having trouble selecting the "Reset your password" button, copy and paste the following URL into your web browser: <a href="{{ $link }}">{{ $link }}</a>.</td>
+                                            <td align="center" style="padding: 20px 0 0 0; font-size: 14px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy"><hr />If you're having trouble selecting the "Reset your password" button, copy and paste the following URL into your web browser: <a href="{{ $link }}">{{ $link }}</a></td>
                                         </tr>
                                     </table>
                                 </td>
