@@ -667,4 +667,30 @@ class OrganizationCest
             'subdomain'  => 'rollcall',
         ]);
     }
+
+    /**
+     * Accept an invite
+     */
+    public function acceptInvite(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 6;
+        $I->wantTo('Accept an invite to join an organization');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST("invite/$org_id/accept/$user_id", [
+            'invite_token' => 'asupersecrettoken',
+            'password' => 'abcd1234',
+            'password_confirm' => 'abcd1234'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'user' => [
+                'name' => 'Org member 2',
+                'description' => 'Org Member 2',
+                'role' => 'member',
+                'person_type' => 'user'
+            ]
+        ]);
+    }
 }

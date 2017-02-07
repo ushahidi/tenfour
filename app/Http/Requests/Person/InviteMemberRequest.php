@@ -25,7 +25,6 @@ class InviteMemberRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|max:255',
             'password' => 'required|min:8',
             'password_confirm' => 'required|same:password',
             'invite_token' => 'required',
