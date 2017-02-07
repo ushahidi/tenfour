@@ -18,7 +18,7 @@ class ApiServiceProvider extends ServiceProvider
             if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
                 $object->setAuth($app['Dingo\Api\Auth\Auth']);
                 $object->setUsers($app['RollCall\Contracts\Repositories\UserRepository']);
-                $object->setOrganizations($app['RollCall\Contracts\Repositories\OrganizationRepository']);
+                $object->setPeople($app['RollCall\Contracts\Repositories\PersonRepository']);
             }
         });
 
@@ -38,14 +38,22 @@ class ApiServiceProvider extends ServiceProvider
     {
         $this->app->bind('RollCall\Contracts\Repositories\UserRepository',
                          'RollCall\Repositories\EloquentUserRepository');
+
         $this->app->bind('RollCall\Contracts\Repositories\OrganizationRepository',
                          'RollCall\Repositories\EloquentOrganizationRepository');
+
         $this->app->bind('RollCall\Contracts\Repositories\ContactRepository',
                          'RollCall\Repositories\EloquentContactRepository');
+
         $this->app->bind('RollCall\Contracts\Repositories\RollCallRepository',
                          'RollCall\Repositories\EloquentRollCallRepository');
+
         $this->app->bind('RollCall\Contracts\Repositories\ReplyRepository',
                          'RollCall\Repositories\EloquentReplyRepository');
+
+        $this->app->bind('RollCall\Contracts\Repositories\PersonRepository',
+                         'RollCall\Repositories\EloquentPersonRepository');
+
         $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
                          'RollCall\Messaging\MessageServiceFactory');
 
