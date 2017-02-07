@@ -161,6 +161,21 @@ class PersonController extends ApiController
     /**
      * Accept member invite
      *
+     * @Put("invite/{organisationId}/accept/{memberId}")
+     * @Versions({"v1"})
+     * @Request({
+     *     invite_token: "aSecretToken",
+     *     password: "newpassword",
+     *     password_confirm: "newpassword"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     user: {
+     *         name: "User Name",
+     *         role: "member",
+     *         person_type: "user"
+     *     }
+     * })
+     *
      * @param InviteMemberRequest $request
      * @return Response
      */
@@ -169,7 +184,8 @@ class PersonController extends ApiController
         $member = $this->organizations->getMember($organization_id, $memberId);
         if ($this->organizations->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
-            $member['role'] = 'user';
+            $member['person_type'] = 'user';
+            $member['role'] = 'member';
             $member['invite_token'] = null;
             $member = $this->organizations->updateMember($member, $organization_id, $memberId);
 

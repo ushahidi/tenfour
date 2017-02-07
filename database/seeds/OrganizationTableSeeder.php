@@ -16,7 +16,8 @@ class OrganizationTableSeeder extends Seeder
         );
 
         $user->update([
-            'password' => 'westgate'
+            'password' => 'westgate',
+            'person_type' => 'user'
         ]);
 
         Contact::firstOrCreate([
@@ -50,7 +51,8 @@ class OrganizationTableSeeder extends Seeder
 
         $user2 = User::firstOrCreate([
             'name' => 'Robbie',
-            'password' => 'waitaktri'
+            'password' => 'waitaktri',
+            'person_type' => 'user'
         ]);
 
         Contact::firstOrCreate([
