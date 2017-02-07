@@ -164,15 +164,15 @@ class PersonController extends ApiController
      * @Put("invite/{organisationId}/accept/{memberId}")
      * @Versions({"v1"})
      * @Request({
-     *     invite_token: "aSecretToken",
-     *     password: "newpassword",
-     *     password_confirm: "newpassword"
+     *     "invite_token": "aSecretToken",
+     *     "password": "newpassword",
+     *     "password_confirm": "newpassword"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     user: {
-     *         name: "User Name",
-     *         role: "member",
-     *         person_type: "user"
+     *     "user": {
+     *         "name": "User Name",
+     *         "role": "member",
+     *         "person_type": "user"
      *     }
      * })
      *

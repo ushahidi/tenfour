@@ -11,7 +11,7 @@ use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Response;
 
 /**
- * @Resource("Organizations", uri="/api/v1/organizations/{orgId}/people/{personId}/contacts")
+ * @Resource("Contacts", uri="/api/v1/organizations/{orgId}/people/{personId}/contacts")
  */
 class PersonContactController extends ApiController
 {
