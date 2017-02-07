@@ -13,6 +13,7 @@ use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\UserRepository;
+use RollCall\Models\Organization;
 
 class SendRollCall implements ShouldQueue
 {
@@ -69,13 +70,19 @@ class SendRollCall implements ShouldQueue
 
                 $message_service = $message_service_factory->make($contact['type']);
 
-                if (config('sms.driver') === 'africastalking') {
-                    $message_service->setView('sms.africastalking');
-                }
-
                 if ($contact['type'] === 'email') {
                     $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator));
                 } else {
+
+                    // Send reminder SMS to unresponsive recipient
+                    if ($unreplied_roll_call_id) {
+                        $org_url = Organization::findOrFail($organization['id'])->url();
+                        $roll_call_url = $org_url .'/rollcalls/'. $unreplied_roll_call_id;
+                        $message_service->setView('sms.unresponsive');
+                        $message_service->send($contact['contact'], $roll_call_url);
+                    }
+
+                    $message_service->setView('sms.rollcall');
                     $message_service->send($contact['contact'], $this->roll_call['message']);
                 }
 
