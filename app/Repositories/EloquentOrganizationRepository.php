@@ -26,13 +26,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function all($subdomain = false)
     {
-        $query = Organization::select('organizations.id', 'name', 'subdomain');
+        $query = Organization::select('organizations.id', 'organizations.name', 'subdomain');
 
         // If we're authenticated, just return orgs we're a member of
         if ($this->currentUserId) {
-            $query->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id');
-            $query->select('organizations.id', 'name', 'subdomain', 'user_id', 'role');
-            $query->where('organization_user.user_id', $this->currentUserId);
+            $query->leftJoin('users', 'organizations.id', '=', 'users.organization_id');
+            $query->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role');
+            $query->where('users.id', $this->currentUserId);
         }
 
         // Filter by subdomain
@@ -77,7 +77,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
             // Assign 'owner' role to the user associated
             // with the organization when it's created
-            $organization->members()->attach($owner_id, ['role' => 'owner']);
+            // FIXME: need to add user
+            //$organization->members()->attach($owner_id, ['role' => 'owner']);
         });
 
         return $organization->toArray() +
@@ -90,8 +91,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function find($id)
     {
         return Organization::with('settings')
-            ->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
-            ->select('organizations.id', 'name', 'subdomain', 'user_id', 'role')
+            ->leftJoin('users', 'organizations.id', '=', 'users.organization_id')
+            ->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role')
             ->where('role', 'owner')
             ->findOrFail($id)
             ->toArray();
@@ -101,8 +102,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
     {
         $organization = Organization::findorFail($id);
 
-        // Delete all members
-        $organization->members()->detach();
+        // Foreign Keys should take care of deleting members!
 
         // ... then delete the organization
         $organization->delete();
