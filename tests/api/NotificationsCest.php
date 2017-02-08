@@ -3,7 +3,7 @@
 class NotificationsCest
 {
     protected $organizationsEndpoint = '/api/v1/organizations';
-    protected $userEndpoint = '/api/v1/users/me';
+    protected $peopleEndpoint = '/api/v1/organizations/2/people/me';
     protected $rollcallsEndpoint = '/api/v1/rollcalls';
 
     /*
@@ -22,7 +22,7 @@ class NotificationsCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendGet($this->userEndpoint);
+        $I->sendGet($this->peopleEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -52,7 +52,7 @@ class NotificationsCest
         $I->seeResponseCodeIs(200);
 
         $I->amAuthenticatedAsUser();
-        $I->sendGet($this->userEndpoint);
+        $I->sendGet($this->peopleEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
@@ -79,7 +79,7 @@ class NotificationsCest
         $I->sendDelete($this->organizationsEndpoint."/$org_id/people/$user_id");
         $I->seeResponseCodeIs(200);
 
-        $I->sendGet($this->userEndpoint);
+        $I->sendGet($this->peopleEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -108,7 +108,7 @@ class NotificationsCest
         $I->seeResponseCodeIs(200);
 
         $I->amAuthenticatedAsUser();
-        $I->sendGet($this->userEndpoint);
+        $I->sendGet($this->peopleEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
@@ -151,7 +151,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
 
         $I->amAuthenticatedAsOrgOwner();
-        $I->sendGet($this->userEndpoint);
+        $I->sendGet($this->peopleEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -183,7 +183,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
 
         $I->amAuthenticatedAsOrgOwner();
-        $I->sendGet($this->userEndpoint);
+        $I->sendGet($this->peopleEndpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([

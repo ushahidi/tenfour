@@ -36,10 +36,17 @@ class PersonController extends ApiController
      * @Post("/")
      * @Versions({"v1"})
      * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+            "name": "Testing Testing",
+            "email": "test@ushahidi.com",
+            "password": "newpassword",
+            "password_confirm": "newpassword"
+       }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+            "person": {
+                "id": 3,
+                "name": "Testing Testing",
+                "email": "test@ushahidi.com"
+            }
      * })
      *
      * @param Request $request
@@ -58,7 +65,10 @@ class PersonController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+            "people": {{
+                "name": "Robbie",
+                "email": "robbie@ushahidi.com"
+            }}
      * })
      *
      * @param Request $request
@@ -77,7 +87,14 @@ class PersonController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+            "person": {
+                "id": 3,
+                "name": "Testing Testing",
+                "email": "test@ushahidi.com",
+                "username": "ushahidi",
+                "created_at": "2016-03-30 16:11:36",
+                "updated_at": "2016-03-30 16:11:36"
+            }
      * })
      *
      * @param Request $request
@@ -85,6 +102,10 @@ class PersonController extends ApiController
      */
     public function show(GetPersonRequest $request, $organization_id, $person_id)
     {
+        if ($person_id === 'me') {
+            $person_id = $this->auth->user()['id'];
+        }
+
         return $this->response->item($this->people->getMember($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
@@ -94,18 +115,18 @@ class PersonController extends ApiController
      *
      * @Delete("/{memberId}")
      * @Versions({"v1"})
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
-     * @Response(200, body={
-     *
-     * })
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(201)
      *
      * @param Request $request
      * @return Response
      */
     public function destroy(DeletePersonRequest $request, $organization_id, $person_id)
     {
+        if ($person_id === 'me') {
+            $person_id = $this->auth->user()['id'];
+        }
+
         return $this->response->item($this->people->deleteMember($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
@@ -116,11 +137,21 @@ class PersonController extends ApiController
      * @Put("/{memberId}")
      * @Versions({"v1"})
      * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+            "name": "Testing Testing",
+            "email": "test@ushahidi.com",
+            "password": "newpassword",
+            "password_confirm": "newpassword"
+        }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
-     * })
+            "user": {
+                "id": 3,
+                "name": "Testing Testing",
+                "email": "test@ushahidi.com",
+                "username": "ushahidi",
+                "created_at": "2016-03-30 16:11:36",
+                "updated_at": "2016-03-30 16:11:36"
+            }
+        })
      *
      * @param Request $request
      * @param int $id

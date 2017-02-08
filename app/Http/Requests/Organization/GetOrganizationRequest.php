@@ -16,12 +16,6 @@ class GetOrganizationRequest extends FormRequest
      */
     public function authorize()
     {
-        // If a person_id is provided by a non-admin user,
-        // check that it matches the current user's id
-        if ($this->route('person') && $this->isSelf($this->route('person'))) {
-            return true;
-        }
-
         // An org owner/ admin can view an organization
         //
         // Temporary access given to members to view organization and people
@@ -30,6 +24,8 @@ class GetOrganizationRequest extends FormRequest
         if ($this->user()->isMember($this->route('organization'))) {
             return true;
         }
+
+        return false;
     }
 
     /**

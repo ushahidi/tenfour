@@ -20,9 +20,10 @@ class AddPersonRequest extends UpdatePersonRequest
 
     public function rules()
     {
-        $rules = parent::rules();
-
-        $rules['name'] = 'required';
+        $rules = parent::rules() + [
+            'name' => 'required',
+            'password' => 'required|min:8',
+        ];
 
         return $rules;
     }

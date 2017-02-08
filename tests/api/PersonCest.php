@@ -17,12 +17,20 @@ class PersonCest
         $I->sendPOST($this->endpoint."/$id/people", [
             'name' => 'Mary Mata',
             'role'  => 'member',
+            'password' => 'dancer01',
+            'password_confirm' => 'dancer01',
+            'person_type' => 'user',
+            'config_profile_reviewed' => true,
+            'config_self_test_sent' => false
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Mary Mata',
             'role' => 'member',
+            'person_type' => 'user',
+            'config_profile_reviewed' => true,
+            'config_self_test_sent' => false
         ]);
     }
 
@@ -136,14 +144,17 @@ class PersonCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$org_id/people/$user_id", [
-            'name' => 'Updated org member'
+            'name' => 'Updated org member',
+            'password' => 'rollcall',
+            'person_type' => 'user'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'person' => [
                 'id'   => $user_id,
-                'name' => 'Updated org member'
+                'name' => 'Updated org member',
+                'person_type' => 'user'
             ]
         ]);
     }
@@ -287,6 +298,27 @@ class PersonCest
     }
 
     /*
+     * Get user details as 'me'
+     *
+     */
+    public function getUserAsMe(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 'me';
+        $I->wantTo('Get my own user details as a user');
+        $I->amAuthenticatedAsUser();
+        $I->sendGET($this->endpoint."/$org_id/people/$user_id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'name'        => 'Test user',
+                'person_type' => 'user'
+            ]
+        ]);
+    }
+
+    /*
      * Delete member from an organization as org admin
      *
      */
@@ -366,6 +398,50 @@ class PersonCest
         ]);
     }
 
+    /*
+     * List people in an organization
+     *
+     */
+    public function listMembersAsOrgMember(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('List people of an organization as org Admin');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$id/people");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 4,
+                    'role' => 'owner',
+                    'name' => 'Org owner',
+                    'initials' => 'OO'
+                ],
+                [
+                    'id' => 5,
+                    'role' => 'admin',
+                    'name' => 'Org admin',
+                    'initials' => 'OA'
+                ],
+                [
+                    'id' => 1,
+                    'role' => 'member',
+                    'name' => 'Test user',
+                    'initials' => 'TU'
+                ],
+                [
+                    'id' => 3,
+                    'role' => 'member',
+                    'name' => 'Org member',
+                    'initials' => 'OM'
+                ]
+            ]
+        ]);
+    }
+
+
     /**
      * Accept an invite
      */
@@ -377,8 +453,7 @@ class PersonCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST("invite/$org_id/accept/$user_id", [
             'invite_token' => 'asupersecrettoken',
-            'password' => 'abcd1234',
-            'password_confirm' => 'abcd1234'
+            'password' => 'abcd1234'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -390,5 +465,70 @@ class PersonCest
                 'person_type' => 'user'
             ]
         ]);
+    }
+
+    /*
+     * Change a user's password
+     *
+     */
+    public function changePassword(ApiTester $I)
+    {
+        $orgId = 2;
+        $id = 1;
+        $I->wantTo('Change a user\'s pasword');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$orgId/people/$id", [
+            'password' => 'another_password',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->sendPOST('/oauth/access_token', [
+            'client_id' => 'webapp',
+            'client_secret' => 'secret',
+            'scope' => 'user',
+            'username' => 'test@ushahidi.com',
+            'password' => 'another_password',
+            'grant_type' => 'password'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+    }
+
+    /*
+     * Reset password
+     *
+     */
+    public function resetPassword(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Reset my password');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/password/email', [
+            'username' => 'test@ushahidi.com',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $record = $I->grabRecord('password_resets', array('email' => 'test@ushahidi.com'));
+        $I->sendPOST('/password/reset', [
+            'username' => 'test@ushahidi.com',
+            'password' => 'cake1234',
+            'password_confirmation' => 'cake1234',
+            'token' => $record['token']
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->sendPOST('/oauth/access_token', [
+            'client_id' => 'webapp',
+            'client_secret' => 'secret',
+            'scope' => 'user',
+            'username' => 'test@ushahidi.com',
+            'password' => 'cake1234',
+            'grant_type' => 'password'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
     }
 }

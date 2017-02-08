@@ -34,9 +34,6 @@ class ApiServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind('RollCall\Contracts\Repositories\UserRepository',
-                         'RollCall\Repositories\EloquentUserRepository');
-
         $this->app->bind('RollCall\Contracts\Repositories\OrganizationRepository',
                          'RollCall\Repositories\EloquentOrganizationRepository');
 

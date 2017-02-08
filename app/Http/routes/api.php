@@ -20,14 +20,6 @@ $api->version($version, [
     'middleware' => 'api.auth',
     'scopes' => ['user','organization', 'contact', 'rollcall']
 ], function ($api) use ($base) {
-    //Users
-    ////////////////////////////////////////////////////////////////////
-    $api->get($base.'users', ['as' => 'users.index', 'uses' => 'UserController@all']);
-    $api->post($base.'users', ['as' => 'users.create', 'uses' => 'UserController@create']);
-    $api->get($base. 'users/{user}', ['as' => 'users.show', 'uses' => 'UserController@find']);
-    $api->put($base. 'users/{user}', ['as' => 'users.update', 'uses' => 'UserController@update']);
-    $api->delete($base. 'users/{user}', ['as' => 'users.delete', 'uses' => 'UserController@delete']);
-
     //Organizations
     ////////////////////////////////////////////////////////////////////
     $api->resource($base.'organizations', 'OrganizationController', ['except' => ['index']]);

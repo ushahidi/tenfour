@@ -26,7 +26,6 @@ class InviteMemberRequest extends FormRequest
     {
         return [
             'password' => 'required|min:8',
-            'password_confirm' => 'required|same:password',
             'invite_token' => 'required',
         ];
     }

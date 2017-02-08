@@ -3,7 +3,6 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
 use RollCall\Models\User;
-use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
@@ -16,9 +15,8 @@ use RollCall\Notifications\PersonLeftOrganization;
 
 class EloquentPersonRepository implements PersonRepository
 {
-    public function __construct(UserRepository $users, RollCallRepository $roll_calls, ContactRepository $contacts)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts)
     {
-        $this->users = $users;
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
     }
@@ -102,10 +100,15 @@ class EloquentPersonRepository implements PersonRepository
             }
 
             // Update user
-            $user = $this->users->update($input, $user_id);
+            $user->update($input);
+
+            // Mark notifications read
+            if (isset($input['notifications'])) {
+                $user->unreadNotifications->markAsRead();
+            }
         });
 
-        return $user;
+        return $user->toArray();
     }
 
     public function getMember($id, $user_id)
@@ -126,6 +129,7 @@ class EloquentPersonRepository implements PersonRepository
                 },
                 'contacts'
             ])
+            ->with('notifications')
             ->firstOrFail();
 
         $user = $userModel->toArray();
@@ -141,9 +145,16 @@ class EloquentPersonRepository implements PersonRepository
         return $user;
     }
 
-    public function addMember(array $input, $id)
+    public function findObject($id)
     {
-        $organization = Organization::findOrFail($id);
+        return User::with('contacts')
+            ->with('notifications')
+            ->find($id);
+    }
+
+    public function addMember(array $input, $organization_id)
+    {
+        $organization = Organization::findOrFail($organization_id);
 
         if (!isset($input['role'])) {
             $input['role'] = 'member';
@@ -151,8 +162,7 @@ class EloquentPersonRepository implements PersonRepository
 
         $input['organization_id'] = $organization->id;
 
-        // @todo stop using users repo
-        $user = $this->users->create($input);
+        $user = User::create($input)->toArray();
 
         Notification::send($this->getAdmins($organization['id']),
             new PersonJoinedOrganization(new User($user)));
@@ -160,9 +170,9 @@ class EloquentPersonRepository implements PersonRepository
         return $user;
     }
 
-    public function getMembers($id)
+    public function getMembers($organization_id)
     {
-        return Organization::findOrFail($id)
+        return Organization::findOrFail($organization_id)
             ->members()
             ->with('contacts')
             ->select('users.*','role')
@@ -171,18 +181,17 @@ class EloquentPersonRepository implements PersonRepository
             ->toArray();
     }
 
-    protected function getAdmins($id)
+    protected function getAdmins($organization_id)
     {
-        return User::findOrFail($id)
-            ->where('organization_id', $id)
+        return User::where('organization_id', $organization_id)
             ->whereIn('role', ['admin', 'owner'])
             ->get();
     }
 
-    public function deleteMember($id, $user_id)
+    public function deleteMember($organization_id, $user_id)
     {
         $user = User::where('id', $user_id)
-            ->where('organization_id', $id)
+            ->where('organization_id', $organization_id)
             ->firstOrFail();
 
         $user->delete();
@@ -217,10 +226,10 @@ class EloquentPersonRepository implements PersonRepository
           ->count();
     }
 
-    public function addContact(array $input, $id, $user_id)
+    public function addContact(array $input, $organization_id, $user_id)
     {
         $user = User::where('id', $user_id)
-            ->where('organization_id', $id)
+            ->where('organization_id', $organization_id)
             ->firstOrFail();
 
         $input['can_receive'] = 1;
@@ -229,20 +238,20 @@ class EloquentPersonRepository implements PersonRepository
         return $this->contacts->create($input);
     }
 
-    public function updateContact(array $input, $id, $user_id, $contact_id)
+    public function updateContact(array $input, $organization_id, $user_id, $contact_id)
     {
         $user = User::where('id', $user_id)
-            ->where('organization_id', $id)
+            ->where('organization_id', $organization_id)
             ->firstOrFail();
 
         // @todo ensure contact belongs to user!
         return $this->contacts->update($input, $contact_id);
     }
 
-    public function deleteContact($id, $user_id, $contact_id)
+    public function deleteContact($organization_id, $user_id, $contact_id)
     {
         $user = User::where('id', $user_id)
-            ->where('organization_id', $id)
+            ->where('organization_id', $organization_id)
             ->firstOrFail();
 
         // @todo ensure contact belongs to user!

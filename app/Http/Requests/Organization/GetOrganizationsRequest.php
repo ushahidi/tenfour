@@ -23,7 +23,7 @@ class GetOrganizationsRequest extends FormRequest
 
         // A user can list their own orgs;
         if ($this->user()) {
-            // Repo should auto filter by current user id
+            // Repo auto filters by current user id
 
             return true;
         }
