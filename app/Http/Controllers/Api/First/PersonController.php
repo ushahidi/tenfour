@@ -15,6 +15,7 @@ use RollCall\Http\Response;
 use RollCall\Jobs\SendInvite;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Hash;
+use RollCall\Models\Organization;
 
 /**
  * @Resource("People", uri="/api/v1/organizations/{orgId}/people")
@@ -146,7 +147,8 @@ class PersonController extends ApiController
     public function invitePerson(GetPersonRequest $request, $organization_id, $user_id)
     {
         $member = $this->people->getMember($organization_id, $user_id);
-        //$organization = $this->organizations->find($organization_id);
+        $organization = Organization::findOrFail($organization_id)->toArray();
+
         // Queue invite
         $member['invite_token'] = Hash::Make(config('app.key'));
         $member['invite_sent'] = true;
