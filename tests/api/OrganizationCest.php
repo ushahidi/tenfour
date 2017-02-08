@@ -177,29 +177,6 @@ class OrganizationCest
     }
 
     /*
-     * Change role as org admin
-     *
-     */
-    public function changeMemberRoleAsOrgAdmin(ApiTester $I)
-    {
-        $id = 2;
-        $I->wantTo('Change member role as an org admin');
-        $I->amAuthenticatedAsOrgAdmin();
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint."/$id", [
-            'name' => 'Rollcall',
-            'subdomain'  => 'rollcall',
-            'people' => [
-                [
-                    'id'   => '3',
-                    'role' => 'owner'
-                ]
-            ]
-        ]);
-        $I->seeResponseCodeIs(403);
-    }
-
-    /*
      * Set an organization's setting
      *
      */
