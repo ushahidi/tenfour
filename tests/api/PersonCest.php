@@ -324,23 +324,6 @@ class PersonCest
     }
 
     /*
-     * Add admin to an organization as org admin
-     *
-     */
-    public function addAdminAsOrgAdmin(ApiTester $I)
-    {
-        $id = 2;
-        $I->wantTo('Add people as an org admin');
-        $I->amAuthenticatedAsOrgAdmin();
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint."/$id/people", [
-            'id'   => 6,
-            'role' => 'admin',
-        ]);
-        $I->seeResponseCodeIs(403);
-    }
-
-    /*
      * List people in an organization
      *
      */
