@@ -4,6 +4,7 @@ namespace RollCall\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
+use App;
 
 class DeletePersonRequest extends FormRequest
 {
@@ -16,7 +17,13 @@ class DeletePersonRequest extends FormRequest
             return false;
         }
 
-        // @todo No one can delete the org owner
+        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
+                 ->getMemberRole($this->route('organization'), $this->route('person'));
+
+        // Only the owner can edit their details
+        if ($role === 'owner') {
+            return false;
+        }
 
         // An org admin can delete members
         if ($this->user()->isAdmin($this->route('organization'))) {

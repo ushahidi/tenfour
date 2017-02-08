@@ -4,6 +4,7 @@ namespace RollCall\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
+use App;
 
 class UpdatePersonRequest extends FormRequest
 {
@@ -11,11 +12,17 @@ class UpdatePersonRequest extends FormRequest
 
     public function authorize()
     {
-        // @todo Only the owner can update themselves
-
         // Users can update themselves
         if ($this->isSelf($this->route('person'))) {
             return true;
+        }
+
+        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
+                 ->getMemberRole($this->route('organization'), $this->route('person'));
+
+        // Only the owner can edit their details
+        if ($role === 'owner') {
+            return false;
         }
 
         // An org admin can delete members
