@@ -16,11 +16,6 @@ class GetUserRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full access
-        if ($this->isAdmin()) {
-            return true;
-        }
-
         // A user can access their own details
         if ($this->route('user') === 'me') {
             return true;

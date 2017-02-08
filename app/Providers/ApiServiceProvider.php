@@ -17,8 +17,6 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->resolving(function ($object, $app) {
             if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
                 $object->setAuth($app['Dingo\Api\Auth\Auth']);
-                $object->setUsers($app['RollCall\Contracts\Repositories\UserRepository']);
-                $object->setPeople($app['RollCall\Contracts\Repositories\PersonRepository']);
             }
         });
 

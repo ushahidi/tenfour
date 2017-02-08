@@ -16,24 +16,16 @@ class UpdateRollCallRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full access
-        if ($this->isAdmin()) {
-            return true;
-        }
+        // @todo should anyone really be able to update a rollcall?
 
         $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
                  ->find($this->route('rollcall'));
 
-        $org_role = $this->getOrganizationRole($rollCall['organization_id']);
+        if ($this->user()->isAdmin($rollCall['organization_id'])) {
+            return true;
+        }
 
-        return in_array($org_role, $this->getAllowedOrgRoles());
-    }
-
-    protected function getAllowedOrgRoles()
-    {
-        return [
-            'owner', 'admin'
-        ];
+        return false;
     }
 
     public function rules()

@@ -39,6 +39,13 @@ class EloquentUserRepository implements UserRepository
             ->toArray();
     }
 
+    public function findObject($id)
+    {
+        return User::with('contacts')
+            ->with('notifications')
+            ->find($id);
+    }
+
     public function delete($id)
     {
 		$user = User::findorFail($id);

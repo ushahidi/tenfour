@@ -16,8 +16,8 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has access
-        if ($this->isAdmin()) {
+        // A user can access their own details
+        if ($this->route('user') === 'me') {
             return true;
         }
 

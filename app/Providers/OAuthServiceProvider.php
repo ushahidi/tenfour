@@ -16,7 +16,7 @@ class OAuthServiceProvider extends ServiceProvider
             $provider = new OAuth2($app['oauth2-server.authorizer']->getChecker());
 
             $provider->setUserResolver(function ($id) use ($users) {
-                return $users->find($id);
+                return $users->findObject($id);
             });
 
             $provider->setClientResolver(function ($id) {

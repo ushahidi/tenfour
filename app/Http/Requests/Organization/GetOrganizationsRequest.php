@@ -2,8 +2,13 @@
 
 namespace RollCall\Http\Requests\Organization;
 
-class GetOrganizationsRequest extends GetOrganizationRequest
+use Dingo\Api\Http\FormRequest;
+use RollCall\Traits\UserAccess;
+
+class GetOrganizationsRequest extends FormRequest
 {
+    use UserAccess;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -11,21 +16,28 @@ class GetOrganizationsRequest extends GetOrganizationRequest
      */
     public function authorize()
     {
-        // Admin can list all organizations
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        // A user can list their own orgs;
-        if ($this->isUser()) {
-            return true;
-        }
-
         // Anyone can query by subdomain
         if ($this->query('subdomain')) {
             return true;
         }
 
+        // A user can list their own orgs;
+        if ($this->user()) {
+            // Repo should auto filter by current user id
+
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [];
     }
 }

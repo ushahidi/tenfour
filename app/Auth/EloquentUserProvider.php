@@ -41,7 +41,7 @@ class EloquentUserProvider extends IlluminateUserProvider
         $query->select('users.*', 'contacts.contact');
 
         // @todo Maybe just set this in the model?
-        $query->with('organizations');
+        $query->with('organization');
 
         return $query->first();
     }

@@ -16,24 +16,19 @@ class GetRollCallsRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full access
-        if ($this->isAdmin()) {
-            return true;
-        }
-
         // If filtering by organization check whether user is org owner/ org admin
         if ($this->query('organization')) {
             $org_role = $this->getOrganizationRole($this->query('organization'));
 
-            // If user is not an admin/owner, filter to just their rollcalls
+            // If user is *not* an admin/owner, filter to just their rollcalls
             // @todo find a better home for this?
-            if (!in_array($org_role, ['admin', 'owner'])) {
+            if (!$this->user()->isAdmin()) {
                 $this->merge([
-                    'recipient_id' => $this->auth->user()['id']
+                    'recipient_id' => $this->user()->id
                 ]);
             }
 
-            return in_array($org_role, $this->getAllowedOrgRoles());
+            return $this->user()->isMember($this->query('organization'));
         }
 
         return false;
@@ -46,10 +41,4 @@ class GetRollCallsRequest extends FormRequest
         ];
     }
 
-    protected function getAllowedOrgRoles()
-    {
-        return [
-            'owner', 'admin', 'member'
-        ];
-    }
 }

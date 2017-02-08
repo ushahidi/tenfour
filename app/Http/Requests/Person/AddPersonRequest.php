@@ -2,52 +2,29 @@
 
 namespace RollCall\Http\Requests\Person;
 
-use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
 
-class AddPersonRequest extends FormRequest
+class AddPersonRequest extends UpdatePersonRequest
 {
     use UserAccess;
 
     public function authorize()
     {
         // An admin, org owner and org admin can add members
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        if ($this->route('person') && $this->isSelf($this->route('person'))) {
-            // allow users to edit themselves
-            return true;
-        }
-
-        $org_role = $this->getOrganizationRole($this->route('organization'));
-
-        if ($org_role == 'owner') {
-            return true;
-        }
-
-        if ($org_role == 'admin') {
-            $member = $this->all();
-
-            if (isset($member['role']) && $member['role'] != 'member') {
-                return false;
-            }
-
+        if ($this->user()->isMember($this->route('organization'))) {
             return true;
         }
 
         return false;
     }
 
-    /**
-     * @todo Merge rules from `CreateUserRequest`
-     */
     public function rules()
     {
-        return [
-            'name' => 'required',
-            'role' => 'in:member,admin',
-        ];
+        $rules = parent::rules();
+
+        $rules['name'] = 'required';
+
+        return $rules;
     }
+
 }

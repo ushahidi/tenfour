@@ -26,7 +26,7 @@ class Organization extends Model
      */
     public function members()
     {
-        return $this->belongsToMany('RollCall\Models\User')->withPivot('role');
+        return $this->hasMany('RollCall\Models\User');
     }
 
     /**

@@ -11,10 +11,7 @@ class GetUsersRequest extends GetUserRequest
      */
     public function authorize()
     {
-        // Only admin can list users
-        if ($this->isAdmin()) {
-            return true;
-        }
+        // FIXME
 
         return false;
     }

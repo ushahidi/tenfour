@@ -12,7 +12,7 @@ class Role extends Model
 	 */
 	public function users()
 	{
-		return $this->belongsToMany('RollCall\Models\User');
+		return $this->hasMany('RollCall\Models\User');
 	}
 
 }
