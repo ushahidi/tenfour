@@ -4,6 +4,7 @@ namespace RollCall\Http\Requests\RollCall;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
+use App;
 
 class UpdateRollCallRequest extends FormRequest
 {

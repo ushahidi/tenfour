@@ -45,23 +45,6 @@ class RollCallCest
                 ]
             ],
             [
-                'message' => 'Another test roll call',
-                'organization' => [
-                    'id' => 3
-                ],
-                'sent_count' => 1,
-                'user' => [
-                    'id' => 1
-                ],
-                'recipients' => [
-                    [
-                        'id' => 4,
-                        'name' => 'Org owner',
-                        'uri' => '/users/4'
-                    ]
-                ]
-            ],
-            [
                 'message' => 'yet another test roll call',
                 'organization' => [
                     'id' => 2
