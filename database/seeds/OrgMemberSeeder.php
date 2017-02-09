@@ -35,9 +35,12 @@ class OrgMemberSeeder extends Seeder
             ]
         ];
 
+        $organization = Organization::where('name', '=', 'Ushahidi')->get()->first();
+
         foreach ($members as $member) {
             $user = User::firstOrCreate([
-                'name'     => $member['name']
+                'name'     => $member['name'],
+                'organization_id' => $organization->id
             ]);
 
             Contact::firstOrCreate([
@@ -54,10 +57,6 @@ class OrgMemberSeeder extends Seeder
                 'person_type' => 'user'
             ]);
         }
-
-        $organization = Organization::where('name', '=', 'Ushahidi')->get()->first();
-
-        $organization->members()->sync($ids, false);
 
     }
 }

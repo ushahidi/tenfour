@@ -10,23 +10,6 @@ class OrganizationTableSeeder extends Seeder
 {
     // Create user that owns Ushahidi organization
     public function run() {
-
-        $user = User::firstOrCreate(
-            ['name' => 'ushahidi']
-        );
-
-        $user->update([
-            'password' => 'westgate',
-            'person_type' => 'user'
-        ]);
-
-        Contact::firstOrCreate([
-            'type'        => 'email',
-            'contact'     => 'rollcall@ushahidi.com',
-            'can_receive' => 1,
-            'user_id'     => $user->id
-        ]);
-
         $organization = Organization::firstOrCreate(
             ['name' => 'Ushahidi']
         );
@@ -35,11 +18,23 @@ class OrganizationTableSeeder extends Seeder
             'subdomain' => 'ushahidi',
         ]);
 
-        $user->organizations()->sync([
-                $organization->id =>[
-                    'user_id' => $user->id, 'role' => 'owner'
-                ]
-            ]);
+        $user = User::firstOrCreate(
+            ['name' => 'ushahidi']
+        );
+
+        $user->update([
+            'password' => 'westgate',
+            'person_type' => 'user',
+            'organization_id' => $organization->id,
+            'role' => 'owner'
+        ]);
+
+        Contact::firstOrCreate([
+            'type'        => 'email',
+            'contact'     => 'rollcall@ushahidi.com',
+            'can_receive' => 1,
+            'user_id'     => $user->id
+        ]);
 
         // Second test org: Waitak Tri Club
         $triClub = Organization::firstOrCreate(
@@ -52,7 +47,9 @@ class OrganizationTableSeeder extends Seeder
         $user2 = User::firstOrCreate([
             'name' => 'Robbie',
             'password' => 'waitaktri',
-            'person_type' => 'user'
+            'person_type' => 'user',
+            'organization_id' => $triClub->id,
+            'role' => 'owner'
         ]);
 
         Contact::firstOrCreate([
@@ -61,11 +58,5 @@ class OrganizationTableSeeder extends Seeder
             'can_receive' => 1,
             'user_id'     => $user2->id
         ]);
-
-        $user2->organizations()->sync([
-                $triClub->id => [
-                    'user_id' => $user2->id, 'role' => 'owner'
-                ]
-            ]);
     }
 }
