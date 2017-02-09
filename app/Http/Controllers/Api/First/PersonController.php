@@ -3,12 +3,14 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\PersonRepository;
+use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Http\Requests\Person\GetPersonRequest;
 use RollCall\Http\Requests\Person\GetPeopleRequest;
 use RollCall\Http\Requests\Person\AddPersonRequest;
 use RollCall\Http\Requests\Person\DeletePersonRequest;
 use RollCall\Http\Requests\Person\UpdatePersonRequest;
-use RollCall\Http\Requests\Person\InviteMemberRequest;
+use RollCall\Http\Requests\Person\InvitePersonRequest;
+use RollCall\Http\Requests\Person\AcceptInviteRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
@@ -23,9 +25,10 @@ class PersonController extends ApiController
 {
     use DispatchesJobs;
 
-    public function __construct(PersonRepository $people, Auth $auth, Response $response)
+    public function __construct(PersonRepository $people, OrganizationRepository $organizations, Auth $auth, Response $response)
     {
         $this->people = $people;
+        $this->organizations = $organizations;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -171,13 +174,25 @@ class PersonController extends ApiController
     /**
      * Invite a member
      *
+     * @Post("/{personId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "person": {
+     *         "name": "User Name",
+     *         "role": "member",
+     *         "person_type": "user"
+     *     }
+     * })
+     *
      * @param Request $request
      * @return Response
      */
-    public function invitePerson(GetPersonRequest $request, $organization_id, $user_id)
+    public function invitePerson(InvitePersonRequest $request, $organization_id, $user_id)
     {
         $member = $this->people->getMember($organization_id, $user_id);
-        //$organization = $this->organizations->find($organization_id);
+        $organization = $this->organizations->find($organization_id);
+
         // Queue invite
         $member['invite_token'] = Hash::Make(config('app.key'));
         $member['invite_sent'] = true;
@@ -186,13 +201,13 @@ class PersonController extends ApiController
         $this->dispatch(new SendInvite($member, $organization));
 
         // Return up to date Member
-        return $this->response->item($member, new UserTransformer, 'user');
+        return $this->response->item($member, new UserTransformer, 'person');
     }
 
     /**
      * Accept member invite
      *
-     * @Put("invite/{organisationId}/accept/{memberId}")
+     * @Post("invite/{organisationId}/accept/{memberId}")
      * @Versions({"v1"})
      * @Request({
      *     "invite_token": "aSecretToken",
@@ -200,7 +215,7 @@ class PersonController extends ApiController
      *     "password_confirm": "newpassword"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "user": {
+     *     "person": {
      *         "name": "User Name",
      *         "role": "member",
      *         "person_type": "user"
@@ -210,7 +225,7 @@ class PersonController extends ApiController
      * @param InviteMemberRequest $request
      * @return Response
      */
-    public function acceptInvite(InviteMemberRequest $request, $organization_id, $memberId)
+    public function acceptInvite(AcceptInviteRequest $request, $organization_id, $memberId)
     {
         $member = $this->people->getMember($organization_id, $memberId);
         if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
@@ -220,7 +235,7 @@ class PersonController extends ApiController
             $member['invite_token'] = null;
             $member = $this->people->updateMember($member, $organization_id, $memberId);
 
-            return $this->response->item($member, new UserTransformer, 'user');
+            return $this->response->item($member, new UserTransformer, 'person');
         }
         abort(401, 'Not authenticated');
     }

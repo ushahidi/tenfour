@@ -443,6 +443,30 @@ class PersonCest
 
 
     /**
+     * Send an invite
+     */
+    public function sendInvite(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 6;
+        $I->wantTo('Send an invite to join an organization');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$org_id/people/$user_id/invite");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'name' => 'Org member 2',
+                'description' => 'Org Member 2',
+                'role' => 'member',
+                'person_type' => 'member'
+            ]
+        ]);
+    }
+
+
+    /**
      * Accept an invite
      */
     public function acceptInvite(ApiTester $I)
@@ -458,7 +482,7 @@ class PersonCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'user' => [
+            'person' => [
                 'name' => 'Org member 2',
                 'description' => 'Org Member 2',
                 'role' => 'member',

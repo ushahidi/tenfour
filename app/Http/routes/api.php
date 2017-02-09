@@ -26,7 +26,7 @@ $api->version($version, [
 
     // Org members
     $api->resource($base.'organizations/{organization}/people', 'PersonController');
-    $api->get($base.'organizations/{organization}/people/{member}/invite', ['uses' => 'PersonController@invitePerson']);
+    $api->post($base.'organizations/{organization}/people/{member}/invite', ['uses' => 'PersonController@invitePerson']);
 
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
