@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
 use RollCall\Notifications\PersonJoinedOrganization;
 use RollCall\Notifications\PersonLeftOrganization;
+use Illuminate\Support\Facades\Hash;
 
 class EloquentPersonRepository implements PersonRepository
 {
@@ -282,6 +283,7 @@ class EloquentPersonRepository implements PersonRepository
 
         $input['can_receive'] = 1;
         $input['user_id'] = $user_id;
+        $input['unsubscribe_token'] = Hash::Make(config('app.key'));
 
         return $this->contacts->create($input);
     }
