@@ -110,19 +110,20 @@ class EloquentRollCallRepository implements RollCallRepository
         return $query->orderBy('roll_call_id', 'desc')->take(1)->value('roll_call_id');
     }
 
+    public function getRecipient($id, $recipient_id)
+    {
+        return RollCall::findOrFail($id)->recipients()
+            ->where('user_id', '=', $recipient_id)
+            ->get()
+            ->first()
+            ->toArray();
+    }
+
     public function getRecipients($id, $unresponsive=null)
     {
-        $query = RollCall::findOrFail($id)->recipients();
-
-        if ($unresponsive) {
-            $query->leftJoin('replies', function($join) {
-                $join->on('users.id', '=', 'replies.user_id');
-                $join->on('replies.roll_call_id', '=', 'roll_call_recipients.roll_call_id');
-            })
-                ->where('replies.user_id', '=', null);
-        }
-
-        return $query->get()->toArray();
+        return RollCall::findOrFail($id)->recipients()
+               ->get()
+               ->toArray();
     }
 
     public function getLastUnrepliedByContact($contact_id)

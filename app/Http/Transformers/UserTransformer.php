@@ -66,6 +66,13 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
+        // Got response status if available
+        if (isset($user['pivot']['response_status'])) {
+            $user['response_status'] = $user['pivot']['response_status'];
+        }
+
+        unset($user['pivot']);
+
         // Generate user initials
         $user['initials'] =
             array_map(function ($word) {
