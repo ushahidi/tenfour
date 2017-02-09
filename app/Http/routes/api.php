@@ -39,15 +39,6 @@ $api->version($version, [
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
 
-
-    //Contacts
-    ////////////////////////////////////////////////////////////////////
-    $api->get($base.'contacts', ['as' => 'contacts.index', 'uses' => 'ContactController@all']);
-    $api->post($base.'contacts', ['as' => 'contacts.create', 'uses' => 'ContactController@create']);
-    $api->put($base. 'contacts/{contact}', ['as' => 'contacts.update', 'uses' => 'ContactController@update']);
-    $api->delete($base. 'contacts/{contact}', ['as' => 'contacts.delete', 'uses' => 'ContactController@delete']);
-
-
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
