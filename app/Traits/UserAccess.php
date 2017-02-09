@@ -13,7 +13,7 @@ trait UserAccess
 
     protected function isSelf($id)
     {
-        return $this->auth->user()['id'] === (int) $id;
+        return $this->auth->user()->id === (int) $id;
     }
 
     public function user($guard = NULL)

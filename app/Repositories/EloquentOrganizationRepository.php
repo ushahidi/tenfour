@@ -30,7 +30,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         // If we're authenticated, just return orgs we're a member of
         if ($this->currentUserId) {
-            $query->leftJoin('users', 'organizations.id', '=', 'users.organization_id');
+            $query->join('users', 'organizations.id', '=', 'users.organization_id');
             $query->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role');
             $query->where('users.id', $this->currentUserId);
         }
@@ -91,9 +91,12 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function find($id)
     {
         return Organization::with('settings')
-            ->leftJoin('users', 'organizations.id', '=', 'users.organization_id')
+            ->leftJoin('users', function ($join) {
+                $join
+                ->on('organizations.id', '=', 'users.organization_id')
+                ->on('users.role', '=', DB::raw('\'owner\'')); // @todo Is there a better way than using raw()?
+            })
             ->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role')
-            ->where('role', 'owner')
             ->findOrFail($id)
             ->toArray();
     }
