@@ -68,7 +68,7 @@ class SendRollCall implements ShouldQueue
                     }
 
                     if ($contact['type'] === 'email') {
-                        $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator));
+                        $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator, $contact));
                     } else {
                         $message_service->send($contact['contact'], $this->roll_call['message']);
                     }
