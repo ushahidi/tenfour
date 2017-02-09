@@ -45,6 +45,7 @@ class RollCall extends Mailable
         $answer_url_no = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/0';
         $answer_url_yes = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/1';
         $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
+        $unsubscribe_url = $client_url . '/unsubscribe/';
 
         return $this->view('emails.rollcall')
                     ->text('emails.rollcall_plain')
@@ -58,6 +59,7 @@ class RollCall extends Mailable
                         'answer_url_no'  => $answer_url_no,
                         'answer_url_yes' => $answer_url_yes,
                         'answer_url'     => $answer_url,
+                        'unsubscribe_url'=> $unsubscribe_url,
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])
