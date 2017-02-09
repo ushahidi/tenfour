@@ -14,7 +14,7 @@ class AddRollCallResponseStatus extends Migration
     public function up()
     {
         Schema::table('roll_call_recipients', function (Blueprint $table) {
-            $table->enum('response_status', ['waiting', 'unresponsive']);
+            $table->enum('response_status', ['waiting', 'unresponsive', 'replied']);
         });
     }
 
