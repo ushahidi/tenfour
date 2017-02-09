@@ -30,3 +30,5 @@ Route::post('password/email', ['uses' => 'Auth\PasswordController@postEmail']);
 Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
 
 Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\PersonController@acceptInvite']);
+
+Route::post('unsubscribe', ['uses' => 'Api\First\PersonContactController@unsubscribe']);

@@ -81,4 +81,14 @@ class EloquentContactRepository implements ContactRepository
 
         return $contact;
     }
+
+    public function unsubscribe($token)
+    {
+      $contact = Contact::where('unsubscribe_token', $token)->firstOrFail();
+
+      $contact->can_receive = false;
+      $contact->save();
+
+      return $contact->toArray();
+    }
 }
