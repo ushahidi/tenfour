@@ -21,7 +21,8 @@ class UserTableSeeder extends Seeder
         ]);
 
         $user->update([
-            'password' => 'westgate'
+            'password' => 'westgate',
+            'person_type' => 'user'
         ]);
     }
 }

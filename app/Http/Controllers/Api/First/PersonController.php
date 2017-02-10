@@ -2,7 +2,7 @@
 
 namespace RollCall\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Http\Requests\Person\GetPersonRequest;
 use RollCall\Http\Requests\Person\GetPeopleRequest;
 use RollCall\Http\Requests\Person\AddPersonRequest;
@@ -15,6 +15,7 @@ use RollCall\Http\Response;
 use RollCall\Jobs\SendInvite;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Hash;
+use RollCall\Models\Organization;
 
 /**
  * @Resource("People", uri="/api/v1/organizations/{orgId}/people")
@@ -23,9 +24,9 @@ class PersonController extends ApiController
 {
     use DispatchesJobs;
 
-    public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
+    public function __construct(PersonRepository $people, Auth $auth, Response $response)
     {
-        $this->organizations = $organizations;
+        $this->people = $people;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -47,7 +48,7 @@ class PersonController extends ApiController
      */
     public function store(AddPersonRequest $request, $organization_id)
     {
-        return $this->response->item($this->organizations->addMember($request->all(), $organization_id),
+        return $this->response->item($this->people->addMember($request->all(), $organization_id),
                                      new UserTransformer, 'person');
     }
 
@@ -66,7 +67,7 @@ class PersonController extends ApiController
      */
     public function index(GetPersonRequest $request, $organization_id)
     {
-        return $this->response->collection($this->organizations->getMembers($organization_id),
+        return $this->response->collection($this->people->getMembers($organization_id),
                                            new UserTransformer, 'people');
     }
 
@@ -85,7 +86,7 @@ class PersonController extends ApiController
      */
     public function show(GetPersonRequest $request, $organization_id, $person_id)
     {
-        return $this->response->item($this->organizations->getMember($organization_id, $person_id),
+        return $this->response->item($this->people->getMember($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
 
@@ -106,7 +107,7 @@ class PersonController extends ApiController
      */
     public function destroy(DeletePersonRequest $request, $organization_id, $person_id)
     {
-        return $this->response->item($this->organizations->deleteMember($organization_id, $person_id),
+        return $this->response->item($this->people->deleteMember($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
 
@@ -133,7 +134,7 @@ class PersonController extends ApiController
 
         $input = array_merge($request->all(), $role);
 
-        $member = $this->organizations->updateMember($input, $organization_id, $person_id);
+        $member = $this->people->updateMember($input, $organization_id, $person_id);
         return $this->response->item($member, new UserTransformer, 'person');
     }
 
@@ -145,13 +146,14 @@ class PersonController extends ApiController
      */
     public function invitePerson(GetPersonRequest $request, $organization_id, $user_id)
     {
-        $member = $this->organizations->getMember($organization_id, $user_id);
-        $organization = $this->organizations->find($organization_id);
+        $member = $this->people->getMember($organization_id, $user_id);
+        $organization = Organization::findOrFail($organization_id)->toArray();
+
         // Queue invite
         $member['invite_token'] = Hash::Make(config('app.key'));
         $member['invite_sent'] = true;
 
-        $this->organizations->updateMember($member, $organization_id, $user_id);
+        $this->people->updateMember($member, $organization_id, $user_id);
         $this->dispatch(new SendInvite($member, $organization));
 
         // Return up to date Member
@@ -161,17 +163,33 @@ class PersonController extends ApiController
     /**
      * Accept member invite
      *
+     * @Put("invite/{organisationId}/accept/{memberId}")
+     * @Versions({"v1"})
+     * @Request({
+     *     "invite_token": "aSecretToken",
+     *     "password": "newpassword",
+     *     "password_confirm": "newpassword"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "user": {
+     *         "name": "User Name",
+     *         "role": "member",
+     *         "person_type": "user"
+     *     }
+     * })
+     *
      * @param InviteMemberRequest $request
      * @return Response
      */
     public function acceptInvite(InviteMemberRequest $request, $organization_id, $memberId)
     {
-        $member = $this->organizations->getMember($organization_id, $memberId);
-        if ($this->organizations->testMemberInviteToken($member['id'], $request['invite_token'])) {
+        $member = $this->people->getMember($organization_id, $memberId);
+        if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
-            $member['role'] = 'user';
+            $member['person_type'] = 'user';
+            $member['role'] = 'member';
             $member['invite_token'] = null;
-            $member = $this->organizations->updateMember($member, $organization_id, $memberId);
+            $member = $this->people->updateMember($member, $organization_id, $memberId);
 
             return $this->response->item($member, new UserTransformer, 'user');
         }

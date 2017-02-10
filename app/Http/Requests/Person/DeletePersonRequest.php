@@ -15,8 +15,8 @@ class DeletePersonRequest extends FormRequest
         $organization_id = $this->route('organization');
         $user_id = $this->route('person');
 
-        $org_repo = App::make('RollCall\Contracts\Repositories\OrganizationRepository');
-        $member_role = $org_repo->getMemberRole($organization_id, $user_id);
+        $people_repo = App::make('RollCall\Contracts\Repositories\PersonRepository');
+        $member_role = $people_repo->getMemberRole($organization_id, $user_id);
 
         // Person with owner role cannot be deleted
         if ($member_role == 'owner') {

@@ -4,6 +4,6 @@ This pull request makes the following changes:
 Test these changes by:
 -
 
-Fixes ushahidi/rollcall# .
+Refs ushahidi/rollcall# .
 
 Ping @ushahidi/rollcall
