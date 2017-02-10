@@ -109,6 +109,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->contact;
     }
 
+		public function hasLoggedIn()
+		{
+				return isset($this->password) && !empty($this->password);
+		}
+
 		/**
 		 * Get the notification routing information for the given driver.
 		 *

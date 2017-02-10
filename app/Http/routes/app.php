@@ -32,3 +32,5 @@ Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
 // Receive push MO SMS
 Route::post('sms/receive/africastalking', 'SMSController@receiveAfricasTalking');
 Route::match(['get', 'post'], 'sms/receive/nexmo', 'SMSController@receiveNexmo');
+
+Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\PersonController@acceptInvite']);

@@ -19,11 +19,11 @@ class UserCest
             'users' => [
                 [
                     'name'        => 'Test user',
-                    'person_type' => 'member'
+                    'person_type' => 'user'
                 ],
                 [
                     'name'        => 'Admin user',
-                    'person_type' => 'member'
+                    'person_type' => 'user'
                 ]
             ]
         ]);
@@ -58,7 +58,7 @@ class UserCest
         $I->seeResponseContainsJson([
             'user' => [
                 'name'        => 'Test user',
-                'person_type' => 'member'
+                'person_type' => 'user'
             ]
         ]);
     }
@@ -78,7 +78,7 @@ class UserCest
         $I->seeResponseContainsJson([
             'user' => [
                 'name'        => 'Test user',
-                'person_type' => 'member'
+                'person_type' => 'user'
             ]
         ]);
     }

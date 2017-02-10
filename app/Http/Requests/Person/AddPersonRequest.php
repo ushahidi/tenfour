@@ -16,6 +16,11 @@ class AddPersonRequest extends FormRequest
             return true;
         }
 
+        if ($this->route('person') && $this->isSelf($this->route('person'))) {
+            // allow users to edit themselves
+            return true;
+        }
+
         $org_role = $this->getOrganizationRole($this->route('organization'));
 
         if ($org_role == 'owner') {
