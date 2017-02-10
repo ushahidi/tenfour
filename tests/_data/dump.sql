@@ -70,7 +70,7 @@ INSERT INTO organization_user (organization_id, user_id, role) VALUES ('2', '6',
 
 --Add test contacts
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('1', '1', '1', 'phone', '0721674180');
-INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('2', '1', '1', 'email', 'test@ushahidi.com');
+INSERT INTO contacts (id, user_id, can_receive, type, contact, unsubscribe_token) VALUES ('2', '1', '1', 'email', 'test@ushahidi.com', 'testunsubscribetoken');
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('3', '2', '0', 'email', 'linda@ushahidi.com');
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('4', '4', '0', 'phone', '0792999999');
 INSERT INTO contacts (id, user_id, can_receive, type, contact) VALUES ('5', '2', '1', 'email', 'admin@ushahidi.com');
