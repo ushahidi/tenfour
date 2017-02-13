@@ -52,6 +52,10 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
                          'RollCall\Messaging\MessageServiceFactory');
 
+        $this->app->when('RollCall\Messaging\Validators\NexmoMessageValidator')
+            ->needs('$secret')
+            ->give(config('rollcall.messaging.nexmo_security_secret'));
+
     }
 
     /** Recursively list all traits defined on final class */

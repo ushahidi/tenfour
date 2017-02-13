@@ -55,4 +55,22 @@ interface RollCallRepository extends CrudRepository
      */
     public function addMessage($id, $contact_id);
 
+    /**
+     * Update a user's response status
+     *
+     * @param int $roll_call_id
+     * @param int $user_id
+     * @param int $status
+     */
+    public function updateRecipientStatus($roll_call_id, $user_id, $status);
+
+    /**
+     * Get pending roll call reply by contact
+     *
+     * @param int $contact_id
+     *
+     * @return int
+     */
+    public function getLastUnrepliedByContact($contact_id);
+
 }

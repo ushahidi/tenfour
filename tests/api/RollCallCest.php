@@ -185,28 +185,6 @@ class RollCallCest
     }
 
     /*
-     * Filter contacts who have not responded to a roll call
-     *
-     */
-    public function filterUnresponsiveContacts(ApiTester $I)
-    {
-        $id = 1;
-        $I->wantTo('Get a list of contacts who have not responded to a roll call');
-        $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id.'/recipients?unresponsive=true');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'recipients' => [
-                [
-                    'id' => 2,
-                    'name' => 'Admin user',
-                ],
-            ]
-        ]);
-    }
-
-    /*
      * Get all roll calls in an organization as an authenticated user
      *
      */
@@ -349,6 +327,12 @@ class RollCallCest
                 ]
             ],
             'answers' => ['No', 'Yes']
+        ]);
+        // Recipient did not respond to previous roll call
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 3,
+            'roll_call_id'    => 2,
+            'response_status' => 'unresponsive',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -548,6 +532,33 @@ class RollCallCest
                         'id' => 2
                     ]
                 ]
+            ]
+        );
+    }
+
+    /*
+     * Send roll call to single recipient
+     *
+     */
+    public function sendRollCallToRecipient(ApiTester $I)
+    {
+        $id = 1;
+        $recipient_id = 4;
+        $I->wantTo('Send roll call to a single recipient');
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 4,
+            'roll_call_id'    => 1,
+            'response_status' => 'unresponsive',
+        ]);
+        $I->amAuthenticatedAsAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/recipients/' .$recipient_id. '/messages');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'id' => 4,
+                'response_status' => 'waiting'
             ]
         );
     }

@@ -460,11 +460,11 @@ class PersonCest
                 'name' => 'Org member 2',
                 'description' => 'Org Member 2',
                 'role' => 'member',
-                'person_type' => 'member'
+                'person_type' => 'member',
+                'invite_sent' => true
             ]
         ]);
     }
-
 
     /**
      * Accept an invite
