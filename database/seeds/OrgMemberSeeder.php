@@ -32,6 +32,10 @@ class OrgMemberSeeder extends Seeder
             [
                 'name'     => 'David Test',
                 'email'    => 'dmcnamara+test@ushahidi.com'
+            ],
+            [
+                'name'     => 'Team ushahidi',
+                'email'    => 'team@ushahidi.com'
             ]
         ];
 
