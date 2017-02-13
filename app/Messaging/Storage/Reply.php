@@ -42,6 +42,9 @@ class Reply
                 ];
 
                 $this->replies->create($input);
+
+                // Update response status
+                $this->roll_calls->updateRecipientStatus($roll_call_id, $contact['user']['id'], 'replied');
             }
         }
     }

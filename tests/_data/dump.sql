@@ -85,18 +85,21 @@ INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VAL
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test roll call', '2', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '["yes", "no"]');
 
--- Add test contacts
+-- Add test roll call messages
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('3', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '2');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('6', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '4');
 
--- Add test contacts
+-- Add test roll call recipients
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('1', '1');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('2', '1');
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('4', '1', 'unresponsive');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
+INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('3', '2');
+
 
 -- Add test replies
 INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('1', 'I am OK', '1', '1', '1');

@@ -90,6 +90,14 @@ class EloquentRollCallRepository implements RollCallRepository
         return $query->get()->toArray();
     }
 
+    public function updateRecipientStatus($roll_call_id, $user_id, $status)
+    {
+        DB::table('roll_call_recipients')
+            ->where('roll_call_id', '=', $roll_call_id)
+            ->where('user_id', '=', $user_id)
+            ->update(['response_status' => $status]);
+    }
+
     public function getLastSentMessageId($contact_id = null)
     {
         $query = DB::table('roll_call_messages')
@@ -102,31 +110,34 @@ class EloquentRollCallRepository implements RollCallRepository
         return $query->orderBy('roll_call_id', 'desc')->take(1)->value('roll_call_id');
     }
 
+    public function getRecipient($id, $recipient_id)
+    {
+        return RollCall::findOrFail($id)->recipients()
+            ->where('user_id', '=', $recipient_id)
+            ->get()
+            ->first()
+            ->toArray();
+    }
+
     public function getRecipients($id, $unresponsive=null)
     {
-        $query = RollCall::findOrFail($id)->recipients();
+        return RollCall::findOrFail($id)->recipients()
+               ->get()
+               ->toArray();
+    }
 
-        if ($unresponsive) {
-            $query->leftJoin('replies', function($join) {
-                $join->on('users.id', '=', 'replies.user_id');
-                $join->on('replies.roll_call_id', '=', 'roll_call_recipients.roll_call_id');
+    public function getLastUnrepliedByContact($contact_id)
+    {
+        return DB::table('roll_call_messages')
+            ->leftJoin('replies', function ($join) {
+                $join->on('roll_call_messages.roll_call_id', '=', 'replies.roll_call_id');
+                $join->on('roll_call_messages.contact_id', '=', 'replies.contact_id');
             })
-                ->where('replies.user_id', '=', null);
-        }
-
-        return $query->get()->toArray();
-
-
-        // return RollCall::with([
-        //     'recipients' => function ($query) use ($unresponsive) {
-        //         if ($unresponsive) {
-        //             $query->leftJoin('replies', 'users.id', '=', 'replies.user_id')
-        //                 ->where('replies.user_id', '=', null);
-        //         }
-        //     }
-        // ])
-        // ->findOrFail($id)
-        // ->toArray();
+            ->where('roll_call_messages.contact_id', '=', $contact_id)
+            ->where('replies.contact_id', '=', null)
+            ->orderBy('roll_call_messages.roll_call_id', 'desc')
+            ->take(1)
+            ->value('roll_call_messages.roll_call_id');
     }
 
     public function addMessage($id, $contact_id)

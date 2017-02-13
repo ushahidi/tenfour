@@ -48,6 +48,7 @@ $api->version($version, [
 
     $api->get($base.'rollcalls/{rollcall}/messages', ['uses' => 'RollCallController@listMessages']);
     $api->get($base.'rollcalls/{rollcall}/recipients', ['uses' => 'RollCallController@listRecipients']);
+    $api->post($base.'rollcalls/{rollcall}/recipients/{recipient}/messages', ['uses' => 'RollCallController@addMessage']);
 
     // Rollcall Replies
     $api->put($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@update']);
