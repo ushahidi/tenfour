@@ -88,7 +88,8 @@ class EloquentPersonRepository implements PersonRepository
 
         // Update user and role details
         DB::transaction(function () use ($input, $user_id, &$user) {
-            if ($input['role'] == 'owner') {
+            // If we're change role into owner (and we're not already the owner!)
+            if (isset($input['role']) && $input['role'] == 'owner' && $user->role !== 'owner') {
                 // Get current owner
                 $owner = User::where('organization_id', '=', $user->organization_id)
                           ->where('role', '=', 'owner')

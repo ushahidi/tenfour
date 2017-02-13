@@ -491,6 +491,32 @@ class PersonCest
         ]);
     }
 
+
+    /*
+     * Update a user w/o specifying role
+     *
+     */
+    public function updateUserDoesntChangeRole(ApiTester $I)
+    {
+        $orgId = 2;
+        $id = 4;
+        $I->wantTo('Update a person without specifying role');
+        $I->amAuthenticatedAsOrgOwner();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$orgId/people/$id", [
+            'name' => 'Update!',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'id' => 4,
+                'role' => 'owner',
+                'person_type' => 'user'
+            ]
+        ]);
+    }
+
     /*
      * Change a user's password
      *
@@ -507,6 +533,12 @@ class PersonCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'id' => 1
+            ]
+        ]);
+
         $I->sendPOST('/oauth/access_token', [
             'client_id' => 'webapp',
             'client_secret' => 'secret',
