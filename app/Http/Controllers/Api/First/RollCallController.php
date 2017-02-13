@@ -139,13 +139,18 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Send a roll call to a single recipient
+     * Send a roll call. This is currently used to re-send
+     * a roll call to a single recipient.
      *
      * @Post("/{rollcallId}/recipients/{recipientId}/send")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *  "recipient": {{
+     *      "name":"Org owner",
+     *      "description":"Org owner",
+     *      "response_status":"waiting"
+     *   }}
      * })
      *
      * @param Request $request
