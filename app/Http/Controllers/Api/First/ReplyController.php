@@ -3,6 +3,7 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\ReplyRepository;
+use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Http\Requests\Reply\GetReplyRequest;
 use RollCall\Http\Requests\Reply\AddReplyRequest;
 use RollCall\Http\Requests\Reply\CreateReplyRequest;
@@ -13,9 +14,10 @@ use Dingo\Api\Auth\Auth;
 
 class ReplyController extends ApiController
 {
-    public function __construct(replyRepository $reply, Auth $auth, Response $response)
+    public function __construct(replyRepository $reply, RollCallRepository $roll_calls, Auth $auth, Response $response)
     {
         $this->reply = $reply;
+        $this->roll_calls = $roll_calls;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -61,11 +63,15 @@ class ReplyController extends ApiController
      */
     public function addReply(AddReplyRequest $request, $id)
     {
+        $user_id = $this->auth->user()['id'];
         $reply = $this->reply->addReply(
           $request->input() + [
-            'user_id' => $this->auth->user()['id'],
+            'user_id' => $user_id,
             'roll_call_id' => $id
           ], $id);
+
+        // Update response status
+        $this->roll_calls->updateRecipientStatus($id, $user_id, 'replied');
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 

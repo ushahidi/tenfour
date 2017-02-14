@@ -26,5 +26,8 @@ return [
                 'from' => '20880'
             ],
         ],
+
+        // Nexmo security secret for signed MOs
+        'nexmo_security_secret' => env('NEXMO_SECURITY_SECRET', 'secret'),
     ]
 ];

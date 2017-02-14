@@ -66,7 +66,7 @@ class RollCall extends Model
      */
     public function recipients()
     {
-        return $this->belongsToMany('RollCall\Models\User', 'roll_call_recipients');
+        return $this->belongsToMany('RollCall\Models\User', 'roll_call_recipients')->withPivot('response_status');
     }
 
     /**
