@@ -2,6 +2,8 @@
 namespace RollCall\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class UserTransformer extends TransformerAbstract
 {
@@ -64,6 +66,13 @@ class UserTransformer extends TransformerAbstract
                 // Remove user information
                 unset($roll_call['user']);
             }
+        }
+
+        //Add path to user-avatar
+        if(!empty($user['profile_picture'])) {
+
+            $contents = Storage::get($user['profile_picture']);
+            $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
         }
 
         // Got response status if available
