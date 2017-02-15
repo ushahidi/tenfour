@@ -17,7 +17,8 @@ class OrganizationTableSeeder extends Seeder
 
         $user->update([
             'password' => 'westgate',
-            'person_type' => 'user'
+            'person_type' => 'user',
+            'first_time_login' => 0,
         ]);
 
         Contact::firstOrCreate([

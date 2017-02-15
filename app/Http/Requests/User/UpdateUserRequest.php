@@ -36,9 +36,10 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'password' => 'min:8',
-            'person_type' => 'in:member,user,external',
+            'person_type' => 'in:member,user,external'
         ];
     }
 }

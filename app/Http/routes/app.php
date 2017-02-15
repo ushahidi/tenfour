@@ -36,3 +36,5 @@ Route::match(['get', 'post'], 'sms/receive/nexmo', 'SMSController@receiveNexmo')
 Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\PersonController@acceptInvite']);
 
 Route::post('unsubscribe', ['uses' => 'Api\First\PersonContactController@unsubscribe']);
+//Get UserAvatars
+Route::get('useravatar/{filename}',['uses' => 'UseravatarController@show']);
