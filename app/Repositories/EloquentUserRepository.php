@@ -51,7 +51,20 @@ class EloquentUserRepository implements UserRepository
 
     public function create(array $input)
     {
-        return User::create($input)->toArray();
+        $file = null;
+        if(isset($input['inputImage'])) {
+            $file = $input['inputImage'];
+            unset($input['inputImage']);
+        }
+        $user = User::create($input);
+
+         if($file) {
+            $path = $this->storeUserAvatar($file, $user['id']);
+            $input['profile_picture'] = $path;
+            $user->update($input);
+         }
+
+        return $user->toArray();
     }
 
     public function find($id)
