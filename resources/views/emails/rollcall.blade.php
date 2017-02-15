@@ -214,7 +214,11 @@
             <table width="500" border="0" cellspacing="0" cellpadding="0" align="center" class="responsive-table">
                 <tr>
                     <td align="center" style="font-size: 12px; line-height: 18px; font-family: Lato, Helvetica, Arial, sans-serif; color:#666666;">
-                        <span class="appleFooter" style="color:#666666;">RollCall</span><br><a href="http://rollcall.io" class="original-only" style="color: #666666; text-decoration: none;">www.rollcall.io</a><span class="original-only" style="font-family: Lato, Arial, sans-serif; font-size: 12px; color: #444444;">
+                        <span class="appleFooter" style="color:#666666;">RollCall</span>
+                        <br>
+                        <a href="http://rollcall.io" class="original-only" style="color: #666666; text-decoration: none;">www.rollcall.io</a><span class="original-only" style="font-family: Lato, Arial, sans-serif; font-size: 12px; color: #444444;">
+                        <br>
+                        <a href="{{ $unsubscribe_url }}" class="original-only" style="color: #666666; text-decoration: underline;">Unsubscribe</a>
                     </td>
                 </tr>
             </table>

@@ -17,11 +17,12 @@ class RollCall extends Mailable
      *
      * @return void
      */
-    public function __construct(array $roll_call, array $organization, array $creator)
+    public function __construct(array $roll_call, array $organization, array $creator, array $contact)
     {
         $this->roll_call = $roll_call;
         $this->organization = $organization;
         $this->creator = $creator;
+        $this->contact = $contact;
     }
 
     /**
@@ -46,6 +47,11 @@ class RollCall extends Mailable
         $answer_url_yes = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/1';
         $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
 
+        $unsubscribe_url = $client_url . '/unsubscribe/' .
+          '?token=' . urlencode($this->contact['unsubscribe_token']) .
+          '&email=' . urlencode($this->contact['contact']) .
+          '&org_name=' . urlencode($org->name);
+
         return $this->view('emails.rollcall')
                     ->text('emails.rollcall_plain')
                     ->with([
@@ -58,6 +64,7 @@ class RollCall extends Mailable
                         'answer_url_no'  => $answer_url_no,
                         'answer_url_yes' => $answer_url_yes,
                         'answer_url'     => $answer_url,
+                        'unsubscribe_url'=> $unsubscribe_url,
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])

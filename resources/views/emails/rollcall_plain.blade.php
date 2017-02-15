@@ -11,3 +11,5 @@ Alternatively, you can...
 @else
 Please reply on Rollcall: {{ $answer_url }} or by replying directly to this email
 @endif
+
+Unsubscribe by visiting the following URL: {{ $unsubscribe_url }}
