@@ -15,15 +15,15 @@ return [
         'sms_providers' => [
             'KE' => [
                 'driver' => 'africastalking',
-                'from' => '20880'
+                'from' => env('AFRICASTALKING_SRC_ADDR', '20880')
             ],
-            // 'US' => [
-            //     'driver' => 'nexmo',
-            //     'from' => null
-            // ],
+            'US' => [
+                'driver' => 'nexmo',
+                'from' => env('NEXMO_SRC_ADDR', 'nexmo')
+            ],
             'default' => [
                 'driver' => 'africastalking',
-                'from' => '20880'
+                'from' => env('AFRICASTALKING_SRC_ADDR', '20880')
             ],
         ],
 
