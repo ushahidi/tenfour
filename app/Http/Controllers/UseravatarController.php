@@ -23,7 +23,7 @@ class UseravatarController extends Controller
 		return (new Response($file, 200))
 		->header('Content-Type', $mimetype);
 		} catch (FileNotFoundException $e) {
-            Log::info('File not found', $e);
+            \Log::info('File not found', $e);
 			abort(404);
 		}	
 	}
