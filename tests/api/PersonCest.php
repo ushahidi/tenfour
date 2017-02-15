@@ -430,6 +430,32 @@ class PersonCest
         ]);
     }
 
+
+    /*
+     * Update a user w/o specifying role
+     *
+     */
+    public function updateUserDoesntChangeRole(ApiTester $I)
+    {
+        $orgId = 2;
+        $id = 4;
+        $I->wantTo('Update a person without specifying role');
+        $I->amAuthenticatedAsOrgOwner();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$orgId/people/$id", [
+            'name' => 'Update!',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'person' => [
+                'id' => 4,
+                'role' => 'owner',
+                'person_type' => 'user'
+            ]
+        ]);
+    }
+
     /**
      * Unsubscribe from rollcall emails
      */

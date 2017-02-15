@@ -96,8 +96,13 @@ class EloquentPersonRepository implements PersonRepository
 
         $user = null;
 
+        if (empty($input['role'])) {
+            $input['role'] = $organization->members->first()->pivot->role;
+        }
+
         // Update user and role details
         DB::transaction(function () use ($input, $user_id, $organization, &$user) {
+            // If we're change role into owner (and we're not already the owner!)
             if ($input['role'] == 'owner') {
                 // Get current owner
                 $owner_id = DB::table('organization_user')
