@@ -18,7 +18,8 @@
         "league/csv": "^8.0",
         "dingo/blueprint": "dev-master",
         "intervention/image": "^2.3",
-        "giggsey/libphonenumber-for-php": "^8.0"
+        "giggsey/libphonenumber-for-php": "^8.0",
+        "league/flysystem-aws-s3-v3": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
