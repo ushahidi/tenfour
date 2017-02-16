@@ -4,6 +4,7 @@ namespace RollCall\Http\Transformers;
 use League\Fractal\TransformerAbstract;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class UserTransformer extends TransformerAbstract
 {
@@ -73,7 +74,7 @@ class UserTransformer extends TransformerAbstract
             try {
                 $contents = Storage::get($user['profile_picture']);
                 $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
-            } catch (Illuminate\Contracts\Filesystem\FileNotFoundException $e) {
+            } catch (FileNotFoundException $e) {
                 // Ignore the error
             }
         }
