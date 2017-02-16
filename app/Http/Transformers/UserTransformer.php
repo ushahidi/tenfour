@@ -70,9 +70,12 @@ class UserTransformer extends TransformerAbstract
 
         //Add path to user-avatar
         if(!empty($user['profile_picture'])) {
-
-            $contents = Storage::get($user['profile_picture']);
-            $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
+            try {
+                $contents = Storage::get($user['profile_picture']);
+                $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
+            } catch (Illuminate\Contracts\Filesystem\FileNotFoundException $e) {
+                // Ignore the error
+            }
         }
 
         // Got response status if available
