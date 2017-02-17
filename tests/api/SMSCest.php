@@ -32,7 +32,8 @@ class SMSCest
             'messageId' => '000000FFFB0356D1',
         ]);
 
-        $I->seeResponseCodeIs(404);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContains('Hi');
     }
 
     public function receiveNexmoMOsWithValidSignature(ApiTester $I)
