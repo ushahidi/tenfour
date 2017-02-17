@@ -286,9 +286,11 @@ class EloquentPersonRepository implements PersonRepository
             throw (new ModelNotFoundException)->setModel('User');
         }
 
-        $input['can_receive'] = 1;
+        $input['preferred'] = 1;
         $input['user_id'] = $user_id;
+        
         $input['unsubscribe_token'] = Hash::Make(config('app.key'));
+        $input['subscribed'] = 1;
 
         return $this->contacts->create($input);
     }

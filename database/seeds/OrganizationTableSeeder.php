@@ -24,8 +24,10 @@ class OrganizationTableSeeder extends Seeder
         Contact::firstOrCreate([
             'type'        => 'email',
             'contact'     => 'rollcall@ushahidi.com',
-            'can_receive' => 1,
-            'user_id'     => $user->id
+            'preferred'   => 1,
+            'user_id'     => $user->id,
+            'subscribed'  => 1,
+            'unsubscribe_token' => 'testtoken',
         ]);
 
         $organization = Organization::firstOrCreate(
@@ -59,8 +61,10 @@ class OrganizationTableSeeder extends Seeder
         Contact::firstOrCreate([
             'type'        => 'email',
             'contact'     => 'waitaktri@ushahidi.com',
-            'can_receive' => 1,
-            'user_id'     => $user2->id
+            'preferred'   => 1,
+            'user_id'     => $user2->id,
+            'subscribed'  => 1,
+            'unsubscribe_token' => 'testtoken',
         ]);
 
         $user2->organizations()->sync([

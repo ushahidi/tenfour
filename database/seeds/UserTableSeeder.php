@@ -14,14 +14,15 @@ class UserTableSeeder extends Seeder
         ]);
 
         Contact::firstOrCreate([
-            'type'        => 'email',
-            'contact'     => 'team@ushahidi.com',
-            'can_receive' => 1,
-            'user_id'     => $user->id
+            'type'              => 'email',
+            'contact'           => 'team@ushahidi.com',
+            'preferred'         => 1,
+            'user_id'           => $user->id,
+            'unsubscribe_token' => 'testtoken',
         ]);
 
         $user->update([
-            'password' => 'westgate',
+            'password'    => 'westgate',
             'person_type' => 'user'
         ]);
     }

@@ -33,13 +33,13 @@ class PersonContactController extends ApiController
      * @Request({
             "type": "email",
             "contact": "linda@ushahidi.com",
-            "can_receive": "1"
+            "preferred": "1"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
             "contact": {
                 "type": "email",
                 "contact": "linda@ushahidi.com",
-                "can_receive": "1"
+                "preferred": "1"
             }
         })
      *
@@ -60,13 +60,13 @@ class PersonContactController extends ApiController
      * @Request({
             "type": "email",
             "contact": "linda@ushahidi.com",
-            "can_receive": "1"
+            "preferred": "1"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
             "contact": {
                 "type": "email",
                 "contact": "linda@ushahidi.com",
-                "can_receive": "1"
+                "preferred": "1"
             }
         })
      *

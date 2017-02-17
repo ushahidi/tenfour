@@ -60,6 +60,10 @@ class SendRollCall implements ShouldQueue
 
             foreach($contacts as $contact)
             {
+                if (!$contact['subscribed']) {
+                  break;
+                }
+
                 // Check if contact has a pending reply
                 $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 

@@ -462,14 +462,14 @@ class PersonCest
     public function unsubscribe(ApiTester $I)
     {
         $I->wantTo('Unsubscribe from emails');
-        $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'can_receive' => 1));
+        $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'subscribed' => 1));
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST("unsubscribe", [
             'token' => 'testunsubscribetoken',
             'email' => 'test@ushahidi.com',
         ]);
         $I->seeResponseCodeIs(200);
-        $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'can_receive' => 0));
+        $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'subscribed' => 0));
     }
 
 }

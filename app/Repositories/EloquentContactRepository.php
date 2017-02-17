@@ -86,7 +86,7 @@ class EloquentContactRepository implements ContactRepository
     {
       $contact = Contact::where('unsubscribe_token', $token)->firstOrFail();
 
-      $contact->can_receive = false;
+      $contact->subscribed = false;
       $contact->save();
 
       return $contact->toArray();

@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;
 use RollCall\Models\Contact;
+use Illuminate\Support\Facades\Hash;
 
 class OrgMemberSeeder extends Seeder
 {
@@ -41,10 +42,11 @@ class OrgMemberSeeder extends Seeder
             ]);
 
             Contact::firstOrCreate([
-                'type'        => 'email',
-                'contact'     => $member['email'],
-                'can_receive' => 1,
-                'user_id'     => $user->id
+                'type'              => 'email',
+                'contact'           => $member['email'],
+                'preferred'         => 1,
+                'user_id'           => $user->id,
+                'unsubscribe_token' => Hash::Make(config('app.key'))
             ]);
 
             $ids[$user['id']] = ['role' => 'member'];
