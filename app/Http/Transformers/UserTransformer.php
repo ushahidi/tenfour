@@ -75,7 +75,8 @@ class UserTransformer extends TransformerAbstract
                 $contents = Storage::get($user['profile_picture']);
                 $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
             } catch (FileNotFoundException $e) {
-                // Ignore the error
+                // Don't return the profile picture
+                $user['profile_picture'] = null;
             }
         }
 
