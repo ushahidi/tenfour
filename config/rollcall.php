@@ -21,6 +21,10 @@ return [
                 'driver' => 'nexmo',
                 'from' => env('NEXMO_SRC_ADDR', 'nexmo')
             ],
+            'NZ' => [
+                'driver' => 'nexmo',
+                'from' => env('NEXMO_SRC_ADDR', 'nexmo')
+            ],
             'default' => [
                 'driver' => 'africastalking',
                 'from' => env('AFRICASTALKING_SRC_ADDR', '20880')
