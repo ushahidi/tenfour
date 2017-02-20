@@ -55,13 +55,12 @@ class SendRollCall implements ShouldQueue
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
-            // TODO: Filter by preferred method of sending
-            $contacts = $contact_repo->getByUserId($recipient['id']);
+            $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
 
             foreach($contacts as $contact)
             {
                 if (!$contact['subscribed']) {
-                  break;
+                  continue;
                 }
 
                 // Check if contact has a pending reply
