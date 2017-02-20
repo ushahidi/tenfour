@@ -92,10 +92,8 @@ class SendRollCall implements ShouldQueue
                 // Update response status to 'waiting'
                 $roll_call_repo->updateRecipientStatus($this->roll_call['id'], $recipient['id'], 'waiting');
 
-                // Add message if recipient is receiving this for the first time
-                if (! $roll_call_repo->getMessages($this->roll_call['id'], $recipient['id'])) {
-                    $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
-                }
+                // Log message for recipient
+                $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
             }
         }
     }
