@@ -131,8 +131,6 @@ class User extends Model implements AuthenticatableContract,
             return false;
         }
 
-        // @todo should this include owner too?
-        //return $this->auth->user()['role'] === 'admin';
         return in_array($this->role, ['admin', 'owner']);
     }
 
