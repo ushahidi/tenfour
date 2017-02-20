@@ -59,8 +59,6 @@ class EloquentPersonRepository implements PersonRepository
             $input['role'] = 'member';
         }
 
-        $input['organization_id'] = $organization->id;
-
         if (isset($input['inputImage'])) {
             $file = $input['inputImage'];
             $path = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
@@ -68,12 +66,15 @@ class EloquentPersonRepository implements PersonRepository
             unset($input['inputImage']);
         }
 
-        $user = User::create($input)->toArray();
+        $user = User::make($input);
+
+        $user->organization_id = $organization->id;
+        $user->save();
 
         Notification::send($this->getAdmins($organization['id']),
-            new PersonJoinedOrganization(new User($user)));
+            new PersonJoinedOrganization($user));
 
-        return $user;
+        return $user->toArray();
     }
 
     // OrgCrudRepository

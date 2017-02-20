@@ -30,7 +30,8 @@ class PersonCest
             'role' => 'member',
             'person_type' => 'user',
             'config_profile_reviewed' => true,
-            'config_self_test_sent' => false
+            'config_self_test_sent' => false,
+            'organization_id' => 2
         ]);
     }
 
