@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\Inspire::class,
         \RollCall\Console\Commands\ReceiveSMS::class,
         \RollCall\Console\Commands\ImportContacts::class,
+        \RollCall\Console\Commands\ResendRollCall::class,
     ];
 
     /**

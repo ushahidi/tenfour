@@ -55,13 +55,12 @@ class SendRollCall implements ShouldQueue
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
-            // TODO: Filter by preferred method of sending
-            $contacts = $contact_repo->getByUserId($recipient['id']);
+            $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
 
             foreach($contacts as $contact)
             {
                 if (!$contact['subscribed']) {
-                  break;
+                  continue;
                 }
 
                 // Check if contact has a pending reply
@@ -93,10 +92,8 @@ class SendRollCall implements ShouldQueue
                 // Update response status to 'waiting'
                 $roll_call_repo->updateRecipientStatus($this->roll_call['id'], $recipient['id'], 'waiting');
 
-                // Add message if recipient is receiving this for the first time
-                if (! $roll_call_repo->getMessages($this->roll_call['id'], $recipient['id'])) {
-                    $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
-                }
+                // Log message for recipient
+                $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
             }
         }
     }

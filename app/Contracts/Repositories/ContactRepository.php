@@ -10,7 +10,7 @@ interface ContactRepository extends CrudRepository
      *
      * @return Array
      */
-    public function getByUserId($user_id);
+    public function getByUserId($user_id, Array $methods = null);
 
     /**
      * Filter contacts by contact
