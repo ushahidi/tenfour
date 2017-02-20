@@ -59,40 +59,6 @@ class OrganizationCest
     }
 
     /*
-     * List organizations that belong to a user id
-     *
-     */
-    public function filterOrganizationsByUser(ApiTester $I)
-    {
-        $endpoint = $this->endpoint . '/?user=1';
-        $I->wantTo('Get a list of all organizations that a user id belongs to');
-        $I->amAuthenticatedAsUser();
-        $I->sendGET($endpoint);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'organizations' => [
-                [
-                    'name'    => 'RollCall',
-                    'subdomain'     => 'rollcall',
-                    'user' => [
-                        'id'   => 1,
-                        'role' => 'member',
-                    ]
-                ],
-                [
-                    'name'    => 'Testers',
-                    'subdomain'     => 'testers',
-                    'user' => [
-                        'id'   => 1,
-                        'role' => 'admin',
-                    ]
-                ]
-            ]
-        ]);
-    }
-
-    /*
      * List organizations that belong to the current user
      *
      */
@@ -111,14 +77,6 @@ class OrganizationCest
                 'user' => [
                     'id'   => 1,
                     'role' => 'member',
-                ]
-            ],
-            [
-                'name'    => 'Testers',
-                'subdomain'     => 'testers',
-                'user' => [
-                    'id'   => 1,
-                    'role' => 'admin',
                 ]
             ]
 
@@ -151,26 +109,27 @@ class OrganizationCest
      * Create organization as user
      *
      */
-    public function createOrganization(ApiTester $I)
-    {
-        $I->wantTo('Create an organization as user');
-        $I->amAuthenticatedAsUser();
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
-            'name' => 'Test org',
-            'subdomain'  => 'test'
-        ]);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'name' => 'Test org',
-            'subdomain' => 'test',
-            'user' => [
-                'id'   => 1,
-                'role' => 'owner',
-            ]
-        ]);
-    }
+    // @todo create new endpoint for creating and org and its owner
+    // public function createOrganization(ApiTester $I)
+    // {
+    //     $I->wantTo('Create an organization as user');
+    //     $I->amAuthenticatedAsUser();
+    //     $I->haveHttpHeader('Content-Type', 'application/json');
+    //     $I->sendPOST($this->endpoint, [
+    //         'name' => 'Test org',
+    //         'subdomain'  => 'test'
+    //     ]);
+    //     $I->seeResponseCodeIs(200);
+    //     $I->seeResponseIsJson();
+    //     $I->seeResponseContainsJson([
+    //         'name' => 'Test org',
+    //         'subdomain' => 'test',
+    //         'user' => [
+    //             'id'   => 1,
+    //             'role' => 'owner',
+    //         ]
+    //     ]);
+    // }
 
     /*
      * Update organization details as the organization owner
@@ -211,29 +170,6 @@ class OrganizationCest
                 [
                     'id'   => '3',
                     'role' => 'admin'
-                ]
-            ]
-        ]);
-        $I->seeResponseCodeIs(403);
-    }
-
-    /*
-     * Change role as org admin
-     *
-     */
-    public function changeMemberRoleAsOrgAdmin(ApiTester $I)
-    {
-        $id = 2;
-        $I->wantTo('Change member role as an org admin');
-        $I->amAuthenticatedAsOrgAdmin();
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint."/$id", [
-            'name' => 'Rollcall',
-            'subdomain'  => 'rollcall',
-            'people' => [
-                [
-                    'id'   => '3',
-                    'role' => 'owner'
                 ]
             ]
         ]);

@@ -3,11 +3,12 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
 use RollCall\Models\User;
-use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
+use Illuminate\Support\Facades\Storage;
+use Validator;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
@@ -17,149 +18,147 @@ use Illuminate\Support\Facades\Hash;
 
 class EloquentPersonRepository implements PersonRepository
 {
-    public function __construct(UserRepository $users, RollCallRepository $roll_calls, ContactRepository $contacts)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts)
     {
-        $this->users = $users;
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
     }
 
-    /**
-     * Get all
-     *
-     * @return mixed
-     */
-    public function all()
+    // OrgCrudRepository
+    public function all($organization_id)
     {
-
+        return Organization::findOrFail($organization_id)
+            ->members()
+            ->with('contacts')
+            ->select('users.*','role')
+            ->orderby('name', 'asc')
+            ->get()
+            ->toArray();
     }
 
-    /**
-     * Create
-     *
-     * @param array $input
-     *
-     * @return mixed
-     */
-    public function create(array $input)
+    protected function storeUserAvatar($file, $id)
     {
+        $filename = $id;
+        list($extension, $file) = explode(';', $file);
+        list(, $extension) = explode('/', $extension);
+        list(, $file) = explode(',', $file);
+        $file = base64_decode($file);
+        $path = '/useravatar/'.$filename . '.' . $extension;
 
+        Storage::put($path, $file, 'public');
+
+        return $path;
     }
 
-    /**
-     * Update
-     *
-     * @param array $input
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function update(array $input, $id)
+    // OrgCrudRepository
+    public function create($organization_id, array $input)
     {
+        $organization = Organization::findOrFail($organization_id);
 
-    }
-
-    /**
-     * Delete
-     *
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function delete($id)
-    {
-
-    }
-
-    /**
-     * Find
-     *
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function find($id)
-    {
-
-    }
-
-    public function updateMember(array $input, $id, $user_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
+        if (!isset($input['role'])) {
+            $input['role'] = 'member';
         }
 
-        $user = null;
-
-        if (empty($input['role'])) {
-            $input['role'] = $organization->members->first()->pivot->role;
+        if (isset($input['inputImage'])) {
+            $file = $input['inputImage'];
+            $path = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
+            $input['profile_picture'] = $path;
+            unset($input['inputImage']);
         }
+
+        $user = new User;
+        $user->fill($input);
+
+        $user->organization_id = $organization->id;
+        $user->save();
+
+        Notification::send($this->getAdmins($organization['id']),
+            new PersonJoinedOrganization($user));
+
+        return $user->toArray();
+    }
+
+    // OrgCrudRepository
+    public function update($organization_id, array $input, $user_id)
+    {
+        $user = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->firstOrFail();
 
         // Update user and role details
-        DB::transaction(function () use ($input, $user_id, $organization, &$user) {
+        DB::transaction(function () use ($input, $user_id, &$user) {
             // If we're change role into owner (and we're not already the owner!)
-            if ($input['role'] == 'owner') {
+            if (isset($input['role']) && $input['role'] == 'owner' && $user->role !== 'owner') {
                 // Get current owner
-                $owner_id = DB::table('organization_user')
-                          ->where('organization_id', '=', $organization->id)
+                $owner = User::where('organization_id', '=', $user->organization_id)
                           ->where('role', '=', 'owner')
-                          ->value('user_id');
+                          ->first();
 
-                // ...and assign member role before transferring ownership
-                $organization->members()->updateExistingPivot($owner_id, ['role' => 'member']);
+                // ...and assign admin role before transferring ownership
+                $owner->role = 'admin';
+                $owner->save();
             }
 
-            $organization->members()->updateExistingPivot($user_id, ['role' => $input['role']]);
+            /* Updating user-avatar */
+            if (isset($input['inputImage']))
+            {
+                $file = $input['inputImage'];
+                $path = $this->storeUserAvatar($file, $user_id);
+                $input['profile_picture'] = $path;
+                unset($input['inputImage']);
+            }
+            /* end of user-avatar-code */
 
             // Update user
-            $user_input = array_except($input, ['role']);
+            $user->update($input);
 
-            $user = $this->users->update($user_input, $user_id);
+            // Mark notifications read
+            if (isset($input['notifications'])) {
+                $user->unreadNotifications->markAsRead();
+            }
         });
 
-        return $user + [
-            'role' => $input['role']
-        ];
+        return $user->toArray();
     }
 
-    public function getMember($id, $user_id)
+    // OrgCrudRepository
+    public function delete($organization_id, $user_id)
+    {
+        $user = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->firstOrFail();
+
+        $user->delete();
+
+        Notification::send($this->getAdmins($user->organization_id),
+            new PersonLeftOrganization($user));
+
+        return $user->toArray();
+    }
+
+    // OrgCrudRepository
+    public function find($organization_id, $user_id)
     {
         // This should probably be passed in as param but there
         // might not be any benefit of showing a user's full
         // roll call activity here.
         $history_limit = 1;
 
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')
-                    ->where('users.id', $user_id);
-            }])->findOrFail($id);
+        $userModel = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->with([
+                'rollcalls' => function ($query) use ($history_limit) {
+                    $query->latest()->limit($history_limit);
+                },
+                'contacts.replies' => function ($query) use ($history_limit) {
+                    $query->latest()->limit($history_limit);
+                },
+                'contacts'
+            ])
+            ->with('notifications')
+            ->firstOrFail();
 
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $role = $organization->members->first()->pivot->role;
-
-        $userModel = User::with([
-            'rollcalls' => function ($query) use ($history_limit) {
-                $query->latest()->limit($history_limit);
-            },
-            'contacts.replies' => function ($query) use ($history_limit) {
-                $query->latest()->limit($history_limit);
-            },
-            'contacts'
-        ])
-              ->find($user_id);
-
-        $user = $userModel->toArray() + [
-                  'role' => $role
-              ];
+        $user = $userModel->toArray();
 
         $user['has_logged_in'] = $userModel->hasLoggedIn();
 
@@ -172,154 +171,74 @@ class EloquentPersonRepository implements PersonRepository
         return $user;
     }
 
-    public function addMember(array $input, $id)
+    public function findObject($id)
     {
-        $organization = Organization::findorFail($id);
-
-        $user = null;
-
-        if (!isset($input['role'])) {
-            $input['role'] = 'member';
-        }
-
-        DB::transaction(function () use (&$user, $input, $organization) {
-            $user_input = array_except($input, ['role']);
-
-            $user = $this->users->create($user_input);
-
-            $organization->members()->attach($user['id'], ['role' => $input['role']]);
-        });
-
-        Notification::send($this->getAdmins($organization['id']),
-            new PersonJoinedOrganization(new User($user)));
-
-        return $user + [
-            'role' => $input['role']
-        ];
+        return User::with('contacts')
+            ->with('notifications')
+            ->find($id);
     }
 
-    public function getMembers($id)
+    protected function getAdmins($organization_id)
     {
-        return Organization::findOrFail($id)
-            ->members()
-            ->with('contacts')
-            ->select('users.*','role')
-            ->orderby('name', 'asc')
-            ->get()
-            ->toArray();
-    }
-
-    protected function getAdmins($id)
-    {
-        return Organization::findOrFail($id)
-            ->members()
-            ->select('users.*','role')
+        return User::where('organization_id', $organization_id)
             ->whereIn('role', ['admin', 'owner'])
             ->get();
     }
 
-    public function deleteMember($id, $user_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id', 'users.name')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $user_id = $organization->members->first()->id;
-        $role = $organization->members->first()->pivot->role;
-
-        $user = null;
-
-        DB::transaction(function () use (&$user, $organization, $user_id) {
-            $organization->members()->detach($user_id);
-
-            // Delete user
-            $user = $this->users->delete($user_id);
-        });
-
-        Notification::send($this->getAdmins($organization['id']),
-            new PersonLeftOrganization(new User($user)));
-
-        return $user + [
-            'role' => $role
-        ];
-    }
-
+    // PersonRepository
     public function getMemberRole($organization_id, $user_id)
     {
-        $role = DB::table('organization_user')
-              ->where('organization_id', '=', $organization_id)
-              ->where('user_id', '=', $user_id)
+        $role = User::where('organization_id', '=', $organization_id)
+              ->where('id', '=', $user_id)
               ->value('role');
 
         return $role;
     }
 
-    public function isMember($user_id, $org_id)
-    {
-        return (bool) DB::table('organization_user')
-            ->where('user_id', $user_id)
-            ->where('organization_id', $org_id)
-            ->count();
-    }
-
-    public function testMemberInviteToken($memberId, $invite_token)
+    // PersonRepository
+    public function testMemberInviteToken($user_id, $invite_token)
     {
         return (bool) DB::table('users')
-          ->where('id', $memberId)
+          ->where('id', $user_id)
           ->where('invite_token', $invite_token)
           ->count();
     }
 
-    public function addContact(array $input, $id, $user_id)
+    // PersonRepository
+    public function addContact($organization_id, $user_id, array $input)
     {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
+        $user = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->firstOrFail();
 
         $input['preferred'] = 1;
-        $input['user_id'] = $user_id;
-        
+        $input['user_id'] = $user->id;
+
         $input['unsubscribe_token'] = Hash::Make(config('app.key'));
         $input['subscribed'] = 1;
 
         return $this->contacts->create($input);
     }
 
-    public function updateContact(array $input, $id, $user_id, $contact_id)
+    // PersonRepository
+    public function updateContact($organization_id, $user_id, array $input,  $contact_id)
     {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
+        $user = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->firstOrFail();
 
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
+        // @todo ensure contact belongs to user!
         return $this->contacts->update($input, $contact_id);
     }
 
-    public function deleteContact($id, $user_id, $contact_id)
+    // PersonRepository
+    public function deleteContact($organization_id, $user_id, $contact_id)
     {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
+        $user = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->firstOrFail();
 
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
+        // @todo ensure contact belongs to user!
         return $this->contacts->delete($contact_id);
     }
 

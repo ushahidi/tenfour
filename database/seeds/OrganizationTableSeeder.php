@@ -10,6 +10,13 @@ class OrganizationTableSeeder extends Seeder
 {
     // Create user that owns Ushahidi organization
     public function run() {
+        $organization = Organization::firstOrCreate(
+            ['name' => 'Ushahidi']
+        );
+
+        $organization->update([
+            'subdomain' => 'ushahidi',
+        ]);
 
         $user = User::firstOrCreate(
             ['name' => 'ushahidi']
@@ -18,7 +25,9 @@ class OrganizationTableSeeder extends Seeder
         $user->update([
             'password' => 'westgate',
             'person_type' => 'user',
-            'first_time_login' => 0,
+            'organization_id' => $organization->id,
+            'role' => 'owner',
+			'first_time_login' => 0,
         ]);
 
         Contact::firstOrCreate([
@@ -29,20 +38,6 @@ class OrganizationTableSeeder extends Seeder
             'subscribed'  => 1,
             'unsubscribe_token' => 'testtoken',
         ]);
-
-        $organization = Organization::firstOrCreate(
-            ['name' => 'Ushahidi']
-        );
-
-        $organization->update([
-            'subdomain' => 'ushahidi',
-        ]);
-
-        $user->organizations()->sync([
-                $organization->id =>[
-                    'user_id' => $user->id, 'role' => 'owner'
-                ]
-            ]);
 
         // Second test org: Waitak Tri Club
         $triClub = Organization::firstOrCreate(
@@ -55,7 +50,9 @@ class OrganizationTableSeeder extends Seeder
         $user2 = User::firstOrCreate([
             'name' => 'Robbie',
             'password' => 'waitaktri',
-            'person_type' => 'user'
+            'person_type' => 'user',
+            'organization_id' => $triClub->id,
+            'role' => 'owner'
         ]);
 
         Contact::firstOrCreate([
@@ -66,11 +63,5 @@ class OrganizationTableSeeder extends Seeder
             'subscribed'  => 1,
             'unsubscribe_token' => 'testtoken',
         ]);
-
-        $user2->organizations()->sync([
-                $triClub->id => [
-                    'user_id' => $user2->id, 'role' => 'owner'
-                ]
-            ]);
     }
 }

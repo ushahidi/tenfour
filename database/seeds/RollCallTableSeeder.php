@@ -21,12 +21,12 @@ class RollCallTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::select('id')->get();
-
         // Grab seeded organization
         $organization = Organization::where('name', 'Ushahidi')
                       ->select('id')
                       ->firstOrFail();
+
+        $users = User::select('id')->where('organization_id', $organization->id)->get();
 
         $rollCall = RollCall::firstOrCreate([
             'organization_id' => $organization->id,

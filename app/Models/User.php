@@ -15,24 +15,24 @@ use RollCall\Notifications\ResetPassword;
 use Illuminate\Support\Str;
 
 class User extends Model implements AuthenticatableContract,
-	AuthorizableContract,
-	CanResetPasswordContract
+    AuthorizableContract,
+    CanResetPasswordContract
 {
-	use Authenticatable, Authorizable, CanResetPassword, Notifiable;
+    use Authenticatable, Authorizable, CanResetPassword, Notifiable;
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'users';
+    /**
+     * The database table used by the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
 	/**
 	 * The attributes that are mass assignable.
 	 *
 	 * @var array
 	 */
-    protected $fillable = ['name', 'description', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent', 'person_type', 'profile_picture', 'first_time_login'];
+    protected $fillable = ['name', 'description', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent', 'person_type', 'role', 'profile_picture', 'first_time_login'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -41,33 +41,24 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	protected $hidden = ['password', 'remember_token', 'invite_token'];
 
-	/**
-	 * @param string $value
-	 */
-	public function setPasswordAttribute($value)
-	{
-		$this->attributes['password'] = Hash::make($value);
-	}
+    /**
+     * @param string $value
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 
-	/**
-	 * A user can have many roles
-	 *
-	 */
-	public function roles()
-	{
-		return $this->belongsToMany('RollCall\Models\Role');
-	}
+    /**
+     * A user belongs to an organization
+     *
+     */
+    public function organization()
+    {
+        return $this->belongsTo('RollCall\Models\Organization');
+    }
 
-	/**
-	 * A user belongs to an organization
-	 *
-	 */
-	public function organizations()
-	{
-		return $this->belongsToMany('RollCall\Models\Organization')->withPivot('role');
-	}
-
-	/**
+    /**
      * A user has contacts
      *
      */
@@ -100,7 +91,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function sendPasswordResetNotification($token) {
-        $this->notify(new ResetPassword($token, $this->organizations[0]));
+        $this->notify(new ResetPassword($token, $this->organization));
     }
 
     public function getEmailForPasswordReset()
@@ -108,29 +99,56 @@ class User extends Model implements AuthenticatableContract,
         return $this->contact;
     }
 
-		public function hasLoggedIn()
-		{
-				return isset($this->password) && !empty($this->password);
-		}
+    public function hasLoggedIn()
+    {
+            return isset($this->password) && !empty($this->password);
+    }
 
-		/**
-		 * Get the notification routing information for the given driver.
-		 *
-		 * @param  string  $driver
-		 * @return mixed
-		 */
-		public function routeNotificationFor($driver)
-		{
-				if (method_exists($this, $method = 'routeNotificationFor'.Str::studly($driver))) {
-						return $this->{$method}();
-				}
-				switch ($driver) {
-						case 'database':
-								return $this->notifications();
-						case 'mail':
-								return $this->contact;
-						case 'nexmo':
-								return $this->phone_number;
-				}
-		}
+    /**
+     * Get the notification routing information for the given driver.
+     *
+     * @param  string  $driver
+     * @return mixed
+     */
+    public function routeNotificationFor($driver)
+    {
+        if (method_exists($this, $method = 'routeNotificationFor'.Str::studly($driver))) {
+                return $this->{$method}();
+        }
+        switch ($driver) {
+            case 'database':
+                return $this->notifications();
+            case 'mail':
+                return $this->contact;
+            case 'nexmo':
+                return $this->phone_number;
+        }
+    }
+
+    public function isAdmin($orgId)
+    {
+        if ($this->organization_id != $orgId) {
+            return false;
+        }
+
+        return in_array($this->role, ['admin', 'owner']);
+    }
+
+    public function isMember($orgId)
+    {
+        if ($this->organization_id != $orgId) {
+            return false;
+        }
+
+        return in_array($this->role, ['admin', 'member', 'owner']);
+    }
+
+    public function isOwner($orgId)
+    {
+        if ($this->organization_id != $orgId) {
+            return false;
+        }
+
+        return $this->role === 'owner';
+    }
 }

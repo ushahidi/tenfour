@@ -33,12 +33,19 @@ class OrgMemberSeeder extends Seeder
             [
                 'name'     => 'David Test',
                 'email'    => 'dmcnamara+test@ushahidi.com'
+            ],
+            [
+                'name'     => 'Team ushahidi',
+                'email'    => 'team@ushahidi.com'
             ]
         ];
 
+        $organization = Organization::where('name', '=', 'Ushahidi')->get()->first();
+
         foreach ($members as $member) {
             $user = User::firstOrCreate([
-                'name'     => $member['name']
+                'name'     => $member['name'],
+                'organization_id' => $organization->id
             ]);
 
             Contact::firstOrCreate([
@@ -56,10 +63,6 @@ class OrgMemberSeeder extends Seeder
                 'person_type' => 'user'
             ]);
         }
-
-        $organization = Organization::where('name', '=', 'Ushahidi')->get()->first();
-
-        $organization->members()->sync($ids, false);
 
     }
 }

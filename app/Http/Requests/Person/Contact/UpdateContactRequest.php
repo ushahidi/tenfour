@@ -2,9 +2,9 @@
 
 namespace RollCall\Http\Requests\Person\Contact;
 
-use RollCall\Http\Requests\Organization\GetOrganizationRequest;
+use RollCall\Http\Requests\Person\UpdatePersonRequest;
 
-class UpdateContactRequest extends GetOrganizationRequest
+class UpdateContactRequest extends UpdatePersonRequest
 {
     public function rules()
     {

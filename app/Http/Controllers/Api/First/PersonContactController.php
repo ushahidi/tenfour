@@ -48,7 +48,7 @@ class PersonContactController extends ApiController
      */
     public function store(AddContactRequest $request, $organization_id, $user_id)
     {
-        return $this->response->item($this->people->addContact($request->all(), $organization_id, $user_id),
+        return $this->response->item($this->people->addContact($organization_id, $user_id, $request->all()),
                                      new ContactTransformer, 'contact');
     }
 
@@ -75,7 +75,7 @@ class PersonContactController extends ApiController
      */
     public function update(UpdateContactRequest $request, $organization_id, $user_id, $contact_id)
     {
-        return $this->response->item($this->people->updateContact($request->all(), $organization_id, $user_id, $contact_id),
+        return $this->response->item($this->people->updateContact($organization_id, $user_id, $request->all(), $contact_id),
                                      new ContactTransformer, 'contact');
     }
 
@@ -112,7 +112,7 @@ class PersonContactController extends ApiController
         $this->contact->unsubscribe($request['token']);
 
         // public API method, don't expose anything in the response
-        
+
         return response('OK', 200);
     }
 

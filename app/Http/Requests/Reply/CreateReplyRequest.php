@@ -3,12 +3,10 @@
 namespace RollCall\Http\Requests\Reply;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
-use App;
 
 class CreateReplyRequest extends GetReplyRequest
 {
-    use UserAccess;
+
     /**
      * Get the validation rules that apply to the request.
      *

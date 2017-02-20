@@ -17,11 +17,6 @@ class GetRollCallRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full access
-        if ($this->isAdmin()) {
-            return true;
-        }
-
         $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
                  ->find($this->route('rollcall'));
 
@@ -35,9 +30,11 @@ class GetRollCallRequest extends FormRequest
             return true;
         }
 
-        $org_role = $this->getOrganizationRole($rollCall['organization_id']);
+        if ($this->user()->isAdmin($rollCall['organization_id'])) {
+            return true;
+        }
 
-        return in_array($org_role, $this->getAllowedOrgRoles());
+        return false;
     }
 
     /**
@@ -49,13 +46,6 @@ class GetRollCallRequest extends FormRequest
     {
         return [
             //
-        ];
-    }
-
-    protected function getAllowedOrgRoles()
-    {
-        return [
-            'owner', 'admin'
         ];
     }
 }

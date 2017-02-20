@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Http\Requests\User;
+namespace RollCall\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
 
-class CreateUserRequest extends FormRequest
+class AcceptInviteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        // Anyone can register as a user
+        // Anyone can be invited as a user
         return true;
     }
 
@@ -25,10 +25,8 @@ class CreateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
             'password' => 'required|min:8',
-            'password_confirm' => 'required|same:password',
-            'person_type' => 'required|in:member,user,external',
+            'invite_token' => 'required',
         ];
     }
 }
