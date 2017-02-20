@@ -66,7 +66,8 @@ class EloquentPersonRepository implements PersonRepository
             unset($input['inputImage']);
         }
 
-        $user = User::make($input);
+        $user = new User;
+        $user->fill($input);
 
         $user->organization_id = $organization->id;
         $user->save();
