@@ -24,63 +24,16 @@ class EloquentPersonRepository implements PersonRepository
         $this->contacts = $contacts;
     }
 
-    /**
-     * Get all
-     *
-     * @return mixed
-     */
-    public function all()
+    // OrgCrudRepository
+    public function all($organization_id)
     {
-
-    }
-
-    /**
-     * Create
-     *
-     * @param array $input
-     *
-     * @return mixed
-     */
-    public function create(array $input)
-    {
-
-    }
-
-    /**
-     * Update
-     *
-     * @param array $input
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function update(array $input, $id)
-    {
-
-    }
-
-    /**
-     * Delete
-     *
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function delete($id)
-    {
-
-    }
-
-    /**
-     * Find
-     *
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function find($id)
-    {
-
+        return Organization::findOrFail($organization_id)
+            ->members()
+            ->with('contacts')
+            ->select('users.*','role')
+            ->orderby('name', 'asc')
+            ->get()
+            ->toArray();
     }
 
     protected function storeUserAvatar($file, $id)
@@ -97,10 +50,37 @@ class EloquentPersonRepository implements PersonRepository
         return $path;
     }
 
-    public function updateMember(array $input, $id, $user_id)
+    // OrgCrudRepository
+    public function create($organization_id, array $input)
+    {
+        $organization = Organization::findOrFail($organization_id);
+
+        if (!isset($input['role'])) {
+            $input['role'] = 'member';
+        }
+
+        $input['organization_id'] = $organization->id;
+
+        if (isset($input['inputImage'])) {
+            $file = $input['inputImage'];
+            $path = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
+            $input['profile_picture'] = $path;
+            unset($input['inputImage']);
+        }
+
+        $user = User::create($input)->toArray();
+
+        Notification::send($this->getAdmins($organization['id']),
+            new PersonJoinedOrganization(new User($user)));
+
+        return $user;
+    }
+
+    // OrgCrudRepository
+    public function update($organization_id, array $input, $user_id)
     {
         $user = User::where('id', $user_id)
-            ->where('organization_id', $id)
+            ->where('organization_id', $organization_id)
             ->firstOrFail();
 
         // Update user and role details
@@ -121,7 +101,7 @@ class EloquentPersonRepository implements PersonRepository
             if (isset($input['inputImage']))
             {
                 $file = $input['inputImage'];
-                $path = $this->storeUserAvatar($file, $id);
+                $path = $this->storeUserAvatar($file, $user_id);
                 $input['profile_picture'] = $path;
                 unset($input['inputImage']);
             }
@@ -139,7 +119,23 @@ class EloquentPersonRepository implements PersonRepository
         return $user->toArray();
     }
 
-    public function getMember($id, $user_id)
+    // OrgCrudRepository
+    public function delete($organization_id, $user_id)
+    {
+        $user = User::where('id', $user_id)
+            ->where('organization_id', $organization_id)
+            ->firstOrFail();
+
+        $user->delete();
+
+        Notification::send($this->getAdmins($user->organization_id),
+            new PersonLeftOrganization($user));
+
+        return $user->toArray();
+    }
+
+    // OrgCrudRepository
+    public function find($organization_id, $user_id)
     {
         // This should probably be passed in as param but there
         // might not be any benefit of showing a user's full
@@ -147,7 +143,7 @@ class EloquentPersonRepository implements PersonRepository
         $history_limit = 1;
 
         $userModel = User::where('id', $user_id)
-            ->where('organization_id', $id)
+            ->where('organization_id', $organization_id)
             ->with([
                 'rollcalls' => function ($query) use ($history_limit) {
                     $query->latest()->limit($history_limit);
@@ -180,42 +176,6 @@ class EloquentPersonRepository implements PersonRepository
             ->find($id);
     }
 
-    public function addMember(array $input, $organization_id)
-    {
-        $organization = Organization::findOrFail($organization_id);
-
-        if (!isset($input['role'])) {
-            $input['role'] = 'member';
-        }
-
-        $input['organization_id'] = $organization->id;
-
-        if (isset($input['inputImage'])) {
-            $file = $input['inputImage'];
-            $path = $this->storeUserAvatar($file, $user['id']);
-            $input['profile_picture'] = $path;
-            unset($input['inputImage']);
-        }
-
-        $user = User::create($input)->toArray();
-
-        Notification::send($this->getAdmins($organization['id']),
-            new PersonJoinedOrganization(new User($user)));
-
-        return $user;
-    }
-
-    public function getMembers($organization_id)
-    {
-        return Organization::findOrFail($organization_id)
-            ->members()
-            ->with('contacts')
-            ->select('users.*','role')
-            ->orderby('name', 'asc')
-            ->get()
-            ->toArray();
-    }
-
     protected function getAdmins($organization_id)
     {
         return User::where('organization_id', $organization_id)
@@ -223,20 +183,7 @@ class EloquentPersonRepository implements PersonRepository
             ->get();
     }
 
-    public function deleteMember($organization_id, $user_id)
-    {
-        $user = User::where('id', $user_id)
-            ->where('organization_id', $organization_id)
-            ->firstOrFail();
-
-        $user->delete();
-
-        Notification::send($this->getAdmins($user->organization_id),
-            new PersonLeftOrganization($user));
-
-        return $user->toArray();
-    }
-
+    // PersonRepository
     public function getMemberRole($organization_id, $user_id)
     {
         $role = User::where('organization_id', '=', $organization_id)
@@ -246,22 +193,17 @@ class EloquentPersonRepository implements PersonRepository
         return $role;
     }
 
-    public function isMember($user_id, $org_id)
-    {
-        return (bool) User::where('id', $user_id)
-            ->where('organization_id', $org_id)
-            ->count();
-    }
-
-    public function testMemberInviteToken($memberId, $invite_token)
+    // PersonRepository
+    public function testMemberInviteToken($user_id, $invite_token)
     {
         return (bool) DB::table('users')
-          ->where('id', $memberId)
+          ->where('id', $user_id)
           ->where('invite_token', $invite_token)
           ->count();
     }
 
-    public function addContact(array $input, $organization_id, $user_id)
+    // PersonRepository
+    public function addContact($organization_id, $user_id, array $input)
     {
         $user = User::where('id', $user_id)
             ->where('organization_id', $organization_id)
@@ -276,7 +218,8 @@ class EloquentPersonRepository implements PersonRepository
         return $this->contacts->create($input);
     }
 
-    public function updateContact(array $input, $organization_id, $user_id, $contact_id)
+    // PersonRepository
+    public function updateContact($organization_id, $user_id, array $input,  $contact_id)
     {
         $user = User::where('id', $user_id)
             ->where('organization_id', $organization_id)
@@ -286,6 +229,7 @@ class EloquentPersonRepository implements PersonRepository
         return $this->contacts->update($input, $contact_id);
     }
 
+    // PersonRepository
     public function deleteContact($organization_id, $user_id, $contact_id)
     {
         $user = User::where('id', $user_id)

@@ -1,7 +1,7 @@
 <?php
 namespace RollCall\Contracts\Repositories;
 
-interface PersonRepository extends CrudRepository
+interface PersonRepository extends OrgCrudRepository
 {
 
     /**
@@ -15,55 +15,6 @@ interface PersonRepository extends CrudRepository
     public function getMemberRole($organization_id, $user_id);
 
     /**
-     * Add member to an organization
-     *
-     * @param array $input
-     * @param int $organization_id
-     *
-     * @return array
-     */
-    public function addMember(array $input, $organization_id);
-
-    /**
-     * Get members of an organization
-     *
-     * @param int $organization_id
-     *
-     * @return array
-     */
-    public function getMembers($organization_id);
-
-    /**
-     * Get organization member
-     *
-     * @param int $organization_id
-     * @param int $user_id
-     *
-     * @return array
-     */
-    public function getMember($organization_id, $user_id);
-
-    /**
-     * Delete member from an organization
-     *
-     * @param int $organization_id
-     * @param int $user_id
-     *
-     * @return array
-     */
-    public function deleteMember($organization_id, $user_id);
-
-    /**
-     * Check if user is a member of an organization
-     *
-     * @param int $user_id
-     * @param int $org_id
-     *
-     * @return bool
-     */
-    public function isMember($user_id, $org_id);
-
-    /**
      * Check if invite token is correct for given user
      *
      * @param int $user_id
@@ -71,7 +22,7 @@ interface PersonRepository extends CrudRepository
      *
      * @return bool
      */
-    public function testMemberInviteToken($member_id, $invite_token);
+    public function testMemberInviteToken($user_id, $invite_token);
 
     /**
      * Add organization member contact
@@ -82,7 +33,7 @@ interface PersonRepository extends CrudRepository
      *
      * @return array
      */
-    public function addContact(array $input, $organization_id, $user_id);
+    public function addContact($organization_id, $user_id, array $input);
 
     /**
      * Update organization member contact
@@ -94,7 +45,7 @@ interface PersonRepository extends CrudRepository
      *
      * @return array
      */
-    public function updateContact(array $input, $organization_id, $user_id, $contact_id);
+    public function updateContact($organization_id, $user_id, array $input, $contact_id);
 
     /**
      * Delete organization member contact

@@ -57,7 +57,7 @@ class PersonController extends ApiController
      */
     public function store(AddPersonRequest $request, $organization_id)
     {
-        return $this->response->item($this->people->addMember($request->all(), $organization_id),
+        return $this->response->item($this->people->create($organization_id, $request->all()),
                                      new UserTransformer, 'person');
     }
 
@@ -79,14 +79,14 @@ class PersonController extends ApiController
      */
     public function index(GetPersonRequest $request, $organization_id)
     {
-        return $this->response->collection($this->people->getMembers($organization_id),
+        return $this->response->collection($this->people->all($organization_id),
                                            new UserTransformer, 'people');
     }
 
     /**
      * Find a member
      *
-     * @Get("/{memberId}")
+     * @Get("/{personId}")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -109,7 +109,7 @@ class PersonController extends ApiController
             $person_id = $this->auth->user()['id'];
         }
 
-        return $this->response->item($this->people->getMember($organization_id, $person_id),
+        return $this->response->item($this->people->find($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
 
@@ -130,7 +130,7 @@ class PersonController extends ApiController
             $person_id = $this->auth->user()['id'];
         }
 
-        return $this->response->item($this->people->deleteMember($organization_id, $person_id),
+        return $this->response->item($this->people->delete($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
 
@@ -163,7 +163,7 @@ class PersonController extends ApiController
      */
     public function update(UpdatePersonRequest $request, $organization_id, $person_id)
     {
-        $member = $this->people->updateMember($request->all(), $organization_id, $person_id);
+        $member = $this->people->update($organization_id, $request->all(), $person_id);
         return $this->response->item($member, new UserTransformer, 'person');
     }
 
@@ -186,14 +186,14 @@ class PersonController extends ApiController
      */
     public function invitePerson(InvitePersonRequest $request, $organization_id, $user_id)
     {
-        $member = $this->people->getMember($organization_id, $user_id);
+        $member = $this->people->find($organization_id, $user_id);
         $organization = $this->organizations->find($organization_id);
 
         // Queue invite
         $member['invite_token'] = Hash::Make(config('app.key'));
         $member['invite_sent'] = true;
 
-        $this->people->updateMember($member, $organization_id, $user_id);
+        $this->people->update($organization_id, $member, $user_id);
         $this->dispatch(new SendInvite($member, $organization));
 
         // Return up to date Member
@@ -203,7 +203,7 @@ class PersonController extends ApiController
     /**
      * Accept member invite
      *
-     * @Post("invite/{organisationId}/accept/{memberId}")
+     * @Post("invite/{organisationId}/accept/{personId}")
      * @Versions({"v1"})
      * @Request({
      *     "invite_token": "aSecretToken",
@@ -221,15 +221,15 @@ class PersonController extends ApiController
      * @param InviteMemberRequest $request
      * @return Response
      */
-    public function acceptInvite(AcceptInviteRequest $request, $organization_id, $memberId)
+    public function acceptInvite(AcceptInviteRequest $request, $organization_id, $person_id)
     {
-        $member = $this->people->getMember($organization_id, $memberId);
+        $member = $this->people->find($organization_id, $person_id);
         if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
             $member['person_type'] = 'user';
             $member['role'] = 'member';
             $member['invite_token'] = null;
-            $member = $this->people->updateMember($member, $organization_id, $memberId);
+            $member = $this->people->update($organization_id, $member, $person_id);
 
             return $this->response->item($member, new UserTransformer, 'person');
         }

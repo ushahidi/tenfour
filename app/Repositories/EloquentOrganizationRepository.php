@@ -112,13 +112,4 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $organization->toArray();
     }
 
-    // public function getAdmins($id)
-    // {
-    //     return Organization::findOrFail($id)
-    //         ->members()
-    //         ->select('users.*','role')
-    //         ->whereIn('role', ['admin', 'owner'])
-    //         ->get();
-    // }
-
 }

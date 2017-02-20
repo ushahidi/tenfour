@@ -41,7 +41,7 @@ class SendRollCall implements ShouldQueue
     public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
     {
         $organization = $org_repo->find($this->roll_call['organization_id']);
-        $creator = $person_repo->getMember($this->roll_call['organization_id'], $this->roll_call['user_id']);
+        $creator = $person_repo->find($this->roll_call['organization_id'], $this->roll_call['user_id']);
 
         // Get creator's contact
         $creator_contacts = $contact_repo->getByUserId($this->roll_call['user_id']);
