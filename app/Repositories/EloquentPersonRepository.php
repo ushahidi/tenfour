@@ -7,11 +7,14 @@ use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
+use Illuminate\Support\Facades\Storage;
+use Validator;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
 use RollCall\Notifications\PersonJoinedOrganization;
 use RollCall\Notifications\PersonLeftOrganization;
+use Illuminate\Support\Facades\Hash;
 
 class EloquentPersonRepository implements PersonRepository
 {
@@ -80,6 +83,20 @@ class EloquentPersonRepository implements PersonRepository
 
     }
 
+    protected function storeUserAvatar($file, $id)
+    {
+        $filename = $id;
+        list($extension, $file) = explode(';', $file);
+        list(, $extension) = explode('/', $extension);
+        list(, $file) = explode(',', $file);
+        $file = base64_decode($file);
+        $path = '/useravatar/'.$filename . '.' . $extension;
+
+        Storage::put($path, $file, 'public');
+
+        return $path;
+    }
+
     public function updateMember(array $input, $id, $user_id)
     {
         $user = User::where('id', $user_id)
@@ -99,6 +116,16 @@ class EloquentPersonRepository implements PersonRepository
                 $owner->role = 'admin';
                 $owner->save();
             }
+
+            /* Updating user-avatar */
+            if (isset($input['inputImage']))
+            {
+                $file = $input['inputImage'];
+                $path = $this->storeUserAvatar($file, $id);
+                $input['profile_picture'] = $path;
+                unset($input['inputImage']);
+            }
+            /* end of user-avatar-code */
 
             // Update user
             $user->update($input);
@@ -162,6 +189,13 @@ class EloquentPersonRepository implements PersonRepository
         }
 
         $input['organization_id'] = $organization->id;
+
+        if (isset($input['inputImage'])) {
+            $file = $input['inputImage'];
+            $path = $this->storeUserAvatar($file, $user['id']);
+            $input['profile_picture'] = $path;
+            unset($input['inputImage']);
+        }
 
         $user = User::create($input)->toArray();
 
@@ -233,8 +267,11 @@ class EloquentPersonRepository implements PersonRepository
             ->where('organization_id', $organization_id)
             ->firstOrFail();
 
-        $input['can_receive'] = 1;
+        $input['preferred'] = 1;
         $input['user_id'] = $user->id;
+
+        $input['unsubscribe_token'] = Hash::Make(config('app.key'));
+        $input['subscribed'] = 1;
 
         return $this->contacts->create($input);
     }

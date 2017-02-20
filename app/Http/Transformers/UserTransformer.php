@@ -2,6 +2,9 @@
 namespace RollCall\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class UserTransformer extends TransformerAbstract
 {
@@ -63,6 +66,17 @@ class UserTransformer extends TransformerAbstract
 
                 // Remove user information
                 unset($roll_call['user']);
+            }
+        }
+
+        //Add path to user-avatar
+        if(!empty($user['profile_picture'])) {
+            try {
+                $contents = Storage::get($user['profile_picture']);
+                $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
+            } catch (FileNotFoundException $e) {
+                // Don't return the profile picture
+                $user['profile_picture'] = null;
             }
         }
 

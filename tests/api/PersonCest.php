@@ -587,4 +587,21 @@ class PersonCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
     }
+
+    /**
+     * Unsubscribe from rollcall emails
+     */
+    public function unsubscribe(ApiTester $I)
+    {
+        $I->wantTo('Unsubscribe from emails');
+        $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'subscribed' => 1));
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST("unsubscribe", [
+            'token' => 'testunsubscribetoken',
+            'email' => 'test@ushahidi.com',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'subscribed' => 0));
+    }
+
 }

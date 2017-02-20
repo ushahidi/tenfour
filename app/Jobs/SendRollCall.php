@@ -60,6 +60,10 @@ class SendRollCall implements ShouldQueue
 
             foreach($contacts as $contact)
             {
+                if (!$contact['subscribed']) {
+                  break;
+                }
+
                 // Check if contact has a pending reply
                 $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 
@@ -71,7 +75,7 @@ class SendRollCall implements ShouldQueue
                 $message_service = $message_service_factory->make($contact['type']);
 
                 if ($contact['type'] === 'email') {
-                    $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator));
+                        $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator, $contact));
                 } else {
 
                     // Send reminder SMS to unresponsive recipient

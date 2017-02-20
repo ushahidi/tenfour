@@ -64,7 +64,7 @@ class SMSController extends Controller
     public function receiveNexmo(Request $request, NexmoMessageValidator $validator)
     {
         if (! $validator->isValid($request)) {
-            abort(404);
+            return response('Hi', 200);
         }
 
         return $this->receive('nexmo');

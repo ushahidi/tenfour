@@ -8,6 +8,7 @@ use RollCall\Models\User;
 use RollCall\Models\Organization;
 use RollCall\Models\Contact;
 use League\Csv\Reader;
+use Illuminate\Support\Facades\Hash;
 
 class ImportContacts extends Command
 {
@@ -103,15 +104,18 @@ class ImportContacts extends Command
             Contact::updateOrCreate([
                 'user_id'     => $member['id'],
                 'type'        => 'email',
-                'contact'     => $email
-            ], ['can_receive' => true]);
+                'contact'     => $email,
+                'subscribed'  => true,
+                'unsubscribe_token' => Hash::Make(config('app.key')),
+            ], ['preferred' => true]);
 
             // Add phone contact
             Contact::updateOrCreate([
                 'user_id'     => $member['id'],
                 'type'        => 'phone',
-                'contact'     => $phone_number
-            ], ['can_receive' => true]);
+                'contact'     => $phone_number,
+                'subscribed'  => true,
+            ], ['preferred' => true]);
 
             $ids[$member['id']] = ['role' => 'member'];
         }

@@ -358,6 +358,44 @@ class RollCallCest
     }
 
     /*
+     * Send roll call to self
+     *
+     */
+    public function sendRollCallToSelf(ApiTester $I)
+    {
+        $I->wantTo('Send roll call to self');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Test message to self',
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'Test message to self',
+                'organization' => [
+                    'id' => 2
+                ],
+                'user' => [
+                    'id' => 1
+                ],
+                'recipients' => [
+                    [
+                        'id' => 1
+                    ]
+                ]
+            ]
+        );
+    }
+
+    /*
      * Create a roll call as org admin
      *
      */

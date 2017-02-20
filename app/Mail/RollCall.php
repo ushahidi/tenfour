@@ -17,11 +17,12 @@ class RollCall extends Mailable
      *
      * @return void
      */
-    public function __construct(array $roll_call, array $organization, array $creator)
+    public function __construct(array $roll_call, array $organization, array $creator, array $contact)
     {
         $this->roll_call = $roll_call;
         $this->organization = $organization;
         $this->creator = $creator;
+        $this->contact = $contact;
     }
 
     /**
@@ -44,20 +45,31 @@ class RollCall extends Mailable
 
         $answer_url_no = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/0';
         $answer_url_yes = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/1';
-        $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
+        $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer';
+        $reply_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
+
+        $has_custom_answers = isset($this->roll_call['answers']) ? count(array_diff($this->roll_call['answers'], ['Yes', 'No'])) : false;
+
+        $unsubscribe_url = $client_url . '/unsubscribe/' .
+          '?token=' . urlencode($this->contact['unsubscribe_token']) .
+          '&email=' . urlencode($this->contact['contact']) .
+          '&org_name=' . urlencode($org->name);
 
         return $this->view('emails.rollcall')
                     ->text('emails.rollcall_plain')
                     ->with([
-                        'msg'            => $this->roll_call['message'],
-                        'roll_call_url'  => $roll_call_url,
-                        'gravatar'       => $gravatar,
-                        'answers'        => $this->roll_call['answers'],
-                        'org_subdomain'  => $this->organization['subdomain'],
-                        'author'         => $this->creator['name'],
-                        'answer_url_no'  => $answer_url_no,
-                        'answer_url_yes' => $answer_url_yes,
-                        'answer_url'     => $answer_url,
+                        'msg'               => $this->roll_call['message'],
+                        'roll_call_url'     => $roll_call_url,
+                        'gravatar'          => $gravatar,
+                        'answers'           => $this->roll_call['answers'],
+                        'org_subdomain'     => $this->organization['subdomain'],
+                        'author'            => $this->creator['name'],
+                        'answer_url_no'     => $answer_url_no,
+                        'answer_url_yes'    => $answer_url_yes,
+                        'answer_url'        => $answer_url,
+                        'reply_url'         => $reply_url,
+                        'has_custom_answers'=> $has_custom_answers,
+                        'unsubscribe_url'   => $unsubscribe_url,
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])

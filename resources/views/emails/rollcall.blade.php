@@ -168,11 +168,18 @@
                                         </tr>
                                         @if (count($answers) > 0)
                                             <tr>
-                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please select your answer below or reply directly to this email and include "{{ $answers[0] }}," or "{{ $answers[1] }}," in your message.</td>
+                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">
+                                                  Please select your answer below or reply directly to this email.
+                                                  If you send an email reply, you can simply write
+                                                  @foreach ($answers as $answer)
+                                                  "{{$answer}},"
+                                                  @endforeach
+                                                  or write more if you'd like to provide more detail.
+                                                  </td>
                                             </tr>
                                         @else
                                             <tr>
-                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please reply <a href="{{ $answer_url }}">on Rollcall</a> or respond directly to this email.</td>
+                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please reply <a href="{{ $reply_url }}">on Rollcall</a> or respond directly to this email.</td>
                                             </tr>
                                         @endif
                                     </table>
@@ -181,6 +188,33 @@
                             @if (count($answers) > 0)
                             <tr>
                                 <td align="center">
+                                  @if ($has_custom_answers)
+
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="10" bgcolor="#EFEFEB" class="mobile-button-container" style="border-top: 1px solid #E6E6DD;">
+                                        <tbody><tr>
+                                            <td align="center" class="padding-copy" style="padding: 20px;">
+                                                <table border="0" cellspacing="0" cellpadding="0" class="responsive-table" style="min-width:50%;">
+                                                  <tbody>
+
+                                                    @for ($i = 0; $i < count($answers); $i++)
+                                                    <tr>
+                                                        @if ($answers[$i] == 'No')
+                                                        <td align="center"><a href="{{$answer_url}}/{{$i}}" target="_blank" style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 10px solid #e8bb4a; border-bottom: 10px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0;" class="mobile-button">No</a></td>
+                                                        @elseif ($answers[$i] == 'Yes')
+                                                        <td align="center"><a href="{{$answer_url}}/{{$i}}" target="_blank" style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 10px solid #64b269; border-bottom: 10px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0;" class="mobile-button">Yes</a></td>
+                                                        @else
+                                                        <td align="center"><a href="{{$answer_url}}/{{$i}}" target="_blank" style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #BC6969; border-top: 10px solid #BC6969; border-bottom: 10px solid #BC6969; border-left: 10px solid #BC6969; border-right: 10px solid #BC6969; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0" class="mobile-button">{{$answers[$i]}}</a></td>
+                                                        @endif
+                                                    </tr>
+                                                    @endfor
+
+                                                </tbody>
+                                              </table>
+                                            </td>
+                                        </tr>
+                                    </tbody></table>
+
+                                  @else
                                     <!-- BULLETPROOF BUTTON -->
                                     <table width="100%" border="0" cellspacing="0" cellpadding="10" bgcolor="#EFEFEB" class="mobile-button-container" style="border-top: 1px solid #E6E6DD;">
                                         <tr>
@@ -195,6 +229,7 @@
                                             </td>
                                         </tr>
                                     </table>
+                                  @endif
                                 </td>
                             </tr>
                             @endif
@@ -214,7 +249,11 @@
             <table width="500" border="0" cellspacing="0" cellpadding="0" align="center" class="responsive-table">
                 <tr>
                     <td align="center" style="font-size: 12px; line-height: 18px; font-family: Lato, Helvetica, Arial, sans-serif; color:#666666;">
-                        <span class="appleFooter" style="color:#666666;">RollCall</span><br><a href="http://rollcall.io" class="original-only" style="color: #666666; text-decoration: none;">www.rollcall.io</a><span class="original-only" style="font-family: Lato, Arial, sans-serif; font-size: 12px; color: #444444;">
+                        <span class="appleFooter" style="color:#666666;">RollCall</span>
+                        <br>
+                        <a href="http://rollcall.io" class="original-only" style="color: #666666; text-decoration: none;">www.rollcall.io</a><span class="original-only" style="font-family: Lato, Arial, sans-serif; font-size: 12px; color: #444444;">
+                        <br>
+                        <a href="{{ $unsubscribe_url }}" class="original-only" style="color: #666666; text-decoration: underline;">Unsubscribe</a>
                     </td>
                 </tr>
             </table>
