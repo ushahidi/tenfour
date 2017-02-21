@@ -43,6 +43,8 @@ class SendRollCall implements ShouldQueue
         $organization = $org_repo->find($this->roll_call['organization_id']);
         $creator = $person_repo->find($this->roll_call['organization_id'], $this->roll_call['user_id']);
 
+        $org_url = Organization::findOrFail($this->roll_call['organization_id'])->url();
+
         // Get creator's contact
         $creator_contacts = $contact_repo->getByUserId($this->roll_call['user_id']);
 
@@ -76,17 +78,18 @@ class SendRollCall implements ShouldQueue
                 if ($contact['type'] === 'email') {
                         $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator, $contact));
                 } else {
-
                     // Send reminder SMS to unresponsive recipient
                     if ($unreplied_roll_call_id) {
-                        $org_url = Organization::findOrFail($organization['id'])->url();
+                        // @todo include previous rollcall message
                         $roll_call_url = $org_url .'/rollcalls/'. $unreplied_roll_call_id;
                         $message_service->setView('sms.unresponsive');
                         $message_service->send($contact['contact'], $roll_call_url);
                     }
 
+                    $params = [];
+                    $params['rollcall_link'] = $org_url .'/rollcalls/'. $this->roll_call['id'];
                     $message_service->setView('sms.rollcall');
-                    $message_service->send($contact['contact'], $this->roll_call['message']);
+                    $message_service->send($contact['contact'], $this->roll_call['message'], $params);
                 }
 
                 // Update response status to 'waiting'
