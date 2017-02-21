@@ -56,7 +56,7 @@ class SMSCest
 
         $endpoint = 'sms/receive/nexmo';
 
-        $I->wantTo('Receive MOs from Nexmo without a valid signature');
+        $I->wantTo('Receive MOs from Nexmo with a valid signature');
 
         $I->sendPost($endpoint, $params);
 
