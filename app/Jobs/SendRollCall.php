@@ -88,6 +88,7 @@ class SendRollCall implements ShouldQueue
 
                     $params = [];
                     $params['rollcall_link'] = $org_url .'/rollcalls/'. $this->roll_call['id'];
+                    $params['answers'] = $this->roll_call['answers'];
                     $message_service->setView('sms.rollcall');
                     $message_service->send($contact['contact'], $this->roll_call['message'], $params);
                 }

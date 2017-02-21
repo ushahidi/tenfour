@@ -46,6 +46,8 @@ class SMSService implements MessageService
             $from = config('rollcall.messaging.sms_providers.default.from');
         }
 
+        $additional_params['keyword'] = config('sms.'.$driver.'.keyword');
+
         // Set 'from' address if configured
         if ($from) {
             SMS::alwaysFrom($from);
