@@ -2,7 +2,10 @@
 
 namespace RollCall\Providers;
 
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
+use Clockwork\Support\Laravel\ClockworkMiddleware;
+use Clockwork\Support\Laravel\ClockworkServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,9 +14,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Kernel $kernel)
     {
-        //
+        $clockwork = $this->app['config']->get('app.clockwork', false);
+        if ($clockwork) {
+            $kernel->prependMiddleware(ClockworkMiddleware::class);
+        }
     }
 
     /**
@@ -23,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $clockwork = $this->app['config']->get('app.clockwork', false);
+        \Log::info('here');
+        \Log::info($clockwork);
+        if ($clockwork) {
+             $this->app->register(ClockworkServiceProvider::class);
+        }
     }
 }

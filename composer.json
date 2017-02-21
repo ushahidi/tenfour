@@ -22,6 +22,7 @@
         "league/flysystem-aws-s3-v3": "~1.0"
     },
     "require-dev": {
+        "itsgoingd/clockwork": "~1.13",
         "fzaninotto/faker": "~1.4",
         "laravel/homestead": "^2.2",
         "mockery/mockery": "0.9.*",

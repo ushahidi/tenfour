@@ -142,6 +142,7 @@ class EloquentPersonRepository implements PersonRepository
         // This should probably be passed in as param but there
         // might not be any benefit of showing a user's full
         // roll call activity here.
+        clock()->startEvent('person_find_event', 'Person::find');
         $history_limit = 1;
 
         $userModel = User::where('id', $user_id)
@@ -167,7 +168,7 @@ class EloquentPersonRepository implements PersonRepository
         {
             $roll_call += $this->roll_calls->getCounts($roll_call['id']);
         }
-
+        clock()->endEvent('person_find_event');
         return $user;
     }
 

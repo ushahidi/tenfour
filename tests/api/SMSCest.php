@@ -22,6 +22,7 @@ class SMSCest
         $I->seeResponseCodeIs(200);
     }
 
+
     public function receiveNexmoMOsWithoutSignature(ApiTester $I)
     {
         $endpoint = 'sms/receive/nexmo';
@@ -35,6 +36,7 @@ class SMSCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseContains('Hi');
     }
+
 
     public function receiveNexmoMOsWithValidSignature(ApiTester $I)
     {

@@ -10,6 +10,8 @@ class UserTransformer extends TransformerAbstract
 {
     public function transform(array $user)
     {
+        clock()->endEvent('person_before_transform_event');
+        clock()->startEvent('person_in_transform_event', 'Person::inTransform');
         // User config task
         if (! empty($user['config_profile_reviewed']) && ! empty($user['config_self_test_sent'])) {
             $user['configComplete'] = $user['config_profile_reviewed']
@@ -93,7 +95,7 @@ class UserTransformer extends TransformerAbstract
                 return substr($word, 0, 1);
             }, explode(' ', $user['name']));
         $user['initials'] = strtoupper(implode('', $user['initials']));
-
+clock()->endEvent('person_in_transform_event');
         return $user;
     }
 }

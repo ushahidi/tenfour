@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "341db7c3c66edddbe07b8ceb7b763c98",
-    "content-hash": "4cd3e80611816c17bf12961ac943f0e7",
+    "hash": "f9f57017d0fdfa089a06ba13872cec00",
+    "content-hash": "baa9327c36cd3ea9f6935c42d75405b6",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -60,16 +60,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.22.3",
+            "version": "3.22.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "9c64476e56091baf1202d7deffb9094fe87472e0"
+                "reference": "eea83aaac2b6c86f72a5c85c54d1839b70d4fd21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9c64476e56091baf1202d7deffb9094fe87472e0",
-                "reference": "9c64476e56091baf1202d7deffb9094fe87472e0",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/eea83aaac2b6c86f72a5c85c54d1839b70d4fd21",
+                "reference": "eea83aaac2b6c86f72a5c85c54d1839b70d4fd21",
                 "shasum": ""
             },
             "require": {
@@ -136,20 +136,20 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-02-10 23:27:07"
+            "time": "2017-02-17 20:09:40"
         },
         {
             "name": "barryvdh/laravel-cors",
-            "version": "v0.8.5",
+            "version": "v0.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-cors.git",
-                "reference": "e05c3ba65e98c96df5f2e1f8b7b6d7e9de4a1837"
+                "reference": "9bf14c1d5ebe46738e8c535e56e621f98779197d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/e05c3ba65e98c96df5f2e1f8b7b6d7e9de4a1837",
-                "reference": "e05c3ba65e98c96df5f2e1f8b7b6d7e9de4a1837",
+                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/9bf14c1d5ebe46738e8c535e56e621f98779197d",
+                "reference": "9bf14c1d5ebe46738e8c535e56e621f98779197d",
                 "shasum": ""
             },
             "require": {
@@ -189,7 +189,7 @@
                 "crossdomain",
                 "laravel"
             ],
-            "time": "2017-01-25 12:53:12"
+            "time": "2017-02-15 21:21:33"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -247,17 +247,20 @@
         },
         {
             "name": "container-interop/container-interop",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/container-interop/container-interop.git",
-                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e"
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/fc08354828f8fd3245f77a66b9e23a6bca48297e",
-                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e",
+                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8",
                 "shasum": ""
+            },
+            "require": {
+                "psr/container": "^1.0"
             },
             "type": "library",
             "autoload": {
@@ -270,7 +273,8 @@
                 "MIT"
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
-            "time": "2014-12-30 15:22:37"
+            "homepage": "https://github.com/container-interop/container-interop",
+            "time": "2017-02-14 19:40:03"
         },
         {
             "name": "dingo/api",
@@ -907,16 +911,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.2.0",
+            "version": "8.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "e60b052f388b46a60a21e4a680d6ec3115e2c318"
+                "reference": "73291192229eef1bdd718c19cadf913ac81a8937"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/e60b052f388b46a60a21e4a680d6ec3115e2c318",
-                "reference": "e60b052f388b46a60a21e4a680d6ec3115e2c318",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/73291192229eef1bdd718c19cadf913ac81a8937",
+                "reference": "73291192229eef1bdd718c19cadf913ac81a8937",
                 "shasum": ""
             },
             "require": {
@@ -942,7 +946,13 @@
             "autoload": {
                 "psr-4": {
                     "libphonenumber\\": "src/"
-                }
+                },
+                "exclude-from-classmap": [
+                    "/src/data/",
+                    "/src/carrier/data/",
+                    "/src/geocoding/data/",
+                    "/src/timezone/data/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -965,7 +975,7 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2017-02-02 11:19:45"
+            "time": "2017-02-21 14:37:56"
         },
         {
             "name": "giggsey/locale",
@@ -2478,6 +2488,55 @@
             "time": "2016-06-02 10:16:04"
         },
         {
+            "name": "psr/container",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/container.git",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https://github.com/php-fig/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "time": "2017-02-14 16:28:37"
+        },
+        {
             "name": "psr/http-message",
             "version": "1.0.1",
             "source": {
@@ -2969,7 +3028,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.2.3",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -4398,6 +4457,51 @@
             "time": "2015-05-11 14:41:42"
         },
         {
+            "name": "itsgoingd/clockwork",
+            "version": "v1.13.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/itsgoingd/clockwork.git",
+                "reference": "9864bad522eba9f486e79c0cb7bc953967b64cf7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/itsgoingd/clockwork/zipball/9864bad522eba9f486e79c0cb7bc953967b64cf7",
+                "reference": "9864bad522eba9f486e79c0cb7bc953967b64cf7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9",
+                "psr/log": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clockwork\\": "Clockwork/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "itsgoingd",
+                    "email": "itsgoingd@luzer.sk",
+                    "homepage": "http://twitter.com/itsgoingd"
+                }
+            ],
+            "description": "Server-side component of Clockwork, a Chrome extension for PHP development",
+            "homepage": "http://github.com/itsgoingd/clockwork",
+            "keywords": [
+                "debugging",
+                "laravel",
+                "logging",
+                "profiling"
+            ],
+            "time": "2017-01-25 13:47:29"
+        },
+        {
             "name": "laravel/homestead",
             "version": "v2.2.2",
             "source": {
@@ -5423,7 +5527,7 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v3.2.3",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
@@ -5589,16 +5693,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.2.3",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e1718c6bf57e1efbb8793ada951584b2ab27775b"
+                "reference": "9724c684646fcb5387d579b4bfaa63ee0b0c64c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e1718c6bf57e1efbb8793ada951584b2ab27775b",
-                "reference": "e1718c6bf57e1efbb8793ada951584b2ab27775b",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/9724c684646fcb5387d579b4bfaa63ee0b0c64c8",
+                "reference": "9724c684646fcb5387d579b4bfaa63ee0b0c64c8",
                 "shasum": ""
             },
             "require": {
@@ -5640,7 +5744,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-21 17:06:35"
+            "time": "2017-02-16 22:46:52"
         }
     ],
     "aliases": [],
