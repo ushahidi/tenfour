@@ -36,6 +36,6 @@ return [
         ],
 
         // Nexmo security secret for signed MOs
-        'nexmo_security_secret' => env('NEXMO_SECURITY_SECRET', 'secret'),
+        'nexmo_security_secret' => env('NEXMO_SECURITY_SECRET', false),
     ]
 ];

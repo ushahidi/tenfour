@@ -70,7 +70,12 @@ class NexmoMessageValidator
     public function isValid(Request $request)
     {
         try {
-            $this->validate($request);
+            if ($this->secret) {
+                $this->validate($request);
+            } else {
+                // If secret is not set, assume all messages are valid
+                return true;
+            }
         }
         catch (InvalidMOMessageException $e) {
             return false;
