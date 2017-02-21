@@ -55,11 +55,11 @@ class SMSService implements MessageService
         SMS::driver($driver);
 
         if (isset($this->view)) {
-            SMS::send($this->view, ['msg' => $msg], function($sms) use ($to) {
+            SMS::queue($this->view, ['msg' => $msg], function($sms) use ($to) {
                 $sms->to($to);
             });
         } else {
-            SMS::send($msg, [], function($sms) use ($to) {
+            SMS::queue($msg, [], function($sms) use ($to) {
                 $sms->to($to);
             });
         }
