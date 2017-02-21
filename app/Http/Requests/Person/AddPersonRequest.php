@@ -11,7 +11,7 @@ class AddPersonRequest extends UpdatePersonRequest
     public function authorize()
     {
         // An admin, org owner and org admin can add members
-        if ($this->user()->isMember($this->route('organization'))) {
+        if ($this->user()->isAdmin($this->route('organization'))) {
             return true;
         }
 
