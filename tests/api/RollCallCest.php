@@ -270,35 +270,9 @@ class RollCallCest
      * Get roll call details as admin
      *
      */
-    public function getMyRollCallAsMember(ApiTester $I)
-    {
-        $id = 1;
-        $I->wantTo('Get roll call details as an member');
-        $I->amAuthenticatedAsUser();
-        $I->sendGET($this->endpoint.'/'.$id);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'message' => 'Westgate under siege',
-                'status'  => 'pending',
-                'organization' => [
-                    'id' => 2
-                ],
-                'user' => [
-                    'id' => 4
-                ]
-            ]
-         );
-    }
-
-    /*
-     * Get roll call details as admin
-     *
-     */
     public function getOtherRollCallAsMember(ApiTester $I)
     {
-        $id = 3;
+        $id = 5;
         $I->wantTo('Failed to get roll call details as an member');
         $I->amAuthenticatedAsUser();
         $I->sendGET($this->endpoint.'/'.$id);

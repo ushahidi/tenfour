@@ -44,5 +44,4 @@ class CreateRollCallRequest extends FormRequest
             'recipients.*.id' => 'required|exists:users,id'
         ];
     }
-
 }

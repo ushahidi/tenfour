@@ -27,6 +27,9 @@ class EloquentRollCallRepository implements RollCallRepository
             $query->whereHas('recipients', function ($query) use ($recipient_id) {
                 $query->where('user_id', $recipient_id);
             });
+
+            // Return Rollcalls owned by the receipient as well
+            $query->orWhere('user_id', $recipient_id);
         }
 
         $roll_calls = $query->get()->toArray();

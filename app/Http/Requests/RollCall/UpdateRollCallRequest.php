@@ -26,7 +26,6 @@ class UpdateRollCallRequest extends FormRequest
             return true;
         }
 
-        return false;
     }
 
     public function rules()

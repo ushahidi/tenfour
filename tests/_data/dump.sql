@@ -68,6 +68,7 @@ INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VAL
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test roll call', '2', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '["yes", "no"]');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('5', 'Roll call with answers', '2', 'pending', '0', '2', '["yes", "no"]');
 
 -- Add test roll call messages
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
