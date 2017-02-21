@@ -33,7 +33,7 @@ class SMSCest
         ]);
 
         $I->seeResponseCodeIs(200);
-        $I->seeResponseContains('Hi');
+        $I->seeResponseContains('Accepted');
     }
 
     public function receiveNexmoMOsWithValidSignature(ApiTester $I)
