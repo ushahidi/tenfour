@@ -16,7 +16,7 @@ class GetPersonRequest extends FormRequest
      */
     public function authorize()
     {
-      clock()->startEvent('person_authorise_event', 'Person::authorise');
+        clock()->startEvent('person_authorise_event', 'Person::authorise');
         // An org owner/ admin can view an organization
         //
         // Temporary access given to members to view organization and people
@@ -32,7 +32,7 @@ class GetPersonRequest extends FormRequest
           clock()->endEvent('person_authorise_event');
             return true;
         }
-clock()->endEvent('person_authorise_event');
+        clock()->endEvent('person_authorise_event');
         return false;
     }
 

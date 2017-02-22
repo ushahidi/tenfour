@@ -18,7 +18,7 @@ return [
     'debug' => env('APP_DEBUG', false),
 
     // Adding clockwork profiler toggle
-    'clockwork' => env('CLOCKWORK', true),
+    'clockwork' => env('CLOCKWORK', false),
 
     /*
     |--------------------------------------------------------------------------

@@ -105,12 +105,12 @@ class PersonController extends ApiController
      */
     public function show(GetPersonRequest $request, $organization_id, $person_id)
     {
-      clock()->startEvent('person_auth_event', 'Person::show');
+        clock()->startEvent('person_auth_event', 'Person::show');
         if ($person_id === 'me') {
             $person_id = $this->auth->user()['id'];
         }
-clock()->endEvent('person_auth_event');
-  clock()->startEvent('person_before_transform_event', 'Person::startTransform');
+        clock()->endEvent('person_auth_event');
+        clock()->startEvent('person_before_transform_event', 'Person::startTransform');
         return $this->response->item($this->people->find($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }

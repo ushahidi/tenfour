@@ -30,8 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $clockwork = $this->app['config']->get('app.clockwork', false);
-        \Log::info('here');
-        \Log::info($clockwork);
+
         if ($clockwork) {
              $this->app->register(ClockworkServiceProvider::class);
         }

@@ -95,7 +95,7 @@ class UserTransformer extends TransformerAbstract
                 return substr($word, 0, 1);
             }, explode(' ', $user['name']));
         $user['initials'] = strtoupper(implode('', $user['initials']));
-clock()->endEvent('person_in_transform_event');
+        clock()->endEvent('person_in_transform_event');
         return $user;
     }
 }
