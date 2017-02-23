@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f9f57017d0fdfa089a06ba13872cec00",
-    "content-hash": "baa9327c36cd3ea9f6935c42d75405b6",
+    "hash": "23da46384c53c0b79b14ade4d8b7257b",
+    "content-hash": "646b1f943aa0f20854b298800d9bcf4f",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -3837,6 +3837,51 @@
                 "validate"
             ],
             "time": "2016-11-23 20:04:58"
+        },
+        {
+            "name": "willdurand/email-reply-parser",
+            "version": "2.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/willdurand/EmailReplyParser.git",
+                "reference": "11f4919dbb705115bc4fc9127e9de195bc49dad9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/willdurand/EmailReplyParser/zipball/11f4919dbb705115bc4fc9127e9de195bc49dad9",
+                "reference": "11f4919dbb705115bc4fc9127e9de195bc49dad9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EmailReplyParser\\": "src/EmailReplyParser"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "William Durand",
+                    "email": "william.durand1@gmail.com"
+                }
+            ],
+            "description": "Port of the cool GitHub's EmailReplyParser library in PHP 5.3",
+            "keywords": [
+                "email",
+                "reply-parser"
+            ],
+            "time": "2016-02-25 15:51:01"
         },
         {
             "name": "zendframework/zend-loader",
