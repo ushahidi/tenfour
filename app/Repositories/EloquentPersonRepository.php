@@ -27,13 +27,18 @@ class EloquentPersonRepository implements PersonRepository
     // OrgCrudRepository
     public function all($organization_id)
     {
-        return Organization::findOrFail($organization_id)
+        $members = Organization::findOrFail($organization_id)
             ->members()
             ->with('contacts')
             ->select('users.*','role')
             ->orderby('name', 'asc')
-            ->get()
-            ->toArray();
+            ->get();
+
+        foreach ($members as &$member) {
+            $member['has_logged_in'] = $member->hasLoggedIn();
+        }
+
+        return $members->toArray();
     }
 
     protected function storeUserAvatar($file, $id)
