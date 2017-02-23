@@ -2,12 +2,17 @@
 namespace RollCall\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class UserTransformer extends TransformerAbstract
 {
+    public static function generateInitials($name) {
+        $initials = array_map(function ($word) {
+            return substr($word, 0, 1);
+        }, explode(' ', $name));
+        $initials = strtoupper(implode('', $initials));
+        return $initials;
+    }
     public function transform(array $user)
     {
         // User config task
@@ -52,6 +57,7 @@ class UserTransformer extends TransformerAbstract
 
         if (isset($user['notifications'])) {
             foreach($user['notifications'] as &$notification) {
+
                 $notification['type'] = str_replace('RollCall\\Notifications\\', '', $notification['type']);
             }
         }
@@ -69,16 +75,6 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
-        //Add path to user-avatar
-        if(!empty($user['profile_picture'])) {
-            try {
-                $contents = Storage::get($user['profile_picture']);
-                $user['profile_picture'] = (string) Image::make($contents)->encode('data-url');
-            } catch (FileNotFoundException $e) {
-                // Don't return the profile picture
-                $user['profile_picture'] = null;
-            }
-        }
 
         // Got response status if available
         if (isset($user['pivot']['response_status'])) {
@@ -88,11 +84,8 @@ class UserTransformer extends TransformerAbstract
         unset($user['pivot']);
 
         // Generate user initials
-        $user['initials'] =
-            array_map(function ($word) {
-                return substr($word, 0, 1);
-            }, explode(' ', $user['name']));
-        $user['initials'] = strtoupper(implode('', $user['initials']));
+        $user['initials'] = $this->generateInitials($user['name']);
+      
         return $user;
     }
 }

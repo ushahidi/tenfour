@@ -43,11 +43,10 @@ class EloquentPersonRepository implements PersonRepository
         list(, $extension) = explode('/', $extension);
         list(, $file) = explode(',', $file);
         $file = base64_decode($file);
-        $path = '/useravatar/'.$filename . '.' . $extension;
-
+        $path = 'useravatar/'.$filename . '.' . $extension;
         Storage::put($path, $file, 'public');
 
-        return $path;
+        return Storage::url($path);
     }
 
     // OrgCrudRepository
@@ -61,8 +60,8 @@ class EloquentPersonRepository implements PersonRepository
 
         if (isset($input['inputImage'])) {
             $file = $input['inputImage'];
-            $path = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
-            $input['profile_picture'] = $path;
+            $input['profile_picture'] = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
+            
             unset($input['inputImage']);
         }
 
@@ -103,8 +102,7 @@ class EloquentPersonRepository implements PersonRepository
             if (isset($input['inputImage']))
             {
                 $file = $input['inputImage'];
-                $path = $this->storeUserAvatar($file, $user_id);
-                $input['profile_picture'] = $path;
+                $input['profile_picture'] = $this->storeUserAvatar($file, $user_id);
                 unset($input['inputImage']);
             }
             /* end of user-avatar-code */
