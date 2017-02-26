@@ -73,4 +73,22 @@ interface RollCallRepository extends CrudRepository
      */
     public function getLastUnrepliedByContact($contact_id);
 
+    /**
+     * Set complaint count
+     *
+     * @param int $count
+     * @param int $contact_id
+     *
+     * @return array
+     */
+    public function setComplaintCount($count, $id);
+
+    /**
+     * Get complaint count by organization
+     *
+     * @param int $org_id
+     *
+     * @return int
+     */
+    public function getComplaintCountByOrg($org_id);
 }

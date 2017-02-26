@@ -19,7 +19,8 @@
         "dingo/blueprint": "dev-master",
         "intervention/image": "^2.3",
         "giggsey/libphonenumber-for-php": "^8.0",
-        "league/flysystem-aws-s3-v3": "~1.0"
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "markdunphy/ses-sns-types": "^0.1.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -107,4 +107,13 @@ class EloquentContactRepository implements ContactRepository
 
       return $contact->toArray();
     }
+
+    public function setBounceCount($count, $id)
+    {
+        $contact = Contact::findorFail($id);
+        $contact->bounce_count = $count;
+        $contact->save();
+
+        return $contact->fresh()->toArray();
+    }
 }
