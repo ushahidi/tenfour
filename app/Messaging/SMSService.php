@@ -7,6 +7,7 @@ use RollCall\Contracts\Messaging\MessageService;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
+use GrahamCampbell\Throttle\Facades\Throttle;
 
 class SMSService implements MessageService
 {
@@ -54,9 +55,9 @@ class SMSService implements MessageService
 
         $view = isset($this->view) ? $this->view : $msg;
 
-        $queue = resolve('\Illuminate\Queue\QueueManager')
+        $queue = resolve('\Illuminate\Queue\QueueManager');
 
-        $queue->push('SMSService@handleQueuedMessage', compact('view', 'additional_params', 'driver', 'from', $to))
+        $queue->push('RollCall\Messaging\SMSService@handleQueuedMessage', compact('view', 'additional_params', 'driver', 'from', 'to'));
     }
 
     /**
