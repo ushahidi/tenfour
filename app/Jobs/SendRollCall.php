@@ -14,6 +14,7 @@ use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Models\Organization;
+use Log;
 
 class SendRollCall implements ShouldQueue
 {
@@ -41,6 +42,16 @@ class SendRollCall implements ShouldQueue
     public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
     {
         $organization = $org_repo->find($this->roll_call['organization_id']);
+
+        // Get complaint count for org
+        $complaint_count = $roll_call_repo->getComplaintCountByOrg($this->roll_call['organization_id']);
+
+        // If complaint count is greater than threshold, log and don't send
+        if ($complaint_count >= config('rollcall.messaging.complaint_threshold')) {
+            Log::info('Cannot send roll call for ' . $organization['name'] . ' because complaints exceed threshold');
+            return;
+        }
+
         $creator = $person_repo->find($this->roll_call['organization_id'], $this->roll_call['user_id']);
 
         $org_url = Organization::findOrFail($this->roll_call['organization_id'])->url();
@@ -76,7 +87,12 @@ class SendRollCall implements ShouldQueue
                 $message_service = $message_service_factory->make($contact['type']);
 
                 if ($contact['type'] === 'email') {
-                        $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator, $contact));
+                    if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
+                        Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
+                        continue;
+                    }
+
+                    $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator, $contact));
                 } else {
                     // Send reminder SMS to unresponsive recipient
                     if ($unreplied_roll_call_id) {
