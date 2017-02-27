@@ -20,7 +20,8 @@
         "intervention/image": "^2.3",
         "giggsey/libphonenumber-for-php": "^8.0",
         "league/flysystem-aws-s3-v3": "~1.0",
-        "willdurand/email-reply-parser": "^2.5"
+        "willdurand/email-reply-parser": "^2.5",
+        "graham-campbell/throttle": "^5.3"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",
