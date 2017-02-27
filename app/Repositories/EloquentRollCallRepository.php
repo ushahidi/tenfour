@@ -190,7 +190,7 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function getComplaintCountByOrg($org_id)
     {
-        return wRollCall::where('organization_id', $org_id)
+        return RollCall::where('organization_id', $org_id)
             ->sum('complaint_count');
     }
 }
