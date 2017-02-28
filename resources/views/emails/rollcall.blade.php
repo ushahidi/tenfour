@@ -30,13 +30,13 @@
     font-weight: 700;
     color: #FFFFFF;
     text-align: center;
-    line-height: 50px;
-    width: 50px;
-    height: 50px;
-    -webkit-border-radius: 25px;
-    -moz-border-radius: 25px;
-    border-radius: 25px;
-    max-width: 50px;
+    line-height: 90px;
+     width: 90px;
+    height: 90px;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    max-width: 90px;
     border: 1px solid #DCDCDC;
     background-color: #222222;
 }

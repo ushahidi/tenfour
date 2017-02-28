@@ -11,7 +11,7 @@ class UserTransformer extends TransformerAbstract
             return substr($word, 0, 1);
         }, explode(' ', $name));
         $initials = strtoupper(implode('', $initials));
-        return $initials;
+        return substr($initials, 0, 3);
     }
     public function transform(array $user)
     {
