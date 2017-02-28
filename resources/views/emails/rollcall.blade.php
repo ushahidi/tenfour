@@ -23,6 +23,24 @@
     .appleBody a {color:#68440a; text-decoration: none;}
     .appleFooter a {color:#999999; text-decoration: none;}
     /* MOBILE STYLES */
+    .avatar_alpha {
+    margin: 0 auto;
+    font-family: 'Lato', Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 50px;
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    max-width: 50px;
+    border: 1px solid #DCDCDC;
+    background-color: #222222;
+}
+    }
     @media screen and (max-width: 525px) {
         /* ALLOWS FOR FLUID TABLES */
         table[class="wrapper"]{
@@ -155,8 +173,12 @@
                         <!-- ROLLCALL -->
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border: 1px solid #E6E6DD; box-shadow: 0 1px 3px rgba(0,0,0,.16);">
                             <tr>
-                    <td align=center style="text-align: center; padding: 20px 20px 10px;"><img src="http://www.gravatar.com/avatar/{{ $gravatar }}?d=identicon&s=40" alt="{{ $author }}" style="display: inline-block; color: #666666;  font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px; border-radius: 50%;" class="img-max"></td>
-
+                    <td align=center style="text-align: center; padding: 20px 20px 10px;">
+                    @if($profile_picture) 
+                        <img src="{{$profile_picture}}" alt="{{ $author }}" style="display: inline-block; color: #666666;  font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px; border-radius: 50%;" class="img-max"></td>
+                    @else
+                        <div class="avatar_alpha">{{$initials}}</div>
+                    @endif
                     <td class="devices-deployment-name" style="display: none; vertical-align:top; text-align: left; padding: 8.5% 65% 0 29%; font-size: 9px; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #fff;"> {{ $author }}</td>
                             </tr>
                             <tr>
