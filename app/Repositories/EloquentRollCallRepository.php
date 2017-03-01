@@ -180,7 +180,7 @@ class EloquentRollCallRepository implements RollCallRepository
     protected function getReplyCounts($id)
     {
         return Reply::where('roll_call_id', $id)
-            ->count();
+            ->count(DB::raw('DISTINCT `user_id`')); // only count each user once
     }
 
     protected function getSentCounts($id)

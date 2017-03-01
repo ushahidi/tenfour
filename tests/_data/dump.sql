@@ -89,8 +89,9 @@ INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES
 
 
 -- Add test replies
-INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('1', 'I am OK', '1', '1', '1');
-INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('2', 'I am OK', '4', '1', '4');
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('1', 'I am OK', '1', '1', '1', NOW());
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('2', 'Not OK yet', '4', '1', '4', NOW() - INTERVAL 1 DAY);
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('3', 'I am OK', '4', '1', '4', NOW());
 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';
