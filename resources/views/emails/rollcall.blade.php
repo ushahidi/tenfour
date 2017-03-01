@@ -22,8 +22,8 @@
     /* iOS BLUE LINKS */
     .appleBody a {color:#68440a; text-decoration: none;}
     .appleFooter a {color:#999999; text-decoration: none;}
-    /* MOBILE STYLES */
-    .avatar_alpha {
+    
+    .avatar-alpha {
     margin: 0 auto;
     font-family: 'Lato', Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 1em;
@@ -39,8 +39,9 @@
     max-width: 90px;
     border: 1px solid #DCDCDC;
     background-color: #222222;
-}
     }
+
+    /* MOBILE STYLES */
     @media screen and (max-width: 525px) {
         /* ALLOWS FOR FLUID TABLES */
         table[class="wrapper"]{
@@ -175,9 +176,9 @@
                             <tr>
                     <td align=center style="text-align: center; padding: 20px 20px 10px;">
                     @if($profile_picture) 
-                        <img src="{{$profile_picture}}" alt="{{ $author }}" style="display: inline-block; color: #666666;  font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px; border-radius: 50%;" class="img-max"></td>
+                        <img src="{{$profile_picture}}" alt="{{ $author }}" class="avatar-alpha"></td>
                     @else
-                        <div class="avatar_alpha">{{$initials}}</div>
+                        <div class="avatar-alpha">{{$initials}}</div>
                     @endif
                     <td class="devices-deployment-name" style="display: none; vertical-align:top; text-align: left; padding: 8.5% 65% 0 29%; font-size: 9px; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #fff;"> {{ $author }}</td>
                             </tr>
