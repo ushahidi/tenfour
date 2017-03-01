@@ -198,6 +198,7 @@ class PersonCest
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id/people/$user_id", [
+            'name' => 'Org Member',
             'role' => 'owner'
         ]);
         $I->seeResponseCodeIs(200);
@@ -205,6 +206,7 @@ class PersonCest
         $I->seeResponseContainsJson([
             'person' => [
                 'id'   => 3,
+                'name' => 'Org Member',
                 'role' => 'owner'
             ]
         ]);
@@ -530,13 +532,15 @@ class PersonCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$orgId/people/$id", [
+            'name' => 'Mary Mata',
             'password' => 'another_password',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'person' => [
-                'id' => 1
+                'id' => 1,
+                'name' => 'Mary Mata'
             ]
         ]);
 
