@@ -2,8 +2,6 @@
 
 namespace RollCall\Http\Controllers;
 
-//use Illuminate\Http\Request;
-
 use Aws\Sns\Message;
 use markdunphy\SesSnsTypes\Notification\BounceMessage;
 use markdunphy\SesSnsTypes\Notification\ComplaintMessage;
@@ -14,8 +12,6 @@ use Log;
 class SESBounceController extends Controller
 {
     use ValidatesMessages;
-
-    //private $complaint_threshold = config('rollcall.messaging.complaint_threshold');
 
     public function __construct(ContactRepository $contacts, RollCallRepository $roll_calls)
     {
