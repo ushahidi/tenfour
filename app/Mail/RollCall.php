@@ -7,6 +7,8 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use RollCall\Models\Organization;
+use RollCall\Http\Transformers\UserTransformer;
+
 
 class RollCall extends Mailable
 {
@@ -39,7 +41,8 @@ class RollCall extends Mailable
 
         $from_address = 'rollcall-' . $this->roll_call['id'] .'@'. $domain;
 
-        $gravatar = ! empty($this->creator['email']) ? md5(strtolower(trim($this->creator['email']))) : '00000000000000000000000000000000';
+        $profile_picture = $this->creator['profile_picture'];
+        $initials = UserTransformer::generateInitials($this->creator['name']);
         $roll_call_url = $client_url .'/rollcalls/'. $this->roll_call['id'];
         $subject = str_limit($this->roll_call['message'], $limit = 50, $end = '...');
 
@@ -60,7 +63,8 @@ class RollCall extends Mailable
                     ->with([
                         'msg'               => $this->roll_call['message'],
                         'roll_call_url'     => $roll_call_url,
-                        'gravatar'          => $gravatar,
+                        'profile_picture'   => $profile_picture,
+                        'initials'          => $initials,
                         'answers'           => $this->roll_call['answers'],
                         'org_subdomain'     => $this->organization['subdomain'],
                         'author'            => $this->creator['name'],
@@ -70,6 +74,7 @@ class RollCall extends Mailable
                         'reply_url'         => $reply_url,
                         'has_custom_answers'=> $has_custom_answers,
                         'unsubscribe_url'   => $unsubscribe_url,
+
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])

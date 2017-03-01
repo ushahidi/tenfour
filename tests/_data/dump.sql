@@ -62,12 +62,14 @@ INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('6', '3', '
 INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('7', '4', '1', 'email', 'org_owner@ushahidi.com');
 INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('8', '5', '1', 'email', 'org_admin@ushahidi.com');
 INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('9', '6', '1', 'email', 'org_member2@ushahidi.com');
+INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('10', '1', '1', 'email', 'test+contact2@ushahidi.com');
 
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test roll call', '2', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '["yes", "no"]');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('5', 'Roll call with answers', '2', 'pending', '0', '2', '["yes", "no"]');
 
 -- Add test roll call messages
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
@@ -76,18 +78,20 @@ INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('6', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '4');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('10', '1');
 
 -- Add test roll call recipients
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('1', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('1', '1', 'replied');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('2', '1');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('4', '1', 'unresponsive');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('3', '2');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('3', '2', 'waiting');
 
 
 -- Add test replies
-INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('1', 'I am OK', '1', '1', '1');
-INSERT INTO replies (id, message, contact_id, roll_call_id, user_id) VALUES ('2', 'I am OK', '4', '1', '4');
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('1', 'I am OK', '1', '1', '1', NOW());
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('2', 'Not OK yet', '4', '1', '4', NOW() - INTERVAL 1 DAY);
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('3', 'I am OK', '4', '1', '4', NOW());
 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';

@@ -27,6 +27,9 @@ class EloquentRollCallRepository implements RollCallRepository
             $query->whereHas('recipients', function ($query) use ($recipient_id) {
                 $query->where('user_id', $recipient_id);
             });
+
+            // Return Rollcalls owned by the receipient as well
+            $query->orWhere('user_id', $recipient_id);
         }
 
         $roll_calls = $query->get()->toArray();
@@ -140,6 +143,22 @@ class EloquentRollCallRepository implements RollCallRepository
             ->value('roll_call_messages.roll_call_id');
     }
 
+    public function getLastUnrepliedByUser($user_id)
+    {
+        return DB::table('roll_call_messages')
+            ->leftJoin('contacts', function ($join) {
+                $join->on('roll_call_messages.contact_id', '=', 'contacts.id');
+            })
+            ->leftJoin('replies', function ($join) {
+                $join->on('replies.roll_call_id', '=', 'roll_call_messages.roll_call_id');
+            })
+            ->where('contacts.user_id', '=', $user_id)
+            ->where('replies.user_id', '=', null)
+            ->orderBy('roll_call_messages.roll_call_id', 'desc')
+            ->take(1)
+            ->value('roll_call_messages.roll_call_id');
+    }
+
     public function addMessage($id, $contact_id)
     {
         $roll_call = RollCall::findorFail($id);
@@ -161,7 +180,7 @@ class EloquentRollCallRepository implements RollCallRepository
     protected function getReplyCounts($id)
     {
         return Reply::where('roll_call_id', $id)
-            ->count();
+            ->count(DB::raw('DISTINCT `user_id`')); // only count each user once
     }
 
     protected function getSentCounts($id)

@@ -19,19 +19,19 @@ return [
             ],
             'US' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'nexmo')
+                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
             ],
             'NZ' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'nexmo')
+                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
             ],
             'CA' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'nexmo')
+                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
             ],
             'default' => [
-                'driver' => 'africastalking',
-                'from' => env('AFRICASTALKING_SRC_ADDR', '20880')
+                'driver' => 'nexmo',
+                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
             ],
         ],
 

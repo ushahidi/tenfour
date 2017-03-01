@@ -15,7 +15,7 @@ class ReplyCest
         $I->seeResponseContainsJson([
             'replies' => [
                 [
-                    'id'       => 2,
+                    'id'       => 3,
                     'message'  => 'I am OK',
                     'contact'  => [
                         'id' => 4
@@ -40,7 +40,7 @@ class ReplyCest
         $I->seeResponseContainsJson([
             'replies' => [
                 [
-                    'id'       => 2,
+                    'id'       => 3,
                     'message'  => 'I am OK',
                     'contact'  => [
                         'id' => 4
@@ -76,7 +76,7 @@ class ReplyCest
                     ]
                 ],
                 [
-                    'id'       => 2,
+                    'id'       => 3,
                     'message'  => 'I am OK',
                     'contact'  => [
                         'id' => 4

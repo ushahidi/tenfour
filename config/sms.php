@@ -10,7 +10,9 @@ return [
 
     'africastalking' => [
         'api_key' => env('AFRICASTALKING_API_KEY', 'Your Africastalking API Key'),
-        'username' => env('AFRICASTALKING_USERNAME', 'Your Africastalking username')
+        'username' => env('AFRICASTALKING_USERNAME', 'Your Africastalking username'),
+        // Extra param for Rollcall
+        'keyword' => env('AFRICASTALKING_KEYWORD', 'rollcall')
     ],
 
     'callfire' => [

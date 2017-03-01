@@ -39,6 +39,7 @@ class UpdatePersonRequest extends FormRequest
             'role' => 'in:member,admin,owner',
             'password' => 'min:8',
             'person_type' => 'in:member,user,external',
+            'name' => 'required',
         ];
 
     }

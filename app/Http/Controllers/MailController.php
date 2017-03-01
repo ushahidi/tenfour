@@ -12,6 +12,7 @@ use Aws\Sns\MessageValidator;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 
 use Zend\Mail\Storage\Message as EmailMessage;
+use EmailReplyParser\Parser\EmailParser;
 
 class MailController extends Controller
 {
@@ -34,19 +35,34 @@ class MailController extends Controller
     public function receive(Request $request)
     {
         if (config('rollcall.messaging.incoming_driver') == 'mailgun') {
-            // Check if the request is authorized.
-            if (hash_hmac('sha256', $request->input('timestamp').$request->input('token'), config('services.mailgun.secret')) !== $request->input('signature')) {
-                return response('Rejected', 406);
-            }
-
-            $message = strip_tags($request->input('body-plain'));
-
-            $this->reply_storage->save($request->input('from'), $message, null, 'mailgun');
-
-            return response('Accepted', 200);
+            return $this->receiveMailgun($request);
         }
 
         if (config('rollcall.messaging.incoming_driver') == 'aws-ses-sns') {
+            return $this->receiveAWS($request);
+        }
+    }
+
+    protected function saveEmail($from, $message, $message_id, $provider) {
+        $visibleMessage = \EmailReplyParser\EmailReplyParser::parseReply($message);
+
+        $this->reply_storage->save($from, $visibleMessage, $message_id, $provider);
+    }
+
+    protected function receiveMailgun() {
+        // Check if the request is authorized.
+        if (hash_hmac('sha256', $request->input('timestamp').$request->input('token'), config('services.mailgun.secret')) !== $request->input('signature')) {
+            return response('Rejected', 406);
+        }
+
+        $message = strip_tags($request->input('body-plain'));
+
+        $this->saveEmail($request->input('from'), $message, null, 'mailgun');
+
+        return response('Accepted', 200);
+    }
+
+    protected function receiveAWS() {
             // Instantiate the Message and Validator
             // @todo DI
             $message = Message::fromRawPostData();
@@ -100,17 +116,16 @@ class MailController extends Controller
 
                 if ($plainText) {
                     Log::info("Received message: ". $message['MessageId']);
-                    $this->reply_storage->save($from, $plainText->getContent(), $message['MessageId'], 'aws-ses-sns');
+                    $this->saveEmail($from, $plainText->getContent(), $message['MessageId'], 'aws-ses-sns');
                 }
                 elseif ($html) {
                     Log::info("Received message: ". $message['MessageId']);
                     $text = strip_tags($html->getContent());
-                    $this->reply_storage->save($from, $text, $message['MessageId'], 'aws-ses-sns');
+                    $this->saveEmail($from, $text, $message['MessageId'], 'aws-ses-sns');
                 }
                 else {
                     Log::info("No plain text found for " . $message['MessageId'], ['original_content' => $original_content]);
                 }
             }
-        }
     }
 }

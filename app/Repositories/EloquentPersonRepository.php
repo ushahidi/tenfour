@@ -27,13 +27,18 @@ class EloquentPersonRepository implements PersonRepository
     // OrgCrudRepository
     public function all($organization_id)
     {
-        return Organization::findOrFail($organization_id)
+        $members = Organization::findOrFail($organization_id)
             ->members()
             ->with('contacts')
             ->select('users.*','role')
             ->orderby('name', 'asc')
-            ->get()
-            ->toArray();
+            ->get();
+
+        foreach ($members as &$member) {
+            $member['has_logged_in'] = $member->hasLoggedIn();
+        }
+
+        return $members->toArray();
     }
 
     protected function storeUserAvatar($file, $id)
@@ -43,11 +48,10 @@ class EloquentPersonRepository implements PersonRepository
         list(, $extension) = explode('/', $extension);
         list(, $file) = explode(',', $file);
         $file = base64_decode($file);
-        $path = '/useravatar/'.$filename . '.' . $extension;
-
+        $path = 'useravatar/'.$filename . '.' . $extension;
         Storage::put($path, $file, 'public');
 
-        return $path;
+        return Storage::url($path);
     }
 
     // OrgCrudRepository
@@ -61,8 +65,8 @@ class EloquentPersonRepository implements PersonRepository
 
         if (isset($input['inputImage'])) {
             $file = $input['inputImage'];
-            $path = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
-            $input['profile_picture'] = $path;
+            $input['profile_picture'] = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
+            
             unset($input['inputImage']);
         }
 
@@ -103,8 +107,7 @@ class EloquentPersonRepository implements PersonRepository
             if (isset($input['inputImage']))
             {
                 $file = $input['inputImage'];
-                $path = $this->storeUserAvatar($file, $user_id);
-                $input['profile_picture'] = $path;
+                $input['profile_picture'] = $this->storeUserAvatar($file, $user_id);
                 unset($input['inputImage']);
             }
             /* end of user-avatar-code */
@@ -167,7 +170,6 @@ class EloquentPersonRepository implements PersonRepository
         {
             $roll_call += $this->roll_calls->getCounts($roll_call['id']);
         }
-
         return $user;
     }
 

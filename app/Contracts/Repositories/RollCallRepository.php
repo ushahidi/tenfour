@@ -91,4 +91,13 @@ interface RollCallRepository extends CrudRepository
      * @return int
      */
     public function getComplaintCountByOrg($org_id);
+
+    /**
+     * Get pending roll call reply by contact
+     *
+     * @param int $contact_id
+     *
+     * @return int
+     */
+    public function getLastUnrepliedByUser($user_id);
 }
