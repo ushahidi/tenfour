@@ -57,6 +57,14 @@ class SendRollCall implements ShouldQueue
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
+            // Check if user has a pending reply
+            $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByUser($recipient['id']);
+
+            // Set state to unresponsive if no reply found
+            if ($unreplied_roll_call_id) {
+                $roll_call_repo->updateRecipientStatus($unreplied_roll_call_id, $recipient['id'], 'unresponsive');
+            }
+
             $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
 
             foreach($contacts as $contact)
@@ -65,23 +73,17 @@ class SendRollCall implements ShouldQueue
                   continue;
                 }
 
-                // Check if contact has a pending reply
-                $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
-
-                // Set state to unresponsive if no reply found
-                if ($unreplied_roll_call_id) {
-                    $roll_call_repo->updateRecipientStatus($unreplied_roll_call_id, $recipient['id'], 'unresponsive');
-                }
-
                 $message_service = $message_service_factory->make($contact['type']);
 
                 if ($contact['type'] === 'email') {
                         $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator, $contact));
                 } else {
                     // Send reminder SMS to unresponsive recipient
-                    if ($unreplied_roll_call_id) {
+                    $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
+
+                    if ($unreplied_sms_roll_call_id) {
                         // @todo include previous rollcall message
-                        $roll_call_url = $org_url .'/rollcalls/'. $unreplied_roll_call_id;
+                        $roll_call_url = $org_url .'/rollcalls/'. $unreplied_sms_roll_call_id;
                         $message_service->setView('sms.unresponsive');
                         $message_service->send($contact['contact'], $roll_call_url);
                     }

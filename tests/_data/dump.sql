@@ -62,6 +62,7 @@ INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('6', '3', '
 INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('7', '4', '1', 'email', 'org_owner@ushahidi.com');
 INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('8', '5', '1', 'email', 'org_admin@ushahidi.com');
 INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('9', '6', '1', 'email', 'org_member2@ushahidi.com');
+INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('10', '1', '1', 'email', 'test+contact2@ushahidi.com');
 
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
@@ -77,13 +78,14 @@ INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '1');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('6', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '4');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('10', '1');
 
 -- Add test roll call recipients
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('1', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('1', '1', 'replied');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('2', '1');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('4', '1', 'unresponsive');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('3', '2');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('3', '2', 'waiting');
 
 
 -- Add test replies

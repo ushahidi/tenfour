@@ -21,7 +21,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -76,7 +76,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -103,7 +103,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -201,7 +201,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -302,7 +302,13 @@ class RollCallCest
             ],
             'answers' => ['No', 'Yes']
         ]);
-        // Recipient did not respond to previous roll call
+        // This recipient DID respond to previous roll call
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 1,
+            'roll_call_id'    => 1,
+            'response_status' => 'replied',
+        ]);
+        // This recipient did not respond to previous roll call
         $I->seeRecord('roll_call_recipients', [
             'user_id'         => 3,
             'roll_call_id'    => 2,
