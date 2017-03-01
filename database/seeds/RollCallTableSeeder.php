@@ -26,7 +26,7 @@ class RollCallTableSeeder extends Seeder
                       ->select('id')
                       ->firstOrFail();
 
-        $users = User::select('id')->where('organization_id', $organization->id)->get();
+        $users = User::select('id')->where('organization_id', $organization->id)->limit(20)->get();
         foreach ($users as $user) {
             $rollCall = RollCall::firstOrCreate([
                 'organization_id' => $organization->id,

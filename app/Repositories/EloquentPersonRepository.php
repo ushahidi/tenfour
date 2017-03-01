@@ -25,13 +25,15 @@ class EloquentPersonRepository implements PersonRepository
     }
 
     // OrgCrudRepository
-    public function all($organization_id)
+    public function all($organization_id, $offset = 0, $limit = 20)
     {
         $members = Organization::findOrFail($organization_id)
             ->members()
             ->with('contacts')
             ->select('users.*','role')
             ->orderby('name', 'asc')
+            ->offset($offset)
+            ->limit($limit)
             ->get();
 
         foreach ($members as &$member) {
@@ -66,7 +68,7 @@ class EloquentPersonRepository implements PersonRepository
         if (isset($input['inputImage'])) {
             $file = $input['inputImage'];
             $input['profile_picture'] = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
-            
+
             unset($input['inputImage']);
         }
 
