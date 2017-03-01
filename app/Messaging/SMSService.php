@@ -6,9 +6,12 @@ use SMS;
 use RollCall\Contracts\Messaging\MessageService;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
+use SimpleSoftwareIO\SMS\SMSNotSentException;
+use GrahamCampbell\Throttle\Facades\Throttle;
 
 class SMSService implements MessageService
 {
+
     public function setView($view)
     {
         $this->view = $view;
@@ -47,6 +50,25 @@ class SMSService implements MessageService
         }
 
         $additional_params['keyword'] = config('sms.'.$driver.'.keyword');
+        $additional_params['from'] = $from;
+        $additional_params['msg'] =  $msg;
+
+        $view = isset($this->view) ? $this->view : $msg;
+
+        $queue = resolve('\Illuminate\Queue\QueueManager');
+
+        $queue->push('RollCall\Messaging\SMSService@handleQueuedMessage', compact('view', 'additional_params', 'driver', 'from', 'to'));
+    }
+
+    /**
+     * Handles a queue message.
+     *
+     * @param \Illuminate\Queue\Jobs\Job $job
+     * @param array                      $data
+     */
+    public function handleQueuedMessage($job, $data)
+    {
+        extract($data);
 
         // Set 'from' address if configured
         if ($from) {
@@ -56,15 +78,32 @@ class SMSService implements MessageService
         // Set SMS driver for the region code
         SMS::driver($driver);
 
-        if (isset($this->view)) {
-            SMS::queue($this->view, ['msg' => $msg] + $additional_params, function($sms) use ($to) {
-                $sms->to($to);
-            });
-        } else {
-            SMS::queue($msg, $additional_params, function($sms) use ($to) {
-                $sms->to($to);
-            });
+        $messages_per_second = config('sms.'.$driver.'.messages_per_second');
+        $time = 1/60; // Pass time in minutes to the cache store
+
+        if ($messages_per_second) {
+            $throttler = Throttle::get([
+                'ip'    => $from,
+                'route' => $to,
+            ], $messages_per_second, $time);
+
+            // If we have exceeded the limit return the job back to the queue
+            if ($throttler->attempt()) {
+                $job->release();
+                return;
+            }
         }
+
+        try {
+            SMS::send($view, $additional_params, function($sms) use ($to) {
+                $sms->to($to);
+            });
+            $job->delete();
+        } catch (SMSNotSentException $e) {
+            // Retry in 3 seconds
+            $job->release(3);
+        }
+
     }
 
     public function getMessages(Array $options = [])
