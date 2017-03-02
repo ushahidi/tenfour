@@ -11,8 +11,9 @@ return [
     'africastalking' => [
         'api_key' => env('AFRICASTALKING_API_KEY', 'Your Africastalking API Key'),
         'username' => env('AFRICASTALKING_USERNAME', 'Your Africastalking username'),
-        // Extra param for Rollcall
-        'keyword' => env('AFRICASTALKING_KEYWORD', 'rollcall')
+        // Extra params for Rollcall
+        'keyword' => env('AFRICASTALKING_KEYWORD', 'rollcall'),
+        'messages_per_second' => env('AFRICASTALKING_MESSAGES_PER_SECOND', 5)
     ],
 
     'callfire' => [
@@ -50,7 +51,9 @@ return [
 
     'nexmo' => [
         'api_key' => env('NEXMO_KEY', 'Your Nexmo API key'),
-        'api_secret' => env('NEXMO_SECRET', 'Your Nexmo API secret')
+        'api_secret' => env('NEXMO_SECRET', 'Your Nexmo API secret'),
+        // Extra param to rate limit internally
+        'messages_per_second' => env('NEXMO_MESSAGES_PER_SECOND', 1)
     ],
 
     'plivo' => [

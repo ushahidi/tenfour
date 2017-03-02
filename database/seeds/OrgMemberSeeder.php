@@ -43,8 +43,9 @@ class OrgMemberSeeder extends Seeder
         $organization = Organization::where('name', '=', 'Ushahidi')->get()->first();
 
         foreach ($members as $member) {
+        //while($i < $num_users) {
             $user = User::firstOrCreate([
-                'name'     => $member['name'],
+                'name'     =>  $member['name'],
                 'organization_id' => $organization->id
             ]);
 
@@ -62,6 +63,32 @@ class OrgMemberSeeder extends Seeder
                 'password' => 'westgate',
                 'person_type' => 'user'
             ]);
+        }
+
+        $i = 0;
+        $num_users = 100;
+        //foreach ($members as $member) {
+        while($i < $num_users) {
+            $user = User::firstOrCreate([
+                'name'     => 'Test User ' + $i,
+                'organization_id' => $organization->id
+            ]);
+
+            Contact::firstOrCreate([
+                'type'              => 'email',
+                'contact'           => 'test_email_' + $i + '@ushahiditest.com',
+                'preferred'         => 1,
+                'user_id'           => $user->id,
+                'unsubscribe_token' => Hash::Make(config('app.key'))
+            ]);
+
+            $ids[$user['id']] = ['role' => 'member'];
+
+            $user->update([
+                'password' => 'westgate',
+                'person_type' => 'user'
+            ]);
+            $i++;
         }
 
     }

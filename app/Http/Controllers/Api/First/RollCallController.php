@@ -50,13 +50,16 @@ class RollCallController extends ApiController
     {
         $user_id = null;
 
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
+
         if ($request->query('user') === 'me') {
             $user_id = $this->auth->user()['id'];
         } else {
             $user_id = $request->query('user');
         }
 
-        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id, $request->input('recipient_id'));
+        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id, $request->input('recipient_id'), $offset, $limit);
 
         return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
     }

@@ -79,7 +79,10 @@ class PersonController extends ApiController
      */
     public function index(GetPersonRequest $request, $organization_id)
     {
-        return $this->response->collection($this->people->all($organization_id),
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 10);
+
+        return $this->response->collection($this->people->all($organization_id, $offset, $limit),
                                            new UserTransformer, 'people');
     }
 
@@ -105,12 +108,9 @@ class PersonController extends ApiController
      */
     public function show(GetPersonRequest $request, $organization_id, $person_id)
     {
-        clock()->startEvent('person_auth_event', 'Person::show');
         if ($person_id === 'me') {
             $person_id = $this->auth->user()['id'];
         }
-        clock()->endEvent('person_auth_event');
-        clock()->startEvent('person_before_transform_event', 'Person::startTransform');
         return $this->response->item($this->people->find($organization_id, $person_id),
                                      new UserTransformer, 'person');
     }
