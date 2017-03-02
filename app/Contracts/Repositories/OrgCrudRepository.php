@@ -7,9 +7,11 @@ interface OrgCrudRepository
      * Get all
      *
      * @param int $organization_id
+     * @param int $offset
+     * @param int $limit
      * @return mixed
      */
-    public function all($organization_id);
+    public function all($organization_id, $offset, $limit);
 
     /**
      * Create

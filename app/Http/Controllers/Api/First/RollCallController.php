@@ -51,7 +51,7 @@ class RollCallController extends ApiController
         $user_id = null;
 
         $offset = $request->input('offset', 0);
-        $limit = $request->input('limit', 10);
+        $limit = $request->input('limit', 0);
 
         if ($request->query('user') === 'me') {
             $user_id = $this->auth->user()['id'];

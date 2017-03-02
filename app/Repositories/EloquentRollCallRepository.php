@@ -11,12 +11,16 @@ use RollCall\Notifications\RollCallReceived;
 
 class EloquentRollCallRepository implements RollCallRepository
 {
-    public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 20)
+    public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 0)
     {
         $query = RollCall::query()
-          ->offset($offset)
-          ->limit($limit)
           ->orderBy('created_at', 'desc');
+
+        if ($limit > 0) {
+          $query
+            ->offset($offset)
+            ->limit($limit);
+        }
 
         if ($org_id) {
             $query->where('organization_id', $org_id);

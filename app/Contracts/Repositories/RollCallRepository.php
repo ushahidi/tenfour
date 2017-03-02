@@ -8,9 +8,11 @@ interface RollCallRepository extends CrudRepository
      * @param  [int] $org_id
      * @param  [int] $user_id
      * @param  [int] $recipient_id
+     * @param  [int] $offset
+     * @param  [int] $limit
      * @return [Array]
      */
-    public function all($org_id = null, $user_id = null, $recipient_id = null);
+    public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 0);
 
     /**
      * Get roll call recipients

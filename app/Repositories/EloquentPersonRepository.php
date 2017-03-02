@@ -25,16 +25,21 @@ class EloquentPersonRepository implements PersonRepository
     }
 
     // OrgCrudRepository
-    public function all($organization_id, $offset = 0, $limit = 20)
+    public function all($organization_id, $offset = 0, $limit)
     {
-        $members = Organization::findOrFail($organization_id)
+        $query = Organization::findOrFail($organization_id)
             ->members()
             ->with('contacts')
             ->select('users.*','role')
-            ->orderby('name', 'asc')
+            ->orderby('name', 'asc');
+
+        if ($limit > 0) {
+          $query
             ->offset($offset)
-            ->limit($limit)
-            ->get();
+            ->limit($limit);
+        }
+
+        $members = $query->get();
 
         foreach ($members as &$member) {
             $member['has_logged_in'] = $member->hasLoggedIn();

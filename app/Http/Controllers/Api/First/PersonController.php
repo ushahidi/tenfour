@@ -80,7 +80,7 @@ class PersonController extends ApiController
     public function index(GetPersonRequest $request, $organization_id)
     {
         $offset = $request->input('offset', 0);
-        $limit = $request->input('limit', 10);
+        $limit = $request->input('limit', 0);
 
         return $this->response->collection($this->people->all($organization_id, $offset, $limit),
                                            new UserTransformer, 'people');
