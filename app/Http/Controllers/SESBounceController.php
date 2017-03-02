@@ -56,8 +56,8 @@ class SESBounceController extends Controller
             if ($bounce->isHardBounce()) {
                 $count  = $bounce_threshold;
             }
-            // or else increment bounce count by 1
-            elseif ($bounce->isSoftBounce()) {
+            // or else increment bounce count by 1 except for out-of-office bounces
+            elseif ($bounce->isSoftBounce() && $bounce->getBounceSubType() !== 'General') {
                 $count = $contact['bounce_count'] + 1;
             }
 

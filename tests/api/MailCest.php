@@ -41,6 +41,24 @@ class MailCest
         $I->seeResponseCodeIs(200);
     }
 
+    public function handleSESOutOfOffice(ApiTester $I)
+    {
+        $bounce = Fixtures::get('out_of_office_bounce');
+        $count = 0;
+
+        $endpoint = 'ses/bounces';
+        $I->wantTo('Handle out-of-office SES bounces');
+        $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
+        $I->sendPost($endpoint, $bounce);
+
+        $I->seeRecord('contacts', [
+            'contact' => 'linda@ushahidi.com',
+            'bounce_count' => $count,
+        ]);
+
+        $I->seeResponseCodeIs(200);
+    }
+
     public function handleSESComplaint(ApiTester $I)
     {
         $complaint = Fixtures::get('complaint');
