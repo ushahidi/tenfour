@@ -200,4 +200,19 @@ class EloquentRollCallRepository implements RollCallRepository
             'sent_count' => $this->getSentCounts($rollCallId)
         ];
     }
+
+    public function setComplaintCount($count, $id)
+    {
+        $roll_call = RollCall::findOrFail($id);
+        $roll_call->complaint_count = $count;
+        $roll_call->save();
+
+        return $roll_call->fresh()->toArray();
+    }
+
+    public function getComplaintCountByOrg($org_id)
+    {
+        return RollCall::where('organization_id', $org_id)
+            ->sum('complaint_count');
+    }
 }

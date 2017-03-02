@@ -38,3 +38,7 @@ Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\Perso
 Route::post('unsubscribe', ['uses' => 'Api\First\PersonContactController@unsubscribe']);
 //Get UserAvatars
 Route::get('useravatar/{filename}',['uses' => 'UseravatarController@show']);
+
+// SES bounces and complaints
+Route::post('ses/bounces', 'SESBounceController@handleBounce');
+Route::post('ses/complaints', 'SESBounceController@handleComplaint');
