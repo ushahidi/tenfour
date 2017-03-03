@@ -63,8 +63,7 @@ class ImportContacts extends Command
         $organization = Organization::firstOrCreate([
             'name' => $this->argument('org'),
         ]);
-
-        $subdomain = strtolower($this->argument('org')) . '.' .$domain;
+        $subdomain = strtolower($this->argument('org'));
 
         $organization->update([
             'subdomain'  => $subdomain,
@@ -95,10 +94,15 @@ class ImportContacts extends Command
 
             if (!$member) {
                 $member = User::firstOrCreate([
-                    'name'     => $name,
-                    'password' => $password
+                    'name'            => $name,
+                    'password'        => $password,
+                    'role'            => 'member'
+                    
                 ]);
             }
+
+            $member->organization_id = $organization->id;
+            $member->save();
 
             // Add email contact
             Contact::updateOrCreate([
@@ -116,10 +120,7 @@ class ImportContacts extends Command
                 'contact'     => $phone_number,
                 'subscribed'  => true,
             ], ['preferred' => true]);
-
-            $ids[$member['id']] = ['role' => 'member'];
         }
 
-        $organization->members()->sync($ids, false);
     }
 }
