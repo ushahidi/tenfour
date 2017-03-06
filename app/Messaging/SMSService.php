@@ -17,7 +17,7 @@ class SMSService implements MessageService
         $this->view = $view;
     }
 
-    public function send($to, $msg, $additional_params = [], $subject = null)
+    private function getRegionCode($to)
     {
         // Get region code. The assumption is that all phone numbers are passed as
         // international numbers
@@ -38,7 +38,24 @@ class SMSService implements MessageService
             return;
         }
 
-        $region_code = $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+        return $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+    }
+
+    public function getKeyword($to)
+    {
+        $region_code = $this->getRegionCode($to);
+        $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
+
+        if (!$driver) {
+            $driver = config('rollcall.messaging.sms_providers.default.driver');
+        }
+
+        return config('sms.'.$driver.'.keyword');
+    }
+
+    public function send($to, $msg, $additional_params = [], $subject = null)
+    {
+        $region_code = $this->getRegionCode($to);
 
         // Get driver
         $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
