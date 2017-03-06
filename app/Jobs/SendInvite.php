@@ -53,7 +53,7 @@ class SendInvite implements ShouldQueue
           $url = secure_url(
             $client_url . '/login/invite/'
             .'?email=' . urlencode($email)
-            .'&userId=' . $this->member['id']
+            .'&personId=' . $this->member['id']
             .'&orgId=' . $this->organization['id']
             .'&token=' . $this->member['invite_token']
           );
