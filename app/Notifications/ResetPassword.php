@@ -21,9 +21,10 @@ class ResetPassword extends Notification
      * @param  string  $token
      * @return void
      */
-    public function __construct($token, $organization)
+    public function __construct($token, $email, $organization)
     {
         $this->token = $token;
+        $this->email = $email;
         $this->organization = $organization;
     }
 
@@ -48,7 +49,8 @@ class ResetPassword extends Notification
     {
         $resetLink = url($this->organization->url() .
             '/login/reset-password/' .
-            $this->token);
+            $this->token .
+            '?email=' . urlencode($this->email));
 
         $data = [
             'link'                    => $resetLink,
@@ -57,7 +59,7 @@ class ResetPassword extends Notification
         ];
 
         return (new MailMessage)
-            ->view('emails.resetPassword', $data)
+            ->view('emails.reset_password', $data)
             ->subject('Reset Password');
     }
 }

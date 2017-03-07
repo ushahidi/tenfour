@@ -91,7 +91,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function sendPasswordResetNotification($token) {
-        $this->notify(new ResetPassword($token, $this->organization));
+        $this->notify(new ResetPassword($token, $this->getEmailForPasswordReset(), $this->organization));
     }
 
     public function getEmailForPasswordReset()
