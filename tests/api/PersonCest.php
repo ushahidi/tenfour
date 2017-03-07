@@ -72,14 +72,14 @@ class PersonCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
-            'contact' => '077242424',
+            'contact' => '+1 (207) 7200713',
             'type'    => 'phone',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'contact' => '077242424',
+                'contact' => '+1 (207) 7200713',
                 'type'    => 'phone',
             ]
         ]);
@@ -173,14 +173,14 @@ class PersonCest
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id/people/$user_id/contacts/$contact_id", [
-            'contact' => '087242424',
+            'contact' => '+12077200713',
             'type'    => 'phone',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'contact' => '087242424',
+                'contact' => '+12077200713',
                 'type'    => 'phone',
             ]
         ]);
