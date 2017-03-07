@@ -41,11 +41,10 @@ class RollCallReceived extends Notification
      */
     public function toArray($notifiable)
     {
-        
+
         return [
             'rollcall_message' => $this->rollcall->message,
             'rollcall_id' => $this->rollcall->id,
-            'gravatar' => ! empty($this->rollcall->user->email) ? md5(strtolower(trim($this->rollcall->user->email))) : '00000000000000000000000000000000',
             'profile_picture' => $this->rollcall->user->profile_picture || null,
             'initials' => UserTransformer::generateInitials($this->rollcall->user->name),
         ];

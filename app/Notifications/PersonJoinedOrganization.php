@@ -59,7 +59,6 @@ class PersonJoinedOrganization extends Notification
         return [
             'person_name' => $this->person->name,
             'person_id' => $this->person->id,
-            'gravatar' => ! empty($this->person->email) ? md5(strtolower(trim($this->person->email))) : '00000000000000000000000000000000',
             'profile_picture' => $this->person->profile_picture || null,
             'initials' => UserTransformer::generateInitials($this->person->name),
         ];

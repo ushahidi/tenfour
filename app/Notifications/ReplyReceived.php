@@ -41,11 +41,10 @@ class ReplyReceived extends Notification
      * @return array
      */
     public function toArray($notifiable)
-    { 
+    {
         return [
             'reply_from' => $this->reply->user->name,
             'rollcall_id' => $this->reply->roll_call_id,
-            'gravatar' => ! empty($this->reply->user->email) ? md5(strtolower(trim($this->reply->user->email))) : '00000000000000000000000000000000',
             'profile_picture' => $this->reply->user->profile_picture,
             'initials' => UserTransformer::generateInitials($this->reply->user->name),
         ];
