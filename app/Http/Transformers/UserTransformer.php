@@ -15,6 +15,8 @@ class UserTransformer extends TransformerAbstract
     }
     public function transform(array $user)
     {
+        $user['uri'] = '/users/' . $user['id'];
+
         // User config task
         if (! empty($user['config_profile_reviewed']) && ! empty($user['config_self_test_sent'])) {
             $user['configComplete'] = $user['config_profile_reviewed']
@@ -85,7 +87,7 @@ class UserTransformer extends TransformerAbstract
 
         // Generate user initials
         $user['initials'] = $this->generateInitials($user['name']);
-      
+
         return $user;
     }
 }

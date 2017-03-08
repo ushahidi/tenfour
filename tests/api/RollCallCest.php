@@ -16,45 +16,47 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            [
-                'message' => 'Westgate under siege',
-                'organization' => [
-                    'id' => 2
-                ],
-                'sent_count'  => 4,
-                'reply_count' => 2,
-                'user' => [
-                    'id' => 4
-                ],
-                'recipients' => [
-                    [
-                        'id' => 1,
-                        'name' => 'Test user',
-                        'uri' => '/users/1',
+            'rollcalls' => [
+                [
+                    'message' => 'Westgate under siege',
+                    'organization' => [
+                        'id' => 2
                     ],
-                    [
-                        'id' => 2,
-                        'name' => 'Admin user',
-                        'uri' => '/users/2',
+                    'sent_count'  => 4,
+                    'reply_count' => 2,
+                    'user' => [
+                        'id' => 4
                     ],
-                    [
-                        'id' => 4,
-                        'name' => 'Org owner',
-                        'uri' => '/users/4',
+                    'recipients' => [
+                        [
+                            'id' => 1,
+                            'name' => 'Test user',
+                            'uri' => '/users/1',
+                        ],
+                        [
+                            'id' => 2,
+                            'name' => 'Admin user',
+                            'uri' => '/users/2',
+                        ],
+                        [
+                            'id' => 4,
+                            'name' => 'Org owner',
+                            'uri' => '/users/4',
+                        ]
                     ]
-                ]
-            ],
-            [
-                'message' => 'yet another test roll call',
-                'organization' => [
-                    'id' => 2
                 ],
-                'sent_count' => 0,
-                'user' => [
-                    'id' => 1
+                [
+                    'message' => 'yet another test roll call',
+                    'organization' => [
+                        'id' => 2
+                    ],
+                    'sent_count' => 0,
+                    'user' => [
+                        'id' => 1
+                    ],
+                    'recipients' => []
                 ],
-                'recipients' => []
-            ],
+            ]
         ]);
     }
 
