@@ -19,6 +19,12 @@ class ApiServiceProvider extends ServiceProvider
 
         Validator::extend('phone_number', function($attribute, $value, $parameters)
         {
+            // Get region code. The assumption is that all phone numbers are passed as
+            // international numbers
+            if (! starts_with($value, '+')) {
+                $value = '+'.$value;
+            }
+
             $phoneNumberUtil = PhoneNumberUtil::getInstance();
             $phoneNumberObject = $phoneNumberUtil->parse($value, null);
             return $phoneNumberUtil->isValidNumber($phoneNumberObject)

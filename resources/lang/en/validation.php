@@ -76,8 +76,9 @@ return [
     'timezone'             => 'The :attribute must be a valid zone.',
     'unique'               => 'The :attribute has already been taken.',
     'url'                  => 'The :attribute format is invalid.',
-    'org_contact'           => 'The contact does not belong to a member of the organization',
+    'org_contact'          => 'The contact does not belong to a member of the organization',
     'inputImage'           => 'Files must be of type jpeg, jpg, gif or png and must be less than 2mb',
+    'phone_number'         => 'Invalid phone number. Try using this format "+1 44 1234 5678"',
 
     /*
     |--------------------------------------------------------------------------
