@@ -34,7 +34,7 @@ class RollCall extends Model
      *
      * @var array
      */
-    protected $with = ['recipients'];
+    protected $with = ['recipients', 'replies', 'user'];
 
     /**
      * The attributes excluded from the model's JSON form.
