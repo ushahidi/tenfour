@@ -141,10 +141,9 @@ class EloquentRollCallRepository implements RollCallRepository
         return DB::table('roll_call_messages')
             ->leftJoin('replies', function ($join) {
                 $join->on('roll_call_messages.roll_call_id', '=', 'replies.roll_call_id');
-                $join->on('roll_call_messages.contact_id', '=', 'replies.contact_id');
             })
             ->where('roll_call_messages.contact_id', '=', $contact_id)
-            ->where('replies.contact_id', '=', null)
+            ->whereNull('replies.id')
             ->orderBy('roll_call_messages.roll_call_id', 'desc')
             ->take(1)
             ->value('roll_call_messages.roll_call_id');
@@ -160,7 +159,7 @@ class EloquentRollCallRepository implements RollCallRepository
                 $join->on('replies.roll_call_id', '=', 'roll_call_messages.roll_call_id');
             })
             ->where('contacts.user_id', '=', $user_id)
-            ->where('replies.user_id', '=', null)
+            ->whereNull('replies.id')
             ->orderBy('roll_call_messages.roll_call_id', 'desc')
             ->take(1)
             ->value('roll_call_messages.roll_call_id');
