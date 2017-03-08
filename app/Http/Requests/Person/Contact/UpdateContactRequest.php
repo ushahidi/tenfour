@@ -11,8 +11,7 @@ class UpdateContactRequest extends UpdatePersonRequest
         $rules = [];
 
         if ($this->input('type') === 'phone') {
-            // TODO: Use libphonenumber to validate phone numbers
-            $rules['contact'] = 'numeric';
+            $rules['contact'] = 'phone_number';
         } elseif ($this->input('type') === 'email') {
             $rules['contact'] = 'email';
         }

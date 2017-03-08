@@ -7,6 +7,7 @@ use Validator;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use libphonenumber\PhoneNumberUtil;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,14 @@ class ApiServiceProvider extends ServiceProvider
         Validator::extend('org_contact', 'RollCall\Validators\OrgMemberValidator@validateContact');
 
         Validator::extend('inputImage', 'RollCall\Validators\ImageValidator@validateProfilePictureUpload');
+
+        Validator::extend('phone_number', function($attribute, $value, $parameters)
+        {
+            $phoneNumberUtil = PhoneNumberUtil::getInstance();
+            $phoneNumberObject = $phoneNumberUtil->parse($value, null);
+            return $phoneNumberUtil->isValidNumber($phoneNumberObject)
+              && preg_match("/^\+?[\-\d\ ()]+$/", $value);
+        });
 
         $this->app->resolving(function ($object, $app) {
             if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
