@@ -359,6 +359,51 @@ class PersonCest
     }
 
     /*
+     * Delete owner from an organization as org owner
+     *
+     */
+    public function deleteOrgOwnerAsOrgOwner(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 4;
+        $I->wantTo('Delete owner as an org owner');
+        $I->amAuthenticatedAsOrgOwner();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendDelete($this->endpoint."/$id/people/$user_id");
+        $I->seeResponseCodeIs(403);
+    }
+
+    /*
+     * Delete owner from an organization as org owner
+     *
+     */
+    public function deleteOrgAdminAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 2;
+        $I->wantTo('Delete org admin as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendDelete($this->endpoint."/$id/people/$user_id");
+        $I->seeResponseCodeIs(200);
+    }
+
+    /*
+     * Delete member from an organization as member
+     *
+     */
+    public function deleteMemberAsMember(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $I->wantTo('Delete member as a member');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendDelete($this->endpoint."/$id/people/$user_id");
+        $I->seeResponseCodeIs(200);
+    }
+
+    /*
      * List people in an organization
      *
      */

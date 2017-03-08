@@ -12,13 +12,13 @@ class DeletePersonRequest extends FormRequest
 
     public function authorize()
     {
-        // Users cannot delete themselves
-        if ($this->route('person') && $this->isSelf($this->route('person'))) {
-            return false;
-        }
-
         $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
                  ->getMemberRole($this->route('organization'), $this->route('person'));
+
+        // Users can delete themselves
+        if ($this->route('person') && $this->isSelf($this->route('person')) && $role !== 'owner') {
+            return true;
+        }
 
         // Only the owner can edit their details
         if ($role === 'owner') {
