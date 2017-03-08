@@ -2,10 +2,12 @@
 
 namespace RollCall\Messaging;
 
+use Log;
 use SMS;
 use RollCall\Contracts\Messaging\MessageService;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
 use GrahamCampbell\Throttle\Facades\Throttle;
 
@@ -35,10 +37,18 @@ class SMSService implements MessageService
 
         catch (NumberParseException $exception) {
             // Can't send a message to an invalid number
-            return;
+            return '';
         }
 
         return $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+    }
+
+    private function normalizePhoneNumber($phone_number) {
+      $util = PhoneNumberUtil::getInstance();
+
+      return $util->format(
+        $util->parse($phone_number, null),
+        PhoneNumberFormat::E164);
     }
 
     public function getKeyword($to)
@@ -69,6 +79,13 @@ class SMSService implements MessageService
         $additional_params['keyword'] = config('sms.'.$driver.'.keyword');
         $additional_params['from'] = $from;
         $additional_params['msg'] =  $msg;
+
+        try {
+          $to = $this->normalizePhoneNumber($to);
+        } catch (NumberParseException $exception) {
+          Log::error('Could not normalize the phone number: ' . $to);
+          // @TODO should this raise an exception, or let the driver send to this number anyway
+        }
 
         $view = isset($this->view) ? $this->view : $msg;
 
