@@ -12,13 +12,18 @@ class UpdatePersonRequest extends FormRequest
 
     public function authorize()
     {
+        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
+                 ->getMemberRole($this->route('organization'), $this->route('person'));
+
+        // A member cannot update a role
+        if ($this->user()->role === 'member' && $this->get('role')) {
+          return false;
+        }
+
         // Users can update themselves
         if ($this->isSelf($this->route('person'))) {
             return true;
         }
-
-        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
-                 ->getMemberRole($this->route('organization'), $this->route('person'));
 
         // Only the owner can edit their details
         if ($role === 'owner') {

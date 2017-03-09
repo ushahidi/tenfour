@@ -161,6 +161,24 @@ class PersonCest
     }
 
     /*
+     * Update Member role as member
+     *
+     */
+    public function updateMemberRoleAsMember(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 1;
+        $I->wantTo('Update a member\'s role as the member');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$org_id/people/$user_id", [
+            'name' => 'Updated org member',
+            'role' => 'admin'
+        ]);
+        $I->seeResponseCodeIs(403);
+    }
+
+    /*
      * Update member contact
      *
      */
