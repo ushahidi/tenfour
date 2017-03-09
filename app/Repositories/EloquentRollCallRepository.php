@@ -14,7 +14,11 @@ class EloquentRollCallRepository implements RollCallRepository
     public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 0)
     {
         $query = RollCall::query()
-          ->orderBy('created_at', 'desc');
+          ->orderBy('created_at', 'desc')
+          ->with(['replies' => function ($query) {
+            // Just get the most recent replies for each user
+            $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id`)"));
+          }]);
 
         if ($limit > 0) {
           $query
@@ -52,8 +56,13 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function find($id)
     {
-        $roll_call = RollCall::findOrFail($id)
-                   ->toArray();
+        $roll_call = RollCall::query()
+            ->with(['replies' => function ($query) {
+                // Just get the most recent replies for each user
+                $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id`)"));
+            }])
+            ->findOrFail($id)
+            ->toArray();
 
         return $roll_call + $this->getCounts($roll_call['id']);
     }
