@@ -33,6 +33,19 @@ class SESBounceController extends Controller
             $this->validateSnsMessageOrAbort($message);
         }
 
+        // Check the type of the message and handle the subscription.
+        if ($message['Type'] === 'SubscriptionConfirmation') {
+            Log::info('SNS Subscription Confirmed');
+            // Confirm the subscription by sending a GET request to the SubscribeURL
+            file_get_contents($message['SubscribeURL']);
+        }
+
+        if ($message['Type'] === 'UnsubscribeConfirmation') {
+            Log::info('SNS Unsubscribe');
+            // Confirm the subscription by sending a GET request to the SubscribeURL
+            file_get_contents($message['SubscribeURL']);
+        }
+
         $bounce = new BounceMessage($message['Message']);
 
         $bounce_threshold = config('rollcall.messaging.bounce_threshold');
@@ -77,6 +90,19 @@ class SESBounceController extends Controller
 
         if (config('rollcall.messaging.validate_sns_message')) {
             $this->validateSnsMessageOrAbort($message);
+        }
+
+        // Check the type of the message and handle the subscription.
+        if ($message['Type'] === 'SubscriptionConfirmation') {
+            Log::info('SNS Subscription Confirmed');
+            // Confirm the subscription by sending a GET request to the SubscribeURL
+            file_get_contents($message['SubscribeURL']);
+        }
+
+        if ($message['Type'] === 'UnsubscribeConfirmation') {
+            Log::info('SNS Unsubscribe');
+            // Confirm the subscription by sending a GET request to the SubscribeURL
+            file_get_contents($message['SubscribeURL']);
         }
 
         $complaint = new ComplaintMessage($message['Message']);
