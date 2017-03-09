@@ -60,6 +60,7 @@ class EloquentRollCallRepository implements RollCallRepository
             ->with(['replies' => function ($query) {
                 // Just get the most recent replies for each user
                 $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`roll_call_id` = `replies`.`roll_call_id`)"));
+                $query->with('user');
             }])
             ->findOrFail($id)
             ->toArray();
