@@ -120,6 +120,17 @@ class EloquentRollCallRepository implements RollCallRepository
         return $query->orderBy('roll_call_id', 'desc')->take(1)->value('roll_call_id');
     }
 
+    public function getSentRollCallId($contact_id, $roll_call_id)
+    {
+        $query = DB::table('roll_call_messages')
+               ->select('roll_call_id');
+
+        $query->where('contact_id', $contact_id);
+        $query->where('roll_call_id', $roll_call_id);
+
+        return $query->orderBy('roll_call_id', 'desc')->take(1)->value('roll_call_id');
+    }
+
     public function getRecipient($id, $recipient_id)
     {
         return RollCall::findOrFail($id)->recipients()

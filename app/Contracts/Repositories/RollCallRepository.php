@@ -48,6 +48,15 @@ interface RollCallRepository extends CrudRepository
     public function getLastSentMessageId($contact_id = null);
 
     /**
+     * Check rollcall was setn to contact id
+     *
+     * @param  $contact_id
+     * @param  $roll_call_id
+     * @return $roll_call_id
+     */
+    public function getSentRollCallId($contact_id, $roll_call_id);
+
+    /**
      * Add roll call sent to contact
      *
      * @param int $id

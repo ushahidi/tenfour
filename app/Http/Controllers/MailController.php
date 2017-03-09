@@ -43,10 +43,15 @@ class MailController extends Controller
         }
     }
 
-    protected function saveEmail($from, $message, $message_id, $provider) {
+    protected function saveEmail($from, $message, $to, $message_id, $provider) {
         $visibleMessage = \EmailReplyParser\EmailReplyParser::parseReply($message);
 
-        $this->reply_storage->save($from, $visibleMessage, $message_id, $provider);
+        $rollcall_id = null;
+        if (preg_match('/^rollcall-(\d*)@.*$/', $to, $matches)) {
+            $rollcall_id = $matches[1];
+        }
+
+        $this->reply_storage->save($from, $visibleMessage, $message_id, $rollcall_id, $provider);
     }
 
     protected function receiveMailgun() {
@@ -57,7 +62,7 @@ class MailController extends Controller
 
         $message = strip_tags($request->input('body-plain'));
 
-        $this->saveEmail($request->input('from'), $message, null, 'mailgun');
+        $this->saveEmail($request->input('from'), $message, $request->input('to'), null, 'mailgun');
 
         return response('Accepted', 200);
     }
@@ -113,15 +118,16 @@ class MailController extends Controller
                 }
 
                 $from = $emailMessage->getHeader('From')->getAddressList()->current()->getEmail();
+                $to   = $emailMessage->getHeader('To')->getAddressList()->current()->getEmail();
 
                 if ($plainText) {
                     Log::info("Received message: ". $message['MessageId']);
-                    $this->saveEmail($from, $plainText->getContent(), $message['MessageId'], 'aws-ses-sns');
+                    $this->saveEmail($from, $plainText->getContent(), $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 elseif ($html) {
                     Log::info("Received message: ". $message['MessageId']);
                     $text = strip_tags($html->getContent());
-                    $this->saveEmail($from, $text, $message['MessageId'], 'aws-ses-sns');
+                    $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 else {
                     Log::info("No plain text found for " . $message['MessageId'], ['original_content' => $original_content]);
