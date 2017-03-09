@@ -2,19 +2,24 @@
 
 namespace RollCall\Messaging;
 
+use Log;
 use SMS;
 use RollCall\Contracts\Messaging\MessageService;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
+use SimpleSoftwareIO\SMS\SMSNotSentException;
+use GrahamCampbell\Throttle\Facades\Throttle;
 
 class SMSService implements MessageService
 {
+
     public function setView($view)
     {
         $this->view = $view;
     }
 
-    public function send($to, $msg, $additional_params = [], $subject = null)
+    private function getRegionCode($to)
     {
         // Get region code. The assumption is that all phone numbers are passed as
         // international numbers
@@ -32,10 +37,35 @@ class SMSService implements MessageService
 
         catch (NumberParseException $exception) {
             // Can't send a message to an invalid number
-            return;
+            return '';
         }
 
-        $region_code = $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+        return $phone_number_util->getRegionCodeForNumber($phone_number_obj);
+    }
+
+    private function normalizePhoneNumber($phone_number) {
+      $util = PhoneNumberUtil::getInstance();
+
+      return $util->format(
+        $util->parse($phone_number, null),
+        PhoneNumberFormat::E164);
+    }
+
+    public function getKeyword($to)
+    {
+        $region_code = $this->getRegionCode($to);
+        $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
+
+        if (!$driver) {
+            $driver = config('rollcall.messaging.sms_providers.default.driver');
+        }
+
+        return config('sms.'.$driver.'.keyword');
+    }
+
+    public function send($to, $msg, $additional_params = [], $subject = null)
+    {
+        $region_code = $this->getRegionCode($to);
 
         // Get driver
         $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
@@ -46,6 +76,34 @@ class SMSService implements MessageService
             $from = config('rollcall.messaging.sms_providers.default.from');
         }
 
+        $additional_params['keyword'] = config('sms.'.$driver.'.keyword');
+        $additional_params['from'] = $from;
+        $additional_params['msg'] =  $msg;
+
+        try {
+          $to = $this->normalizePhoneNumber($to);
+        } catch (NumberParseException $exception) {
+          Log::error('Could not normalize the phone number: ' . $to);
+          // @TODO should this raise an exception, or let the driver send to this number anyway
+        }
+
+        $view = isset($this->view) ? $this->view : $msg;
+
+        $queue = resolve('\Illuminate\Queue\QueueManager');
+
+        $queue->push('RollCall\Messaging\SMSService@handleQueuedMessage', compact('view', 'additional_params', 'driver', 'from', 'to'));
+    }
+
+    /**
+     * Handles a queue message.
+     *
+     * @param \Illuminate\Queue\Jobs\Job $job
+     * @param array                      $data
+     */
+    public function handleQueuedMessage($job, $data)
+    {
+        extract($data);
+
         // Set 'from' address if configured
         if ($from) {
             SMS::alwaysFrom($from);
@@ -54,15 +112,32 @@ class SMSService implements MessageService
         // Set SMS driver for the region code
         SMS::driver($driver);
 
-        if (isset($this->view)) {
-            SMS::send($this->view, ['msg' => $msg], function($sms) use ($to) {
-                $sms->to($to);
-            });
-        } else {
-            SMS::send($msg, [], function($sms) use ($to) {
-                $sms->to($to);
-            });
+        $messages_per_second = config('sms.'.$driver.'.messages_per_second');
+        $time = 1/60; // Pass time in minutes to the cache store
+
+        if ($messages_per_second) {
+            $throttler = Throttle::get([
+                'ip'    => $from,
+                'route' => $to,
+            ], $messages_per_second, $time);
+
+            // If we have exceeded the limit return the job back to the queue
+            if ($throttler->attempt()) {
+                $job->release();
+                return;
+            }
         }
+
+        try {
+            SMS::send($view, $additional_params, function($sms) use ($to) {
+                $sms->to($to);
+            });
+            $job->delete();
+        } catch (SMSNotSentException $e) {
+            // Retry in 3 seconds
+            $job->release(3);
+        }
+
     }
 
     public function getMessages(Array $options = [])

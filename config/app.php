@@ -17,6 +17,9 @@ return [
 
     'debug' => env('APP_DEBUG', false),
 
+    // Adding clockwork profiler toggle
+    'clockwork' => env('CLOCKWORK', true),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -156,6 +159,7 @@ return [
         LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
         LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
+        GrahamCampbell\Throttle\ThrottleServiceProvider::class,
 
     ],
 
@@ -178,6 +182,7 @@ return [
         'Blade'     => Illuminate\Support\Facades\Blade::class,
         'Bus'       => Illuminate\Support\Facades\Bus::class,
         'Cache'     => Illuminate\Support\Facades\Cache::class,
+        'Clockwork' => Clockwork\Support\Laravel\Facade::class,
         'Config'    => Illuminate\Support\Facades\Config::class,
         'Cookie'    => Illuminate\Support\Facades\Cookie::class,
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
@@ -209,6 +214,7 @@ return [
 
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
         'SMS' => RollCall\Messaging\Facades\SMS::class,
+        'Throttle' => GrahamCampbell\Throttle\Facades\Throttle::class,
 
     ],
 

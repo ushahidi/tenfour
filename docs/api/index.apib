@@ -2,6 +2,115 @@ FORMAT: 1A
 
 # RollCall API
 
+# Organizations [/api/v1/organizations]
+
+## Get all organizations [GET /api/v1/organizations]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "organizations": [
+                    {
+                        "name": "Ushahidi",
+                        "subdomain": "ushahidi@rollcall.io"
+                    }
+                ]
+            }
+
+## Create an organization [POST /api/v1/organizations]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "name": "Ushahidi",
+                "subdomain": "ushahidi@rollcall.io"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "organization": {
+                    "name": "Ushahidi",
+                    "subdomain": "ushahidi@rollcall.io"
+                }
+            }
+
+## Get a single organization [GET /api/v1/organizations/{orgId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "organization": {
+                    "id": 3,
+                    "name": "Ushahidi",
+                    "subdomain": "ushahidi@rollcall.io"
+                }
+            }
+
+## Update organization details [PUT /api/v1/organizations/{orgId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "name": "Ushahidi",
+                "subdomain": "ushahidi@rollcall.io"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "organization": {
+                    "id": 3,
+                    "name": "Ushahidi",
+                    "subdomain": "ushahidi@rollcall.io"
+                }
+            }
+
+## Delete an organization [DELETE /api/v1/organizations/{orgId}]
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
 # Users [/api/v1/users]
 
 ## Show all users [GET /api/v1/users]
@@ -66,7 +175,8 @@ Get a JSON representation of all the registered users.
             }
 
 ## Update a user [PUT /api/v1/users/{id}]
-
+If a "notifications" property is present in the request, then the user's
+notifications will be marked as read.
 
 + Request (application/json)
     + Headers
@@ -104,109 +214,6 @@ Get a JSON representation of all the registered users.
             Authorization: Bearer token
 
 + Response 201 (application/json)
-
-# Organizations [/api/v1/organizations]
-
-## Get all organizations [GET /api/v1/organizations]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "organizations": [
-                    {
-                        "name": "Ushahidi",
-                        "url": "ushahidi@rollcall.io"
-                    }
-                ]
-            }
-
-## Create an organization [POST /api/v1/organizations]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "name": "Ushahidi",
-                "url": "ushahidi@rollcall.io"
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "organization": {
-                    "name": "Ushahidi",
-                    "url": "ushahidi@rollcall.io"
-                }
-            }
-
-## Get a single organization [GET /api/v1/organizations/{orgId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Update organization details [PUT /api/v1/organizations/{orgId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "name": "Ushahidi",
-                "url": "ushahidi@rollcall.io"
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "organization": {
-                    "id": 3,
-                    "name": "Ushahidi",
-                    "url": "ushahidi@rollcall.io"
-                }
-            }
-
-## Delete an organization [DELETE /api/v1/organizations/{orgId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
 
 # People [/api/v1/organizations/{orgId}/people]
 
@@ -284,9 +291,7 @@ Get a JSON representation of all the registered users.
 
             []
 
-# Organizations [/api/v1/organizations/{orgId}/people/{personId}/contacts]
-
-## Add member contact [POST /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts]
+## Accept member invite [PUT /api/v1/organizations/{orgId}/people/invite/{organisationId}/accept/{memberId}]
 
 
 + Request (application/json)
@@ -295,61 +300,26 @@ Get a JSON representation of all the registered users.
             Authorization: Bearer token
     + Body
 
-            []
+            {
+                "invite_token": "aSecretToken",
+                "password": "newpassword",
+                "password_confirm": "newpassword"
+            }
 
 + Response 200 (application/json)
     + Body
 
-            []
+            {
+                "user": {
+                    "name": "User Name",
+                    "role": "member",
+                    "person_type": "user"
+                }
+            }
 
-## Update member contact [PUT /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts/{contactId}]
+# Contacts [/api/v1/organizations/{orgId}/people/{personId}/contacts]
 
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Delete member contact [DELETE /api/v1/organizations/{orgId}/people/{personId}/contacts/{orgId}/members/{personId}/contacts/{contactId}]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-# Contacts [/api/v1/contacts]
-
-## Get all contacts [GET /api/v1/contacts]
-
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            []
-
-## Create a contact [POST /api/v1/contacts]
+## Add member contact [POST /api/v1/organizations/{orgId}/people/{personId}/contacts]
 
 
 + Request (application/json)
@@ -375,7 +345,7 @@ Get a JSON representation of all the registered users.
                 }
             }
 
-## Update a contact [PUT /api/v1/contacts/{contactId}]
+## Update member contact [PUT /api/v1/organizations/{orgId}/people/{personId}/contacts/{contactId}]
 
 
 + Request (application/json)
@@ -401,7 +371,7 @@ Get a JSON representation of all the registered users.
                 }
             }
 
-## Delete a contact [DELETE /api/v1/contacts/{contactId}]
+## Delete member contact [DELETE /api/v1/organizations/{orgId}/people/{personId}/contacts/{contactId}]
 
 
 + Request (application/json)

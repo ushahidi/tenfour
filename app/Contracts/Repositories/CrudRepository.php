@@ -7,8 +7,7 @@ interface CrudRepository
      * Get all
      *
      * @return mixed
-     */ 
-    
+     */
     public function all();
 
     /**

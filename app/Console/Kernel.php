@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\Inspire::class,
         \RollCall\Console\Commands\ReceiveSMS::class,
         \RollCall\Console\Commands\ImportContacts::class,
+        \RollCall\Console\Commands\ResendRollCall::class,
     ];
 
     /**
@@ -26,7 +27,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(\RollCall\Console\Commands\ReceiveSMS::class)
-                 ->everyMinute();
+        // Disable pulling SMS, this doesn't work well with multiple providers
+        // $schedule->command(\RollCall\Console\Commands\ReceiveSMS::class)
+        //          ->everyMinute();
     }
 }

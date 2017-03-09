@@ -1,7 +1,7 @@
 <?php
 namespace RollCall\Messaging;
 
-use RollCall\Contracts\Repositories\UserRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Jobs\SendInvite;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -9,7 +9,7 @@ class InviteDispatcher
 {
     use DispatchesJobs;
 
-    public function __construct(UserRepository $member)
+    public function __construct(PersonRepository $member)
     {
         $this->member = $member;
     }

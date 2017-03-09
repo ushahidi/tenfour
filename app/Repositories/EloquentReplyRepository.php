@@ -41,7 +41,11 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function getReplies($id, $users = null, $contacts = null)
     {
-        $query = RollCall::findOrFail($id)->replies()->with('user');
+        $query = RollCall::findOrFail($id)
+            ->replies()
+            ->with('user')
+            // Just get the most recent replies for each user
+            ->where('created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`roll_call_id` = `replies`.`roll_call_id`)"));
 
         if ($users) {
             $users = explode(',', $users);

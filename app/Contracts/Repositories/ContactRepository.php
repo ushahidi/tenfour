@@ -10,7 +10,7 @@ interface ContactRepository extends CrudRepository
      *
      * @return Array
      */
-    public function getByUserId($user_id);
+    public function getByUserId($user_id, Array $methods = null);
 
     /**
      * Filter contacts by contact
@@ -20,4 +20,13 @@ interface ContactRepository extends CrudRepository
      * @return Array
      */
     public function getByContact($contact);
+
+    /**
+     * Set bounce count
+     *
+     * @param int $count
+     * @param int $id
+     *
+     */
+    public function setBounceCount($count, $id);
 }

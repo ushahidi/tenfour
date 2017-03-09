@@ -2,12 +2,8 @@
 namespace RollCall\Repositories;
 
 use RollCall\Models\Organization;
-use RollCall\Models\User;
 use RollCall\Models\Setting;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\UserRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,11 +15,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
 {
     protected $currentUserId = NULL;
 
-    public function __construct(ContactRepository $contacts, UserRepository $users, RollCallRepository $roll_calls)
+    public function __construct()
     {
-        $this->contacts = $contacts;
-        $this->users = $users;
-        $this->roll_calls = $roll_calls;
     }
 
     public function setCurrentUserId($currentUserId)
@@ -33,13 +26,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function all($subdomain = false)
     {
-        $query = Organization::select('organizations.id', 'name', 'subdomain');
+        $query = Organization::select('organizations.id', 'organizations.name', 'subdomain');
 
         // If we're authenticated, just return orgs we're a member of
         if ($this->currentUserId) {
-            $query->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id');
-            $query->select('organizations.id', 'name', 'subdomain', 'user_id', 'role');
-            $query->where('organization_user.user_id', $this->currentUserId);
+            $query->join('users', 'organizations.id', '=', 'users.organization_id');
+            $query->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role');
+            $query->where('users.id', $this->currentUserId);
         }
 
         // Filter by subdomain
@@ -69,45 +62,6 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $this->find($id);
     }
 
-    public function updateMember(array $input, $id, $user_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $user = null;
-
-        // Update user and role details
-        DB::transaction(function () use ($input, $user_id, $organization, &$user) {
-            if ($input['role'] == 'owner') {
-                // Get current owner
-                $owner_id = DB::table('organization_user')
-                          ->where('organization_id', '=', $organization->id)
-                          ->where('role', '=', 'owner')
-                          ->value('user_id');
-
-                // ...and assign member role before transferring ownership
-                $organization->members()->updateExistingPivot($owner_id, ['role' => 'member']);
-            }
-
-            $organization->members()->updateExistingPivot($user_id, ['role' => $input['role']]);
-
-            // Update user
-            $user_input = array_except($input, ['role']);
-
-            $user = $this->users->update($user_input, $user_id);
-        });
-
-        return $user + [
-            'role' => $input['role']
-        ];
-    }
-
     public function create(array $input)
     {
         $organization = null;
@@ -123,7 +77,8 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
             // Assign 'owner' role to the user associated
             // with the organization when it's created
-            $organization->members()->attach($owner_id, ['role' => 'owner']);
+            // FIXME: need to add user
+            //$organization->members()->attach($owner_id, ['role' => 'owner']);
         });
 
         return $organization->toArray() +
@@ -136,9 +91,12 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function find($id)
     {
         return Organization::with('settings')
-            ->leftJoin('organization_user', 'organizations.id', '=', 'organization_user.organization_id')
-            ->select('organizations.id', 'name', 'subdomain', 'user_id', 'role')
-            ->where('role', 'owner')
+            ->leftJoin('users', function ($join) {
+                $join
+                ->on('organizations.id', '=', 'users.organization_id')
+                ->on('users.role', '=', DB::raw('\'owner\'')); // @todo Is there a better way than using raw()?
+            })
+            ->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role')
             ->findOrFail($id)
             ->toArray();
     }
@@ -147,204 +105,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
     {
         $organization = Organization::findorFail($id);
 
-        // Delete all members
-        $organization->members()->detach();
+        // Foreign Keys should take care of deleting members!
 
         // ... then delete the organization
         $organization->delete();
         return $organization->toArray();
-    }
-
-    public function getMember($id, $user_id)
-    {
-        // This should probably be passed in as param but there
-        // might not be any benefit of showing a user's full
-        // roll call activity here.
-        $history_limit = 1;
-
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')
-                    ->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $role = $organization->members->first()->pivot->role;
-
-        $userModel = User::with([
-            'rollcalls' => function ($query) use ($history_limit) {
-                $query->latest()->limit($history_limit);
-            },
-            'contacts.replies' => function ($query) use ($history_limit) {
-                $query->latest()->limit($history_limit);
-            },
-            'contacts'
-        ])
-              ->find($user_id);
-
-        $user = $userModel->toArray() + [
-                  'role' => $role
-              ];
-
-        $user['has_logged_in'] = $userModel->hasLoggedIn();
-
-        foreach ($user['rollcalls'] as &$roll_call)
-        {
-            $roll_call += $this->roll_calls->getCounts($roll_call['id']);
-        }
-
-        return $user;
-    }
-
-    public function addContact(array $input, $id, $user_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $input['can_receive'] = 1;
-        $input['user_id'] = $user_id;
-
-        return $this->contacts->create($input);
-    }
-
-    public function updateContact(array $input, $id, $user_id, $contact_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        return $this->contacts->update($input, $contact_id);
-    }
-
-    public function deleteContact($id, $user_id, $contact_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        return $this->contacts->delete($contact_id);
-    }
-
-    public function addMember(array $input, $id)
-    {
-        $organization = Organization::findorFail($id);
-
-        $user = null;
-
-        if (!isset($input['role'])) {
-            $input['role'] = 'member';
-        }
-
-        DB::transaction(function () use (&$user, $input, $organization) {
-            $user_input = array_except($input, ['role']);
-
-            $user = $this->users->create($user_input);
-
-            $organization->members()->attach($user['id'], ['role' => $input['role']]);
-        });
-
-        Notification::send($this->getAdmins($organization['id']),
-            new PersonJoinedOrganization(new User($user)));
-
-        return $user + [
-            'role' => $input['role']
-        ];
-    }
-
-    public function getMembers($id)
-    {
-        return Organization::findOrFail($id)
-            ->members()
-            ->with('contacts')
-            ->select('users.*','role')
-            ->orderby('name', 'asc')
-            ->get()
-            ->toArray();
-    }
-
-    public function getAdmins($id)
-    {
-        return Organization::findOrFail($id)
-            ->members()
-            ->select('users.*','role')
-            ->whereIn('role', ['admin', 'owner'])
-            ->get();
-    }
-
-    public function deleteMember($id, $user_id)
-    {
-        $organization = Organization::with([
-            'members' => function ($query) use ($user_id) {
-                $query->select('users.id', 'users.name')->where('users.id', $user_id);
-            }])->findOrFail($id);
-
-        if ($organization->members->isEmpty()) {
-            throw (new ModelNotFoundException)->setModel('User');
-        }
-
-        $user_id = $organization->members->first()->id;
-        $role = $organization->members->first()->pivot->role;
-
-        $user = null;
-
-        DB::transaction(function () use (&$user, $organization, $user_id) {
-            $organization->members()->detach($user_id);
-
-            // Delete user
-            $user = $this->users->delete($user_id);
-        });
-
-        Notification::send($this->getAdmins($organization['id']),
-            new PersonLeftOrganization(new User($user)));
-
-        return $user + [
-            'role' => $role
-        ];
-    }
-
-    public function getMemberRole($organization_id, $user_id)
-    {
-        $role = DB::table('organization_user')
-              ->where('organization_id', '=', $organization_id)
-              ->where('user_id', '=', $user_id)
-              ->value('role');
-
-        return $role;
-    }
-
-    public function isMember($user_id, $org_id)
-    {
-        return (bool) DB::table('organization_user')
-            ->where('user_id', $user_id)
-            ->where('organization_id', $org_id)
-            ->count();
-    }
-
-    public function testMemberInviteToken($memberId, $invite_token)
-    {
-        return (bool) DB::table('users')
-          ->where('id', $memberId)
-          ->where('invite_token', $invite_token)
-          ->count();
     }
 
 }

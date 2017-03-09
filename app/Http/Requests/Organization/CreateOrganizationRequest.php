@@ -8,6 +8,7 @@ use RollCall\Traits\UserAccess;
 class CreateOrganizationRequest extends FormRequest
 {
     use UserAccess;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,7 +16,10 @@ class CreateOrganizationRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin can create an organization for any user
+        // FIXME: Pretty sure this isn't whats needed anymore
+        // We should create the org and user from a single request
+
+        /*// Admin can create an organization for any user
         if ($this->isAdmin()) {
             return true;
         }
@@ -30,7 +34,7 @@ class CreateOrganizationRequest extends FormRequest
         // an organization is a registered user
         if ($this->auth->user()['id']) {
             return true;
-        }
+        }*/
 
         return false;
     }

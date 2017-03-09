@@ -20,8 +20,6 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(RollCall\Seeders\OauthTableSeeder::class);
-        $this->call(RollCall\Seeders\UserTableSeeder::class);
-        $this->call(RollCall\Seeders\RoleTableSeeder::class);
         $this->call(RollCall\Seeders\OrganizationTableSeeder::class);
         $this->call(RollCall\Seeders\OrgMemberSeeder::class);
         $this->call(RollCall\Seeders\RollCallTableSeeder::class);

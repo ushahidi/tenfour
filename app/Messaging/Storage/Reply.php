@@ -16,14 +16,19 @@ class Reply
         $this->replies = $replies;
     }
 
-    public function save($from, $message, $message_id = 0, $provider = null)
+    public function save($from, $message, $message_id = 0, $roll_call_id = null, $provider = null)
     {
         $contact = $this->contacts->getByContact($from);
 
         if ($contact) {
 
-            // Get last roll call id that was sent to the the the contact
-            $roll_call_id = $this->roll_calls->getLastSentMessageId($contact['id']);
+            if ($roll_call_id) {
+                // Just check the rollcall was actually sent to this user
+                $roll_call_id = $this->roll_calls->getSentRollCallId($contact['id'], $roll_call_id);
+            } else {
+                // Get last roll call id that was sent to the the the contact
+                $roll_call_id = $this->roll_calls->getLastSentMessageId($contact['id']);
+            }
 
             // Add reply if roll call exists
             if ($roll_call_id) {
@@ -42,6 +47,9 @@ class Reply
                 ];
 
                 $this->replies->create($input);
+
+                // Update response status
+                $this->roll_calls->updateRecipientStatus($roll_call_id, $contact['user']['id'], 'replied');
             }
         }
     }

@@ -7,6 +7,7 @@ use RollCall\Http\Requests\RollCall\GetRollCallsRequest;
 use RollCall\Http\Requests\RollCall\GetRollCallRequest;
 use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
 use RollCall\Http\Requests\RollCall\UpdateRollCallRequest;
+use RollCall\Http\Requests\RollCall\SendRollCallRequest;
 use RollCall\Http\Requests\RollCall\AddContactsRequest;
 use RollCall\Http\Requests\RollCall\AddReplyRequest;
 use RollCall\Http\Requests\RollCall\GetReplyRequest;
@@ -49,13 +50,16 @@ class RollCallController extends ApiController
     {
         $user_id = null;
 
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 0);
+
         if ($request->query('user') === 'me') {
             $user_id = $this->auth->user()['id'];
         } else {
             $user_id = $request->query('user');
         }
 
-        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id, $request->input('recipient_id'));
+        $roll_calls = $this->roll_calls->all($request->query('organization'), $user_id, $request->input('recipient_id'), $offset, $limit);
 
         return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
     }
@@ -135,6 +139,45 @@ class RollCallController extends ApiController
         }
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
+    }
+
+    /**
+     * Send a roll call. This is currently used to re-send
+     * a roll call to a single recipient.
+     *
+     * @Post("/{rollcallId}/recipients/{recipientId}/send")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *  "recipient": {{
+     *      "name":"Org owner",
+     *      "description":"Org owner",
+     *      "response_status":"waiting"
+     *   }}
+     * })
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function addMessage(SendRollCallRequest $request, $id, $recipient_id)
+    {
+        $this->roll_calls->updateRecipientStatus($id, $recipient_id, 'waiting');
+
+        // Get roll call and send to recipient
+        $roll_call = $this->roll_calls->find($id);
+
+        $roll_call['recipients'] = [];
+
+        array_push($roll_call['recipients'], [
+            'id' => $recipient_id,
+        ]);
+
+        dispatch(new SendRollCall($roll_call));
+
+        $recipient = $this->roll_calls->getRecipient($id, $recipient_id);
+        return $this->response->item($recipient, new UserTransformer, 'recipient');
     }
 
     /**

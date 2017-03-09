@@ -8,6 +8,7 @@ use RollCall\Models\User;
 use RollCall\Models\Organization;
 use RollCall\Models\Contact;
 use League\Csv\Reader;
+use Illuminate\Support\Facades\Hash;
 
 class ImportContacts extends Command
 {
@@ -62,8 +63,7 @@ class ImportContacts extends Command
         $organization = Organization::firstOrCreate([
             'name' => $this->argument('org'),
         ]);
-
-        $subdomain = strtolower($this->argument('org')) . '.' .$domain;
+        $subdomain = strtolower($this->argument('org'));
 
         $organization->update([
             'subdomain'  => $subdomain,
@@ -94,28 +94,33 @@ class ImportContacts extends Command
 
             if (!$member) {
                 $member = User::firstOrCreate([
-                    'name'     => $name,
-                    'password' => $password
+                    'name'            => $name,
+                    'password'        => $password,
+                    'role'            => 'member'
+                    
                 ]);
             }
+
+            $member->organization_id = $organization->id;
+            $member->save();
 
             // Add email contact
             Contact::updateOrCreate([
                 'user_id'     => $member['id'],
                 'type'        => 'email',
-                'contact'     => $email
-            ], ['can_receive' => true]);
+                'contact'     => $email,
+                'subscribed'  => true,
+                'unsubscribe_token' => Hash::Make(config('app.key')),
+            ], ['preferred' => true]);
 
             // Add phone contact
             Contact::updateOrCreate([
                 'user_id'     => $member['id'],
                 'type'        => 'phone',
-                'contact'     => $phone_number
-            ], ['can_receive' => true]);
-
-            $ids[$member['id']] = ['role' => 'member'];
+                'contact'     => $phone_number,
+                'subscribed'  => true,
+            ], ['preferred' => true]);
         }
 
-        $organization->members()->sync($ids, false);
     }
 }

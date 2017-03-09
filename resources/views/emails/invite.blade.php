@@ -214,7 +214,7 @@
                                     <!-- COPY -->
                                     <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                         <tbody><tr>
-                                            <td style="padding: 20px 0 0 0; font-size: 14px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">If you're having trouble selecting the "Join Ushahidi's RollCall" button, copy and paste the following URL into your web browser: <a href="{{ $url }}">{{ $url }}</a>.</td>
+                                            <td style="padding: 20px 0 0 0; font-size: 14px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">If you're having trouble selecting the "Join Ushahidi's RollCall" button, copy and paste the following URL into your web browser: <a href="{{ $url }}">{{ $url }}</a></td>
                                         </tr>
                                     </tbody></table>
                                 </td>

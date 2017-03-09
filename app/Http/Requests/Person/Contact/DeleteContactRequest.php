@@ -2,9 +2,16 @@
 
 namespace RollCall\Http\Requests\Person\Contact;
 
-use RollCall\Http\Requests\Organization\GetOrganizationRequest;
+use RollCall\Http\Requests\Person\UpdatePersonRequest;
 
-class DeleteContactRequest extends GetOrganizationRequest
+class DeleteContactRequest extends UpdatePersonRequest
 {
-    //
+
+    public function rules()
+    {
+        return [
+            //
+        ];
+    }
+
 }

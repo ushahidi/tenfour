@@ -20,33 +20,16 @@ $api->version($version, [
     'middleware' => 'api.auth',
     'scopes' => ['user','organization', 'contact', 'rollcall']
 ], function ($api) use ($base) {
-    //Users
-    ////////////////////////////////////////////////////////////////////
-    $api->get($base.'users', ['as' => 'users.index', 'uses' => 'UserController@all']);
-    $api->post($base.'users', ['as' => 'users.create', 'uses' => 'UserController@create']);
-    $api->get($base. 'users/{user}', ['as' => 'users.show', 'uses' => 'UserController@find']);
-    $api->put($base. 'users/{user}', ['as' => 'users.update', 'uses' => 'UserController@update']);
-    $api->delete($base. 'users/{user}', ['as' => 'users.delete', 'uses' => 'UserController@delete']);
-
     //Organizations
     ////////////////////////////////////////////////////////////////////
     $api->resource($base.'organizations', 'OrganizationController', ['except' => ['index']]);
 
     // Org members
     $api->resource($base.'organizations/{organization}/people', 'PersonController');
-    $api->get($base.'organizations/{organization}/people/{member}/invite', ['uses' => 'PersonController@invitePerson']);
+    $api->post($base.'organizations/{organization}/people/{member}/invite', ['uses' => 'PersonController@invitePerson']);
 
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
-
-
-    //Contacts
-    ////////////////////////////////////////////////////////////////////
-    $api->get($base.'contacts', ['as' => 'contacts.index', 'uses' => 'ContactController@all']);
-    $api->post($base.'contacts', ['as' => 'contacts.create', 'uses' => 'ContactController@create']);
-    $api->put($base. 'contacts/{contact}', ['as' => 'contacts.update', 'uses' => 'ContactController@update']);
-    $api->delete($base. 'contacts/{contact}', ['as' => 'contacts.delete', 'uses' => 'ContactController@delete']);
-
 
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
@@ -57,6 +40,7 @@ $api->version($version, [
 
     $api->get($base.'rollcalls/{rollcall}/messages', ['uses' => 'RollCallController@listMessages']);
     $api->get($base.'rollcalls/{rollcall}/recipients', ['uses' => 'RollCallController@listRecipients']);
+    $api->post($base.'rollcalls/{rollcall}/recipients/{recipient}/messages', ['uses' => 'RollCallController@addMessage']);
 
     // Rollcall Replies
     $api->put($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@update']);

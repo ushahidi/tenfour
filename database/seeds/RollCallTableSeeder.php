@@ -21,53 +21,54 @@ class RollCallTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::select('id')->get();
-
         // Grab seeded organization
         $organization = Organization::where('name', 'Ushahidi')
                       ->select('id')
                       ->firstOrFail();
 
-        $rollCall = RollCall::firstOrCreate([
-            'organization_id' => $organization->id,
-            'user_id' => $users[0]->id
-        ]);
-
-        $rollCall->update([
-            'message' => 'Test rollcall',
-            'answers' => ['No', 'Yes']
-        ]);
-
-        // Add recipients
-        $recipients = [];
-
+        $users = User::select('id')->where('organization_id', $organization->id)->limit(20)->get();
         foreach ($users as $user) {
-            array_push($recipients, $user->id);
-        }
-
-        $rollCall->recipients()->sync($recipients, false);
-
-        Notification::send($rollCall->recipients, new RollCallReceived($rollCall));
-
-        // Add replies
-        $no_of_replies = 1;
-        $reply_count = 0;
-
-        foreach($users as $user) {
-            if ($reply_count === $no_of_replies) {
-                break;
-            }
-
-            $reply = Reply::firstOrCreate([
-                'message'      => 'I am OK',
-                'answer'       => 'Yes',
-                'user_id'      => $user->id,
-                'roll_call_id' => $rollCall->id,
+            $rollCall = RollCall::firstOrCreate([
+                'organization_id' => $organization->id,
+                'user_id' => $user->id
             ]);
 
-            Notification::send($rollCall->recipients, new ReplyReceived($reply));
+            $rollCall->update([
+                'message' => 'Test rollcall',
+                'answers' => ['No', 'Yes']
+            ]);
 
-            $reply_count++;
+            // Add recipients
+            $recipients = [];
+
+            foreach ($users as $user) {
+                array_push($recipients, $user->id);
+            }
+
+            $rollCall->recipients()->sync($recipients, false);
+
+            Notification::send($rollCall->recipients, new RollCallReceived($rollCall));
+
+            // Add replies
+            $no_of_replies = 1;
+            $reply_count = 0;
+
+            foreach($users as $user) {
+                if ($reply_count === $no_of_replies) {
+                    break;
+                }
+
+                $reply = Reply::firstOrCreate([
+                    'message'      => 'I am OK',
+                    'answer'       => 'Yes',
+                    'user_id'      => $user->id,
+                    'roll_call_id' => $rollCall->id,
+                ]);
+
+                Notification::send($rollCall->recipients, new ReplyReceived($reply));
+
+                $reply_count++;
+            }
         }
     }
 }

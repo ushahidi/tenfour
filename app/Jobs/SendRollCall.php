@@ -12,7 +12,13 @@ use RollCall\Contracts\Messaging\MessageServiceFactory;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\UserRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
+use RollCall\Models\Organization;
+use RollCall\Messaging\SMSService;
+
+use Log;
+
+define('SMS_BYTECOUNT', 140);
 
 class SendRollCall implements ShouldQueue
 {
@@ -37,10 +43,22 @@ class SendRollCall implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, UserRepository $user_repo)
+    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
     {
         $organization = $org_repo->find($this->roll_call['organization_id']);
-        $creator = $user_repo->find($this->roll_call['user_id']);
+
+        // Get complaint count for org
+        $complaint_count = $roll_call_repo->getComplaintCountByOrg($this->roll_call['organization_id']);
+
+        // If complaint count is greater than threshold, log and don't send
+        if ($complaint_count >= config('rollcall.messaging.complaint_threshold')) {
+            Log::info('Cannot send roll call for ' . $organization['name'] . ' because complaints exceed threshold');
+            return;
+        }
+
+        $creator = $person_repo->find($this->roll_call['organization_id'], $this->roll_call['user_id']);
+
+        $org_url = Organization::findOrFail($this->roll_call['organization_id'])->url();
 
         // Get creator's contact
         $creator_contacts = $contact_repo->getByUserId($this->roll_call['user_id']);
@@ -54,28 +72,96 @@ class SendRollCall implements ShouldQueue
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
-            if (! $roll_call_repo->getMessages($this->roll_call['id'], $recipient['id'])) {
+            // Check if user has a pending reply
+            $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByUser($recipient['id']);
 
-                // TODO: Filter by preferred method of sending
-                $contacts = $contact_repo->getByUserId($recipient['id']);
+            // Set state to unresponsive if no reply found
+            if ($unreplied_roll_call_id) {
+                $roll_call_repo->updateRecipientStatus($unreplied_roll_call_id, $recipient['id'], 'unresponsive');
+            }
 
-                foreach($contacts as $contact)
-                {
-                    $message_service = $message_service_factory->make($contact['type']);
+            $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
 
-                    if (config('sms.driver') === 'africastalking') {
-                        $message_service->setView('sms.africastalking');
-                    }
-
-                    if ($contact['type'] === 'email') {
-                        $message_service->send($contact['contact'], new RollCallMail($this->roll_call, $organization, $creator));
-                    } else {
-                        $message_service->send($contact['contact'], $this->roll_call['message']);
-                    }
-
-                    $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
+            foreach($contacts as $contact)
+            {
+                if (!$contact['subscribed']) {
+                  continue;
                 }
+
+                $message_service = $message_service_factory->make($contact['type']);
+                $to = $contact['contact'];
+
+                if ($contact['type'] === 'email') {
+                    if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
+                        Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
+                        continue;
+                    }
+
+                    $message_service->send($to, new RollCallMail($this->roll_call, $organization, $creator, $contact));
+                } else {
+                    // Send reminder SMS to unresponsive recipient
+                    $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
+
+                    if ($unreplied_sms_roll_call_id) {
+                        $this->sendReminderSMS($message_service, $to, $org_url .'/rollcalls/'. $unreplied_sms_roll_call_id);
+                    }
+
+                    $params = [];
+                    $rollcall_url = $params['rollcall_url'] = $org_url .'/rollcalls/'. $this->roll_call['id'];
+                    $params['answers'] = $this->roll_call['answers'];
+                    $params['keyword'] = $message_service->getKeyword($to);
+                    $msg = $this->roll_call['message'];
+
+                    if ($this->isURLOnSMSBoundary('sms.rollcall', ['msg' => $msg] + $params)) {
+                        // send sms without rollcall url
+                        unset($params['rollcall_url']);
+                        $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
+                        // send rollcall url
+                        $this->sendRollCallURLSMS($message_service, $to, $rollcall_url);
+                    } else {
+                        // send together
+                        $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
+                    }
+                }
+
+                // Update response status to 'waiting'
+                $roll_call_repo->updateRecipientStatus($this->roll_call['id'], $recipient['id'], 'waiting');
+
+                // Log message for recipient
+                $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
             }
         }
+    }
+
+    public function isURLOnSMSBoundary($view, $data, $url_param = 'rollcall_url') {
+
+      $len_with_url = mb_strlen(view($view, $data));
+      $count_with_url = floor($len_with_url / SMS_BYTECOUNT);
+
+      unset($data[$url_param]);
+      $len_without_url =  mb_strlen(view($view, $data));
+      $count_without_url = floor($len_without_url / SMS_BYTECOUNT);
+
+      return $count_with_url !== $count_without_url;
+    }
+
+    private function sendRollCallSMS(SMSService $message_service, $to, $msg, $params) {
+        // \Log::info('Sending "RollCallSMS" to=' . $to . ' msg=' . $msg);
+        $message_service->setView('sms.rollcall');
+        $message_service->send($to, $msg, $params);
+    }
+
+    private function sendRollCallURLSMS(SMSService $message_service, $to, $rollcall_url) {
+        // \Log::info('Sending "RollCallURLSMS" to=' . $to . ' msg=' . $rollcall_url);
+        $message_service->setView('sms.rollcall_url');
+        $message_service->send($to, $rollcall_url);
+    }
+
+    private function sendReminderSMS(SMSService $message_service, $to, $rollcall_url) {
+        // \Log::info('Sending "ReminderSMS" to=' . $to . ' msg=' . $rollcall_url);
+        // @TODO include previous rollcall message
+
+        $message_service->setView('sms.unresponsive');
+        $message_service->send($to, $rollcall_url);
     }
 }

@@ -98,7 +98,14 @@ class AfricasTalking extends AbstractSMS implements DriverInterface
 
     public function receive($raw)
     {
-        //
+        $message = $this->createIncomingMessage();
+        $message->setRaw($raw->get());
+        $message->setMessage($raw->get('text'));
+        $message->setFrom($raw->get('from'));
+        $message->setId($raw->get('id'));
+        $message->setTo($raw->get('to'));
+
+        return $message;
     }
 
     public function processReceive($raw_message)

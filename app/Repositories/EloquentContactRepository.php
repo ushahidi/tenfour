@@ -51,15 +51,31 @@ class EloquentContactRepository implements ContactRepository
         return $contact->toArray();
     }
 
-    public function getByUserId($user_id)
+    public function getByUserId($user_id, Array $methods = null)
     {
-        return Contact::with([
+        $query = Contact::with([
             'user' => function ($query) {
                 $query->select('users.id', 'users.name');
             }
         ])
-            ->where('user_id', $user_id)
-            ->get()
+            ->where('user_id', $user_id);
+
+        // Filter contacts by method if required
+        if (!empty($methods)) {
+            $methods = array_map(function ($method) {
+                return $method === 'sms' ? 'phone' : $method;
+            }, $methods);
+
+            $query->where(function ($query) use ($methods) {
+                $query->whereIn('type', $methods);
+
+                if (in_array('preferred', $methods)) {
+                    $query->orWhere('preferred', 1);
+                }
+            });
+        }
+
+        return $query->get()
             ->toArray();
     }
 
@@ -80,5 +96,24 @@ class EloquentContactRepository implements ContactRepository
         }
 
         return $contact;
+    }
+
+    public function unsubscribe($token)
+    {
+      $contact = Contact::where('unsubscribe_token', $token)->firstOrFail();
+
+      $contact->subscribed = false;
+      $contact->save();
+
+      return $contact->toArray();
+    }
+
+    public function setBounceCount($count, $id)
+    {
+        $contact = Contact::findorFail($id);
+        $contact->bounce_count = $count;
+        $contact->save();
+
+        return $contact->fresh()->toArray();
     }
 }

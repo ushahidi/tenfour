@@ -12,7 +12,8 @@ class RollCall extends Model
      * @var array
      */
     protected $casts = [
-        'answers' => 'array',
+        'answers'  => 'array',
+        'send_via' => 'json'
     ];
     /**
      * The database table used by the model.
@@ -26,14 +27,14 @@ class RollCall extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id', 'answers'];
+    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via'];
 
     /**
      * The relations to eager load on every query.
      *
      * @var array
      */
-    protected $with = ['recipients'];
+    protected $with = ['recipients', 'replies', 'user'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -66,7 +67,7 @@ class RollCall extends Model
      */
     public function recipients()
     {
-        return $this->belongsToMany('RollCall\Models\User', 'roll_call_recipients');
+        return $this->belongsToMany('RollCall\Models\User', 'roll_call_recipients')->withPivot('response_status');
     }
 
     /**
@@ -75,7 +76,7 @@ class RollCall extends Model
      */
     public function messages()
     {
-        return $this->belongsToMany('RollCall\Models\Contact', 'roll_call_messages');
+        return $this->belongsToMany('RollCall\Models\Contact', 'roll_call_messages')->withTimestamps();
     }
 
     /**

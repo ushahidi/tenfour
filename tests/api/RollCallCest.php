@@ -16,62 +16,76 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            [
-                'message' => 'Westgate under siege',
-                'organization' => [
-                    'id' => 2
-                ],
-                'sent_count'  => 3,
-                'reply_count' => 2,
-                'user' => [
-                    'id' => 4
-                ],
-                'recipients' => [
-                    [
-                        'id' => 1,
-                        'name' => 'Test user',
-                        'uri' => '/users/1',
+            'rollcalls' => [
+                [
+                    'id' => 1,
+                    'message' => 'Westgate under siege',
+                    'organization' => [
+                        'id' => 2
                     ],
-                    [
-                        'id' => 2,
-                        'name' => 'Admin user',
-                        'uri' => '/users/2',
+                    'sent_count'  => 4,
+                    'reply_count' => 2,
+                    'user' => [
+                        'id' => 4
                     ],
-                    [
-                        'id' => 4,
-                        'name' => 'Org owner',
-                        'uri' => '/users/4',
+                    'recipients' => [
+                        [
+                            'id' => 1,
+                            'name' => 'Test user',
+                            'uri' => '/users/1',
+                        ],
+                        [
+                            'id' => 2,
+                            'name' => 'Admin user',
+                            'uri' => '/users/2',
+                        ],
+                        [
+                            'id' => 4,
+                            'name' => 'Org owner',
+                            'uri' => '/users/4',
+                        ]
+                    ],
+                    'replies' => [
+                        [
+                            'id' => 1,
+                            'message' => 'I am OK'
+                        ],
+                        [
+                            'id' => 3,
+                            'message' => 'Latest answer'
+                        ]
                     ]
+                ],
+                [
+                    'message' => 'yet another test roll call',
+                    'organization' => [
+                        'id' => 2
+                    ],
+                    'sent_count' => 0,
+                    'user' => [
+                        'id' => 1
+                    ],
+                    'recipients' => [
+                        [
+                            'id' => 3
+                        ]
+                    ],
+                    'replies' => [
+                        [
+                            'message' => 'Latest answer again',
+                            'id' => 5
+                        ]
+                    ],
+                ],
+                [
+                    'id' => 4,
+                    'message' => 'Roll call with answers',
+                ],
+                [
+                    'id' => 5,
+                    'message' => 'Roll call with answers',
                 ]
-            ],
-            [
-                'message' => 'Another test roll call',
-                'organization' => [
-                    'id' => 3
-                ],
-                'sent_count' => 1,
-                'user' => [
-                    'id' => 1
-                ],
-                'recipients' => [
-                    [
-                        'id' => 4,
-                        'name' => 'Org owner',
-                        'uri' => '/users/4'
-                    ]
-                ]
-            ],
-            [
-                'message' => 'yet another test roll call',
-                'organization' => [
-                    'id' => 2
-                ],
-                'sent_count' => 0,
-                'user' => [
-                    'id' => 1
-                ],
-                'recipients' => []
-            ],
+            ]
         ]);
     }
 
@@ -93,7 +107,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -120,7 +134,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -202,28 +216,6 @@ class RollCallCest
     }
 
     /*
-     * Filter contacts who have not responded to a roll call
-     *
-     */
-    public function filterUnresponsiveContacts(ApiTester $I)
-    {
-        $id = 1;
-        $I->wantTo('Get a list of contacts who have not responded to a roll call');
-        $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id.'/recipients?unresponsive=true');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'recipients' => [
-                [
-                    'id' => 2,
-                    'name' => 'Admin user',
-                ],
-            ]
-        ]);
-    }
-
-    /*
      * Get all roll calls in an organization as an authenticated user
      *
      */
@@ -240,7 +232,7 @@ class RollCallCest
                 'organization' => [
                     'id' => 2
                 ],
-                'sent_count'  => 3,
+                'sent_count'  => 4,
                 'reply_count' => 2,
                 'user' => [
                     'id' => 4
@@ -309,35 +301,9 @@ class RollCallCest
      * Get roll call details as admin
      *
      */
-    public function getMyRollCallAsMember(ApiTester $I)
-    {
-        $id = 1;
-        $I->wantTo('Get roll call details as an member');
-        $I->amAuthenticatedAsUser();
-        $I->sendGET($this->endpoint.'/'.$id);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'message' => 'Westgate under siege',
-                'status'  => 'pending',
-                'organization' => [
-                    'id' => 2
-                ],
-                'user' => [
-                    'id' => 4
-                ]
-            ]
-         );
-    }
-
-    /*
-     * Get roll call details as admin
-     *
-     */
     public function getOtherRollCallAsMember(ApiTester $I)
     {
-        $id = 3;
+        $id = 5;
         $I->wantTo('Failed to get roll call details as an member');
         $I->amAuthenticatedAsUser();
         $I->sendGET($this->endpoint.'/'.$id);
@@ -367,6 +333,18 @@ class RollCallCest
             ],
             'answers' => ['No', 'Yes']
         ]);
+        // This recipient DID respond to previous roll call
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 1,
+            'roll_call_id'    => 1,
+            'response_status' => 'replied',
+        ]);
+        // This recipient did not respond to previous roll call
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 3,
+            'roll_call_id'    => 2,
+            'response_status' => 'unresponsive',
+        ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
@@ -382,6 +360,44 @@ class RollCallCest
                     [
                         'id' => 3
                     ],
+                    [
+                        'id' => 1
+                    ]
+                ]
+            ]
+        );
+    }
+
+    /*
+     * Send roll call to self
+     *
+     */
+    public function sendRollCallToSelf(ApiTester $I)
+    {
+        $I->wantTo('Send roll call to self');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Test message to self',
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'Test message to self',
+                'organization' => [
+                    'id' => 2
+                ],
+                'user' => [
+                    'id' => 1
+                ],
+                'recipients' => [
                     [
                         'id' => 1
                     ]
@@ -565,6 +581,33 @@ class RollCallCest
                         'id' => 2
                     ]
                 ]
+            ]
+        );
+    }
+
+    /*
+     * Send roll call to single recipient
+     *
+     */
+    public function sendRollCallToRecipient(ApiTester $I)
+    {
+        $id = 1;
+        $recipient_id = 4;
+        $I->wantTo('Send roll call to a single recipient');
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 4,
+            'roll_call_id'    => 1,
+            'response_status' => 'unresponsive',
+        ]);
+        $I->amAuthenticatedAsAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/recipients/' .$recipient_id. '/messages');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'id' => 4,
+                'response_status' => 'waiting'
             ]
         );
     }

@@ -29,4 +29,16 @@ Route::post('mail/receive', 'MailController@receive');
 Route::post('password/email', ['uses' => 'Auth\PasswordController@postEmail']);
 Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
 
+// Receive push MO SMS
+Route::post('sms/receive/africastalking', 'SMSController@receiveAfricasTalking');
+Route::match(['get', 'post'], 'sms/receive/nexmo', 'SMSController@receiveNexmo');
+
 Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\PersonController@acceptInvite']);
+
+Route::post('unsubscribe', ['uses' => 'Api\First\PersonContactController@unsubscribe']);
+//Get UserAvatars
+Route::get('useravatar/{filename}',['uses' => 'UseravatarController@show']);
+
+// SES bounces and complaints
+Route::post('ses/bounces', 'SESBounceController@handleBounce');
+Route::post('ses/complaints', 'SESBounceController@handleComplaint');

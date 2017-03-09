@@ -9,6 +9,7 @@ use App;
 class CreateRollCallRequest extends FormRequest
 {
     use UserAccess;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,14 +17,17 @@ class CreateRollCallRequest extends FormRequest
      */
     public function authorize()
     {
-        // Admin has full permissions
-        if ($this->isAdmin()) {
+        if ($this->user()->isAdmin($this->input('organization_id'))) {
             return true;
         }
 
-        $org_role = $this->getOrganizationRole($this->input('organization_id'));
+        // Check if user is sending themselves a roll call
+        if (count($this->input('recipients')) == 1 &&
+            $this->isSelf($this->input('recipients.0.id'))) {
+            return true;
+        }
 
-        return in_array($org_role, $this->getAllowedOrgRoles());
+        return false;
     }
 
     /**
@@ -38,13 +42,6 @@ class CreateRollCallRequest extends FormRequest
             'organization_id' => 'required|integer|exists:organizations,id',
             'recipients'      => 'required',
             'recipients.*.id' => 'required|exists:users,id'
-        ];
-    }
-
-    protected function getAllowedOrgRoles()
-    {
-        return [
-            'owner', 'admin'
         ];
     }
 }

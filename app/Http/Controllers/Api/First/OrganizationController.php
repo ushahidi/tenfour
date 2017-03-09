@@ -87,11 +87,14 @@ class OrganizationController extends ApiController
      *
      * @Get("/{orgId}")
      * @Versions({"v1"})
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+     * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "organization": {
+     *         "id": 3,
+     *         "name": "Ushahidi",
+     *         "subdomain": "ushahidi@rollcall.io"
+     *     }
+     * })
      *
      * @param Request $request
      * @param int $id

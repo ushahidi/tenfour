@@ -2,11 +2,21 @@
 namespace RollCall\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class UserTransformer extends TransformerAbstract
 {
+    public static function generateInitials($name) {
+        $initials = array_map(function ($word) {
+            return substr($word, 0, 1);
+        }, explode(' ', $name));
+        $initials = strtoupper(implode('', $initials));
+        return substr($initials, 0, 3);
+    }
     public function transform(array $user)
     {
+        $user['uri'] = '/users/' . $user['id'];
+
         // User config task
         if (! empty($user['config_profile_reviewed']) && ! empty($user['config_self_test_sent'])) {
             $user['configComplete'] = $user['config_profile_reviewed']
@@ -49,6 +59,7 @@ class UserTransformer extends TransformerAbstract
 
         if (isset($user['notifications'])) {
             foreach($user['notifications'] as &$notification) {
+
                 $notification['type'] = str_replace('RollCall\\Notifications\\', '', $notification['type']);
             }
         }
@@ -66,12 +77,16 @@ class UserTransformer extends TransformerAbstract
             }
         }
 
+
+        // Got response status if available
+        if (isset($user['pivot']['response_status'])) {
+            $user['response_status'] = $user['pivot']['response_status'];
+        }
+
+        unset($user['pivot']);
+
         // Generate user initials
-        $user['initials'] =
-            array_map(function ($word) {
-                return substr($word, 0, 1);
-            }, explode(' ', $user['name']));
-        $user['initials'] = strtoupper(implode('', $user['initials']));
+        $user['initials'] = $this->generateInitials($user['name']);
 
         return $user;
     }

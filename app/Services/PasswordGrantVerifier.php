@@ -2,20 +2,20 @@
 namespace RollCall\Services;
 
 use Illuminate\Support\Facades\Auth;
-use RollCall\Contracts\Repositories\UserRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 
 class PasswordGrantVerifier
 {
     /**
-     * @var UsersRepository
+     * @var PersonRepository
      */
-    protected $users;
+    protected $people;
     /**
-     * @param UsersRepository $users
+     * @param PersonRepository $people
      */
-    public function __construct(UserRepository $users)
+    public function __construct(PersonRepository $people)
     {
-        $this->users = $users;
+        $this->people = $people;
     }
     /**
      * @param $username

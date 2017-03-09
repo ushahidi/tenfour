@@ -12,34 +12,21 @@ class DeletePersonRequest extends FormRequest
 
     public function authorize()
     {
-        $organization_id = $this->route('organization');
-        $user_id = $this->route('person');
+        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
+                 ->getMemberRole($this->route('organization'), $this->route('person'));
 
-        $org_repo = App::make('RollCall\Contracts\Repositories\OrganizationRepository');
-        $member_role = $org_repo->getMemberRole($organization_id, $user_id);
+        // Users can delete themselves
+        if ($this->route('person') && $this->isSelf($this->route('person')) && $role !== 'owner') {
+            return true;
+        }
 
-        // Person with owner role cannot be deleted
-        if ($member_role == 'owner') {
+        // Only the owner can edit their details
+        if ($role === 'owner') {
             return false;
         }
 
-        // An admin, org owner and org admin can delete members
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        $org_role = $this->getOrganizationRole($organization_id);
-
-        if ($org_role == 'owner') {
-            return true;
-        }
-
-        if ($org_role == 'admin') {
-            // Admin can only delete users with 'member' or 'admin' role
-            if ($member_role === 'owner') {
-                return false;
-            }
-
+        // An org admin can delete members
+        if ($this->user()->isAdmin($this->route('organization'))) {
             return true;
         }
 
