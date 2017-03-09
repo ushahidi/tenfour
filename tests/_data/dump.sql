@@ -86,12 +86,15 @@ INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('2', '1');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('4', '1', 'unresponsive');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('3', '2', 'waiting');
+INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('3', '3');
 
 
 -- Add test replies
 INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('1', 'I am OK', '1', '1', '1', NOW());
 INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('2', 'Not OK yet', '4', '1', '4', NOW() - INTERVAL 1 DAY);
-INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('3', 'I am OK', '4', '1', '4', NOW());
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('3', 'Latest answer', '4', '1', '4', NOW());
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('4', 'Not OK again', '6', '3', '4', NOW() - INTERVAL 2 MINUTE);
+INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('5', 'Latest answer again', '6', '3', '4', NOW() - INTERVAL 1 MINUTE);
 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';

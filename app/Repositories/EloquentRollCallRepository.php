@@ -17,7 +17,7 @@ class EloquentRollCallRepository implements RollCallRepository
           ->orderBy('created_at', 'desc')
           ->with(['replies' => function ($query) {
             // Just get the most recent replies for each user
-            $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id`)"));
+            $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`roll_call_id` = `replies`.`roll_call_id`)"));
           }]);
 
         if ($limit > 0) {
@@ -59,7 +59,7 @@ class EloquentRollCallRepository implements RollCallRepository
         $roll_call = RollCall::query()
             ->with(['replies' => function ($query) {
                 // Just get the most recent replies for each user
-                $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id`)"));
+                $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`roll_call_id` = `replies`.`roll_call_id`)"));
             }])
             ->findOrFail($id)
             ->toArray();

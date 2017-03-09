@@ -16,7 +16,7 @@ class ReplyCest
             'replies' => [
                 [
                     'id'       => 3,
-                    'message'  => 'I am OK',
+                    'message'  => 'Latest answer',
                     'contact'  => [
                         'id' => 4
                     ],
@@ -41,7 +41,7 @@ class ReplyCest
             'replies' => [
                 [
                     'id'       => 3,
-                    'message'  => 'I am OK',
+                    'message'  => 'Latest answer',
                     'contact'  => [
                         'id' => 4
                     ],
@@ -77,7 +77,7 @@ class ReplyCest
                 ],
                 [
                     'id'       => 3,
-                    'message'  => 'I am OK',
+                    'message'  => 'Latest answer',
                     'contact'  => [
                         'id' => 4
                     ],

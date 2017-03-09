@@ -18,6 +18,7 @@ class RollCallCest
         $I->seeResponseContainsJson([
             'rollcalls' => [
                 [
+                    'id' => 1,
                     'message' => 'Westgate under siege',
                     'organization' => [
                         'id' => 2
@@ -43,6 +44,16 @@ class RollCallCest
                             'name' => 'Org owner',
                             'uri' => '/users/4',
                         ]
+                    ],
+                    'replies' => [
+                        [
+                            'id' => 1,
+                            'message' => 'I am OK'
+                        ],
+                        [
+                            'id' => 3,
+                            'message' => 'Latest answer'
+                        ]
                     ]
                 ],
                 [
@@ -54,8 +65,26 @@ class RollCallCest
                     'user' => [
                         'id' => 1
                     ],
-                    'recipients' => []
+                    'recipients' => [
+                        [
+                            'id' => 3
+                        ]
+                    ],
+                    'replies' => [
+                        [
+                            'message' => 'Latest answer again',
+                            'id' => 5
+                        ]
+                    ],
                 ],
+                [
+                    'id' => 4,
+                    'message' => 'Roll call with answers',
+                ],
+                [
+                    'id' => 5,
+                    'message' => 'Roll call with answers',
+                ]
             ]
         ]);
     }
