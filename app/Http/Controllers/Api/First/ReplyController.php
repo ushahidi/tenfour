@@ -12,6 +12,9 @@ use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Response;
 use Dingo\Api\Auth\Auth;
 
+/**
+ * @Resource("Replies", uri="/api/v1/rollcalls/{rollCallId}/replies")
+ */
 class ReplyController extends ApiController
 {
     public function __construct(replyRepository $reply, RollCallRepository $roll_calls, Auth $auth, Response $response)
@@ -24,6 +27,34 @@ class ReplyController extends ApiController
 
     /**
      * Get a single reply
+     *
+     * @Get("/{replyId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token")}
+     * @Response(200, body={
+     *     "reply": {
+     *          "answer": null,
+     *          "contact": {
+     *               "id": 3,
+     *               "uri": "/contacts/3"
+     *           },
+     *           "created_at": "2016-04-15 20:01:55",
+     *           "id": 1,
+     *           "location_text": null,
+     *           "message": "I am OK",
+     *           "message_id": null,
+     *           "rollcall": {
+     *               "id": 4,
+     *               "uri": "/rollcalls/4"
+     *           },
+     *           "updated_at": null,
+     *           "uri": "/rollcalls/4/reply/1",
+     *           "user": {
+     *               "id": 1,
+     *               "uri": "/users/1"
+     *           },
+     *     }
+     * })
      *
      * @param Request $request
      * @param int $id

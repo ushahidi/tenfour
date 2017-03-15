@@ -64,8 +64,12 @@ class PersonController extends ApiController
     /**
      * List members of an organization
      *
-     * @Get("/")
+     * @Get("/{?offset,limit}")
      * @Versions({"v1"})
+     * @Parameters({
+     *     @Parameter("offset", default=0),
+     *     @Parameter("limit", default=0)
+     * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
             "people": {{
@@ -91,16 +95,16 @@ class PersonController extends ApiController
      *
      * @Get("/{personId}")
      * @Versions({"v1"})
-     * @Request(headers={"Authorization": "Bearer token"})
+     * @Request(headers={"Authorization": "Bearer token")}
      * @Response(200, body={
-            "person": {
-                "id": 3,
-                "name": "Testing Testing",
-                "email": "test@ushahidi.com",
-                "username": "ushahidi",
-                "created_at": "2016-03-30 16:11:36",
-                "updated_at": "2016-03-30 16:11:36"
-            }
+     *      "person": {
+     *          "id": 3,
+     *          "name": "Testing Testing",
+     *          "email": "test@ushahidi.com",
+     *          "username": "ushahidi",o
+     *          "created_at": "2016-03-30 16:11:36",
+     *          "updated_at": "2016-03-30 16:11:36"
+     *       }
      * })
      *
      * @param Request $request
@@ -116,12 +120,19 @@ class PersonController extends ApiController
     }
 
     /**
-     * Delete members from an organization
+     * Delete member from an organization
      *
      * @Delete("/{memberId}")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
-     * @Response(201)
+     * @Response(200, body={
+     *     "person": {
+     *          "id": 3,
+     *          "name": "Testing Testing",
+     *          "email": "test@ushahidi.com",
+     *          "username": "ushahidi"
+     *     }
+     * })
      *
      * @param Request $request
      * @return Response
