@@ -16,9 +16,24 @@ class UpdateContactRequest extends UpdatePersonRequest
             $rules['contact'] = 'email';
         }
 
-        $rules['type'] = 'in:phone,email';
+        $rules['type']    = 'in:phone,email';
+        $rules['contact'] = 'unique:contacts,contact';
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        if ($this->input('type') === 'phone') {
+            return [
+                'contact.unique' => 'Phone number already in use, choose a different one'
+            ];
+        } elseif ($this->input('type') === 'email') {
+            return [
+                'contact.unique' => 'Email already in use, choose a different one'
+            ]; 
+        }
+      
     }
 
 }
