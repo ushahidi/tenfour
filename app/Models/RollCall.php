@@ -27,7 +27,7 @@ class RollCall extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via'];
+    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_roll_call'];
 
     /**
      * The relations to eager load on every query.
