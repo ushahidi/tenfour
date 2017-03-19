@@ -22,7 +22,8 @@
         "league/flysystem-aws-s3-v3": "~1.0",
         "markdunphy/ses-sns-types": "^0.1.4",
         "willdurand/email-reply-parser": "^2.5",
-        "graham-campbell/throttle": "^5.3"
+        "graham-campbell/throttle": "^5.3",
+        "sentry/sentry-laravel": "^0.6.1"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",

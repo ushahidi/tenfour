@@ -160,6 +160,7 @@ return [
         LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         GrahamCampbell\Throttle\ThrottleServiceProvider::class,
+        Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
 
     ],
 
@@ -215,6 +216,7 @@ return [
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
         'SMS' => RollCall\Messaging\Facades\SMS::class,
         'Throttle' => GrahamCampbell\Throttle\Facades\Throttle::class,
+        'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
 
     ],
 
