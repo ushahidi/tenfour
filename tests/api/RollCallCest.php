@@ -611,4 +611,17 @@ class RollCallCest
             ]
         );
     }
+
+    /*
+     * Delete roll call
+     */
+    public function deleteRollCall(ApiTester $I)
+    {
+        $id = 1;
+        $I->wantTo('Delete a roll call');
+        $I->amAuthenticatedAsAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendDelete($this->endpoint."/$id");
+        $I->seeResponseCodeIs(405);
+    }
 }
