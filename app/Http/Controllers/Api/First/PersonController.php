@@ -39,17 +39,17 @@ class PersonController extends ApiController
      * @Post("/")
      * @Versions({"v1"})
      * @Request({
-            "name": "Testing Testing",
-            "email": "test@ushahidi.com",
-            "password": "newpassword",
-            "password_confirm": "newpassword"
-       }, headers={"Authorization": "Bearer token"})
+     *       "name": "Testing Testing",
+     *       "email": "test@ushahidi.com",
+     *       "password": "newpassword",
+     *       "password_confirm": "newpassword"
+     *  }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-            "person": {
-                "id": 3,
-                "name": "Testing Testing",
-                "email": "test@ushahidi.com"
-            }
+     *       "person": {
+     *           "id": 3,
+     *           "name": "Testing Testing",
+     *           "email": "test@ushahidi.com"
+     *       }
      * })
      *
      * @param Request $request
@@ -72,10 +72,10 @@ class PersonController extends ApiController
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-            "people": {{
-                "name": "Robbie",
-                "email": "robbie@ushahidi.com"
-            }}
+     *       "people": {{
+     *           "name": "Robbie",
+     *           "email": "robbie@ushahidi.com"
+     *       }}
      * })
      *
      * @param Request $request
@@ -95,13 +95,13 @@ class PersonController extends ApiController
      *
      * @Get("/{personId}")
      * @Versions({"v1"})
-     * @Request(headers={"Authorization": "Bearer token")}
+     * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *      "person": {
      *          "id": 3,
      *          "name": "Testing Testing",
      *          "email": "test@ushahidi.com",
-     *          "username": "ushahidi",o
+     *          "username": "ushahidi",
      *          "created_at": "2016-03-30 16:11:36",
      *          "updated_at": "2016-03-30 16:11:36"
      *       }
