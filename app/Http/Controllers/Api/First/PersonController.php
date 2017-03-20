@@ -42,14 +42,22 @@ class PersonController extends ApiController
      *       "name": "Testing Testing",
      *       "email": "test@ushahidi.com",
      *       "password": "newpassword",
-     *       "password_confirm": "newpassword"
+     *       "password_confirm": "newpassword",
+     *       "person_type": "user",
+     *       "role": "member"
      *  }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *       "person": {
-     *           "id": 3,
-     *           "name": "Testing Testing",
-     *           "email": "test@ushahidi.com"
-     *       }
+     *     "person": {
+     *         "config_profile_reviewed": true,
+     *         "config_self_test_sent": false,
+     *         "id": 4,
+     *         "initials": "TT",
+     *         "name": "Testing Testing",
+     *         "organization_id": 2,
+     *         "person_type": "user",
+     *         "role": "member",
+     *         "uri": "/users/4"
+     *     }
      * })
      *
      * @param Request $request
@@ -72,10 +80,59 @@ class PersonController extends ApiController
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *       "people": {{
-     *           "name": "Robbie",
-     *           "email": "robbie@ushahidi.com"
-     *       }}
+     *     "people": {
+     *         {
+     *             "contacts": {
+     *                 {
+     *                     "contact": "linda@ushahidi.com",
+     *                     "id": 3,
+     *                     "type": "email",
+     *                     "uri": "/contact/3",
+     *                     "user": {
+     *                         "gravatar": "eac7707b1d94e619add99353b2977b6f"
+     *                     }
+     *                 },
+     *                 {
+     *                     "contact": "admin@ushahidi.com",
+     *                     "id": 5,
+     *                     "type": "email",
+     *                     "uri": "/contact/5",
+     *                     "user": {
+     *                         "gravatar": "3578216d69634e299351bb18b7c7fc46"
+     *                     }
+     *                 }
+     *             },
+     *             "description": "Admin user",
+     *             "id": 2,
+     *             "name": "Admin user",
+     *             "organization_id": 2,
+     *             "person_type": "user",
+     *             "profile_picture": null,
+     *             "role": "admin",
+     *             "uri": "/users/2"
+     *         },
+     *         {
+     *             "contacts": {
+     *                 {
+     *                     "contact": "org_admin@ushahidi.com",
+     *                     "id": 8,
+     *                     "type": "email",
+     *                     "uri": "/contact/8",
+     *                     "user": {
+     *                         "gravatar": "a50a84475f1d038b516be6fc5923296d"
+     *                     }
+     *                 }
+     *             },
+     *             "description": "Org admin",
+     *             "id": 5,
+     *             "name": "Org admin",
+     *             "organization_id": 2,
+     *             "person_type": "user",
+     *             "profile_picture": null,
+     *             "role": "admin",
+     *             "uri": "/users/5"
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -97,14 +154,36 @@ class PersonController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *      "person": {
-     *          "id": 3,
-     *          "name": "Testing Testing",
-     *          "email": "test@ushahidi.com",
-     *          "username": "ushahidi",
-     *          "created_at": "2016-03-30 16:11:36",
-     *          "updated_at": "2016-03-30 16:11:36"
-     *       }
+     *     "person": {
+     *         "contacts": {
+     *             {
+     *                 "contact": "0721674180",
+     *                 "id": 1,
+     *                 "subscribed": 1,
+     *                 "type": "phone",
+     *                 "updated_at": null,
+     *                 "uri": "/contact/1"
+     *             },
+     *             {
+     *                 "contact": "test@ushahidi.com",
+     *                 "id": 2,
+     *                 "subscribed": 1,
+     *                 "type": "email",
+     *                 "updated_at": null,
+     *                 "uri": "/contact/2"
+     *             }
+     *         },
+     *         "description": "Test user",
+     *         "gravatar": "7563a30b6c2f8bd7eaac8adc38b8de72",
+     *         "id": 1,
+     *         "initials": "TU",
+     *         "name": "Test user",
+     *         "organization_id": 2,
+     *         "person_type": "user",
+     *         "profile_picture": null,
+     *         "role": "member",
+     *         "uri": "/users/1"
+     *     }
      * })
      *
      * @param Request $request
@@ -127,10 +206,16 @@ class PersonController extends ApiController
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "person": {
-     *          "id": 3,
-     *          "name": "Testing Testing",
-     *          "email": "test@ushahidi.com",
-     *          "username": "ushahidi"
+     *         "description": "Org member",
+     *         "id": 3,
+     *         "initials": "OM",
+     *         "name": "Org member",
+     *         "organization_id": 2,
+     *         "person_type": "user",
+     *         "profile_picture": null,
+     *         "role": "member",
+     *         "updated_at": null,
+     *         "uri": "/users/3"
      *     }
      * })
      *
@@ -153,21 +238,24 @@ class PersonController extends ApiController
      * @Put("/{memberId}")
      * @Versions({"v1"})
      * @Request({
-            "name": "Testing Testing",
-            "email": "test@ushahidi.com",
-            "password": "newpassword",
-            "password_confirm": "newpassword"
+           "name": "Updated org member",
+           "password": "newpassword",
+           "person_type": "user"
         }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-            "user": {
-                "id": 3,
-                "name": "Testing Testing",
-                "email": "test@ushahidi.com",
-                "username": "ushahidi",
-                "created_at": "2016-03-30 16:11:36",
-                "updated_at": "2016-03-30 16:11:36"
-            }
-        })
+     *     "person": {
+     *         "id": 1,
+     *         "initials": "UOM",
+     *         "invite_sent": 0,
+     *         "name": "Updated org member",
+     *         "organization_id": 2,
+     *         "person_type": "user",
+     *         "profile_picture": null,
+     *         "role": "member",
+     *         "updated_at": "2017-03-20 08:38:27",
+     *         "uri": "/users/1"
+     *     }
+     * })
      *
      * @param Request $request
      * @param int $id
