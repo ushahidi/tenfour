@@ -13,4 +13,11 @@ interface OrganizationRepository extends CrudRepository
      */
     public function all($subdomain = false);
 
+    /**
+     * Get an organization by subdomain
+     * @param  $subdomain
+     * @return array
+     */
+    public function findBySubdomain($subdomain);
+
 }
