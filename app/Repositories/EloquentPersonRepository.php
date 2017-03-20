@@ -25,7 +25,7 @@ class EloquentPersonRepository implements PersonRepository
     }
 
     // OrgCrudRepository
-    public function all($organization_id, $offset = 0, $limit)
+    public function all($organization_id, $offset = 0, $limit = 0)
     {
         $query = Organization::findOrFail($organization_id)
             ->members()

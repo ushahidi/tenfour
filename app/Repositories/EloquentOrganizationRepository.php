@@ -43,6 +43,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $query->get()->toArray();
     }
 
+    public function findBySubdomain($subdomain)
+    {
+        return Organization::where('subdomain', $subdomain)
+            ->firstOrFail()
+            ->toArray();
+    }
+
     public function update(array $input, $id)
     {
         $organization = Organization::findorFail($id);

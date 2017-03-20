@@ -4,6 +4,8 @@ namespace RollCall\Contracts\Repositories;
 interface PersonRepository extends OrgCrudRepository
 {
 
+    public function all($organization_id, $offset = 0, $limit = 0);
+
     /**
      * Get role of member in an organization
      *
