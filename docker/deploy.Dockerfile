@@ -5,6 +5,7 @@ ENV TERRAFORM_VERSION 0.8.7
 
 RUN apt-get update && \
     apt-get install -y python-dev python-pip git libffi6 libffi-dev libssl1.0.0 libssl-dev unzip wget gettext && \
+    pip install -U setuptools==11.3 && \
     pip install ansible==${ANSIBLE_VERSION} && \
     apt-get remove -y python-dev libffi-dev libssl-dev && \
     apt-get autoremove -y && \
