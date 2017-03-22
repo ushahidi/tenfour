@@ -1,6 +1,6 @@
 <?php
 
-namespace User\Validators;
+namespace RollCall\Validators;
 
 use Intervention\Image\ImageManagerStatic as Image;
 

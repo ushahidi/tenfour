@@ -7,7 +7,6 @@ use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use DB;
-use Illuminate\Support\Facades\Storage;
 use Validator;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -15,13 +14,15 @@ use Illuminate\Support\Facades\Notification;
 use RollCall\Notifications\PersonJoinedOrganization;
 use RollCall\Notifications\PersonLeftOrganization;
 use Illuminate\Support\Facades\Hash;
+use RollCall\Services\StorageService;
 
 class EloquentPersonRepository implements PersonRepository
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, StorageService $storageService)
     {
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
+        $this->storageService = $storageService;
     }
 
     // OrgCrudRepository
@@ -48,19 +49,6 @@ class EloquentPersonRepository implements PersonRepository
         return $members->toArray();
     }
 
-    protected function storeUserAvatar($file, $id)
-    {
-        $filename = $id;
-        list($extension, $file) = explode(';', $file);
-        list(, $extension) = explode('/', $extension);
-        list(, $file) = explode(',', $file);
-        $file = base64_decode($file);
-        $path = 'useravatar/'.$filename . '.' . $extension;
-        Storage::put($path, $file, 'public');
-
-        return Storage::url($path);
-    }
-
     // OrgCrudRepository
     public function create($organization_id, array $input)
     {
@@ -70,11 +58,10 @@ class EloquentPersonRepository implements PersonRepository
             $input['role'] = 'member';
         }
 
-        if (isset($input['inputImage'])) {
-            $file = $input['inputImage'];
-            $input['profile_picture'] = $this->storeUserAvatar($file, microtime()); // Just use time instead of ID
-
-            unset($input['inputImage']);
+        if (isset($input['_input_image'])) {
+            $file = $input['_input_image'];
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, microtime()); // Just use time instead of ID
+            unset($input['_input_image']);
         }
 
         $user = new User;
@@ -111,11 +98,11 @@ class EloquentPersonRepository implements PersonRepository
             }
 
             /* Updating user-avatar */
-            if (isset($input['inputImage']))
+            if (isset($input['_input_image']))
             {
-                $file = $input['inputImage'];
-                $input['profile_picture'] = $this->storeUserAvatar($file, $user_id);
-                unset($input['inputImage']);
+                $file = $input['_input_image'];
+                $input['profile_picture'] = $this->storageService->storeBase64File($file, $user_id, 'useravatar');
+                unset($input['_input_image']);
             }
             /* end of user-avatar-code */
 

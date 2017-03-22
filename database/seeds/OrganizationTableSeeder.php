@@ -16,6 +16,7 @@ class OrganizationTableSeeder extends Seeder
 
         $organization->update([
             'subdomain' => 'ushahidi',
+            'profile_picture' => 'http://github.ushahidi.org/rollcall-pattern-library/assets/img/avatar-org.png',
         ]);
 
         $user = User::firstOrCreate(

@@ -45,6 +45,7 @@ class UpdatePersonRequest extends FormRequest
             'password' => 'min:8',
             'person_type' => 'in:member,user,external',
             'name' => 'required',
+            '_input_image' => 'input_image',
         ];
 
     }

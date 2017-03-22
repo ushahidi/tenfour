@@ -7,29 +7,14 @@ use Validator;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use libphonenumber\PhoneNumberUtil;
 
 class ApiServiceProvider extends ServiceProvider
 {
     public function boot()
     {
         Validator::extend('org_contact', 'RollCall\Validators\OrgMemberValidator@validateContact');
-
-        Validator::extend('inputImage', 'RollCall\Validators\ImageValidator@validateProfilePictureUpload');
-
-        Validator::extend('phone_number', function($attribute, $value, $parameters)
-        {
-            // Get region code. The assumption is that all phone numbers are passed as
-            // international numbers
-            if (! starts_with($value, '+')) {
-                $value = '+'.$value;
-            }
-
-            $phoneNumberUtil = PhoneNumberUtil::getInstance();
-            $phoneNumberObject = $phoneNumberUtil->parse($value, null);
-            return $phoneNumberUtil->isValidNumber($phoneNumberObject)
-              && preg_match("/^\+?[\-\d\ ()]+$/", $value);
-        });
+        Validator::extend('input_image', 'RollCall\Validators\ImageValidator@validateProfilePictureUpload');
+        Validator::extend('phone_number', 'RollCall\Validators\PhoneNumberValidator@validatePhoneNumber');
 
         $this->app->resolving(function ($object, $app) {
             if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
@@ -38,7 +23,6 @@ class ApiServiceProvider extends ServiceProvider
         });
 
         $exception = app('api.exception');
-
 
         $exception->register(function(\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);

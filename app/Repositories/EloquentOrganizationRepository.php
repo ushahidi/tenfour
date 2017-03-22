@@ -10,13 +10,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
 use RollCall\Notifications\PersonJoinedOrganization;
 use RollCall\Notifications\PersonLeftOrganization;
+use RollCall\Services\StorageService;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
     protected $currentUserId = NULL;
 
-    public function __construct()
+    public function __construct(StorageService $storageService)
     {
+        $this->storageService = $storageService;
     }
 
     public function setCurrentUserId($currentUserId)
@@ -26,12 +28,12 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function all($subdomain = false)
     {
-        $query = Organization::select('organizations.id', 'organizations.name', 'subdomain');
+        $query = Organization::select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture');
 
         // If we're authenticated, just return orgs we're a member of
         if ($this->currentUserId) {
             $query->join('users', 'organizations.id', '=', 'users.organization_id');
-            $query->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role');
+            $query->select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture', 'users.id as user_id', 'role');
             $query->where('users.id', $this->currentUserId);
         }
 
@@ -53,7 +55,6 @@ class EloquentOrganizationRepository implements OrganizationRepository
     public function update(array $input, $id)
     {
         $organization = Organization::findorFail($id);
-        $organization->update($input);
 
         if (isset($input['settings'])) {
           foreach ($input['settings'] as $key => $setting) {
@@ -66,6 +67,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
           };
         }
 
+        if (isset($input['_input_image'])) {
+            $file = $input['_input_image'];
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, $id, 'orgavatar');
+            unset($input['_input_image']);
+        }
+
+        $organization->update($input);
         return $this->find($id);
     }
 
@@ -103,7 +111,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
                 ->on('organizations.id', '=', 'users.organization_id')
                 ->on('users.role', '=', DB::raw('\'owner\'')); // @todo Is there a better way than using raw()?
             })
-            ->select('organizations.id', 'organizations.name', 'subdomain', 'users.id as user_id', 'role')
+            ->select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture', 'users.id as user_id', 'role')
             ->findOrFail($id)
             ->toArray();
     }
