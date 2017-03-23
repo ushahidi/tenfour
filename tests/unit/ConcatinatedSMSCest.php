@@ -14,7 +14,10 @@ class ConcatinatedSMSCest
     {
         $data = [
           'msg'           => 'loooooooooooooooooooooong',
-          'answers'       => ['Yes', 'No'],
+          'answers'       => [
+            ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','custom'=>false],
+            ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','custom'=>false]
+          ],
           'keyword'       => 'rollcall',
           'rollcall_url'  => 'http://testingsubdomain.ushahidi.com/rollcalls/1/answer/2'
         ];

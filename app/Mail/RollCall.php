@@ -51,7 +51,9 @@ class RollCall extends Mailable
         $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer';
         $reply_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
 
-        $has_custom_answers = isset($this->roll_call['answers']) ? count(array_diff($this->roll_call['answers'], ['Yes', 'No'])) : false;
+        $has_custom_answers = isset($this->roll_call['answers']) ? count(array_filter($this->roll_call['answers'], function($a) {
+            return $a['custom'];
+        })) > 0 : false;
 
         $unsubscribe_url = $client_url . '/unsubscribe/' .
           '?token=' . urlencode($this->contact['unsubscribe_token']) .

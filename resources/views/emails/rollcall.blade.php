@@ -22,7 +22,7 @@
     /* iOS BLUE LINKS */
     .appleBody a {color:#68440a; text-decoration: none;}
     .appleFooter a {color:#999999; text-decoration: none;}
-    
+
     .avatar-alpha {
     margin: 0 auto;
     font-family: 'Lato', Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -175,7 +175,7 @@
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border: 1px solid #E6E6DD; box-shadow: 0 1px 3px rgba(0,0,0,.16);">
                             <tr>
                     <td align=center style="text-align: center; padding: 20px 20px 10px;">
-                    @if($profile_picture) 
+                    @if($profile_picture)
                         <img src="{{$profile_picture}}" alt="{{ $author }}" class="avatar-alpha"></td>
                     @else
                         <div class="avatar-alpha">{{$initials}}</div>
@@ -195,7 +195,7 @@
                                                   Please select your answer below or reply directly to this email.
                                                   If you send an email reply, you can simply write
                                                   @foreach ($answers as $answer)
-                                                  "{{$answer}},"
+                                                  "{{$answer['answer']}},"
                                                   @endforeach
                                                   or write more if you'd like to provide more detail.
                                                   </td>
@@ -221,13 +221,13 @@
 
                                                     @for ($i = 0; $i < count($answers); $i++)
                                                     <tr>
-                                                        @if ($answers[$i] == 'No')
-                                                        <td align="center"><a href="{{$answer_url}}/{{$i}}" target="_blank" style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 10px solid #e8bb4a; border-bottom: 10px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0;" class="mobile-button">No</a></td>
-                                                        @elseif ($answers[$i] == 'Yes')
-                                                        <td align="center"><a href="{{$answer_url}}/{{$i}}" target="_blank" style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 10px solid #64b269; border-bottom: 10px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0;" class="mobile-button">Yes</a></td>
-                                                        @else
-                                                        <td align="center"><a href="{{$answer_url}}/{{$i}}" target="_blank" style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #BC6969; border-top: 10px solid #BC6969; border-bottom: 10px solid #BC6969; border-left: 10px solid #BC6969; border-right: 10px solid #BC6969; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0" class="mobile-button">{{$answers[$i]}}</a></td>
-                                                        @endif
+                                                        <td align="center">
+                                                          <a href="{{$answer_url}}/{{$i}}"
+                                                            target="_blank"
+                                                            style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: {{$answers[$i]['color']}}; border-top: 10px solid {{$answers[$i]['color']}}; border-bottom: 10px solid {{$answers[$i]['color']}}; border-left: 10px solid {{$answers[$i]['color']}}; border-right: 10px solid {{$answers[$i]['color']}}; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0" class="mobile-button">
+                                                            {{$answers[$i]['answer']}}
+                                                          </a>
+                                                        </td>
                                                     </tr>
                                                     @endfor
 
@@ -244,9 +244,8 @@
                                             <td align="center" class="padding-copy" style="padding: 20px;">
                                                 <table border="0" cellspacing="0" cellpadding="0" class="responsive-table">
                                                     <tr>
-                                                        <td align="center"><a href="{{ $answer_url_no }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 35px solid #e8bb4a; border-bottom: 35px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">{{ $answers[0] }}</a></td>
-
-                                                        <td align="center"><a href="{{ $answer_url_yes }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 35px solid #64b269; border-bottom: 35px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">{{ $answers[1] }}</a></td>
+                                                        <td align="center"><a href="{{ $answer_url_no }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 35px solid #e8bb4a; border-bottom: 35px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">No</a></td>
+                                                        <td align="center"><a href="{{ $answer_url_yes }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 35px solid #64b269; border-bottom: 35px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">Yes</a></td>
                                                     </tr>
                                                 </table>
                                             </td>

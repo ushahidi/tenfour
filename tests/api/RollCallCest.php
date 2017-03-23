@@ -331,7 +331,10 @@ class RollCallCest
                     'id' => 1
                 ]
             ],
-            'answers' => ['No', 'Yes']
+            'answers' => [
+              ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','custom'=>false],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','custom'=>false]
+            ]
         ]);
         // This recipient DID respond to previous roll call
         $I->seeRecord('roll_call_recipients', [
