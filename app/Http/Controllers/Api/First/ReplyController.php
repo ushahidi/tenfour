@@ -12,6 +12,9 @@ use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Response;
 use Dingo\Api\Auth\Auth;
 
+/**
+ * @Resource("Replies", uri="/api/v1/rollcalls/{rollCallId}/replies")
+ */
 class ReplyController extends ApiController
 {
     public function __construct(replyRepository $reply, RollCallRepository $roll_calls, Auth $auth, Response $response)
@@ -24,6 +27,34 @@ class ReplyController extends ApiController
 
     /**
      * Get a single reply
+     *
+     * @Get("/{replyId}")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "reply": {
+     *          "answer": null,
+     *          "contact": {
+     *               "id": 3,
+     *               "uri": "/contacts/3"
+     *           },
+     *           "created_at": "2016-04-15 20:01:55",
+     *           "id": 1,
+     *           "location_text": null,
+     *           "message": "I am OK",
+     *           "message_id": null,
+     *           "rollcall": {
+     *               "id": 4,
+     *               "uri": "/rollcalls/4"
+     *           },
+     *           "updated_at": null,
+     *           "uri": "/rollcalls/4/reply/1",
+     *           "user": {
+     *               "id": 1,
+     *               "uri": "/users/1"
+     *           },
+     *     }
+     * })
      *
      * @param Request $request
      * @param int $id
@@ -38,6 +69,8 @@ class ReplyController extends ApiController
 
     /**
      * Create a reply
+     *
+     * @todo Consider merging this with `addReply` and turning it into a resource
      *
      * @param Request $request
      * @return Response
@@ -56,6 +89,32 @@ class ReplyController extends ApiController
 
     /**
      * Add reply
+     *
+     * @Post("/")
+     * @Versions({"v1"})
+     * @Request({
+     *     "answer": "yes",
+     *     "message": "I am OK"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "reply": {
+     *         "answer": "yes",
+     *         "created_at": "2016-03-15 20:27:54",
+     *         "id": 6,
+     *         "message": "I am OK",
+     *         "rollcall": {
+     *             "id": 1,
+     *             "uri": "/rollcalls/1"
+     *         },
+     *         "updated_at": "2016-03-15 20:27:54",
+     *         "uri": "/rollcalls/1/reply/6",
+     *         "user": {
+     *             "id": 5,
+     *             "uri": "/users/5"
+     *         },
+     *         "user_id": 5
+     *     }
+     * })
      *
      * @param Request $request
      *
@@ -77,6 +136,84 @@ class ReplyController extends ApiController
 
     /**
      * List roll call replies
+     *
+     * @Get("/")
+     * @Versions({"v1"})
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "replies": {
+     *         {
+     *             "answer": null,
+     *             "contact": {
+     *                 "id": 1,
+     *                 "uri": "/contacts/1"
+     *             },
+     *             "created_at": "2017-03-16 10:41:11",
+     *             "id": 1,
+     *             "location_text": null,
+     *             "message": "I am OK",
+     *             "message_id": null,
+     *             "rollcall": {
+     *                 "id": 1,
+     *                 "uri": "/rollcalls/1"
+     *             },
+     *             "updated_at": null,
+     *             "uri": "/rollcalls/1/reply/1",
+     *             "user": {
+     *                 "config_profile_reviewed": 0,
+     *                 "config_self_test_sent": 0,
+     *                 "created_at": null,
+     *                 "description": "Test user",
+     *                 "first_time_login": 1,
+     *                 "id": 1,
+     *                 "initials": "TU",
+     *                 "invite_sent": 0,
+     *                 "name": "Test user",
+     *                 "organization_id": 2,
+     *                 "person_type": "user",
+     *                 "profile_picture": null,
+     *                 "role": "member",
+     *                 "updated_at": null,
+     *                 "uri": "/users/1"
+     *             },
+     *         },
+     *         {
+     *             "answer": null,
+     *             "contact": {
+     *                 "id": 4,
+     *                 "uri": "/contacts/4"
+     *             },
+     *             "created_at": "2017-03-16 10:41:11",
+     *             "id": 3,
+     *             "location_text": null,
+     *             "message": "Latest answer",
+     *             "message_id": null,
+     *             "rollcall": {
+     *                 "id": 1,
+     *                 "uri": "/rollcalls/1"
+     *             },
+     *             "updated_at": null,
+     *             "uri": "/rollcalls/1/reply/3",
+     *             "user": {
+     *                 "config_profile_reviewed": 0,
+     *                 "config_self_test_sent": 0,
+     *                 "created_at": null,
+     *                 "description": "Org owner",
+     *                 "first_time_login": 1,
+     *                 "id": 4,
+     *                 "initials": "OO",
+     *                 "invite_sent": 0,
+     *                 "name": "Org owner",
+     *                 "organization_id": 2,
+     *                 "person_type": "user",
+     *                 "profile_picture": null,
+     *                 "role": "owner",
+     *                 "updated_at": null,
+     *                 "uri": "/users/4"
+     *             },
+     *         }
+     *     }
+     * })
      *
      * @param Request $request
      *

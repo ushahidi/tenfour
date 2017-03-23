@@ -31,17 +31,17 @@ class PersonContactController extends ApiController
      * @Post("/")
      * @Versions({"v1"})
      * @Request({
-            "type": "email",
-            "contact": "linda@ushahidi.com",
-            "preferred": "1"
+     *       "type": "email",
+     *       "contact": "linda@ushahidi.com",
+     *       "preferred": "1"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-            "contact": {
-                "type": "email",
-                "contact": "linda@ushahidi.com",
-                "preferred": "1"
-            }
-        })
+     *       "contact": {
+     *           "type": "email",
+     *           "contact": "linda@ushahidi.com",
+     *           "preferred": "1"
+     *       }
+     *   })
      *
      * @param Request $request
      * @return Response
@@ -58,17 +58,17 @@ class PersonContactController extends ApiController
      * @Put("/{contactId}")
      * @Versions({"v1"})
      * @Request({
-            "type": "email",
-            "contact": "linda@ushahidi.com",
-            "preferred": "1"
+     *       "type": "email",
+     *       "contact": "linda@ushahidi.com",
+     *       "preferred": "1"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-            "contact": {
-                "type": "email",
-                "contact": "linda@ushahidi.com",
-                "preferred": "1"
-            }
-        })
+     *       "contact": {
+     *           "type": "email",
+     *           "contact": "linda@ushahidi.com",
+     *           "preferred": "1"
+     *       }
+     *   })
      *
      * @param Request $request
      * @return Response
@@ -85,7 +85,13 @@ class PersonContactController extends ApiController
      * @Delete("/{contactId}")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
-     * @Response(201)
+     * @Response(200, body={
+     *     "contact": {
+     *         "type": "email",
+     *         "contact": "linda@ushahidi.com",
+     *         "preferred": "1"
+     *     }
+     * })
      *
      * @param Request $request
      * @return Response
@@ -98,6 +104,13 @@ class PersonContactController extends ApiController
 
     /**
      * Unsubscribe an email address from RollCalls
+     *
+     * @Post("/unsubscribe")
+     * @Versions({"v1"})
+     * @Request({
+     *     "token": "anunsubscribetoken",
+     *     "email": "linda@ushahidi.com",
+     * })
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response

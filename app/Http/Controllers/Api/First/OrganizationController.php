@@ -120,7 +120,7 @@ class OrganizationController extends ApiController
      *     "organization": {
      *         "id": 3,
      *         "name": "Ushahidi",
-     *         "subdomain": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi"
      *     }
      * })
      *
@@ -144,7 +144,11 @@ class OrganizationController extends ApiController
      *
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *   "organization": {
+     *        "id": 3,
+     *        "name": "Ushahidi",
+     *        "subdomain": "ushahidi",
+     *    }
      * })
      *
      * @param Request $request

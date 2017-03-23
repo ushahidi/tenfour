@@ -35,11 +35,147 @@ class RollCallController extends ApiController
     /**
      * Get all roll calls for an organization
      *
-     * @Get("/")
+     * @Get("/{?offset,limit}")
      * @Versions({"v1"})
+     * @Parameters({
+     *     @Parameter("offset", default=0),
+     *     @Parameter("limit", default=0)
+     * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "rollcalls": {
+     *         {
+     *             "answers": null,
+     *             "complaint_count": 0,
+     *             "created_at": null,
+     *             "id": 1,
+     *             "message": "Are you OK?",
+     *             "organization": {
+     *                 "id": 2,
+     *                 "uri": "/organizations/2"
+     *             },
+     *             "recipients": {
+     *                 {
+     *                     "id": 1,
+     *                     "uri": "/users/1"
+     *                 }
+     *             },
+     *             "replies": {
+     *                 {
+     *                     "answer": null,
+     *                     "contact": {
+     *                         "id": 1,
+     *                         "uri": "/contacts/1"
+     *                     },
+     *                     "created_at": "2017-03-17 09:09:01",
+     *                     "id": 1,
+     *                     "location_text": null,
+     *                     "message": "I am OK",
+     *                     "message_id": null,
+     *                     "rollcall": {
+     *                         "id": 1,
+     *                         "uri": "/rollcalls/1"
+     *                     },
+     *                     "updated_at": null,
+     *                     "uri": "/rollcalls/1/reply/1",
+     *                     "user": {
+     *                         "id": 1,
+     *                         "uri": "/users/1"
+     *                     }
+     *                 }
+     *             },
+     *             "reply_count": 2,
+     *             "send_via": null,
+     *             "sent": 0,
+     *             "sent_count": 4,
+     *             "status": "pending",
+     *             "updated_at": null,
+     *             "uri": "/rollcalls/1",
+     *             "user": {
+     *                 "id": 4,
+     *                 "uri": "/users/4"
+     *             }
+     *         },
+     *         {
+     *             "answers": null,
+     *             "complaint_count": 0,
+     *             "created_at": null,
+     *             "id": 3,
+     *             "message": "Where is everyone now?",
+     *             "organization": {
+     *                 "id": 2,
+     *                 "uri": "/organizations/2"
+     *             },
+     *             "recipients": {
+     *                 {
+     *                     "id": 3,
+     *                     "uri": "/users/3"
+     *                 }
+     *             },
+     *             "replies": {
+     *                 {
+     *                     "answer": null,
+     *                     "contact": {
+     *                         "id": 6,
+     *                         "uri": "/contacts/6"
+     *                     },
+     *                     "created_at": "2017-03-17 09:08:01",
+     *                     "id": 5,
+     *                     "location_text": null,
+     *                     "message": "Latest answer again",
+     *                     "message_id": null,
+     *                     "rollcall": {
+     *                         "id": 3,
+     *                         "uri": "/rollcalls/3"
+     *                     },
+     *                     "updated_at": null,
+     *                     "uri": "/rollcalls/3/reply/5",
+     *                     "user": {
+     *                         "id": 4,
+     *                         "uri": "/users/4"
+     *                     }
+     *                 }
+     *             },
+     *             "reply_count": 1,
+     *             "send_via": null,
+     *             "sent": 0,
+     *             "sent_count": 0,
+     *             "status": "pending",
+     *             "updated_at": null,
+     *             "uri": "/rollcalls/3",
+     *             "user": {
+     *                 "id": 1,
+     *                 "uri": "/users/1"
+     *             }
+     *         },
+     *         {
+     *             "answers": {
+     *                 "yes",
+     *                 "no"
+     *             },
+     *             "complaint_count": 0,
+     *             "created_at": null,
+     *             "id": 4,
+     *             "message": "Could you update with an answer?",
+     *             "organization": {
+     *                 "id": 2,
+     *                 "uri": "/organizations/2"
+     *             },
+     *             "recipients": {},
+     *             "replies": {},
+     *             "reply_count": 0,
+     *             "send_via": null,
+     *             "sent": 0,
+     *             "sent_count": 1,
+     *             "status": "pending",
+     *             "updated_at": null,
+     *             "uri": "/rollcalls/4",
+     *             "user": {
+     *                 "id": 1,
+     *                 "uri": "/users/1"
+     *             }
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -71,7 +207,63 @@ class RollCallController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "rollcall": {
+     *         "answers": null,
+     *         "complaint_count": 0,
+     *         "created_at": null,
+     *         "id": 1,
+     *         "message": "Are you OK?",
+     *         "organization": {
+     *             "id": 2,
+     *             "uri": "/organizations/2"
+     *         },
+     *         "recipients": {
+     *             {
+     *                 "id": 1,
+     *                 "uri": "/users/1"
+     *             },
+     *             {
+     *                 "id": 2,
+     *                 "uri": "/users/2"
+     *             }
+     *         },
+     *         "replies": {
+     *             {
+     *                 "answer": null,
+     *                 "contact": {
+     *                     "id": 1,
+     *                     "uri": "/contacts/1"
+     *                 },
+     *                 "created_at": "2017-03-17 10:27:30",
+     *                 "id": 1,
+     *                 "location_text": null,
+     *                 "message": "I am OK",
+     *                 "message_id": null,
+     *                 "rollcall": {
+     *                     "id": 1,
+     *                     "uri": "/rollcalls/1"
+     *                 },
+     *                 "updated_at": null,
+     *                 "uri": "/rollcalls/1/reply/1",
+     *                 "user": {
+     *                     "id": 1,
+     *                     "role": "member",
+     *                     "uri": "/users/1"
+     *                 }
+     *             }
+     *         },
+     *         "reply_count": 2,
+     *         "send_via": null,
+     *         "sent": 0,
+     *         "sent_count": 4,
+     *         "status": "pending",
+     *         "updated_at": null,
+     *         "uri": "/rollcalls/1",
+     *         "user": {
+     *             "id": 4,
+     *             "uri": "/users/4"
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -92,7 +284,40 @@ class RollCallController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "rollcall": {
+     *         "answers": {
+     *             "No",
+     *             "Yes"
+     *         },
+     *         "complaint_count": 0,
+     *         "created_at": "2017-03-18 19:19:27",
+     *         "id": 6,
+     *         "message": "Westgate under siege, are you ok?",
+     *         "organization": {
+     *             "id": 2,
+     *             "uri": "/organizations/2"
+     *         },
+     *         "recipients": {
+     *             {
+     *                 "id": 3,
+     *                 "uri": "/users/3"
+     *             },
+     *             {
+     *                 "id": 1,
+     *                 "uri": "/users/1"
+     *             }
+     *         },
+     *         "replies": {},
+     *         "send_via": null,
+     *         "sent": 0,
+     *         "status": "pending",
+     *         "updated_at": "2017-03-18 19:19:27",
+     *         "uri": "/rollcalls/6",
+     *         "user": {
+     *             "id": 5,
+     *             "uri": "/users/5"
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -118,7 +343,69 @@ class RollCallController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "rollcall": {
+     *         "answers": null,
+     *         "complaint_count": 0,
+     *         "created_at": null,
+     *         "id": 1,
+     *         "message": "Westgate under siege",
+     *         "organization": {
+     *             "id": 2,
+     *             "uri": "/organizations/2"
+     *         },
+     *         "recipients": {
+     *             {
+     *                 "id": 1,
+     *                 "uri": "/users/1"
+     *             },
+     *             {
+     *                 "id": 2,
+     *                 "uri": "/users/2"
+     *             },
+     *             {
+     *                 "id": 4,
+     *                 "uri": "/users/4"
+     *             }
+     *         },
+     *         "replies": {
+     *             {
+     *                 "answer": null,
+     *                 "contact": {
+     *                     "id": 1,
+     *                     "uri": "/contacts/1"
+     *                 },
+     *                 "created_at": "2017-03-18 19:32:30",
+     *                 "id": 1
+     *             },
+     *             {
+     *                 "answer": null,
+     *                 "contact": {
+     *                     "id": 4,
+     *                     "uri": "/contacts/4"
+     *                 },
+     *                 "created_at": "2017-03-17 19:32:30",
+     *                 "id": 2
+     *             },
+     *             {
+     *                 "answer": null,
+     *                 "contact": {
+     *                     "id": 4,
+     *                     "uri": "/contacts/4"
+     *                 },
+     *                 "created_at": "2017-03-18 19:32:30",
+     *                 "id": 3
+     *             }
+     *         },
+     *         "send_via": null,
+     *         "sent": 1,
+     *         "status": "received",
+     *         "updated_at": "2017-03-18 19:32:34",
+     *         "uri": "/rollcalls/1",
+     *         "user": {
+     *             "id": 4,
+     *             "uri": "/users/4"
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -187,7 +474,20 @@ class RollCallController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "recipients": {
+     *         {
+     *             "id": 1,
+     *             "uri": "/users/1"
+     *         },
+     *         {
+     *             "id": 2,
+     *             "uri": "/users/2"
+     *         },
+     *         {
+     *             "id": 4,
+     *             "uri": "/users/4"
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -207,7 +507,26 @@ class RollCallController extends ApiController
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *
+     *     "messages": {
+     *         {
+     *             "contact": "0721674180",
+     *             "id": 1,
+     *             "type": "phone",
+     *             "uri": "/contacts/1",
+     *             "user": {
+     *                 "id": 1,
+     *             }
+     *         },
+     *         {
+     *             "contact": "linda@ushahidi.com",
+     *             "id": 3,
+     *             "type": "email",
+     *             "uri": "/contacts/3",
+     *             "user": {
+     *                 "id": 2,
+     *             }
+     *         }
+     *     }
      * })
      *
      * @param Request $request
@@ -226,7 +545,10 @@ class RollCallController extends ApiController
      * @Delete("/")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
-     * @Response(201)
+     * @Response(405, body={
+     *     "message": "405 Method Not Allowed",
+     *     "status_code": 405
+     * })
      */
     public function delete()
     {
