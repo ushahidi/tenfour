@@ -8,15 +8,27 @@ class AnswerParser
 {
     public static function parse($message, array $expected_answers)
     {
-        // We expect 2 answers. A 'no' and 'yes' answer if answers are available.
-        if (count($expected_answers) < 2) {
-            return null;
+        if (!isset($expected_answers) || count($expected_answers) == 0) {
+            return $message;
         }
 
-        $tokens = preg_split('/\s+/', $message);
+        $return = $message;
+        $message = trim($message);
+        $lowest = strlen($message);
 
-        return array_first($tokens, function ($value, $key) use ($expected_answers) {
-            return strcasecmp($value, $expected_answers[0]['answer']) === 0 || strcasecmp($value, $expected_answers[1]['answer']) === 0;
-        }, null);
+        foreach ($expected_answers as $answer) {
+            preg_match('/\b' . $answer['answer'] . '\b/i', $message, $matches, PREG_OFFSET_CAPTURE);
+
+            if ($matches && count($matches)) {
+              $pos = $matches[0][1];
+
+              if ($pos !== FALSE && $pos < $lowest) {
+                  $lowest = $pos;
+                  $return = $answer['answer'];
+              }
+            }
+        }
+
+        return $return;
     }
 }
