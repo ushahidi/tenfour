@@ -332,8 +332,8 @@ class RollCallCest
                 ]
             ],
             'answers' => [
-              ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','custom'=>false],
-              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','custom'=>false]
+              ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
             ]
         ]);
         // This recipient DID respond to previous roll call

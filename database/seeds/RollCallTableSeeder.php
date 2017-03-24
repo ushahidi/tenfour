@@ -25,50 +25,49 @@ class RollCallTableSeeder extends Seeder
         $rollCall->recipients()->sync($recipients, false);
     }
 
+    protected function addReply($rollCall, $user, $message, $answer) {
+        $reply = Reply::create([
+            'message'      => $message,
+            'answer'       => $answer,
+            'user_id'      => $user->id,
+            'roll_call_id' => $rollCall->id,
+        ]);
+
+        DB::table('roll_call_recipients')
+            ->where('roll_call_id', '=', $rollCall->id)
+            ->where('user_id', '=', $user->id)
+            ->update(['response_status' => 'replied']);
+
+        Notification::send($rollCall->recipients, new ReplyReceived($reply));
+    }
+
     protected function addRollCalls($organization, $users, $answers) {
-      foreach ($users as $user) {
-          $rollCall = RollCall::firstOrCreate([
-              'organization_id' => $organization->id,
-              'user_id' => $user->id
-          ]);
+        foreach ($users as $user) {
+            $rollCall = RollCall::create([
+                'organization_id' => $organization->id,
+                'user_id' => $user->id
+            ]);
 
-          $rollCall->update([
-              'message' => 'Test rollcall',
-              'answers' => $answers
-          ]);
+            $rollCall->update([
+                'message' => 'Test rollcall',
+                'answers' => $answers
+            ]);
 
-          $this->addUsersToRollCall($users, $rollCall);
+            $this->addUsersToRollCall($users, $rollCall);
 
-          Notification::send($rollCall->recipients, new RollCallReceived($rollCall));
+            Notification::send($rollCall->recipients, new RollCallReceived($rollCall));
 
-          // Add replies
-          $no_of_replies = 2;
-          $reply_count = 0;
-          $message = 'I am OK';
+            if (count($answers) > 0) {
+                $this->addReply($rollCall, $users[1], 'I am not ok', $answers[0]['answer']);
+                $this->addReply($rollCall, $users[1], 'I am not ok (duplicate reply)', $answers[0]['answer']);
+            }
 
-          foreach ($users as $user) {
-              if ($reply_count === $no_of_replies) {
-                  break;
-              }
+            if (count($answers) > 1) {
+                $this->addReply($rollCall, $users[2], 'I am ok', $answers[1]['answer']);
+            }
 
-              $reply = Reply::firstOrCreate([
-                  'message'      => $message,
-                  'answer'       => $answers[$reply_count]['answer'],
-                  'user_id'      => $user->id,
-                  'roll_call_id' => $rollCall->id,
-              ]);
-
-              DB::table('roll_call_recipients')
-                  ->where('roll_call_id', '=', $rollCall->id)
-                  ->where('user_id', '=', $user->id)
-                  ->update(['response_status' => 'replied']);
-
-              $message = 'I am not OK';
-
-              Notification::send($rollCall->recipients, new ReplyReceived($reply));
-
-              $reply_count++;
-          }
+            $this->addReply($rollCall, $users[3], 'I am not sure', 'other answer');
+            $this->addReply($rollCall, $users[3], 'I am not sure (deplicate reply)', 'other answer');
         }
 
         return $rollCall;
@@ -85,33 +84,25 @@ class RollCallTableSeeder extends Seeder
                       ->select('id')
                       ->firstOrFail();
 
-        $users = User::select('id')->where('organization_id', $organization->id)->limit(20)->get();
+        $users = User::select('id')->where('organization_id', $organization->id)->limit(10)->get();
 
         // default answers
 
         $this->addRollCalls($organization, $users, [
-            ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','custom'=>false],
-            ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','custom'=>false]
+            ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+            ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
         ]);
 
         // custom answers
 
-        $rollCall = $this->addRollCalls($organization, [$users[0], $users[1]], [
-          ['answer'=>'Custom answer blue','color'=>'#2274B4','icon'=>'icon-exclaim','custom'=>true],
-          ['answer'=>'Custom answer teal','color'=>'#4CBFCE','icon'=>'icon-check','custom'=>true]
+        $this->addRollCalls($organization, $users, [
+          ['answer'=>'Custom answer blue','color'=>'#2274B4','icon'=>'icon-exclaim','type'=>'custom'],
+          ['answer'=>'Custom answer teal','color'=>'#4CBFCE','icon'=>'icon-check','type'=>'custom']
         ]);
 
-        Reply::firstOrCreate([
-            'message'      => 'I am other',
-            'answer'       => 'Custom answer other',
-            'user_id'      => $users[2]->id,
-            'roll_call_id' => $rollCall->id,
-        ]);
+        // no answers
 
-        DB::table('roll_call_recipients')
-            ->where('roll_call_id', '=', $rollCall->id)
-            ->where('user_id', '=', $users[2]->id)
-            ->update(['response_status' => 'replied']);
+        $this->addRollCalls($organization, $users, []);
 
     }
 }
