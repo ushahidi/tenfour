@@ -632,7 +632,6 @@ class PersonCest
             'username' => 'test@ushahidi.com',
         ]);
         $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
 
         $record = $I->grabRecord('password_resets', array('email' => 'test@ushahidi.com'));
         $I->sendPOST('/password/reset', [
@@ -642,7 +641,6 @@ class PersonCest
             'token' => $record['token']
         ]);
         $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
 
         $I->sendPOST('/oauth/access_token', [
             'client_id' => 'webapp',
