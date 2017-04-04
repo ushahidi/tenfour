@@ -64,6 +64,7 @@ class SendInvite implements ShouldQueue
           $message_service->setView('emails.invite');
           $message_service->send($email, $msg, [
             'url' => $url,
+            'org_name' => $org['name'],
             'profile_picture' => $org['profile_picture'],
           ], $subject);
         } else {

@@ -185,10 +185,10 @@
                                     <!-- COPY -->
                                     <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                         <tbody><tr>
-                                            <td style="font-size: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding-copy" align="center">Ushahidi invited you to its RollCall</td>
+                                            <td style="font-size: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding-copy" align="center">{{ $org_name }} invited you to its RollCall</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">Ushahidi uses RollCall to reach people like you on any device and get quick answers to urgent questions. By joining Ushahidi on RollCall, you'll be able to easily see and respond to questions, and configure notifications.</td>
+                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">{{ $org_name }} uses RollCall to reach people like you on any device and get quick answers to urgent questions. By joining {{ $org_name }} on RollCall, you'll be able to easily see and respond to questions, and configure notifications.</td>
                                         </tr>
                                     </tbody></table>
                                 </td>
@@ -201,7 +201,7 @@
                                             <td style="padding: 25px 0 0 0;" class="padding-copy" align="center">
                                                 <table class="responsive-table" cellspacing="0" cellpadding="0" border="0">
                                                     <tbody><tr>
-                                                        <td align="center"><a href="{{ $url }}" target="_blank" style="font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #222222; border-top: 15px solid #222222; border-bottom: 15px solid #222222; border-left: 25px solid #222222; border-right: 25px solid #222222; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; display: inline-block;" class="mobile-button">Join Ushahidi's RollCall →</a></td>
+                                                        <td align="center"><a href="{{ $url }}" target="_blank" style="font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #222222; border-top: 15px solid #222222; border-bottom: 15px solid #222222; border-left: 25px solid #222222; border-right: 25px solid #222222; border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; display: inline-block;" class="mobile-button">Join {{ $org_name }}'s RollCall →</a></td>
                                                     </tr>
                                                 </tbody></table>
                                             </td>
@@ -214,7 +214,7 @@
                                     <!-- COPY -->
                                     <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                         <tbody><tr>
-                                            <td style="padding: 20px 0 0 0; font-size: 14px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">If you're having trouble selecting the "Join Ushahidi's RollCall" button, copy and paste the following URL into your web browser: <a href="{{ $url }}">{{ $url }}</a></td>
+                                            <td style="padding: 20px 0 0 0; font-size: 14px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">If you're having trouble selecting the "Join {{ $org_name }}'s RollCall" button, copy and paste the following URL into your web browser: <a href="{{ $url }}">{{ $url }}</a></td>
                                         </tr>
                                     </tbody></table>
                                 </td>
