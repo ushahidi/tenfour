@@ -177,7 +177,7 @@
                             <tbody><tr>
                               	<td class="padding-copy" align="center">
                                   <!-- TODO: use $message->embed -->
-                                    <img src="http://github.ushahidi.org/rollcall-pattern-library/assets/img/avatar-org.png" alt="Manage your account" style="display: block; color: #666666; font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px;" class="img-max" border="0" height="80" width="80"></td>
+                                    <img src="{{ $profile_picture }}" alt="Manage your account" style="display: block; color: #666666; font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px;" class="img-max" border="0" height="80" width="80"></td>
 
                             </tr>
                             <tr>

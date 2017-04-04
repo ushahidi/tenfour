@@ -62,7 +62,10 @@ class SendInvite implements ShouldQueue
 
           $message_service = $message_service_factory->make('email');
           $message_service->setView('emails.invite');
-          $message_service->send($email, $msg, ['url' => $url], $subject);
+          $message_service->send($email, $msg, [
+            'url' => $url,
+            'profile_picture' => $org['profile_picture'],
+          ], $subject);
         } else {
           Log::info('Cannot invite a member with no email address');
         }
