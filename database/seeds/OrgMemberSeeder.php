@@ -36,7 +36,8 @@ class OrgMemberSeeder extends Seeder
             ],
             [
                 'name'     => 'Team ushahidi',
-                'email'    => 'team@ushahidi.com'
+                'email'    => 'team@ushahidi.com',
+                'role'     => 'admin'
             ]
         ];
 
@@ -57,11 +58,14 @@ class OrgMemberSeeder extends Seeder
                 'unsubscribe_token' => Hash::Make(config('app.key'))
             ]);
 
-            $ids[$user['id']] = ['role' => 'member'];
+            $role = (isset($member['role'])?$member['role']:'member');
+
+            $ids[$user['id']] = ['role' => $role];
 
             $user->update([
                 'password' => 'westgate',
-                'person_type' => 'user'
+                'person_type' => 'user',
+                'role' => $role
             ]);
         }
 
