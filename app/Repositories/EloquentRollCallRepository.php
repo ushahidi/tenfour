@@ -84,7 +84,9 @@ class EloquentRollCallRepository implements RollCallRepository
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $roll_call->recipients()->sync($userIds);
 
-        $this->notifyRollCall($roll_call);
+        if (!$roll_call['self_test_roll_call']) {
+            $this->notifyRollCall($roll_call);
+        }
 
         return $roll_call->fresh()
             ->toArray();
