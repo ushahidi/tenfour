@@ -3,6 +3,94 @@
 
 use Codeception\Util\Fixtures;
 
+function makeSNSMailNotification($from_email, $roll_call_id, $message) {
+
+  $Message = json_encode([
+    'content' => 'From: John Doe <' . $from_email . '>
+Content-Type: multipart/alternative;boundary=\'Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C\'
+Mime-Version: 1.0
+To: RollCall <rollcall-' . $roll_call_id . '@rollcall.io>
+
+--Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
+
+' . $message . '
+
+--Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C--
+
+',
+    'mail' => [
+      'timestamp' => '2016-01-27T14 =>59 =>38.237Z',
+      'source' => 'test@ushahidi.com',
+      'sourceArn' => 'arn =>aws =>ses =>us-west-2 =>888888888888 =>identity/example.com',
+      'sendingAccountId' => '123456789012',
+      'messageId' => '00000138111222aa-33322211-cccc-cccc-cccc-ddddaaaa0680-000000',
+      'destination' => [
+        'jane@example.com',
+        'mary@example.com',
+        'richard@example.com'
+      ],
+      'headersTruncated' => false,
+      'headers' => [
+        [
+          'name' => 'From',
+          'value' => 'John Doe <test@ushahidi.com>'
+        ],
+        [
+          'name' => 'To',
+          'value' => 'Jane Doe <jane@example.com>, Mary Doe <mary@example.com>, Richard Doe <richard@example.com>'
+        ],
+        [
+          'name' => 'Message-ID',
+          'value' => 'custom-message-ID'
+        ],
+        [
+          'name' => 'Subject',
+          'value' => 'Hello'
+        ],
+        [
+          'name' => 'Content-Type',
+          'value' => 'text/plain; charset=UTF-8'
+        ],
+        [
+          'name' => 'Content-Transfer-Encoding',
+          'value' => 'base64'
+        ],
+        [
+          'name' => 'Date',
+          'value' => 'Wed, 27 Jan 2016 14 =>05 =>45 +0000'
+        ]
+      ],
+      'commonHeaders' => [
+        'from' => [
+          'John Doe <test@ushahidi.com>'
+        ],
+        'date' => 'Wed, 27 Jan 2016 14 =>05 =>45 +0000',
+        'to' => [
+          'Jane Doe <jane@example.com>, Mary Doe <mary@example.com>, Richard Doe <richard@example.com>'
+        ],
+        'messageId' => 'custom-message-ID',
+        'subject' => 'Hello'
+      ]
+    ]
+  ], JSON_HEX_QUOT);
+
+  return json_encode([
+    "Type" => "Notification",
+    "MessageId" => "bar",
+    "TopicArn" => "baz",
+    "Subject" => "Re: Did you receive this test Rollcall?",
+    "Timestamp" => "2016-01-27T14:59:38.237Z",
+    "SignatureVersion" => "1",
+    "Signature" => true,
+    "SigningCertURL" => "https://sns.foo.amazonaws.com/bar.pem",
+    "Message" => $Message
+  ]);
+}
+
+Fixtures::add('self_test_reply', makeSNSMailNotification('test@ushahidi.com', 6, 'Confirmed'));
+
 /* SES bounces and complaints */
 // Permanent bounce
 Fixtures::add('permanent_bounce', '

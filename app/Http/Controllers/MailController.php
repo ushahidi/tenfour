@@ -71,15 +71,18 @@ class MailController extends Controller
             // Instantiate the Message and Validator
             // @todo DI
             $message = Message::fromRawPostData();
-            $validator = new MessageValidator();
 
-            // Validate the message and log errors if invalid.
-            try {
-                $validator->validate($message);
-            } catch (InvalidSnsMessageException $e) {
-                Log::info('SNS Message Validation Error: ' . $e->getMessage());
-                // Pretend we're not here if the message is invalid.
-                abort(404);
+            if (config('rollcall.messaging.validate_sns_message')) {
+                // Validate the message and log errors if invalid.
+                $validator = new MessageValidator();
+
+                try {
+                    $validator->validate($message);
+                } catch (InvalidSnsMessageException $e) {
+                    Log::info('SNS Message Validation Error: ' . $e->getMessage());
+                    // Pretend we're not here if the message is invalid.
+                    abort(404);
+                }
             }
 
             // Check the type of the message and handle the subscription.
@@ -130,7 +133,7 @@ class MailController extends Controller
                     $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 else {
-                    Log::info("No plain text found for " . $message['MessageId'], ['original_content' => $original_content]);
+                    Log::info("No plain text or html found for " . $message['MessageId'], ['original_content' => $original_content]);
                 }
             }
     }

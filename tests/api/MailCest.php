@@ -4,6 +4,31 @@ use Codeception\Util\Fixtures;
 
 class MailCest
 {
+    public function handleReceiveSelfTestRollCall(ApiTester $I)
+    {
+        $user_id = 1;
+        $contact_id = 2;
+
+        $reply = Fixtures::get('self_test_reply');
+        $endpoint = 'mail/receive';
+
+        $I->wantTo('Test a reply to a self test RollCall');
+        $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
+        $I->sendPost($endpoint, $reply);
+        $I->seeResponseCodeIs(200);
+        
+        $I->seeRecord('replies', [
+            'message' => 'Confirmed',
+            'contact_id' => $contact_id,
+            'user_id' => $user_id,
+        ]);
+
+        $I->seeRecord('users', [
+            'id' => $user_id,
+            'config_self_test_sent' => 1
+        ]);
+    }
+
     public function handleSESPermanentBounce(ApiTester $I)
     {
         $bounce = Fixtures::get('permanent_bounce');

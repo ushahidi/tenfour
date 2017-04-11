@@ -6,9 +6,9 @@ use RollCall\Contracts\Repositories\RollCallRepository;
 
 class AnswerParser
 {
-    public static function parse($message, array $expected_answers)
+    public static function parse($message, $expected_answers)
     {
-        if (!isset($expected_answers) || count($expected_answers) == 0) {
+        if (!isset($expected_answers) || !is_array($expected_answers) || count($expected_answers) == 0) {
             return $message;
         }
 

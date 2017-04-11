@@ -68,8 +68,9 @@ INSERT INTO contacts (id, user_id, preferred, type, contact) VALUES ('10', '1', 
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test roll call', '3', 'pending', '0', '1');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test roll call', '2', 'pending', '0', '1');
-INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","custom": false},{"answer":"Yes","color":"#E8C440","icon":"icon-check","custom":false}]');
-INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('5', 'Roll call with answers', '2', 'pending', '0', '2', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","custom": false},{"answer":"Yes","color":"#E8C440","icon":"icon-check","custom":false}]');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","type":"custom"},{"answer":"Yes","color":"#E8C440","icon":"icon-check","type":"custom"}]');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('5', 'Roll call with answers', '2', 'pending', '0', '2', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","type":"custom"},{"answer":"Yes","color":"#E8C440","icon":"icon-check","type":"custom"}]');
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers, self_test_roll_call) VALUES ('6', 'Did you receive this test RollCall?', '2', 'pending', '0', '1', '[{"answer":"Confirmed","color":"#BC6969","icon":"icon-check","type":"custom"}]', 1);
 
 -- Add test roll call messages
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
@@ -79,6 +80,7 @@ INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('4', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('6', '2');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '4');
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('10', '1');
+INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('2', '6');
 
 -- Add test roll call recipients
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('1', '1', 'replied');
@@ -87,7 +89,7 @@ INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('3', '2', 'waiting');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('3', '3');
-
+INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('1', '6', 'waiting');
 
 -- Add test replies
 INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at) VALUES ('1', 'I am OK', '1', '1', '1', NOW());

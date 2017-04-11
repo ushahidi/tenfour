@@ -6,6 +6,7 @@ use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\ReplyRepository;
 use RollCall\Messaging\AnswerParser;
+use RollCall\Models\User;
 
 class Reply
 {
@@ -50,8 +51,19 @@ class Reply
 
                 // Update response status
                 $this->roll_calls->updateRecipientStatus($roll_call_id, $contact['user']['id'], 'replied');
+
+                // Update user checklist self test status
+                if ($roll_call['self_test_roll_call']) {
+                    $this->updateUserSelfTest($contact['user']['id']);
+                }
             }
         }
+    }
+
+    protected function updateUserSelfTest($user_id) {
+        $user = User::findOrFail($user_id);
+        $user['config_self_test_sent'] = 1;
+        $user->save();
     }
 
     public function getLastReplyId($provider = null)
