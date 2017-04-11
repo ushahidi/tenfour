@@ -17,7 +17,7 @@ class UpdateContactRequest extends UpdatePersonRequest
         }
 
         $rules['type']    = 'in:phone,email';
-        $rules['contact'] = 'unique:contacts,contact';
+        $rules['contact'] = 'unique:contacts,contact,' . $this->request->get('id');
 
         return $rules;
     }

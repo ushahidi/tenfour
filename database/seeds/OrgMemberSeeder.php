@@ -74,7 +74,7 @@ class OrgMemberSeeder extends Seeder
         //foreach ($members as $member) {
         while($i < $num_users) {
             $user = User::firstOrCreate([
-                'name'     => 'Test User ' + $i,
+                'name'     => 'Zzest User ' . $i,
                 'organization_id' => $organization->id
             ]);
 
