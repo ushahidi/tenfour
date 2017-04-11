@@ -69,7 +69,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         if (isset($input['_input_image'])) {
             $file = $input['_input_image'];
-            $input['profile_picture'] = $this->storageService->storeBase64File($file, $id, 'orgavatar');
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, $organization->id . '-' . microtime(), 'orgavatar');
             unset($input['_input_image']);
         }
 

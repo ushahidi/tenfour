@@ -60,7 +60,7 @@ class EloquentPersonRepository implements PersonRepository
 
         if (isset($input['_input_image'])) {
             $file = $input['_input_image'];
-            $input['profile_picture'] = $this->storageService->storeBase64File($file, microtime()); // Just use time instead of ID
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, microtime(), 'useravatar');
             unset($input['_input_image']);
         }
 
@@ -101,7 +101,7 @@ class EloquentPersonRepository implements PersonRepository
             if (isset($input['_input_image']))
             {
                 $file = $input['_input_image'];
-                $input['profile_picture'] = $this->storageService->storeBase64File($file, $user_id, 'useravatar');
+                $input['profile_picture'] = $this->storageService->storeBase64File($file, $user_id . '-' . microtime(), 'useravatar');
                 unset($input['_input_image']);
             }
             /* end of user-avatar-code */
