@@ -98,7 +98,7 @@ class SendRollCall implements ShouldQueue
                     }
 
                     $message_service->send($to, new RollCallMail($this->roll_call, $organization, $creator, $contact));
-                } else {
+                } else if ($contact['type'] === 'phone') {
                     // Send reminder SMS to unresponsive recipient
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 

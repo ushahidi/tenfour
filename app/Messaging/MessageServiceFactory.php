@@ -18,6 +18,10 @@ class MessageServiceFactory implements messageServiceFactoryInterface
             $message_service = new SMSService;
         }
 
+        if ($message_type === 'slack') {
+            $message_service = new SlackService;
+        }
+
         return $message_service;
     }
 }

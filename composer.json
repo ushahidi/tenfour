@@ -23,7 +23,8 @@
         "markdunphy/ses-sns-types": "^0.1.4",
         "willdurand/email-reply-parser": "^2.5",
         "graham-campbell/throttle": "^5.3",
-        "sentry/sentry-laravel": "^0.6.1"
+        "sentry/sentry-laravel": "^0.6.1",
+        "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",

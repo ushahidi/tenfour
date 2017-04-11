@@ -4,6 +4,7 @@ namespace RollCall\Repositories;
 use RollCall\Models\RollCall;
 use RollCall\Models\Reply;
 use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Contracts\Repositories\OrganizationRepository;
 use DB;
 
 use Illuminate\Support\Facades\Notification;
@@ -11,6 +12,11 @@ use RollCall\Notifications\RollCallReceived;
 
 class EloquentRollCallRepository implements RollCallRepository
 {
+    public function __construct(OrganizationRepository $organizations)
+    {
+        $this->organizations = $organizations;
+    }
+
     public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 0)
     {
         $query = RollCall::query()
@@ -78,11 +84,21 @@ class EloquentRollCallRepository implements RollCallRepository
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $roll_call->recipients()->sync($userIds);
 
-        Notification::send($roll_call->recipients,
-            new RollCallReceived($roll_call));
+        $this->notifyRollCall($roll_call);
 
         return $roll_call->fresh()
             ->toArray();
+    }
+
+    protected function notifyRollCall($roll_call) {
+        $channels = $this->organizations->getSetting($roll_call['organization_id'], 'channels');
+
+        if (isset($channels->slack) && isset($channels->slack->enabled)) {
+            $roll_call->_slack_webhook_url = $channels->slack->webhook_url;
+        }
+
+        Notification::send($roll_call->recipients, new RollCallReceived($roll_call));
+        Notification::send($roll_call, new RollCallReceived($roll_call));
     }
 
     public function update(array $input, $id)

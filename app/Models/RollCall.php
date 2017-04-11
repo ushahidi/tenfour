@@ -3,9 +3,12 @@
 namespace RollCall\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class RollCall extends Model
 {
+    use Notifiable;
+
     /**
      * The attributes that should be casted to native types.
      *
@@ -85,5 +88,10 @@ class RollCall extends Model
     public function replies()
     {
         return $this->hasMany('RollCall\Models\Reply');
+    }
+
+    public function routeNotificationForSlack()
+    {
+        return $this->_slack_webhook_url;
     }
 }

@@ -24,7 +24,7 @@ class SettingsTableSeeder extends Seeder
           'organization_id' => $organization->id,
           'key' => 'channels',
         ])->update([
-          'values' => ["email" => true]
+          'values' => ["email" => ["enabled" => true]]
         ]);
 
         Setting::firstOrCreate([

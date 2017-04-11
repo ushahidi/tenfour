@@ -127,4 +127,18 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $organization->toArray();
     }
 
+    public function getSetting($id, $key) {
+        $setting = Organization::leftJoin('settings', 'organizations.id', '=', 'settings.organization_id')
+                    ->select('settings.key', 'settings.values')
+                    ->where('settings.key', $key)
+                    ->find($id);
+
+        if ($setting) {
+            return json_decode($setting->toArray()['values']);
+        } else {
+            return [];
+        }
+
+    }
+
 }

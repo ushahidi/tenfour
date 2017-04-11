@@ -189,14 +189,14 @@ class OrganizationCest
       $I->sendPUT($this->endpoint."/$id", [
           'name' => 'Rollcall Org',
           'subdomain'  => 'rollcall',
-          'settings'  => ['channels' => ['email' => true]],
+          'settings'  => ['channels' => ['email' => ['enabled' => true]]],
       ]);
       $I->seeResponseCodeIs(200);
       $I->seeResponseIsJson();
       $I->seeResponseContainsJson(["organization" => ["settings" => [
         [
           "key" => 'channels',
-          "values" => ['email' => true]
+          "values" => ['email' => ['enabled' => true]]
         ],
         [
           "key" => 'organization_types',
