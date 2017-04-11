@@ -16,7 +16,7 @@ class UpdatePersonRequest extends FormRequest
                  ->getMemberRole($this->route('organization'), $this->route('person'));
 
         // A member cannot update a role
-        if ($this->user()->role === 'member' && $this->get('role') !== 'member') {
+        if ($this->user()->role === 'member' && $this->get('role') && $this->get('role') !== 'member') {
           return false;
         }
 
