@@ -69,6 +69,7 @@ class RollCall extends Mailable
                         'initials'          => $initials,
                         'answers'           => $this->roll_call['answers'],
                         'org_subdomain'     => $this->organization['subdomain'],
+                        'org_name'          => $this->organization['name'],
                         'author'            => $this->creator['name'],
                         'answer_url_no'     => $answer_url_no,
                         'answer_url_yes'    => $answer_url_yes,

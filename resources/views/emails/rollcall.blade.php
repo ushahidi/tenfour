@@ -187,7 +187,12 @@
                                     <!-- MESSAGE -->
                                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                         <tr>
-                    <td align="center" style="font-size: 25px; font-style: italic; font-family: Lato, Helvetica, Arial, sans-serif; color: #333333; padding: 0 20px 20px;" class="padding-copy"> {{ $msg }}</td>
+                                            <td align="center" style="font-size: 25px; font-style: italic; font-family: Lato, Helvetica, Arial, sans-serif; color: #333333; padding: 0 20px 20px;" class="padding-copy"> {{ $msg }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="font-size: 13px; font-weight: bold; font-family: Lato, Helvetica, Arial, sans-serif; color: #333333; padding: 0 20px 10px;" class="padding-copy">
+                                              From {{$author}} at {{$org_name}}.
+                                            </td>
                                         </tr>
                                         @if (count($answers) > 0)
                                             <tr>
