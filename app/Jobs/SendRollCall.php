@@ -46,6 +46,7 @@ class SendRollCall implements ShouldQueue
     public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
     {
         $organization = $org_repo->find($this->roll_call['organization_id']);
+        $channels = $org_repo->getSetting($this->roll_call['organization_id'], 'channels');
 
         // Get complaint count for org
         $complaint_count = $roll_call_repo->getComplaintCountByOrg($this->roll_call['organization_id']);
@@ -81,6 +82,7 @@ class SendRollCall implements ShouldQueue
             }
 
             $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
+            $send_via = $this->getSendVia($this->roll_call, $contacts, $channels);
 
             foreach($contacts as $contact)
             {
@@ -91,14 +93,14 @@ class SendRollCall implements ShouldQueue
                 $message_service = $message_service_factory->make($contact['type']);
                 $to = $contact['contact'];
 
-                if ($contact['type'] === 'email') {
+                if ($contact['type'] === 'email' && isset($send_via['email'])) {
                     if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
                         Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
                         continue;
                     }
 
                     $message_service->send($to, new RollCallMail($this->roll_call, $organization, $creator, $contact));
-                } else if ($contact['type'] === 'phone') {
+                } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
                     // Send reminder SMS to unresponsive recipient
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 
@@ -122,6 +124,9 @@ class SendRollCall implements ShouldQueue
                         // send together
                         $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
                     }
+                } else if ($contact['type'] === 'slack' && isset($send_via['slack'])) {
+                    // TODO send private message on slack
+                    // https://github.com/ushahidi/RollCall/issues/633
                 }
 
                 // Update response status to 'waiting'
@@ -133,16 +138,52 @@ class SendRollCall implements ShouldQueue
         }
     }
 
+    /*
+     * Work out by which channel we should send this RollCall
+     */
+    protected function getSendVia($roll_call, $contacts, $channels) {
+        $send_via = [];
+        $preferred = [];
+
+        if (!isset($roll_call['send_via']) || empty($roll_call['send_via'])) {
+            return [];
+        }
+
+        if (in_array('preferred', $roll_call['send_via'])) {
+            $preferred = array_map(function ($contact) {
+                return $contact['type'];
+            }, array_filter($contacts, function ($contact) {
+                return $contact['preferred'];
+            }));
+        }
+
+        if ((in_array('sms', $roll_call['send_via']) || in_array('phone', $preferred)) &&
+            isset($channels->sms) && $channels->sms->enabled) {
+            $send_via['sms'] = true;
+        }
+
+        if ((in_array('email', $roll_call['send_via']) || in_array('email', $preferred)) &&
+            isset($channels->email) && $channels->email->enabled) {
+            $send_via['email'] = true;
+        }
+
+        if ((in_array('slack', $roll_call['send_via']) || in_array('slack', $preferred)) &&
+            isset($channels->slack) && $channels->slack->enabled) {
+            $send_via['slack'] = true;
+        }
+
+        return $send_via;
+    }
+
     public function isURLOnSMSBoundary($view, $data, $url_param = 'rollcall_url') {
+        $len_with_url = mb_strlen(view($view, $data));
+        $count_with_url = floor($len_with_url / SMS_BYTECOUNT);
 
-      $len_with_url = mb_strlen(view($view, $data));
-      $count_with_url = floor($len_with_url / SMS_BYTECOUNT);
+        unset($data[$url_param]);
+        $len_without_url =  mb_strlen(view($view, $data));
+        $count_without_url = floor($len_without_url / SMS_BYTECOUNT);
 
-      unset($data[$url_param]);
-      $len_without_url =  mb_strlen(view($view, $data));
-      $count_without_url = floor($len_without_url / SMS_BYTECOUNT);
-
-      return $count_with_url !== $count_without_url;
+        return $count_with_url !== $count_without_url;
     }
 
     private function sendRollCallSMS(SMSService $message_service, $to, $msg, $params) {
