@@ -146,4 +146,52 @@ class ReplyCest
             ]
         ]);
     }
-}
+
+    /*
+     * As the user, I want to send a RollCall reply using a reply token
+     */
+    public function addReplyWithReplyToken(ApiTester $I)
+    {
+        $roll_call_id = 1;
+        $token = 'testtoken1';
+        $I->wantTo('Add a reply with a reply token');
+        // $I->sendGet();
+        $I->sendPOST('/rollcalls/' . $roll_call_id . '/replies', [
+            'message'     => 'Test response',
+            'answer'      => 'yes',
+            'rollCallId'  => $roll_call_id,
+            'token'       => $token
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'reply' => [
+                'user' => [
+                    'id' => 2
+                ],
+                'message'  => 'Test response',
+                'rollcall' => [
+                    'id' => 1,
+                ]
+            ]
+        ]);
+    }
+
+    /*
+     * As another user, I don't want to send a RollCall reply using another user's token
+     */
+    public function addReplyWithInvalidReplyToken(ApiTester $I)
+    {
+        $roll_call_id = 1;
+        $token = 'testtoken3';
+        $I->wantTo('Not add a reply with an invalid reply token');
+        // $I->sendGet();
+        $I->sendPOST('/rollcalls/' . $roll_call_id . '/replies', [
+            'message'     => 'Test response',
+            'answer'      => 'yes',
+            'rollCallId'  => $roll_call_id,
+            'token'       => $token
+        ]);
+        $I->seeResponseCodeIs(403);
+    }
+
+  }

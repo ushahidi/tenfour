@@ -627,4 +627,43 @@ class RollCallCest
         $I->sendDelete($this->endpoint."/$id");
         $I->seeResponseCodeIs(405);
     }
+
+    /*
+     * As the user, I want to get a RollCall using a reply token
+     */
+    public function getRollCallWithReplyToken(ApiTester $I)
+    {
+        $roll_call_id = 1;
+        $token = 'testtoken1';
+        $I->wantTo('Get a RollCall using a reply token');
+        $I->sendGet('/rollcalls/' . $roll_call_id . '?token=' . $token);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'Westgate under siege',
+                'status'  => 'pending',
+                'organization' => [
+                    'id' => 2
+                ],
+                'user' => [
+                    'id' => 4
+                ]
+            ]
+         );
+    }
+
+    /*
+     * As another user, I don't want to get a RollCall using invalid reply token
+     */
+    public function getRollCallWithInvalidReplyToken(ApiTester $I)
+    {
+        $roll_call_id = 1;
+        $token = 'testtoken3';
+        $I->wantTo('Not get a RollCall using an invalid reply token');
+        $I->sendGet('/rollcalls/' . $roll_call_id . '?token=' . $token);
+        $I->seeResponseCodeIs(403);
+    }
+
+
+
 }

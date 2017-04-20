@@ -81,6 +81,12 @@ class SendRollCall implements ShouldQueue
                 $roll_call_repo->updateRecipientStatus($unreplied_roll_call_id, $recipient['id'], 'unresponsive');
             }
 
+            // Update response status to 'waiting'
+            $roll_call_repo->updateRecipientStatus($this->roll_call['id'], $recipient['id'], 'waiting');
+
+            // Set a reply token
+            $recipient['reply_token'] = $roll_call_repo->setReplyToken($this->roll_call['id'], $recipient['id']);
+
             $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
             $send_via = $this->getSendVia($this->roll_call, $contacts, $channels);
 
@@ -98,8 +104,7 @@ class SendRollCall implements ShouldQueue
                         Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
                         continue;
                     }
-
-                    $message_service->send($to, new RollCallMail($this->roll_call, $organization, $creator, $contact));
+                    $message_service->send($to, new RollCallMail($this->roll_call, $organization, $creator, $contact, $recipient));
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
                     // Send reminder SMS to unresponsive recipient
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
@@ -128,9 +133,6 @@ class SendRollCall implements ShouldQueue
                     // TODO send private message on slack
                     // https://github.com/ushahidi/RollCall/issues/633
                 }
-
-                // Update response status to 'waiting'
-                $roll_call_repo->updateRecipientStatus($this->roll_call['id'], $recipient['id'], 'waiting');
 
                 // Log message for recipient
                 $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);

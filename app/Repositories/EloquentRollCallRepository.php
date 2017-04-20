@@ -8,6 +8,7 @@ use RollCall\Contracts\Repositories\OrganizationRepository;
 use DB;
 
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Hash;
 use RollCall\Notifications\RollCallReceived;
 
 class EloquentRollCallRepository implements RollCallRepository
@@ -138,6 +139,30 @@ class EloquentRollCallRepository implements RollCallRepository
             ->where('roll_call_id', '=', $roll_call_id)
             ->where('user_id', '=', $user_id)
             ->update(['response_status' => $status]);
+    }
+
+    public function setReplyToken($roll_call_id, $user_id) {
+        $token = Hash::Make(config('app.key'));
+
+        DB::table('roll_call_recipients')
+            ->where('roll_call_id', '=', $roll_call_id)
+            ->where('user_id', '=', $user_id)
+            ->update(['reply_token' => $token]);
+
+        return $token;
+    }
+
+    public function getUserFromReplyToken($reply_token) {
+        return DB::table('roll_call_recipients')
+                    ->where('reply_token', '=', $reply_token)
+                    ->value('user_id');
+    }
+
+    public function getReplyToken($roll_call_id, $user_id) {
+        return DB::table('roll_call_recipients')
+                    ->where('roll_call_id', '=', $roll_call_id)
+                    ->where('user_id', '=', $user_id)
+                    ->value('reply_token');
     }
 
     public function getLastSentMessageId($contact_id = null)

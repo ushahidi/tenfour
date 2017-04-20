@@ -42,3 +42,6 @@ Route::get('useravatar/{filename}',['uses' => 'UseravatarController@show']);
 // SES bounces and complaints
 Route::post('ses/bounces', 'SESBounceController@handleBounce');
 Route::post('ses/complaints', 'SESBounceController@handleComplaint');
+
+Route::get('rollcalls/{rollcall}', ['uses' => 'Api\First\RollCallController@find']);
+Route::post('rollcalls/{rollcall}/replies', ['uses' => 'Api\First\ReplyController@addReplyFromToken']);

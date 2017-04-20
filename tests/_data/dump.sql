@@ -84,11 +84,11 @@ INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('2', '6');
 
 -- Add test roll call recipients
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('1', '1', 'replied');
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('2', '1');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, reply_token) VALUES ('2', '1', 'testtoken1');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('4', '1', 'unresponsive');
 INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('4', '2');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('3', '2', 'waiting');
-INSERT INTO roll_call_recipients (user_id, roll_call_id) VALUES ('3', '3');
+INSERT INTO roll_call_recipients (user_id, roll_call_id, reply_token) VALUES ('3', '3', 'testtoken3');
 INSERT INTO roll_call_recipients (user_id, roll_call_id, response_status) VALUES ('1', '6', 'waiting');
 
 -- Add test replies

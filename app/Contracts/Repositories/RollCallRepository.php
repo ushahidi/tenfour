@@ -76,6 +76,14 @@ interface RollCallRepository extends CrudRepository
     public function updateRecipientStatus($roll_call_id, $user_id, $status);
 
     /**
+     * Set a reply token for a user's response
+     *
+     * @param int $roll_call_id
+     * @param int $user_id
+     */
+    public function setReplyToken($roll_call_id, $user_id);
+
+    /**
      * Get pending roll call reply by contact
      *
      * @param int $contact_id

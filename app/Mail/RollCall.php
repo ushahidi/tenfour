@@ -19,12 +19,13 @@ class RollCall extends Mailable
      *
      * @return void
      */
-    public function __construct(array $roll_call, array $organization, array $creator, array $contact)
+    public function __construct(array $roll_call, array $organization, array $creator, array $contact, array $user)
     {
         $this->roll_call = $roll_call;
         $this->organization = $organization;
         $this->creator = $creator;
         $this->contact = $contact;
+        $this->user = $user;
     }
 
     /**
@@ -46,14 +47,23 @@ class RollCall extends Mailable
         $roll_call_url = $client_url .'/rollcalls/'. $this->roll_call['id'];
         $subject = str_limit($this->roll_call['message'], $limit = 50, $end = '...');
 
-        $answer_url_no = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/0';
-        $answer_url_yes = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/1';
+        $user_url_fragment = '/' . $this->user['id'] . '?token=' . urlencode($this->user['reply_token']);
+        $answer_url_no = $client_url . '/r/' . $this->roll_call['id'] . '/0' . $user_url_fragment;
+        $answer_url_yes = $client_url . '/r/' . $this->roll_call['id'] . '/1' . $user_url_fragment;
         $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer';
         $reply_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
 
-        $has_custom_answers = isset($this->roll_call['answers']) ? count(array_filter($this->roll_call['answers'], function($a) {
-            return $a['type'] == 'custom';
-        })) > 0 : false;
+        $has_custom_answers = false;
+
+        if ($this->roll_call['answers']) {          
+          foreach ($this->roll_call['answers'] as $index => $answer) {
+              $this->roll_call['answers'][$index]['url'] = $client_url . '/r/' . $this->roll_call['id'] . '/' . $index . $user_url_fragment;
+
+              if ($answer['type'] == 'custom') {
+                $has_custom_answers = true;
+              }
+          }
+        }
 
         $unsubscribe_url = $client_url . '/unsubscribe/' .
           '?token=' . urlencode($this->contact['unsubscribe_token']) .
@@ -77,7 +87,6 @@ class RollCall extends Mailable
                         'reply_url'         => $reply_url,
                         'has_custom_answers'=> $has_custom_answers,
                         'unsubscribe_url'   => $unsubscribe_url,
-
                     ])
                     ->subject($subject)
                     ->from($from_address, $this->creator['name'])

@@ -227,7 +227,7 @@
                                                     @for ($i = 0; $i < count($answers); $i++)
                                                     <tr>
                                                         <td align="center">
-                                                          <a href="{{$answer_url}}/{{$i}}"
+                                                          <a href="{{$answers[$i]['url']}}"
                                                             target="_blank"
                                                             style="width: 100%; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: {{$answers[$i]['color']}}; border-top: 10px solid {{$answers[$i]['color']}}; border-bottom: 10px solid {{$answers[$i]['color']}}; border-left: 10px solid {{$answers[$i]['color']}}; border-right: 10px solid {{$answers[$i]['color']}}; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; display: inline-block; margin: 5px 0" class="mobile-button">
                                                             {{$answers[$i]['answer']}}

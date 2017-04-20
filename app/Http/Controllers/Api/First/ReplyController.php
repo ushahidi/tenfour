@@ -134,6 +134,23 @@ class ReplyController extends ApiController
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
+    public function addReplyFromToken(AddReplyRequest $request, $id)
+    {
+        $user_id = $this->auth->user()['id'];
+
+        $user_id = $this->roll_calls->getUserFromReplyToken($request->get('token'));
+
+        $reply = $this->reply->addReply(
+          $request->input() + [
+            'user_id' => $user_id,
+            'roll_call_id' => $id
+          ], $id);
+
+        // Update response status
+        $this->roll_calls->updateRecipientStatus($id, $user_id, 'replied');
+        return $this->response->item($reply, new ReplyTransformer, 'reply');
+    }
+
     /**
      * List roll call replies
      *

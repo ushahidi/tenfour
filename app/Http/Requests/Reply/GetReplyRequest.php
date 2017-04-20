@@ -21,7 +21,7 @@ class GetReplyRequest extends FormRequest
                  ->find($this->route('rollcall'));
 
         // Admin has full access
-        if ($this->user()->isMember($rollCall['organization_id'])) {
+        if ($this->user() && $this->user()->isMember($rollCall['organization_id'])) {
             return true;
         }
 
