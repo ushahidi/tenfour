@@ -1,7 +1,7 @@
 FROM ubuntu:trusty
 
 ENV ANSIBLE_VERSION 2.1.2.0
-ENV TERRAFORM_VERSION 0.8.7
+ENV TERRAFORM_VERSION 0.8.8
 
 RUN apt-get update && \
     apt-get install -y python-dev python-pip git libffi6 libffi-dev libssl1.0.0 libssl-dev unzip wget gettext && \
