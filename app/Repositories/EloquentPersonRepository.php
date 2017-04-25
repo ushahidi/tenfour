@@ -209,6 +209,7 @@ class EloquentPersonRepository implements PersonRepository
 
         $input['preferred'] = 1;
         $input['user_id'] = $user->id;
+        $input['organization_id'] = $organization_id;
 
         $input['unsubscribe_token'] = Hash::Make(config('app.key'));
         $input['subscribed'] = 1;

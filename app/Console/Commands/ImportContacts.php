@@ -97,7 +97,7 @@ class ImportContacts extends Command
                     'name'            => $name,
                     'password'        => $password,
                     'role'            => 'member'
-                    
+
                 ]);
             }
 
@@ -107,6 +107,7 @@ class ImportContacts extends Command
             // Add email contact
             Contact::updateOrCreate([
                 'user_id'     => $member['id'],
+                'organization_id' => $organization->id,
                 'type'        => 'email',
                 'contact'     => $email,
                 'subscribed'  => true,
@@ -116,6 +117,7 @@ class ImportContacts extends Command
             // Add phone contact
             Contact::updateOrCreate([
                 'user_id'     => $member['id'],
+                'organization_id' => $organization->id,
                 'type'        => 'phone',
                 'contact'     => $phone_number,
                 'subscribed'  => true,

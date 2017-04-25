@@ -43,12 +43,14 @@ class PersonCest
     {
         $id = 2;
         $user_id = 1;
+        $org_id = 2;
         $I->wantTo('Add member contact email as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
             'contact' => 'mary@example.com',
             'type'    => 'email',
+            'organization_id' => $org_id,
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -61,6 +63,52 @@ class PersonCest
     }
 
     /*
+     * Add duplicate contact email to an organization as org admin
+     *
+     */
+    public function addDuplicateContactEmailAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $org_id = 2;
+        $I->wantTo('Add duplicate member contact email as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
+            'contact' => 'mary@example.com',
+            'type'    => 'email',
+            'organization_id' => $org_id,
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
+            'contact' => 'mary@example.com',
+            'type'    => 'email',
+            'organization_id' => $org_id,
+        ]);
+        $I->seeResponseCodeIs(422);
+    }
+
+    /*
+     * Add duplicate contact email from another organization as org admin
+     *
+     */
+    public function addDuplicateContactEmailAnotherOrgAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $org_id = 2;
+        $I->wantTo('Add duplicate member contact email from another organization as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
+            'contact' => 'test+contact2@organization2.com',
+            'type'    => 'email',
+            'organization_id' => $org_id,
+        ]);
+        $I->seeResponseCodeIs(200);
+    }
+
+    /*
      * Add member contact phone to an organization as org admin
      *
      */
@@ -68,12 +116,14 @@ class PersonCest
     {
         $id = 2;
         $user_id = 1;
+        $org_id = 2;
         $I->wantTo('Add member contact phone as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
             'contact' => '+1 (207) 7200713',
             'type'    => 'phone',
+            'organization_id' => $org_id,
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -187,12 +237,14 @@ class PersonCest
         $id = 2;
         $user_id = 1;
         $contact_id = 4;
+        $org_id = 2;
         $I->wantTo('Update member contact as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id/people/$user_id/contacts/$contact_id", [
             'contact' => '+12077200713',
             'type'    => 'phone',
+            'organization_id' => $org_id,
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();

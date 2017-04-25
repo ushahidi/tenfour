@@ -55,6 +55,7 @@ class OrgMemberSeeder extends Seeder
                 'contact'           => $member['email'],
                 'preferred'         => 1,
                 'user_id'           => $user->id,
+                'organization_id'   => $organization->id,
                 'unsubscribe_token' => Hash::Make(config('app.key'))
             ]);
 
@@ -80,9 +81,10 @@ class OrgMemberSeeder extends Seeder
 
             Contact::firstOrCreate([
                 'type'              => 'email',
-                'contact'           => 'test_email_' . $i . '@ushahiditest.com',
+                'contact'           => 'test_email_' . $i . '@example.com',
                 'preferred'         => 1,
                 'user_id'           => $user->id,
+                'organization_id'   => $organization->id,
                 'unsubscribe_token' => Hash::Make(config('app.key'))
             ]);
 

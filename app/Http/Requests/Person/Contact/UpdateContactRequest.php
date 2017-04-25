@@ -3,6 +3,7 @@
 namespace RollCall\Http\Requests\Person\Contact;
 
 use RollCall\Http\Requests\Person\UpdatePersonRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateContactRequest extends UpdatePersonRequest
 {
@@ -17,7 +18,10 @@ class UpdateContactRequest extends UpdatePersonRequest
         }
 
         $rules['type']    = 'in:phone,email';
-        $rules['contact'] = 'unique:contacts,contact,' . $this->request->get('id');
+
+        $rules['contact'] = Rule::unique('contacts')
+            ->ignore($this->request->get('id'), 'id')
+            ->where('organization_id', $this->request->get('organization_id'));
 
         return $rules;
     }
@@ -31,9 +35,9 @@ class UpdateContactRequest extends UpdatePersonRequest
         } elseif ($this->input('type') === 'email') {
             return [
                 'contact.unique' => 'Email already in use, choose a different one'
-            ]; 
+            ];
         }
-      
+
     }
 
 }

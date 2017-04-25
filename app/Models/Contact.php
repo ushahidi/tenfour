@@ -18,7 +18,7 @@ class Contact extends Model
      *
      * @var array
      */
-    protected $fillable = ['type', 'preferred', 'user_id', 'contact', 'passed_self_test', 'subscribed', 'unsubscribe_token'];
+    protected $fillable = ['type', 'preferred', 'user_id', 'organization_id', 'contact', 'passed_self_test', 'subscribed', 'unsubscribe_token'];
 
     /**
      * The attributes excluded from the model's JSON form.
