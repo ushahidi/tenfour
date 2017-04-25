@@ -96,7 +96,7 @@ class EloquentRollCallRepository implements RollCallRepository
     protected function notifyRollCall($roll_call) {
         $channels = $this->organizations->getSetting($roll_call['organization_id'], 'channels');
 
-        if (isset($channels->slack) && $channels->slack->enabled &&
+        if (isset($channels->slack) && isset($channels->slack->enabled) &&
             in_array('slack', $roll_call['send_via'])) {
             $roll_call->_slack_webhook_url = $channels->slack->webhook_url;
         }

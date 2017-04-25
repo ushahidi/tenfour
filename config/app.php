@@ -161,6 +161,7 @@ return [
         Barryvdh\Cors\ServiceProvider::class,
         GrahamCampbell\Throttle\ThrottleServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
+        Waavi\UrlShortener\UrlShortenerServiceProvider::class,
 
     ],
 
@@ -217,6 +218,7 @@ return [
         'SMS' => RollCall\Messaging\Facades\SMS::class,
         'Throttle' => GrahamCampbell\Throttle\Facades\Throttle::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
+        'UrlShortener' => Waavi\UrlShortener\Facades\UrlShortener::class,
 
     ],
 

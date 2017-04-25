@@ -24,7 +24,8 @@
         "willdurand/email-reply-parser": "^2.5",
         "graham-campbell/throttle": "^5.3",
         "sentry/sentry-laravel": "^0.6.1",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "waavi/url-shortener": "1.0.x"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",
