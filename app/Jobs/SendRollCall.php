@@ -114,7 +114,7 @@ class SendRollCall implements ShouldQueue
                     }
 
                     $params = [];
-                    $rollcall_url = $params['rollcall_url'] = $org_url .'/rollcalls/'. $this->roll_call['id'];
+                    $rollcall_url = $params['rollcall_url'] = $org_url .'/r/'. $this->roll_call['id'] .  '/-/' . $this->recipient['id'] . '?token=' . urlencode($this->recipient['reply_token']);
                     $params['answers'] = $this->roll_call['answers'];
                     $params['keyword'] = $message_service->getKeyword($to);
                     $msg = $this->roll_call['message'];
