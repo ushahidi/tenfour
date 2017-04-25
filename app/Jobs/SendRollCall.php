@@ -110,7 +110,7 @@ class SendRollCall implements ShouldQueue
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 
                     if ($unreplied_sms_roll_call_id) {
-                        $this->sendReminderSMS($message_service, $to, $org_url .'/rollcalls/'. $unreplied_sms_roll_call_id);
+                        $this->sendReminderSMS($message_service, $to, $org_url .'/r/'. $unreplied_sms_roll_call_id .  '/-/' . $this->recipient['id'] . '?token=' . urlencode($this->recipient['reply_token']));
                     }
 
                     $params = [];
