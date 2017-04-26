@@ -65,7 +65,16 @@ class ReceiveSMS extends Command
 
         foreach ($messages as $message)
         {
-            $this->reply_storage->save($message['from'], $message['message'], $message['id']);
+            $saved = $this->reply_storage->save($message['from'], $message['message'], $message['id']);
+
+            if ($saved) {
+                $this->sendResponseReceivedSMS($message['from']);
+            }
         }
+    }
+
+    protected function sendResponseReceivedSMS($to) {
+        $message_service->setView('sms.response_received');
+        $message_service->send($to);
     }
 }

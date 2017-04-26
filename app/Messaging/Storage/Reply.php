@@ -56,8 +56,12 @@ class Reply
                 if ($roll_call['self_test_roll_call']) {
                     $this->updateUserSelfTest($contact['user']['id']);
                 }
+
+                return true;
             }
         }
+
+        return false;
     }
 
     protected function updateUserSelfTest($user_id) {
