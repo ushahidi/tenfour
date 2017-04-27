@@ -50,7 +50,8 @@ class RollCallTableSeeder extends Seeder
 
             $rollCall->update([
                 'message' => 'Test rollcall',
-                'answers' => $answers
+                'answers' => $answers,
+                'send_via' => ['preferred'],
             ]);
 
             $this->addUsersToRollCall($users, $rollCall);
