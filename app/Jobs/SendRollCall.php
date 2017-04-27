@@ -15,6 +15,7 @@ use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Models\Organization;
 use RollCall\Messaging\SMSService;
+use UrlShortener;
 
 use Log;
 
@@ -110,11 +111,14 @@ class SendRollCall implements ShouldQueue
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 
                     if ($unreplied_sms_roll_call_id) {
-                        $this->sendReminderSMS($message_service, $to, $org_url .'/r/'. $unreplied_sms_roll_call_id .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']));
+                        $reminder_reply_token = $roll_call_repo->getReplyToken($unreplied_sms_roll_call_id, $recipient['id']);
+                        $reminder_sms_url = $this->shortenUrl($org_url .'/r/'. $unreplied_sms_roll_call_id .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
+                        $this->sendReminderSMS($message_service, $to, $reminder_sms_url);
                     }
 
                     $params = [];
-                    $rollcall_url = $params['rollcall_url'] = \UrlShortener::shorten($org_url .'/r/'. $this->roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']));
+                    $rollcall_url = $org_url .'/r/'. $this->roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
+                    $rollcall_url = $params['rollcall_url'] = $this->shortenUrl($rollcall_url );
                     $params['answers'] = $this->roll_call['answers'];
                     $params['keyword'] = $message_service->getKeyword($to);
                     $msg = $this->roll_call['message'];
@@ -203,8 +207,17 @@ class SendRollCall implements ShouldQueue
     private function sendReminderSMS(SMSService $message_service, $to, $rollcall_url) {
         // \Log::info('Sending "ReminderSMS" to=' . $to . ' msg=' . $rollcall_url);
         // @TODO include previous rollcall message
-
         $message_service->setView('sms.unresponsive');
-        $message_service->send($to, \UrlShortener::shorten($rollcall_url));
+        $message_service->send($to, $rollcall_url);
+    }
+
+    private function shortenUrl($url) {
+        try {
+            $url = UrlShortener::shorten($url);
+        } catch (\Waavi\UrlShortener\Exceptions\InvalidResponseException $e) {
+            \Log::error($e);
+        }
+
+        return $url;
     }
 }
