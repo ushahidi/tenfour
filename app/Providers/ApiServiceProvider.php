@@ -50,6 +50,10 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('RollCall\Contracts\Repositories\PersonRepository',
                          'RollCall\Repositories\EloquentPersonRepository');
 
+        $this->app->bind('RollCall\Contracts\Repositories\UnverifiedAddressRepository',
+                         'RollCall\Repositories\EloquentUnverifiedAddressRepository');
+
+
         $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
                          'RollCall\Messaging\MessageServiceFactory');
 

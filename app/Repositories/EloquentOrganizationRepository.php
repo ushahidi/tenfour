@@ -4,6 +4,8 @@ namespace RollCall\Repositories;
 use RollCall\Models\Organization;
 use RollCall\Models\Setting;
 use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\ContactRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,7 +28,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         $this->currentUserId = $currentUserId;
     }
 
-    public function all($subdomain = false)
+    public function all($subdomain = false, $name = false)
     {
         $query = Organization::select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture');
 
@@ -40,6 +42,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
         // Filter by subdomain
         if ($subdomain) {
             $query->where('subdomain', $subdomain);
+        }
+
+        // Filter by name
+        if ($name) {
+            $query->where('name', $name);
         }
 
         return $query->get()->toArray();
@@ -57,14 +64,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         $organization = Organization::findorFail($id);
 
         if (isset($input['settings'])) {
-          foreach ($input['settings'] as $key => $setting) {
-            Setting::updateOrCreate([
-              'organization_id' => $organization->id,
-              'key' => $key
-            ], [
-              'values' => $setting
-            ]);
-          };
+            $this->updateSettings($input['settings'], $organization->id);
         }
 
         if (isset($input['_input_image'])) {
@@ -79,28 +79,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function create(array $input)
     {
-        $organization = null;
+        $organization = Organization::create(array_except($input, ['settings']));
 
-        // Get organization params
-        $org_input = array_except($input, ['user_id']);
+        if (isset($input['settings'])) {
+            $this->updateSettings($input['settings'], $organization->id);
+        }
 
-        // Get owner id
-        $owner_id = array_only($input, ['user_id'])['user_id'];
-
-        DB::transaction(function () use ($org_input, $owner_id, &$organization) {
-            $organization = Organization::create($org_input);
-
-            // Assign 'owner' role to the user associated
-            // with the organization when it's created
-            // FIXME: need to add user
-            //$organization->members()->attach($owner_id, ['role' => 'owner']);
-        });
-
-        return $organization->toArray() +
-        [
-            'user_id' => $owner_id,
-            'role'    => 'owner'
-        ];
+        return $this->find($organization->id);
     }
 
     public function find($id)
@@ -139,6 +124,19 @@ class EloquentOrganizationRepository implements OrganizationRepository
             return [];
         }
 
+    }
+
+    protected function updateSettings(array $settings, $id)
+    {
+        foreach ($settings as $key => $setting)
+        {
+            Setting::updateOrCreate([
+                'organization_id' => $id,
+                'key' => $key
+            ], [
+                'values' => $setting
+            ]);
+        };
     }
 
 }

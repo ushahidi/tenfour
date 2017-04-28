@@ -47,6 +47,9 @@ class DbHelper extends \Codeception\Module\Db
         // Delete settings
         $dbh->exec('TRUNCATE TABLE settings');
 
+        // Delete unverified addresses
+        $dbh->exec('TRUNCATE TABLE unverified_addresses');
+
         $dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

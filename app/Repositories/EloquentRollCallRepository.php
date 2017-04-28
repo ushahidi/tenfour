@@ -4,7 +4,6 @@ namespace RollCall\Repositories;
 use RollCall\Models\RollCall;
 use RollCall\Models\Reply;
 use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Contracts\Repositories\OrganizationRepository;
 use DB;
 
 use Illuminate\Support\Facades\Notification;
@@ -13,9 +12,8 @@ use RollCall\Notifications\RollCallReceived;
 
 class EloquentRollCallRepository implements RollCallRepository
 {
-    public function __construct(OrganizationRepository $organizations)
+    public function __construct()
     {
-        $this->organizations = $organizations;
     }
 
     public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 0)
@@ -94,7 +92,9 @@ class EloquentRollCallRepository implements RollCallRepository
     }
 
     protected function notifyRollCall($roll_call) {
-        $channels = $this->organizations->getSetting($roll_call['organization_id'], 'channels');
+
+        $organizations = resolve('RollCall\Contracts\Repositories\OrganizationRepository');
+        $channels = $organizations->getSetting($roll_call['organization_id'], 'channels');
 
         if (isset($channels->slack) && isset($channels->slack->enabled) &&
             in_array('slack', $roll_call['send_via'])) {

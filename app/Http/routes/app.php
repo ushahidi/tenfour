@@ -43,5 +43,10 @@ Route::get('useravatar/{filename}',['uses' => 'UseravatarController@show']);
 Route::post('ses/bounces', 'SESBounceController@handleBounce');
 Route::post('ses/complaints', 'SESBounceController@handleComplaint');
 
+// Get/update RollCall with a token when I am not logged in
 Route::get('rollcalls/{rollcall}', ['uses' => 'Api\First\RollCallController@find']);
 Route::post('rollcalls/{rollcall}/replies', ['uses' => 'Api\First\ReplyController@addReplyFromToken']);
+
+// Address verification
+Route::post('verification/email', 'VerificationController@sendEmailVerification');
+Route::get('verification/email', 'VerificationController@verifyEmail');

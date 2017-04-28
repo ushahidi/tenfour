@@ -3,6 +3,8 @@
 namespace RollCall\Http\Controllers\Api\First;
 
 use RollCall\Contracts\Repositories\OrganizationRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
+use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Http\Requests\Organization\GetOrganizationsRequest;
 use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
@@ -12,6 +14,7 @@ use RollCall\Http\Requests\Organization\UpdateMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Response;
+use DB;
 
 /**
  * @Resource("Organizations", uri="/api/v1/organizations")
@@ -19,9 +22,11 @@ use RollCall\Http\Response;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, Auth $auth, Response $response)
+    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response)
     {
         $this->organizations = $organizations;
+        $this->people = $people;
+        $this->contacts = $contacts;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -47,7 +52,7 @@ class OrganizationController extends ApiController
         // Pass current user ID to repo
         $this->organizations->setCurrentUserId($this->auth->user()['id']);
 
-        $organizations = $this->organizations->all($request->query('subdomain'));
+        $organizations = $this->organizations->all($request->query('subdomain'), $request->query('name'));
 
         return $this->response->collection($organizations, new OrganizationTransformer, 'organizations');
     }
@@ -69,17 +74,54 @@ class OrganizationController extends ApiController
      * })
      *
      * @param Request $request
+     *
      * @return Response
      */
     public function store(CreateOrganizationRequest $request)
     {
-        $organization = $this->organizations->create([
-                 'name'         => $request->input('name'),
-                 'subdomain'    => $request->input('subdomain'),
-                 'user_id'      => $request->input('user', $this->auth->user()['id']),
-        ]);
+        $input = $request->input();
+        $organization = [];
+        $owner = [];
+        $contact = [];
 
-        return $this->response->item($organization, new OrganizationTransformer, 'organization');
+        // Get organization params
+        $org_input = [
+            'name'      => $input['organization_name'],
+            'subdomain' => strtolower($input['subdomain']),
+            'settings'  => $input['settings'],
+        ];
+
+        // Get owner details
+        // FIXME: We should probably have the owner's name here as well. For now, use the email provided
+        $owner_input = [
+            'name'     => $input['email'],
+            'role'     => 'owner',
+            'password' => $input['password'],
+        ];
+
+        $contact_input = [
+            'contact' => $input['email'],
+            'type'    => 'email'
+        ];
+
+        DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
+            $organization = $this->organizations->create($org_input);
+
+            $owner = $this->people->create($organization['id'], $owner_input);
+
+            $contact = $this->contacts->create($contact_input + [
+                'user_id'         => $owner['id'],
+                'organization_id' => $organization['id'],
+            ]);
+        });
+
+        $result = $organization + [
+            'user' => $owner + [
+                'contact' => $contact
+            ]
+        ];
+
+        return $this->response->item($result, new OrganizationTransformer, 'organization');
     }
 
     /**

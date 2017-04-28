@@ -16,27 +16,8 @@ class CreateOrganizationRequest extends FormRequest
      */
     public function authorize()
     {
-        // FIXME: Pretty sure this isn't whats needed anymore
-        // We should create the org and user from a single request
-
-        /*// Admin can create an organization for any user
-        if ($this->isAdmin()) {
-            return true;
-        }
-
-        // If a user_id is provided by a non-admin user,
-        // check that it matches the current user's id
-        if ($this->has('user_id')) {
-            return $this->isSelf($this->user_id);
-        }
-
-        // Check that at least the user creating
-        // an organization is a registered user
-        if ($this->auth->user()['id']) {
-            return true;
-        }*/
-
-        return false;
+        // Anyone should be able to create an organization
+        return true;
     }
 
     /**
@@ -47,9 +28,10 @@ class CreateOrganizationRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'      => 'required',
-            'subdomain' => 'required',
-            'user_id'   => 'exists:users,id',
+            'organization_name' => 'required',
+            'subdomain'         => 'required|alpha_dash',
+            'email'             => 'required|email',
+            'password'          => 'required|min:8'
         ];
     }
 }

@@ -7,6 +7,7 @@ class OrganizationTransformer extends TransformerAbstract
 {
     public function transform(array $organization)
     {
+
         if (isset($organization['user_id'])) {
             $organization['user']['id'] = $organization['user_id'];
             $organization['user']['gravatar'] = !empty($organization['user']['email']) ? md5(strtolower(trim($organization['user']['email']))) : '00000000000000000000000000000000';
@@ -33,5 +34,35 @@ class OrganizationTransformer extends TransformerAbstract
         $organization['uri'] = '/organizations/' . $organization['id'];
 
         return $organization;
+    }
+
+    /**
+     * List of resources to automatically include
+     *
+     * @var array
+     */
+    protected $defaultIncludes = [
+        'user',
+    ];
+
+    /**
+     * List of resources possible to include
+     *
+     * @var array
+     */
+    protected $availableIncludes = [
+        'user',
+    ];
+
+    /**
+     * Include User
+     *
+     * @return League\Fractal\ItemResource
+     */
+    public function includeUser(array $organization)
+    {
+        if (isset($organization['user'])) {
+            return $this->item($organization['user'], new UserTransformer);
+        }
     }
 }

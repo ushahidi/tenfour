@@ -16,8 +16,8 @@ class GetOrganizationsRequest extends FormRequest
      */
     public function authorize()
     {
-        // Anyone can query by subdomain
-        if ($this->query('subdomain')) {
+        // Anyone can query by subdomain or name
+        if ($this->query('subdomain') || $this->query('name')) {
             return true;
         }
 

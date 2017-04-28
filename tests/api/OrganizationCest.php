@@ -56,6 +56,46 @@ class OrganizationCest
                 'subdomain'     => 'testers'
             ]]
         ]);
+        $I->dontSeeResponseContainsJson([
+            [
+                'name'    => 'Dummy org',
+                'subdomain'     => 'dummy'
+            ],
+            [
+                'name'    => 'RollCall',
+                'subdomain'     => 'rollcall'
+            ]
+        ]);
+    }
+
+    /*
+     * Get all organization by Name
+     *
+     */
+    public function getOrganizationByName(ApiTester $I)
+    {
+        $I->wantTo('Get a list of all organizations by Name');
+        $I->sendGET($this->endpoint  . '?name=Testers');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'organizations' => [
+                [
+                    'name'    => 'Testers',
+                    'subdomain'     => 'testers'
+                ]
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            [
+                'name'    => 'Dummy org',
+                'subdomain'     => 'dummy'
+            ],
+            [
+                'name'    => 'RollCall',
+                'subdomain'     => 'rollcall'
+            ]
+        ]);
     }
 
     /*
@@ -106,30 +146,47 @@ class OrganizationCest
     }
 
     /*
-     * Create organization as user
+     * Create organization as new owner
      *
      */
-    // @todo create new endpoint for creating and org and its owner
-    // public function createOrganization(ApiTester $I)
-    // {
-    //     $I->wantTo('Create an organization as user');
-    //     $I->amAuthenticatedAsUser();
-    //     $I->haveHttpHeader('Content-Type', 'application/json');
-    //     $I->sendPOST($this->endpoint, [
-    //         'name' => 'Test org',
-    //         'subdomain'  => 'test'
-    //     ]);
-    //     $I->seeResponseCodeIs(200);
-    //     $I->seeResponseIsJson();
-    //     $I->seeResponseContainsJson([
-    //         'name' => 'Test org',
-    //         'subdomain' => 'test',
-    //         'user' => [
-    //             'id'   => 1,
-    //             'role' => 'owner',
-    //         ]
-    //     ]);
-    // }
+    public function createOrganization(ApiTester $I)
+    {
+        $I->wantTo('Create an organization as a new user');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'organization_name' => 'Test org',
+            'subdomain'         => 'test',
+            'email'             => 'mary@ushahidi.org',
+            'password'          => 'testtest',
+            'settings'          => [
+                'channels' => [
+                    'email' => [
+                        'enabled' => true
+                    ]
+                ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'name'       => 'Test org',
+            'subdomain'  => 'test',
+            'settings'   => [
+                'key'    => 'channels',
+                'values' => [
+                    'email' => ['enabled' => true]
+                ]
+            ],
+            'user'      => [
+                'role'    => 'owner',
+                'contact' => [
+                    'contact' => 'mary@ushahidi.org',
+                    'type'    => 'email',
+                ]
+            ]
+        ]);
+    }
 
     /*
      * Update organization details as the organization owner

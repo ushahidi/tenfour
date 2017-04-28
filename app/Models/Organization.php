@@ -18,7 +18,16 @@ class Organization extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'subdomain', 'profile_picture'];
+    protected $fillable = ['name', 'subdomain', 'profile_picture', 'features'];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'features' => 'json'
+    ];
 
     /**
      * An organization has users
