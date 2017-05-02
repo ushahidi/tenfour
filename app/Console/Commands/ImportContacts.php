@@ -110,7 +110,6 @@ class ImportContacts extends Command
                 'organization_id' => $organization->id,
                 'type'        => 'email',
                 'contact'     => $email,
-                'subscribed'  => true,
                 'unsubscribe_token' => Hash::Make(config('app.key')),
             ], ['preferred' => true]);
 
@@ -120,7 +119,6 @@ class ImportContacts extends Command
                 'organization_id' => $organization->id,
                 'type'        => 'phone',
                 'contact'     => $phone_number,
-                'subscribed'  => true,
             ], ['preferred' => true]);
         }
 

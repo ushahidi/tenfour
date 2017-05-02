@@ -102,7 +102,7 @@ class EloquentContactRepository implements ContactRepository
     {
       $contact = Contact::where('unsubscribe_token', $token)->firstOrFail();
 
-      $contact->subscribed = false;
+      $contact['blocked'] = true;
       $contact->save();
 
       return $contact->toArray();

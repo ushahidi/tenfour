@@ -93,8 +93,8 @@ class SendRollCall implements ShouldQueue
 
             foreach($contacts as $contact)
             {
-                if (!$contact['subscribed']) {
-                  continue;
+                if ($contact['blocked']) {
+                    continue;
                 }
 
                 $message_service = $message_service_factory->make($contact['type']);

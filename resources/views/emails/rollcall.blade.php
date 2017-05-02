@@ -280,7 +280,7 @@
                         <br>
                         <a href="http://rollcall.io" class="original-only" style="color: #666666; text-decoration: none;">www.rollcall.io</a><span class="original-only" style="font-family: Lato, Arial, sans-serif; font-size: 12px; color: #444444;">
                         <br>
-                        <a href="{{ $unsubscribe_url }}" class="original-only" style="color: #666666; text-decoration: underline;">Unsubscribe</a>
+                        <a href="{{ $unsubscribe_url }}" class="original-only" style="color: #666666; text-decoration: underline;">I don't want to receive RollCalls at this email address</a>
                     </td>
                 </tr>
             </table>

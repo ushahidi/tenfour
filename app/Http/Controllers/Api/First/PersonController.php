@@ -159,7 +159,6 @@ class PersonController extends ApiController
      *             {
      *                 "contact": "0721674180",
      *                 "id": 1,
-     *                 "subscribed": 1,
      *                 "type": "phone",
      *                 "updated_at": null,
      *                 "uri": "/contact/1"
@@ -167,7 +166,6 @@ class PersonController extends ApiController
      *             {
      *                 "contact": "test@ushahidi.com",
      *                 "id": 2,
-     *                 "subscribed": 1,
      *                 "type": "email",
      *                 "updated_at": null,
      *                 "uri": "/contact/2"

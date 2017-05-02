@@ -212,7 +212,6 @@ class EloquentPersonRepository implements PersonRepository
         $input['organization_id'] = $organization_id;
 
         $input['unsubscribe_token'] = Hash::Make(config('app.key'));
-        $input['subscribed'] = 1;
 
         return $this->contacts->create($input);
     }

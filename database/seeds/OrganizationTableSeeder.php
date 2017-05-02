@@ -37,7 +37,6 @@ class OrganizationTableSeeder extends Seeder
             'preferred'   => 1,
             'user_id'     => $user->id,
             'organization_id' => $organization->id,
-            'subscribed'  => 1,
             'unsubscribe_token' => 'testtoken',
         ]);
 
@@ -63,7 +62,6 @@ class OrganizationTableSeeder extends Seeder
             'preferred'   => 1,
             'user_id'     => $user2->id,
             'organization_id' => $triClub->id,
-            'subscribed'  => 1,
             'unsubscribe_token' => 'testtoken',
         ]);
     }
