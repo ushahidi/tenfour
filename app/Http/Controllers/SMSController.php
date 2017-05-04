@@ -33,7 +33,7 @@ class SMSController extends Controller
 
         $incoming = SMS::receive();
 
-        Log::info("Received SMS message: ". $incoming->id());
+        Log::info("Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
 
         $this->reply_storage->save(
             $incoming->from(),

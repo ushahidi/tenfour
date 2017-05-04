@@ -7,6 +7,7 @@ use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\ReplyRepository;
 use RollCall\Messaging\AnswerParser;
 use RollCall\Models\User;
+use Log;
 
 class Reply
 {
@@ -58,7 +59,11 @@ class Reply
                 }
 
                 return true;
+            } else {
+                Log::warn('Could not find the RollCall for incoming message from ' . $from);
             }
+        } else {
+            Log::warn('Could not find the contact details for incoming message from ' . $from);
         }
 
         return false;

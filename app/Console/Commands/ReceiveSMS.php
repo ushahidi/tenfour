@@ -4,6 +4,7 @@ namespace RollCall\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use Log;
 use RollCall\Messaging\SMSService;
 use RollCall\Messaging\Storage\Reply as ReplyStorage;
 
@@ -74,6 +75,7 @@ class ReceiveSMS extends Command
     }
 
     protected function sendResponseReceivedSMS($to) {
+        Log::info('Sending response received sms to: ' . $to);
         $message_service->setView('sms.response_received');
         $message_service->send($to);
     }
