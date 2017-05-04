@@ -69,14 +69,9 @@ class ReceiveSMS extends Command
             $saved = $this->reply_storage->save($message['from'], $message['message'], $message['id']);
 
             if ($saved) {
-                $this->sendResponseReceivedSMS($message['from']);
+                $this->message_service->sendResponseReceivedSMS($message['from']);
             }
         }
     }
 
-    protected function sendResponseReceivedSMS($to) {
-        Log::info('Sending response received sms to: ' . $to);
-        $message_service->setView('sms.response_received');
-        $message_service->send($to);
-    }
 }

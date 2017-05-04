@@ -63,7 +63,7 @@ class SMSService implements MessageService
         return config('sms.'.$driver.'.keyword');
     }
 
-    public function send($to, $msg, $additional_params = [], $subject = null)
+    public function send($to, $msg = '', $additional_params = [], $subject = null)
     {
         $region_code = $this->getRegionCode($to);
 
@@ -187,5 +187,11 @@ class SMSService implements MessageService
         }
 
         return $message;
+    }
+
+    public function sendResponseReceivedSMS($to) {
+        Log::info('Sending "response received" sms to: ' . $to);
+        $this->setView('sms.response_received');
+        $this->send($to);
     }
 }
