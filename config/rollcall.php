@@ -29,6 +29,10 @@ return [
                 'driver' => 'nexmo',
                 'from' => env('NEXMO_SRC_ADDR', 'rollcall')
             ],
+						'IE' => [
+                'driver' => 'nexmo',
+                'from' => '353870604184'
+						],
             'default' => [
                 'driver' => 'nexmo',
                 'from' => env('NEXMO_SRC_ADDR', 'rollcall')
