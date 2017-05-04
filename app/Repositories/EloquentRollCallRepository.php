@@ -107,7 +107,7 @@ class EloquentRollCallRepository implements RollCallRepository
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent']);
+        $input = array_only($input, ['status', 'sent', 'recipients']);
 
         $roll_call = RollCall::findorFail($id);
         $roll_call->sent = $input['sent'];
@@ -116,7 +116,7 @@ class EloquentRollCallRepository implements RollCallRepository
 
         if (isset($input['recipients'])) {
             $userIds = collect($input['recipients'])->pluck('id')->all();
-            $roll_call->recipients()->sync($userIds);
+            $roll_call->recipients()->syncWithoutDetaching($userIds);
         }
 
         return $roll_call->fresh()->toArray();

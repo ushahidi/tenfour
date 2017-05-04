@@ -563,6 +563,9 @@ class RollCallCest
                 ],
                 [
                     'id' => 2
+                ],
+                [
+                    'id' => 3
                 ]
             ]
         ]);
@@ -582,6 +585,9 @@ class RollCallCest
                     ],
                     [
                         'id' => 2
+                    ],
+                    [
+                        'id' => 3
                     ]
                 ]
             ]
