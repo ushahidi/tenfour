@@ -157,15 +157,9 @@ class OrganizationCest
         $I->sendPOST($this->endpoint, [
             'organization_name' => 'Test org',
             'subdomain'         => 'test',
+            'name'              => 'Mary Mata',
             'email'             => 'mary@ushahidi.org',
             'password'          => 'testtest',
-            'settings'          => [
-                'channels' => [
-                    'email' => [
-                        'enabled' => true
-                    ]
-                ]
-            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -175,10 +169,12 @@ class OrganizationCest
             'settings'   => [
                 'key'    => 'channels',
                 'values' => [
-                    'email' => ['enabled' => true]
+                    'email' => ['enabled' => true],
+                    'sms'   => ['enabled' => true]
                 ]
             ],
             'user'      => [
+                'name'    => 'Mary Mata',
                 'role'    => 'owner',
                 'contact' => [
                     'contact' => 'mary@ushahidi.org',

@@ -84,17 +84,28 @@ class OrganizationController extends ApiController
         $owner = [];
         $contact = [];
 
+        // Email and SMS is enabled for all new accounts by default
+        $settings = [
+            'channels' => [
+                'email' => [
+                    'enabled' => true
+                ],
+                'sms' => [
+                    'enabled' => true
+                ]
+            ]
+        ];
+
         // Get organization params
         $org_input = [
             'name'      => $input['organization_name'],
             'subdomain' => strtolower($input['subdomain']),
-            'settings'  => $input['settings'],
+            'settings'  => $settings,
         ];
 
         // Get owner details
-        // FIXME: We should probably have the owner's name here as well. For now, use the email provided
         $owner_input = [
-            'name'     => $input['email'],
+            'name'     => $input['name'],
             'role'     => 'owner',
             'password' => $input['password'],
         ];
