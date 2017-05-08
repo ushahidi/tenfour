@@ -5,8 +5,8 @@ namespace RollCall\Contacts;
 use RollCall\Contracts\Contacts\CsvImporter as CsvImporterInterface;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Contacts\CsvReader;
-use RollCall\Contracts\Contacts\CsvTransformer;
+use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
+use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 use DB;
 
 class CsvImporter implements CsvImporterInterface
@@ -53,7 +53,7 @@ class CsvImporter implements CsvImporterInterface
      */
     private $contact_fields = ['email', 'twitter', 'phone'];
 
-    public function __construct(CsvReader $reader, CsvTransformer $transformer, ContactRepository $contacts, PersonRepository $people, $organization_id)
+    public function __construct(CsvReaderInterface $reader, CsvTransformerInterface $transformer, ContactRepository $contacts, PersonRepository $people, $organization_id)
     {
         $this->reader = $reader;
         $this->contacts = $contacts;

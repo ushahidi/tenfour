@@ -64,8 +64,6 @@ class ContactFilesCest
      * Import contacts as an org admin
      *
      */
-
-    /* FIXME: Disabled until this passes on Codeship as well
     public function importContactsAsOrgAdmin(ApiTester $I)
     {
         $header = "name, role, phone, email, address, twitter\n";
@@ -91,5 +89,4 @@ class ContactFilesCest
             'count' => 2
         ]);
     }
-    */
 }
