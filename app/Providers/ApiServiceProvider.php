@@ -50,9 +50,11 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('RollCall\Contracts\Repositories\PersonRepository',
                          'RollCall\Repositories\EloquentPersonRepository');
 
+        $this->app->bind('RollCall\Contracts\Repositories\ContactFilesRepository',
+                         'RollCall\Repositories\EloquentContactFilesRepository');
+
         $this->app->bind('RollCall\Contracts\Repositories\UnverifiedAddressRepository',
                          'RollCall\Repositories\EloquentUnverifiedAddressRepository');
-
 
         $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
                          'RollCall\Messaging\MessageServiceFactory');
@@ -61,6 +63,14 @@ class ApiServiceProvider extends ServiceProvider
             ->needs('$secret')
             ->give(config('rollcall.messaging.nexmo_security_secret'));
 
+        $this->app->bind('RollCall\Contracts\Contacts\CsvImporter',
+                         'RollCall\Contacts\CsvImporter');
+
+        $this->app->bind('RollCall\Contracts\Contacts\CsvReader',
+                         'RollCall\Contacts\CsvReader');
+
+        $this->app->bind('RollCall\Contracts\Contacts\CsvTransformer',
+                         'RollCall\Contacts\CsvTransformer');
     }
 
     /** Recursively list all traits defined on final class */

@@ -102,5 +102,10 @@ INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at)
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';
 
+-- Add contact file fields
+INSERT INTO contact_files (id, organization_id, columns, maps_to, filename)
+VALUES
+('1', '2', '["name", "role", "phone", "email", "address", "twitter"]', '{"0":"name","2":"phone","3":"email"}', '/contacts/sample.csv');
+
 -- Add test unverified address
 INSERT INTO unverified_addresses (id, address, verification_token) VALUES ('1', 'mary@ushahidi.com', 'token');

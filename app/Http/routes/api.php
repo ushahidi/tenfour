@@ -31,6 +31,11 @@ $api->version($version, [
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
 
+    //Org contacts file uploads
+    $api->post($base.'organizations/{organization}/files', ['uses' => 'ContactFilesController@create']);
+    $api->put($base.'organizations/{organization}/files/{file}', ['uses' => 'ContactFilesController@update']);
+    $api->post($base. 'organizations/{organization}/files/{file}/contacts', ['uses' => 'ContactFilesController@importContacts']);
+
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);

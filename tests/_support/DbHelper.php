@@ -47,6 +47,9 @@ class DbHelper extends \Codeception\Module\Db
         // Delete settings
         $dbh->exec('TRUNCATE TABLE settings');
 
+        // Delete contact_files
+        $dbh->exec('TRUNCATE TABLE contact_files');
+
         // Delete unverified addresses
         $dbh->exec('TRUNCATE TABLE unverified_addresses');
 
