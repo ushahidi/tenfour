@@ -4,6 +4,6 @@ This pull request makes the following changes:
 Test these changes by:
 -
 
-Refs ushahidi/rollcall# .
+Refs ushahidi/RollCall# 
 
-Ping @ushahidi/rollcall
+Ping @ushahidi/RollCall
