@@ -29,6 +29,8 @@ class SESBounceController extends Controller
     {
         $message = Message::fromRawPostData();
 
+        Log::debug((array) $message);
+
         if (config('rollcall.messaging.validate_sns_message')) {
             $this->validateSnsMessageOrAbort($message);
         }
