@@ -129,7 +129,7 @@ class PersonCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'contact' => '+1 (207) 7200713',
+                'contact' => '+12077200713',
                 'type'    => 'phone',
             ]
         ]);
@@ -299,7 +299,7 @@ class PersonCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'contact' => [
-                'contact' => '0792999999',
+                'contact' => '+254792999999',
                 'type'    => 'phone',
             ]
         ]);
@@ -324,7 +324,7 @@ class PersonCest
                 'name' => 'Test user',
                 'contacts' => [
                     [
-                        'contact' => '0721674180',
+                        'contact' => '+254721674180',
                         'type'    => 'phone',
                         'replies' => [
                             [

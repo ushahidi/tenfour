@@ -159,7 +159,7 @@ class RollCallCest
             'messages' => [
                 [
                     'id'      => 1,
-                    'contact' => '0721674180',
+                    'contact' => '+254721674180',
                     'type'    => 'phone',
                     'user'    => [
                         'id' => 1,
@@ -175,7 +175,7 @@ class RollCallCest
                 ],
                 [
                     'id'   => 4,
-                    'contact' => '0792999999',
+                    'contact' => '+254792999999',
                     'type'    => 'phone',
                      'user'    => [
                         'id' => 4,

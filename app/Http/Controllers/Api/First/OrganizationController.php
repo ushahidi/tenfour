@@ -49,6 +49,11 @@ class OrganizationController extends ApiController
      */
     public function index(GetOrganizationsRequest $request)
     {
+        if ($this->auth->user() && !isset($this->auth->user()['id'])) {
+            \Log::error('User is authenticated but has no user id');
+            return response('No user id', 403);
+        }
+
         // Pass current user ID to repo
         $this->organizations->setCurrentUserId($this->auth->user()['id']);
 

@@ -509,7 +509,7 @@ class RollCallController extends ApiController
      * @Response(200, body={
      *     "messages": {
      *         {
-     *             "contact": "0721674180",
+     *             "contact": "+254721674180",
      *             "id": 1,
      *             "type": "phone",
      *             "uri": "/contacts/1",

@@ -3,9 +3,16 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Contact;
 use RollCall\Contracts\Repositories\ContactRepository;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberFormat;
 
 class EloquentContactRepository implements ContactRepository
 {
+    public function __construct()
+    {
+        $this->phoneNumberUtil = PhoneNumberUtil::getInstance();
+    }
+
     public function all()
     {
         return Contact::with([
@@ -19,7 +26,9 @@ class EloquentContactRepository implements ContactRepository
 
     public function update(array $input, $id)
     {
-		$contact = Contact::findorFail($id);
+        $this->normalizeContact($input);
+
+		    $contact = Contact::findorFail($id);
         $contact->update($input);
 
         return $contact->toArray();
@@ -27,9 +36,25 @@ class EloquentContactRepository implements ContactRepository
 
     public function create(array $input)
     {
+        $this->normalizeContact($input);
+
         $contact = Contact::create($input);
 
         return $contact->toArray();
+    }
+
+    protected function normalizeContact(&$input)
+    {
+        $input['contact'] = trim($input['contact']);;
+
+        if ($input['type'] === 'phone') {
+            $input['contact'] = $this->phoneNumberUtil->format(
+              $this->phoneNumberUtil->parse($input['contact'], null),
+              PhoneNumberFormat::E164);
+
+            // TODO this is where we would save the original
+            // phone number and the region, etc
+        }
     }
 
     public function find($id)

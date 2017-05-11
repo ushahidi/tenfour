@@ -9,7 +9,7 @@ class SMSCest
         $endpoint = 'sms/receive/africastalking';
         $I->wantTo('Receive MOs from Africa\'s Talking');
         $I->sendPost($endpoint, [
-            'from' => '0721674180',
+            'from' => '254721674180',
             'text' => 'test MO from Africa\'s talking',
             'id' => '111111',
         ]);
@@ -28,7 +28,7 @@ class SMSCest
         $endpoint = 'sms/receive/nexmo';
         $I->wantTo('Receive MOs from Nexmo without a valid signature');
         $I->sendPost($endpoint, [
-            'msisdn' => '0721674180',
+            'msisdn' => '254721674180',
             'text' => 'test MO from Nexmo',
             'messageId' => '000000FFFB0356D1',
         ]);
@@ -44,7 +44,7 @@ class SMSCest
 
         // Current timestamp in UTC + 0
         $params = [
-            'msisdn' => '0721674180',
+            'msisdn' => '254721674180',
             'text' => 'test MO from Nexmo',
             'messageId' => '000000FFFB0356D1',
             'message-timestamp' => date('Y-m-d H:i:s', (time() - date('Z'))),

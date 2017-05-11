@@ -53,10 +53,10 @@ INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organizati
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 --Add test contacts
-INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('1', '1', '2', '1', 'phone', '0721674180');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('1', '1', '2', '1', 'phone', '+254721674180');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact, unsubscribe_token) VALUES ('2', '1', '2', '1', 'email', 'test@ushahidi.com', 'testunsubscribetoken');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('3', '2', '2', '0', 'email', 'linda@ushahidi.com');
-INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('4', '4', '2', '0', 'phone', '0792999999');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('4', '4', '2', '0', 'phone', '+254792999999');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('5', '2', '2', '1', 'email', 'admin@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('6', '3', '2', '1', 'email', 'org_member@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('7', '4', '2', '1', 'email', 'org_owner@ushahidi.com');

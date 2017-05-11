@@ -66,7 +66,11 @@ class ReceiveSMS extends Command
 
         foreach ($messages as $message)
         {
-            $saved = $this->reply_storage->save($message['from'], $message['message'], $message['id']);
+            if (!starts_with($message['from'], '+')) {
+                $message['from'] = '+' . $message['from'];
+            }
+
+            $saved = $this->reply_storage->save($from, $message['message'], $message['id']);
 
             if ($saved) {
                 $this->message_service->sendResponseReceivedSMS($message['from']);

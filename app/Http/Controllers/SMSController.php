@@ -37,14 +37,20 @@ class SMSController extends Controller
 
         Log::info("Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
 
+        $from = $incoming->from();
+
+        if (!starts_with($from, '+')) {
+            $from = '+' . $from;
+        }
+
         $saved = $this->reply_storage->save(
-            $incoming->from(),
+            $from,
             $incoming->message(),
             $incoming->id()
         );
 
         if ($saved) {
-            $this->message_service->sendResponseReceivedSMS($incoming->from());
+            $this->message_service->sendResponseReceivedSMS($from);
         } else {
             // TODO should we send a response saying that their response could not be processed
         }
