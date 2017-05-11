@@ -48,7 +48,7 @@ class SESBounceController extends Controller
             file_get_contents($message['SubscribeURL']);
         }
 
-        $bounce = new BounceMessage($message['Message']);
+        $bounce = new BounceMessage(json_decode($message['Message'], true));
 
         $bounce_threshold = config('rollcall.messaging.bounce_threshold');
 
@@ -107,7 +107,7 @@ class SESBounceController extends Controller
             file_get_contents($message['SubscribeURL']);
         }
 
-        $complaint = new ComplaintMessage($message['Message']);
+        $complaint = new ComplaintMessage(json_decode($message['Message'], true));
 
         $recipients = $complaint->getComplainedRecipients();
 
