@@ -60,10 +60,10 @@ class Reply
 
                 return true;
             } else {
-                Log::warn('Could not find the RollCall for incoming message from ' . $from);
+                Log::warning('Could not find the RollCall for incoming message from ' . $from);
             }
         } else {
-            Log::warn('Could not find the contact details for incoming message from ' . $from);
+            Log::warning('Could not find the contact details for incoming message from ' . $from);
         }
 
         return false;

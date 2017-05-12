@@ -35,7 +35,7 @@ class SMSController extends Controller
 
         $incoming = SMS::receive();
 
-        Log::info("Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
+        Log::info("[SMSController] Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
 
         $from = $incoming->from();
 
