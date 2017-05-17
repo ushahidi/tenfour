@@ -36,6 +36,9 @@ $api->version($version, [
     $api->put($base.'organizations/{organization}/files/{file}', ['uses' => 'ContactFilesController@update']);
     $api->post($base. 'organizations/{organization}/files/{file}/contacts', ['uses' => 'ContactFilesController@importContacts']);
 
+    // Supported regions for an org
+    $api->get($base.'organizations/{organization}/regions', ['uses' => 'RegionController@all']);
+
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
