@@ -13,14 +13,16 @@ use Illuminate\Support\Facades\Notification;
 use RollCall\Notifications\PersonJoinedOrganization;
 use RollCall\Notifications\PersonLeftOrganization;
 use RollCall\Services\StorageService;
+use RollCall\Services\CreditService;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
     protected $currentUserId = NULL;
 
-    public function __construct(StorageService $storageService)
+    public function __construct(StorageService $storageService, CreditService $creditService)
     {
         $this->storageService = $storageService;
+        $this->creditService = $creditService;
     }
 
     public function setCurrentUserId($currentUserId)
@@ -90,7 +92,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function find($id)
     {
-        return Organization::with('settings')
+        $org = Organization::with('settings')
             ->leftJoin('users', function ($join) {
                 $join
                 ->on('organizations.id', '=', 'users.organization_id')
@@ -99,6 +101,10 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture', 'users.id as user_id', 'role')
             ->findOrFail($id)
             ->toArray();
+
+        $org['credits'] = $this->creditService->getBalance($id);
+
+        return $org;
     }
 
     public function delete($id)

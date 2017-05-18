@@ -46,15 +46,15 @@ class SendRollCall implements ShouldQueue
      */
     public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
     {
-        $organization = $org_repo->find($this->roll_call['organization_id']);
-        $channels = $org_repo->getSetting($this->roll_call['organization_id'], 'channels');
+        $this->organization = $org_repo->find($this->roll_call['organization_id']);
+        $this->channels = $org_repo->getSetting($this->roll_call['organization_id'], 'channels');
 
         // Get complaint count for org
         $complaint_count = $roll_call_repo->getComplaintCountByOrg($this->roll_call['organization_id']);
 
         // If complaint count is greater than threshold, log and don't send
         if ($complaint_count >= config('rollcall.messaging.complaint_threshold')) {
-            Log::info('Cannot send roll call for ' . $organization['name'] . ' because complaints exceed threshold');
+            Log::warning('Cannot send RollCall for ' . $this->organization['name'] . ' because complaints exceed threshold');
             return;
         }
 
@@ -89,7 +89,7 @@ class SendRollCall implements ShouldQueue
             $recipient['reply_token'] = $roll_call_repo->setReplyToken($this->roll_call['id'], $recipient['id']);
 
             $contacts = $contact_repo->getByUserId($recipient['id'], $this->roll_call['send_via']);
-            $send_via = $this->getSendVia($this->roll_call, $contacts, $channels);
+            $send_via = $this->getSendVia($contacts);
 
             foreach($contacts as $contact)
             {
@@ -105,7 +105,7 @@ class SendRollCall implements ShouldQueue
                         Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
                         continue;
                     }
-                    $message_service->send($to, new RollCallMail($this->roll_call, $organization, $creator, $contact, $recipient));
+                    $message_service->send($to, new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient));
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
                     // Send reminder SMS to unresponsive recipient
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
@@ -147,15 +147,15 @@ class SendRollCall implements ShouldQueue
     /*
      * Work out by which channel we should send this RollCall
      */
-    protected function getSendVia($roll_call, $contacts, $channels) {
+    protected function getSendVia($contacts) {
         $send_via = [];
         $preferred = [];
 
-        if (!isset($roll_call['send_via']) || empty($roll_call['send_via'])) {
+        if (!isset($this->roll_call['send_via']) || empty($this->roll_call['send_via'])) {
             return [];
         }
 
-        if (in_array('preferred', $roll_call['send_via'])) {
+        if (in_array('preferred', $this->roll_call['send_via'])) {
             $preferred = array_map(function ($contact) {
                 return $contact['type'];
             }, array_filter($contacts, function ($contact) {
@@ -163,18 +163,18 @@ class SendRollCall implements ShouldQueue
             }));
         }
 
-        if ((in_array('sms', $roll_call['send_via']) || in_array('phone', $preferred)) &&
-            isset($channels->sms) && $channels->sms->enabled) {
+        if ((in_array('sms', $this->roll_call['send_via']) || in_array('phone', $preferred)) &&
+            isset($this->channels->sms) && $this->channels->sms->enabled) {
             $send_via['sms'] = true;
         }
 
-        if ((in_array('email', $roll_call['send_via']) || in_array('email', $preferred)) &&
-            isset($channels->email) && $channels->email->enabled) {
+        if ((in_array('email', $this->roll_call['send_via']) || in_array('email', $preferred)) &&
+            isset($this->channels->email) && $this->channels->email->enabled) {
             $send_via['email'] = true;
         }
 
-        if ((in_array('slack', $roll_call['send_via']) || in_array('slack', $preferred)) &&
-            isset($channels->slack) && $channels->slack->enabled) {
+        if ((in_array('slack', $this->roll_call['send_via']) || in_array('slack', $preferred)) &&
+            isset($this->channels->slack) && $this->channels->slack->enabled) {
             $send_via['slack'] = true;
         }
 
@@ -194,21 +194,21 @@ class SendRollCall implements ShouldQueue
 
     private function sendRollCallSMS(SMSService $message_service, $to, $msg, $params) {
         // \Log::info('Sending "RollCallSMS" to=' . $to . ' msg=' . $msg);
-        $message_service->setView('sms.rollcall');
-        $message_service->send($to, $msg, $params);
+
+        $message_service->sendWithCredits($this->roll_call['organization_id'], 'sms.rollcall', $to, $msg, $params);
     }
 
     private function sendRollCallURLSMS(SMSService $message_service, $to, $rollcall_url) {
         // \Log::info('Sending "RollCallURLSMS" to=' . $to . ' msg=' . $rollcall_url);
-        $message_service->setView('sms.rollcall_url');
-        $message_service->send($to, $rollcall_url);
+
+        $message_service->sendWithCredits($this->roll_call['organization_id'], 'sms.rollcall_url', $to, $rollcall_url);
     }
 
     private function sendReminderSMS(SMSService $message_service, $to, $rollcall_url) {
         // \Log::info('Sending "ReminderSMS" to=' . $to . ' msg=' . $rollcall_url);
         // @TODO include previous rollcall message
-        $message_service->setView('sms.unresponsive');
-        $message_service->send($to, $rollcall_url);
+
+        $message_service->sendWithCredits($this->roll_call['organization_id'], 'sms.unresponsive', $to, $rollcall_url);
     }
 
     private function shortenUrl($url) {
@@ -220,4 +220,5 @@ class SendRollCall implements ShouldQueue
 
         return $url;
     }
+
 }

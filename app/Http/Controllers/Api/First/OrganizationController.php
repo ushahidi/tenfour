@@ -14,6 +14,7 @@ use RollCall\Http\Requests\Organization\UpdateMemberRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Response;
+use RollCall\Services\CreditService;
 use DB;
 
 /**
@@ -22,13 +23,14 @@ use DB;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response)
+    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService)
     {
         $this->organizations = $organizations;
         $this->people = $people;
         $this->contacts = $contacts;
         $this->auth = $auth;
         $this->response = $response;
+        $this->creditService = $creditService;
     }
 
     /**
@@ -106,6 +108,7 @@ class OrganizationController extends ApiController
             'name'      => $input['organization_name'],
             'subdomain' => strtolower($input['subdomain']),
             'settings'  => $settings,
+            'paid_until'=> DB::raw('NOW()')
         ];
 
         // Get owner details
@@ -122,6 +125,8 @@ class OrganizationController extends ApiController
 
         DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
             $organization = $this->organizations->create($org_input);
+
+            $this->creditService->createStartingBalance($organization['id']);
 
             $owner = $this->people->create($organization['id'], $owner_input);
 

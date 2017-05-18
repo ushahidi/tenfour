@@ -51,8 +51,6 @@ class SMSController extends Controller
 
         if ($saved) {
             $this->message_service->sendResponseReceivedSMS($from);
-        } else {
-            // TODO should we send a response saying that their response could not be processed
         }
 
         return response('Accepted', 200);

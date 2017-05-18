@@ -153,6 +153,7 @@ class EloquentPersonRepository implements PersonRepository
                 'contacts'
             ])
             ->with('notifications')
+            ->with('organization')
             ->firstOrFail();
 
         $user = $userModel->toArray();

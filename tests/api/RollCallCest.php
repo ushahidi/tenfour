@@ -455,6 +455,105 @@ class RollCallCest
     }
 
     /*
+     * Create a roll call with credits
+     *
+     */
+    public function createRollCallWithCredits(ApiTester $I)
+    {
+        $credits_expected = $_ENV['URL_SHORTENER_BITLY_USERNAME'] ? 0 : -1;
+
+        $I->wantTo('Create a roll call with credits');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT('/api/v1/organizations/2', [
+            'name' => 'Rollcall Org',
+            'subdomain'  => 'rollcall',
+            'settings'  => ['channels' => ['sms' => ['enabled' => true]]],
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'credits'   => 1,
+        ]);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Westgate under siege, are you ok?',
+            'organization_id' => 2,
+            'send_via' => ['sms'],
+            'recipients' => [
+                [
+                    'id' => 9
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->sendGET('/api/v1/organizations/2');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'organization' => [
+            'id'        => 2,
+            'credits'   => $credits_expected,
+        ]]);
+    }
+
+    /*
+     * Create a roll call without enough credits
+     *
+     */
+    public function createRollCallWithoutCredits(ApiTester $I)
+    {
+        $I->wantTo('Create a rollcall without enough credits');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Westgate under siege, are you ok?',
+            'organization_id' => 2,
+            'send_via' => ['preferred', 'sms'],
+            'recipients' => [
+                [
+                    'id' => 1
+                ],
+                [
+                    'id' => 4
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(402);
+    }
+
+    /*
+     * Create an app only roll call without enough credits
+     *
+     */
+    public function createAppOnlyRollCallWithoutCredits(ApiTester $I)
+    {
+        $I->wantTo('Create an "app only" rollcall without enough credits');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Westgate under siege, are you ok?',
+            'organization_id' => 2,
+            'send_via' => ['apponly'],
+            'recipients' => [
+                [
+                    'id' => 1
+                ],
+                [
+                    'id' => 4
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+    }
+
+    /*
      * Create a roll call with errors
      *
      */
@@ -556,6 +655,7 @@ class RollCallCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint.'/'.$id, [
             'sent' => 1,
+            'organization_id' => 2,
             'status' => 'received',
             'recipients' => [
                 [

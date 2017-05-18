@@ -20,4 +20,10 @@ interface OrganizationRepository extends CrudRepository
      */
     public function findBySubdomain($subdomain);
 
+    /**
+     * Get an organization's setting by key
+     * @param  $subdomain
+     * @return array
+     */
+    public function getSetting($id, $key);
 }

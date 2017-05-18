@@ -82,8 +82,13 @@ class EloquentContactRepository implements ContactRepository
             'user' => function ($query) {
                 $query->select('users.id', 'users.name');
             }
-        ])
-            ->where('user_id', $user_id);
+        ]);
+
+        if (is_array($user_id)) {
+            $query = $query->whereIn('user_id', $user_id);
+        } else {
+            $query = $query->where('user_id', $user_id);
+        }
 
         // Filter contacts by method if required
         if (!empty($methods)) {

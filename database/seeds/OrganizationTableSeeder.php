@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use RollCall\Models\User;
 use RollCall\Models\Organization;
 use RollCall\Models\Contact;
+use RollCall\Models\CreditAdjustment;
 
 class OrganizationTableSeeder extends Seeder
 {
@@ -13,6 +14,13 @@ class OrganizationTableSeeder extends Seeder
         $organization = Organization::firstOrCreate(
             ['name' => 'Ushahidi']
         );
+
+        CreditAdjustment::firstOrCreate([
+            'organization_id' => $organization->id,
+            'adjustment' => 240,
+            'balance' => 240,
+            'type' => 'init'
+        ]);
 
         $organization->update([
             'subdomain' => 'ushahidi',
@@ -28,7 +36,7 @@ class OrganizationTableSeeder extends Seeder
             'person_type' => 'user',
             'organization_id' => $organization->id,
             'role' => 'owner',
-			'first_time_login' => 0,
+			      'first_time_login' => 0,
         ]);
 
         Contact::firstOrCreate([
@@ -44,8 +52,16 @@ class OrganizationTableSeeder extends Seeder
         $triClub = Organization::firstOrCreate(
             ['name' => 'Waitakere Tri Club']
         );
+
         $triClub->update([
             'subdomain' => 'waitaktri',
+        ]);
+
+        CreditAdjustment::firstOrCreate([
+            'organization_id' => $triClub->id,
+            'adjustment' => 0,
+            'balance' => 0,
+            'type' => 'init'
         ]);
 
         $user2 = User::firstOrCreate([

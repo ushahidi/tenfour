@@ -54,5 +54,8 @@ class DbHelper extends \Codeception\Module\Db
         $dbh->exec('TRUNCATE TABLE unverified_addresses');
 
         $dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+
+        $dbh->exec('TRUNCATE TABLE credit_adjustments');
+
     }
 }
