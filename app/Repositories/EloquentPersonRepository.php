@@ -15,14 +15,16 @@ use RollCall\Notifications\PersonJoinedOrganization;
 use RollCall\Notifications\PersonLeftOrganization;
 use Illuminate\Support\Facades\Hash;
 use RollCall\Services\StorageService;
+use RollCall\Services\CreditService;
 
 class EloquentPersonRepository implements PersonRepository
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, StorageService $storageService)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, StorageService $storageService, CreditService $creditService)
     {
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
         $this->storageService = $storageService;
+        $this->creditService = $creditService;
     }
 
     // OrgCrudRepository
@@ -159,6 +161,7 @@ class EloquentPersonRepository implements PersonRepository
         $user = $userModel->toArray();
 
         $user['has_logged_in'] = $userModel->hasLoggedIn();
+        $user['organization']['credits'] = $this->creditService->getBalance($user['organization']['id']);
 
         // @todo can we remove this?
         foreach ($user['rollcalls'] as &$roll_call)
