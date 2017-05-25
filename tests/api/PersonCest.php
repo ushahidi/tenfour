@@ -131,6 +131,10 @@ class PersonCest
             'contact' => [
                 'contact' => '+1 (207) 7200713',
                 'type'    => 'phone',
+                'meta'    => [
+                    'country_code'    => '1',
+                    'national_number' => '2077200713',
+                ]
             ]
         ]);
     }

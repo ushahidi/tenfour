@@ -18,7 +18,16 @@ class Contact extends Model
      *
      * @var array
      */
-    protected $fillable = ['type', 'preferred', 'user_id', 'organization_id', 'contact', 'passed_self_test', 'unsubscribe_token', 'blocked'];
+    protected $fillable = ['type', 'preferred', 'user_id', 'organization_id', 'contact', 'passed_self_test', 'unsubscribe_token', 'blocked', 'meta'];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'meta' => 'json'
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.

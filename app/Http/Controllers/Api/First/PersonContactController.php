@@ -11,6 +11,8 @@ use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Response;
 use Illuminate\Http\Request;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberToCarrierMapper;
 
 /**
  * @Resource("Contacts", uri="/api/v1/organizations/{orgId}/people/{personId}/contacts")
@@ -48,7 +50,28 @@ class PersonContactController extends ApiController
      */
     public function store(AddContactRequest $request, $organization_id, $user_id)
     {
-        return $this->response->item($this->people->addContact($organization_id, $user_id, $request->all()),
+        $input = $request->all();
+
+        if ($input['type'] == 'phone') {
+
+            // Store country code, national number
+            $util = PhoneNumberUtil::getInstance();
+            $number = $util->parse($input['contact'], null);
+            $national_number = $number->getNationalNumber();
+            $country_code = $number->getCountryCode();
+
+            // Store carrier
+            $carrierMapper = PhoneNumberToCarrierMapper::getInstance();
+            $carrier = $carrierMapper->getNameForNumber($number, 'en');
+
+            $input['meta'] = [
+                'national_number' => $national_number,
+                'country_code'    => $country_code,
+                'carrier'         => $carrier,
+            ];
+        }
+
+        return $this->response->item($this->people->addContact($organization_id, $user_id, $input),
                                      new ContactTransformer, 'contact');
     }
 
