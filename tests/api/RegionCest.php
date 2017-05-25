@@ -13,7 +13,7 @@ class RegionCest
         $I->sendGET($this->endpoint . "/$org_id/regions");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseJsonMatchesXpath('//regions/name');
+        $I->seeResponseJsonMatchesXpath('//regions/code');
         $I->seeResponseJsonMatchesXpath('//regions/country_code');
     }
 }

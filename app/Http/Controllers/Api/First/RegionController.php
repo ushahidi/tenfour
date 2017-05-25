@@ -25,18 +25,19 @@ class RegionController extends ApiController
         $providers =  config('rollcall.messaging.sms_providers');
 
         unset($providers['default']);
-        
-        $supported_regions = array_keys($providers);
+
+        // Extract ISO 3166-1 Alpha-2 codes
+        $supported_codes = array_keys($providers);
 
         $regions = [];
         
-        foreach($supported_regions as $region)
+        foreach($supported_codes as $code)
         {
-            $code = $util->getCountryCodeForRegion($region);
+            $country_code = $util->getCountryCodeForRegion($code);
             
             array_push($regions, [
-                'country_code' => $code,
-                'name'         => $region
+                'country_code' => $country_code,
+                'code'         => $code
             ]);
         }
 
