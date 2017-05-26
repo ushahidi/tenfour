@@ -157,7 +157,7 @@ class PersonController extends ApiController
      *     "person": {
      *         "contacts": {
      *             {
-     *                 "contact": "0721674180",
+     *                 "contact": "+254721674180",
      *                 "id": 1,
      *                 "type": "phone",
      *                 "updated_at": null,

@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\ResendRollCall::class,
         \RollCall\Console\Commands\OrgReset::class,
         \RollCall\Console\Commands\OrgPassword::class,
+        \RollCall\Console\Commands\SyncCredits::class,
     ];
 
     /**

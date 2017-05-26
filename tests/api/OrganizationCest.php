@@ -136,13 +136,28 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name'    => 'RollCall',
-            'subdomain'     => 'rollcall',
+            'name'      => 'RollCall',
+            'subdomain' => 'rollcall',
+            'credits'   => 1,
             'user' => [
                 'id'   => 4,
                 'role' => 'owner',
             ]
         ]);
+    }
+
+    /*
+     * View another organization by id
+     *
+     */
+    public function viewAnotherOrganizationAsOrgAdmin(ApiTester $I)
+    {
+        $id = 1;
+        $endpoint = $this->endpoint . '/' . $id;
+        $I->wantTo('View another organization as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($endpoint);
+        $I->seeResponseCodeIs(403);
     }
 
     /*

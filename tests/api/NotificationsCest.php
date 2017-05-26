@@ -135,6 +135,7 @@ class NotificationsCest
         $I->sendPost($this->rollcallsEndpoint, [
             'message' => $message,
             'organization_id' => $org_id,
+            'send_via' => ['apponly'],
             'recipients' => [
                 [
                     'id' => 3

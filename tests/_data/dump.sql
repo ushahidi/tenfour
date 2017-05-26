@@ -1,7 +1,9 @@
 -- Add test organizations
-INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'RollCall', 'rollcall');
+INSERT INTO organizations (id, name, subdomain, paid_until) VALUES ('2', 'RollCall', 'rollcall', '2016-10-30 12:05:01');
 INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
 INSERT INTO organizations (id, name, subdomain) VALUES ('4', 'Dummy org', 'dummy');
+
+INSERT INTO credit_adjustments (organization_id, adjustment, balance) VALUES (2, 1, 1);
 
 -- Add test users
 INSERT INTO users (id, name, description, password, person_type, invite_token, role, organization_id)
@@ -13,7 +15,8 @@ VALUES
 ('5', 'Org admin','Org admin','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 2),
 ('6', 'Org member 2','Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'member', 'asupersecrettoken', 'member', 2),
 ('7', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 3),
-('8', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'owner', 3);
+('8', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'owner', 3),
+('9', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2);
 
 -- Add OAuth tokens and scopes
 -- Clients
@@ -53,10 +56,10 @@ INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organizati
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
 --Add test contacts
-INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('1', '1', '2', '1', 'phone', '0721674180');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('1', '1', '2', '1', 'phone', '+254721674180');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact, unsubscribe_token) VALUES ('2', '1', '2', '1', 'email', 'test@ushahidi.com', 'testunsubscribetoken');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('3', '2', '2', '0', 'email', 'linda@ushahidi.com');
-INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('4', '4', '2', '0', 'phone', '0792999999');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('4', '4', '2', '0', 'phone', '+254792999999');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('5', '2', '2', '1', 'email', 'admin@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('6', '3', '2', '1', 'email', 'org_member@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('7', '4', '2', '1', 'email', 'org_owner@ushahidi.com');
@@ -64,6 +67,7 @@ INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VA
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('9', '6', '2', '1', 'email', 'org_member2@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('10', '1', '2', '1', 'email', 'test+contact2@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('11', '7', '3', '1', 'email', 'test+contact2@organization2.com');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('12', '9', '2', '1', 'phone', '0792999998');
 
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
@@ -101,6 +105,7 @@ INSERT INTO replies (id, message, contact_id, roll_call_id, user_id, created_at)
 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';
+-- INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'channels', '{ "sms": { "enabled": true } }');
 
 -- Add contact file fields
 INSERT INTO contact_files (id, organization_id, columns, maps_to, filename)

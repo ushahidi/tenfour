@@ -4,6 +4,7 @@ namespace RollCall\Messaging;
 
 use Log;
 use SMS;
+use App;
 use RollCall\Contracts\Messaging\MessageService;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
@@ -13,6 +14,14 @@ use GrahamCampbell\Throttle\Facades\Throttle;
 
 class SMSService implements MessageService
 {
+    public function sendWithCredits($organization_id, $view, $to, $msg = '', $additional_params = []) {
+        $this->setView($view);
+        $this->send($to, $msg, $additional_params);
+
+        // TODO calculate credits to deduct based on $to - region and operator
+
+        App::make('RollCall\Services\CreditService')->addCreditAdjustment($organization_id, -1, 'rollcall');
+    }
 
     public function setView($view)
     {
@@ -189,9 +198,14 @@ class SMSService implements MessageService
         return $message;
     }
 
-    public function sendResponseReceivedSMS($to) {
+    public function sendResponseReceivedSMS($to, $organization_id = null) {
         Log::info('Sending "response received" sms to: ' . $to);
-        $this->setView('sms.response_received');
-        $this->send($to);
+
+        if (isset($organization_id)) {
+            $this->sendWithCredits($organization_id, 'sms.response_received', $to);
+        } else {
+            $this->setView('sms.response_received');
+            $this->send($to);
+        }
     }
 }

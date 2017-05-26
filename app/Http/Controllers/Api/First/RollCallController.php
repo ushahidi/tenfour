@@ -16,20 +16,23 @@ use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Transformers\ReplyTransformer;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
-use Dingo\Api\Auth\Auth;
-
 use RollCall\Jobs\SendRollCall;
+use RollCall\Services\CreditService;
+
+use Dingo\Api\Auth\Auth;
+use App;
 
 /**
  * @Resource("RollCalls", uri="/api/v1/rollcalls")
  */
 class RollCallController extends ApiController
 {
-    public function __construct(RollCallRepository $roll_calls, Auth $auth, Response $response)
+    public function __construct(RollCallRepository $roll_calls, Auth $auth, Response $response, CreditService $creditService)
     {
         $this->roll_calls = $roll_calls;
         $this->auth = $auth;
         $this->response = $response;
+        $this->creditService = $creditService;
     }
 
     /**
@@ -330,6 +333,10 @@ class RollCallController extends ApiController
             'user_id' => $this->auth->user()['id'],
         ]);
 
+        if (!$this->creditService->hasSufficientCredits($roll_call)) {
+            return response('Payment Required', 402);
+        }
+
         // Send roll call
         dispatch(new SendRollCall($roll_call));
 
@@ -422,6 +429,10 @@ class RollCallController extends ApiController
             $roll_call_to_dispatch = $roll_call;
             $roll_call_to_dispatch['recipients'] = $request->input('recipients');
 
+            if (!$this->creditService->hasSufficientCredits($roll_call_to_dispatch)) {
+                return response('Payment Required', 402);
+            }
+
             dispatch(new SendRollCall($roll_call_to_dispatch));
         }
 
@@ -509,7 +520,7 @@ class RollCallController extends ApiController
      * @Response(200, body={
      *     "messages": {
      *         {
-     *             "contact": "0721674180",
+     *             "contact": "+254721674180",
      *             "id": 1,
      *             "type": "phone",
      *             "uri": "/contacts/1",
@@ -554,4 +565,5 @@ class RollCallController extends ApiController
     {
         //
     }
+
 }
