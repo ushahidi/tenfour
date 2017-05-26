@@ -9,6 +9,8 @@ use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
 use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 use DB;
 use Validator;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberToCarrierMapper;
 
 class CsvImporter implements CsvImporterInterface
 {
@@ -89,11 +91,34 @@ class CsvImporter implements CsvImporterInterface
                     ]);
 
                     $validator->validate();
+
+                    if ($type == 'phone' && ! starts_with($contact, '+')) {
+                        $contact = '+'.$contact;
+                    }
+
                     $contact_input = [
                         'contact' => $contact,
                         'type'    => $type,
                         'user_id' => $person['id'],
                     ];
+
+                    // Store country code and national number
+                    if ($type == 'phone') {
+                        $number = PhoneNumberUtil::getInstance()
+                                ->parse($contact, null);
+                        $national_number = $number->getNationalNumber();
+                        $country_code = $number->getCountryCode();
+                        $carrier = PhoneNumberToCarrierMapper::getInstance()
+                                       ->getNameForNumber($number, 'en');
+
+                        $contact_input = $contact_input + [
+                            'meta' => [
+                                'national_number' => $national_number,
+                                'country_code'    => $country_code,
+                                'carrier'         => $carrier,
+                            ]
+                        ];
+                    }
 
                     $this->contacts->create($contact_input);
                 }
