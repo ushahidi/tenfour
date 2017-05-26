@@ -67,9 +67,9 @@ class ContactFilesCest
     public function importContactsAsOrgAdmin(ApiTester $I)
     {
         $header = "name, role, phone, email, address, twitter\n";
-        $contents = '"Mary", "designer", "254922222000", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md"'
+        $contents = '"Mary", "designer", "254722111111", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md"'
                   ."\n"
-                  . '"David", "software developer", "254923333300", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"';
+                  . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"';
 
         Storage::put('contacts/sample.csv', $header . $contents);
 
@@ -81,12 +81,39 @@ class ContactFilesCest
         $I->seeInDatabase('users', ['name' => 'David']);
         $I->seeInDatabase('users', ['name' => 'Mary']);
         $I->seeInDatabase('contacts', ['contact' => 'david@ushahidi.com']);
-        $I->seeInDatabase('contacts', ['contact' => '254923333300']);
+        $I->seeInDatabase('contacts', ['contact' => '+254722111111']);
         $I->seeInDatabase('contacts', ['contact' => 'mary@ushahidi.com']);
-        $I->seeInDatabase('contacts', ['contact' => '254922222000']);
+        $I->seeInDatabase('contacts', ['contact' => '+254722111222']);
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
             'count' => 2
         ]);
+    }
+
+    /*
+     * Import invalid contacts
+     *
+     */
+    public function importInvalidContacts(ApiTester $I)
+    {
+        $header = "name, role, phone, email, address, twitter\n";
+        $contents = '"Mary", "designer", "254922222000", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md"'
+                  ."\n"
+                  . '"David", "software developer", "254923333300", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"';
+
+        Storage::put('contacts/sample.csv', $header . $contents);
+
+        $organization_id = 2;
+        $file_id = 1;
+        $I->wantTo('import contacts as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendPOST($this->endpoint. "/$organization_id/files/$file_id/contacts");
+        $I->dontSeeInDatabase('users', ['name' => 'David']);
+        $I->dontSeeInDatabase('users', ['name' => 'Mary']);
+        $I->dontSeeInDatabase('contacts', ['contact' => 'david@ushahidi.com']);
+        $I->dontSeeInDatabase('contacts', ['contact' => '254922222000']);
+        $I->dontSeeInDatabase('contacts', ['contact' => 'mary@ushahidi.com']);
+        $I->dontSeeInDatabase('contacts', ['contact' => '254923333300']);
+        $I->seeResponseCodeIs(422);
     }
 }

@@ -8,6 +8,7 @@ use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
 use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 use DB;
+use Validator;
 
 class CsvImporter implements CsvImporterInterface
 {
@@ -82,6 +83,12 @@ class CsvImporter implements CsvImporterInterface
                 // Save contacts
                 foreach ($contacts as $type => $contact)
                 {
+                    $validator = Validator::make([$type => $contact], [
+                        'phone' => 'phone_number',
+                        'email' => 'email'
+                    ]);
+
+                    $validator->validate();
                     $contact_input = [
                         'contact' => $contact,
                         'type'    => $type,
