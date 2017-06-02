@@ -32,6 +32,7 @@ class CreateOrganizationRequest extends FormRequest
             'subdomain'         => 'required|alpha_dash',
             'email'             => 'required|email',
             'password'          => 'required|min:8'
+            'owner'    => 'required',
         ];
     }
 }
