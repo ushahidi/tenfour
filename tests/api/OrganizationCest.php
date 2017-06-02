@@ -293,4 +293,22 @@ class OrganizationCest
         ]);
     }
 
+    /*
+     * Create organization using reserved subdomain
+     *
+     */
+    public function createOrganizationWithReservedDomain(ApiTester $I)
+    {
+        $I->wantTo('Create an organization using reserved name');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'name'      => 'Application providers',
+            'subdomain' => 'app',
+            'owner'     => 'Mary Mata',
+            'email'     => 'mary@ushahidi.org',
+            'password'  => 'testtest',
+        ]);
+        $I->seeResponseCodeIs(422);
+    }
 }

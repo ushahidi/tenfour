@@ -15,6 +15,7 @@ class ApiServiceProvider extends ServiceProvider
         Validator::extend('org_contact', 'RollCall\Validators\OrgMemberValidator@validateContact');
         Validator::extend('input_image', 'RollCall\Validators\ImageValidator@validateProfilePictureUpload');
         Validator::extend('phone_number', 'RollCall\Validators\PhoneNumberValidator@validatePhoneNumber');
+        Validator::extend('reserved_word', 'RollCall\Validators\ReservedWordValidator@validateName');
 
         $this->app->resolving(function ($object, $app) {
             if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
