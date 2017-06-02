@@ -105,7 +105,7 @@ class OrganizationController extends ApiController
 
         // Get organization params
         $org_input = [
-            'name'      => $input['organization_name'],
+            'name'      => $input['name'],
             'subdomain' => strtolower($input['subdomain']),
             'settings'  => $settings,
             'paid_until'=> DB::raw('NOW()')
@@ -113,7 +113,7 @@ class OrganizationController extends ApiController
 
         // Get owner details
         $owner_input = [
-            'name'     => $input['name'],
+            'name'     => $input['owner'],
             'role'     => 'owner',
             'password' => $input['password'],
         ];

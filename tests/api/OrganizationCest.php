@@ -170,11 +170,11 @@ class OrganizationCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'organization_name' => 'Test org',
-            'subdomain'         => 'test',
-            'name'              => 'Mary Mata',
-            'email'             => 'mary@ushahidi.org',
-            'password'          => 'testtest',
+            'name'      => 'Test org',
+            'subdomain' => 'test',
+            'owner'     => 'Mary Mata',
+            'email'     => 'mary@ushahidi.org',
+            'password'  => 'testtest',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
