@@ -29,12 +29,12 @@ class OrganizationCest
         ]);
     }
     /*
-     * Get all organizations as an admin
+     * Cannot get a list of organizations without Authentication
      *
      */
     public function cannotGetAllOrganizationsWithoutAuth(ApiTester $I)
     {
-        $I->wantTo('Can not a list of all organizations with out auth');
+        $I->wantTo('Cannot a list of all organizations without auth');
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(403);
         $I->seeResponseIsJson();
