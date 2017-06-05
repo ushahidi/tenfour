@@ -33,7 +33,7 @@ class UpdateOrganizationRequest extends FormRequest
     public function messages()
     {
         return [
-            'subdomain.reserved' => 'The name is reserved, please use another name'
+            'subdomain.reserved_word' => 'The subdomain is reserved. Please choose another name'
         ];
     }
 }
