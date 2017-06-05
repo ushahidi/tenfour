@@ -56,8 +56,10 @@ class OrganizationController extends ApiController
             return response('No user id', 403);
         }
 
-        // Pass current user ID to repo
-        $this->organizations->setCurrentUserId($this->auth->user()['id']);
+        // Pass current user ID to repo if the user is a member of an organization
+        if (isset($this->auth->user()->organization_id)) {
+            $this->organizations->setCurrentUserId($this->auth->user()->id);
+        }
 
         $organizations = $this->organizations->all($request->query('subdomain'), $request->query('name'));
 
