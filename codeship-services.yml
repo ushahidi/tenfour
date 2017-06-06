@@ -19,6 +19,7 @@ test:
     - "api.rollcall.dev:127.0.0.1"
   cached: true
   default_cache_branch: develop
+
 mysql:
   image: mysql:5.7
   environment:
@@ -26,22 +27,24 @@ mysql:
     - MYSQL_USER=rollcall
     - MYSQL_PASSWORD=rollcall
     - MYSQL_ROOT_PASSWORD=root
+
 deploy:
-  build:
-    image: deploy
-    dockerfile_path: docker/deploy.Dockerfile
-  environment:
-    - ROLLCALL_INFRA_BRANCH=master
+  image: ushahidi/engineering-deployer:tf-0.8
   encrypted_env_file: deployment.env.encrypted
+  environment:
+    AWS_DEFAULT_REGION: us-east-1
+    ROLLCALL_INFRA_BRANCH: master
   volumes:
     - .:/vols/src
-  cached: true
+
 memcached:
   image: memcached
+
 aglio:
   image: humangeo/aglio
   volumes:
     - .:/vols/src
+
 awscli:
   build:
     image: awscli
