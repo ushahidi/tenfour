@@ -25,8 +25,15 @@ class UpdateOrganizationRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'subdomain'  => 'required',
+            'name'      => 'required',
+            'subdomain' => 'required|alpha_dash|reserved_word',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'subdomain.reserved_word' => 'The subdomain is reserved. Please choose another name'
         ];
     }
 }

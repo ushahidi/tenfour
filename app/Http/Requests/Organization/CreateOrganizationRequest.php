@@ -3,12 +3,9 @@
 namespace RollCall\Http\Requests\Organization;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
 
-class CreateOrganizationRequest extends FormRequest
+class CreateOrganizationRequest extends UpdateOrganizationRequest
 {
-    use UserAccess;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,11 +24,10 @@ class CreateOrganizationRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'organization_name' => 'required',
-            'subdomain'         => 'required|alpha_dash',
-            'email'             => 'required|email',
-            'password'          => 'required|min:8'
+        return parent::rules() + [
+            'owner'    => 'required',
+            'email'    => 'required|email',
+            'password' => 'required|min:8'
         ];
     }
 }

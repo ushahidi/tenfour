@@ -468,7 +468,7 @@ class RollCallCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT('/api/v1/organizations/2', [
             'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+            'subdomain'  => 'testing',
             'settings'  => ['channels' => ['sms' => ['enabled' => true]]],
         ]);
         $I->seeResponseCodeIs(200);
@@ -769,7 +769,4 @@ class RollCallCest
         $I->sendGet('/rollcalls/' . $roll_call_id . '?token=' . $token);
         $I->seeResponseCodeIs(403);
     }
-
-
-
 }

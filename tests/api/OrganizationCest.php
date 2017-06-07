@@ -29,12 +29,12 @@ class OrganizationCest
         ]);
     }
     /*
-     * Get all organizations as an admin
+     * Cannot get a list of organizations without Authentication
      *
      */
     public function cannotGetAllOrganizationsWithoutAuth(ApiTester $I)
     {
-        $I->wantTo('Can not a list of all organizations with out auth');
+        $I->wantTo('Cannot a list of all organizations without auth');
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(403);
         $I->seeResponseIsJson();
@@ -170,11 +170,11 @@ class OrganizationCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'organization_name' => 'Test org',
-            'subdomain'         => 'test',
-            'name'              => 'Mary Mata',
-            'email'             => 'mary@ushahidi.org',
-            'password'          => 'testtest',
+            'name'      => 'Test org',
+            'subdomain' => 'test',
+            'owner'     => 'Mary Mata',
+            'email'     => 'mary@ushahidi.org',
+            'password'  => 'testtest',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -211,13 +211,13 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+            'subdomain'  => 'testing',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+            'subdomain'  => 'testing',
         ]);
     }
 
@@ -256,7 +256,7 @@ class OrganizationCest
       $I->haveHttpHeader('Content-Type', 'application/json');
       $I->sendPUT($this->endpoint."/$id", [
           'name' => 'Rollcall Org',
-          'subdomain'  => 'rollcall',
+          'subdomain'  => 'testing',
           'settings'  => ['channels' => ['email' => ['enabled' => true]]],
       ]);
       $I->seeResponseCodeIs(200);
@@ -293,4 +293,22 @@ class OrganizationCest
         ]);
     }
 
+    /*
+     * Create organization using reserved subdomain
+     *
+     */
+    public function createOrganizationWithReservedDomain(ApiTester $I)
+    {
+        $I->wantTo('Create an organization using reserved name');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'name'      => 'Application providers',
+            'subdomain' => 'app',
+            'owner'     => 'Mary Mata',
+            'email'     => 'mary@ushahidi.org',
+            'password'  => 'testtest',
+        ]);
+        $I->seeResponseCodeIs(422);
+    }
 }
