@@ -206,8 +206,11 @@ class RollCallController extends ApiController
     /**
      * Get a single roll call
      *
-     * @Get("/{rollcallId}")
+     * @Get("/{roll_call_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "rollcall": {
@@ -285,7 +288,26 @@ class RollCallController extends ApiController
      *
      * @Post("/")
      * @Versions({"v1"})
-     * @Request(headers={"Authorization": "Bearer token"})
+     * @Request({
+     *     "answers": {
+     *         {
+     *             "answer": "No",
+     *         },
+     *         {
+     *             "answer": "Yes",
+     *         }
+     *     },
+     *     "message": "Westgate under siege, are you ok?",
+     *     "organization_id": 2,
+     *     "recipients": {
+     *         {
+     *             "id": 3
+     *         },
+     *         {
+     *             "id": 1
+     *         }
+     *     }
+     *}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "rollcall": {
      *         "answers": {
@@ -319,7 +341,7 @@ class RollCallController extends ApiController
      *         "user": {
      *             "id": 5,
      *             "uri": "/users/5"
-     *         }
+     *          }
      *     }
      * })
      *
@@ -346,9 +368,27 @@ class RollCallController extends ApiController
     /**
      * Update a roll call
      *
-     * @Put("/{rollcallId}")
+     * @Put("/{roll_call_id}")
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     * })
      * @Versions({"v1"})
-     * @Request(headers={"Authorization": "Bearer token"})
+     * @Request({
+     *     "organization_id": 2,
+     *     "recipients": {
+     *         {
+     *             "id": 1
+     *         },
+     *         {
+     *             "id": 2
+     *         },
+     *         {
+     *             "id": 3
+     *         }
+     *     },
+     *     "sent": 1,
+     *     "status": "received"
+     * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "rollcall": {
      *         "answers": null,
@@ -440,13 +480,16 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Send a roll call. This is currently used to re-send
-     * a roll call to a single recipient.
+     * Resend a roll call to a single recipient.
      *
-     * @Post("/{rollcallId}/recipients/{recipientId}/send")
+     * @Post("/{roll_call_id}/recipients/{recipient_id}/messages")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id"),
+     *   @Parameter("recipient_id", type="number", required=true, description="Recipient id")
+     * })
      * @Request(headers={"Authorization": "Bearer token"})
-     * @Response(200, body={
+     * @Responose(200, body={
      *  "recipient": {{
      *      "name":"Org owner",
      *      "description":"Org owner",
@@ -481,8 +524,11 @@ class RollCallController extends ApiController
     /**
      * List roll call recipients
      *
-     * @Get("/{rollcallId}/recipients")
+     * @Get("/{roll_call_id}/recipients")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "recipients": {
@@ -514,7 +560,10 @@ class RollCallController extends ApiController
     /**
      * List roll call messages
      *
-     * @Get("/{rollcallId}/messages")
+     * @Get("/{roll_call_id}/messages")
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     * })
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={

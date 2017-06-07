@@ -48,8 +48,11 @@ FORMAT: 1A
                 }
             }
 
-## Get a single organization [GET /api/v1/organizations/{orgId}]
+## Get a single organization [GET /api/v1/organizations/{org_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
 
 + Request (application/json)
     + Headers
@@ -70,8 +73,11 @@ FORMAT: 1A
                 }
             }
 
-## Update organization details [PUT /api/v1/organizations/{orgId}]
+## Update organization details [PUT /api/v1/organizations/{org_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
 
 + Request (application/json)
     + Headers
@@ -95,8 +101,11 @@ FORMAT: 1A
                 }
             }
 
-## Delete an organization [DELETE /api/v1/organizations/{orgId}]
+## Delete an organization [DELETE /api/v1/organizations/{org_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
 
 + Request (application/json)
     + Headers
@@ -117,10 +126,43 @@ FORMAT: 1A
                 }
             }
 
-# People [/api/v1/organizations/{orgId}/people]
+## Accept member invite [POST /api/v1/organizations/invite/{org_id}/accept/{person_id}]
 
-## Add member to an organization [POST /api/v1/organizations/{orgId}/people]
 
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "invite_token": "aSecretToken",
+                "password": "newpassword",
+                "password_confirm": "newpassword"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "person": {
+                    "name": "User Name",
+                    "role": "member",
+                    "person_type": "user"
+                }
+            }
+
+# People [/api/v1/organizations]
+
+## Add member to an organization [POST /api/v1/organizations/{org_id}/people]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
 
 + Request (application/json)
     + Headers
@@ -144,23 +186,24 @@ FORMAT: 1A
                 "person": {
                     "config_profile_reviewed": true,
                     "config_self_test_sent": false,
-                    "id": 9,
-                    "initials": "MM",
-                    "name": "Mary Mata",
+                    "id": 4,
+                    "initials": "TT",
+                    "name": "Testing Testing",
                     "organization_id": 2,
                     "person_type": "user",
                     "role": "member",
-                    "uri": "/users/9"
+                    "uri": "/users/4"
                 }
             }
 
-## List members of an organization [GET /api/v1/organizations/{orgId}/people{?offset,limit}]
+## List members of an organization [GET /api/v1/organizations/{org_id}/people/{?offset,limit}]
 
 
 + Parameters
-    + offset: (string, optional) -
+    + org_id: (number, required) - Organization id
+    + offset: (string, optional) - 
         + Default: 0
-    + limit: (string, optional) -
+    + limit: (string, optional) - 
         + Default: 0
 
 + Request (application/json)
@@ -227,8 +270,12 @@ FORMAT: 1A
                 ]
             }
 
-## Find a member [GET /api/v1/organizations/{orgId}/people/{personId}]
+## Find a member [GET /api/v1/organizations/{org_id}/people/{person_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
 
 + Request (application/json)
     + Headers
@@ -244,7 +291,6 @@ FORMAT: 1A
                         {
                             "contact": "+254721674180",
                             "id": 1,
-                            "subscribed": 1,
                             "type": "phone",
                             "updated_at": null,
                             "uri": "/contact/1"
@@ -252,7 +298,6 @@ FORMAT: 1A
                         {
                             "contact": "test@ushahidi.com",
                             "id": 2,
-                            "subscribed": 1,
                             "type": "email",
                             "updated_at": null,
                             "uri": "/contact/2"
@@ -271,8 +316,12 @@ FORMAT: 1A
                 }
             }
 
-## Delete member from an organization [DELETE /api/v1/organizations/{orgId}/people/{memberId}]
+## Delete member from an organization [DELETE /api/v1/organizations/{org_id}/people/{person_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
 
 + Request (application/json)
     + Headers
@@ -297,8 +346,12 @@ FORMAT: 1A
                 }
             }
 
-## Update organization member [PUT /api/v1/organizations/{orgId}/people/{memberId}]
+## Update organization member [PUT /api/v1/organizations/{org_id}/people/{person_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
 
 + Request (application/json)
     + Headers
@@ -330,8 +383,12 @@ FORMAT: 1A
                 }
             }
 
-## Invite a member [POST /api/v1/organizations/{orgId}/people/{personId}]
+## Invite a member [POST /api/v1/organizations/{org_id}/people/{person_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
 
 + Request (application/json)
     + Headers
@@ -349,36 +406,14 @@ FORMAT: 1A
                 }
             }
 
-## Accept member invite [POST /api/v1/organizations/{orgId}/people/invite/{organisationId}/accept/{personId}]
+# Contacts [/api/v1/organizations]
+
+## Add member contact [POST /api/v1/organizations/{org_id}/people/{person_id}/contacts]
 
 
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "invite_token": "aSecretToken",
-                "password": "newpassword",
-                "password_confirm": "newpassword"
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "person": {
-                    "name": "User Name",
-                    "role": "member",
-                    "person_type": "user"
-                }
-            }
-
-# Contacts [/api/v1/organizations/{orgId}/people/{personId}/contacts]
-
-## Add member contact [POST /api/v1/organizations/{orgId}/people/{personId}/contacts]
-
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
 
 + Request (application/json)
     + Headers
@@ -403,8 +438,13 @@ FORMAT: 1A
                 }
             }
 
-## Update member contact [PUT /api/v1/organizations/{orgId}/people/{personId}/contacts/{contactId}]
+## Update member contact [PUT /api/v1/organizations/{org_id}/people/{person_id}/contacts/{contact_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+    + contact_id: (number, required) - Contact id
 
 + Request (application/json)
     + Headers
@@ -429,8 +469,13 @@ FORMAT: 1A
                 }
             }
 
-## Delete member contact [DELETE /api/v1/organizations/{orgId}/people/{personId}/contacts/{contactId}]
+## Delete member contact [DELETE /api/v1/organizations/{org_id}/people/{person_id}/contacts/{contact_id}]
 
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+    + contact_id: (number, required) - Contact id
 
 + Request (application/json)
     + Headers
@@ -448,7 +493,7 @@ FORMAT: 1A
                 }
             }
 
-## Unsubscribe an email address from RollCalls [POST /api/v1/organizations/{orgId}/people/{personId}/contacts/unsubscribe]
+## Unsubscribe an email address from RollCalls [POST /api/v1/organizations/unsubscribe]
 
 
 + Request (application/json)
@@ -459,15 +504,131 @@ FORMAT: 1A
                 "email": "linda@ushahidi.com"
             }
 
+# Files [/api/v1/organizations]
+
+## File Upload [POST /api/v1/organizations/{org_id}/files]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "file": "sample.csv"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "file": {
+                    "columns": [
+                        "Name",
+                        "Description",
+                        "Phone",
+                        "Email",
+                        "Address",
+                        "Twitter"
+                    ],
+                    "id": 2,
+                    "organization": {
+                        "id": 2,
+                        "uri": "/organizations/2"
+                    },
+                    "uri": "organizations/2/files/2"
+                }
+            }
+
+## Update File Upload [PUT /api/v1/organizations/{orgId}/files/{file_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + file_id: (number, required) - File id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "columns": [
+                    "name",
+                    "description",
+                    "phone",
+                    "email",
+                    "address",
+                    "twitter"
+                ],
+                "maps_to": [
+                    "name",
+                    null,
+                    "phone",
+                    "email",
+                    null,
+                    "twitter"
+                ]
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "columns": [
+                    "name",
+                    "description",
+                    "phone",
+                    "email",
+                    "address",
+                    "twitter"
+                ],
+                "maps_to": [
+                    "name",
+                    null,
+                    "phone",
+                    "email",
+                    null,
+                    "twitter"
+                ]
+            }
+
+## Import contacts [POST /api/v1/organizations/{orgId}/files/{file_id}/contacts]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + file_id: (number, required) - File id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "count": 2
+            }
+
 # RollCalls [/api/v1/rollcalls]
 
 ## Get all roll calls for an organization [GET /api/v1/rollcalls{?offset,limit}]
 
 
 + Parameters
-    + offset: (string, optional) -
+    + offset: (string, optional) - 
         + Default: 0
-    + limit: (string, optional) -
+    + limit: (string, optional) - 
         + Default: 0
 
 + Request (application/json)
@@ -614,8 +775,11 @@ FORMAT: 1A
                 ]
             }
 
-## Get a single roll call [GET /api/v1/rollcalls/{rollcallId}]
+## Get a single roll call [GET /api/v1/rollcalls/{roll_call_id}]
 
+
++ Parameters
+    + roll_call_id: (number, required) - Roll Call id
 
 + Request (application/json)
     + Headers
@@ -692,6 +856,28 @@ FORMAT: 1A
     + Headers
 
             Authorization: Bearer token
+    + Body
+
+            {
+                "answers": [
+                    {
+                        "answer": "No"
+                    },
+                    {
+                        "answer": "Yes"
+                    }
+                ],
+                "message": "Westgate under siege, are you ok?",
+                "organization_id": 2,
+                "recipients": [
+                    {
+                        "id": 3
+                    },
+                    {
+                        "id": 1
+                    }
+                ]
+            }
 
 + Response 200 (application/json)
     + Body
@@ -733,13 +919,34 @@ FORMAT: 1A
                 }
             }
 
-## Update a roll call [PUT /api/v1/rollcalls/{rollcallId}]
+## Update a roll call [PUT /api/v1/rollcalls/{roll_call_id}]
 
+
++ Parameters
+    + roll_call_id: (number, required) - Roll Call id
 
 + Request (application/json)
     + Headers
 
             Authorization: Bearer token
+    + Body
+
+            {
+                "organization_id": 2,
+                "recipients": [
+                    {
+                        "id": 1
+                    },
+                    {
+                        "id": 2
+                    },
+                    {
+                        "id": 3
+                    }
+                ],
+                "sent": 1,
+                "status": "received"
+            }
 
 + Response 200 (application/json)
     + Body
@@ -810,30 +1017,23 @@ FORMAT: 1A
                 }
             }
 
-## Send a roll call. This is currently used to re-send
-a roll call to a single recipient. [POST /api/v1/rollcalls/{rollcallId}/recipients/{recipientId}/send]
+## Resend a roll call to a single recipient. [POST /api/v1/rollcalls/{roll_call_id}/recipients/{recipient_id}/messages]
 
+
++ Parameters
+    + roll_call_id: (number, required) - Roll Call id
+    + recipient_id: (number, required) - Recipient id
 
 + Request (application/json)
     + Headers
 
             Authorization: Bearer token
 
-+ Response 200 (application/json)
-    + Body
+## List roll call recipients [GET /api/v1/rollcalls/{roll_call_id}/recipients]
 
-            {
-                "recipient": [
-                    {
-                        "name": "Org owner",
-                        "description": "Org owner",
-                        "response_status": "waiting"
-                    }
-                ]
-            }
 
-## List roll call recipients [GET /api/v1/rollcalls/{rollcallId}/recipients]
-
++ Parameters
+    + roll_call_id: (number, required) - Roll Call id
 
 + Request (application/json)
     + Headers
@@ -860,8 +1060,11 @@ a roll call to a single recipient. [POST /api/v1/rollcalls/{rollcallId}/recipien
                 ]
             }
 
-## List roll call messages [GET /api/v1/rollcalls/{rollcallId}/messages]
+## List roll call messages [GET /api/v1/rollcalls/{roll_call_id}/messages]
 
+
++ Parameters
+    + roll_call_id: (number, required) - Roll Call id
 
 + Request (application/json)
     + Headers
@@ -910,10 +1113,14 @@ a roll call to a single recipient. [POST /api/v1/rollcalls/{rollcallId}/recipien
                 "status_code": 405
             }
 
-# Replies [/api/v1/rollcalls/{rollCallId}/replies]
+# Replies [/api/v1/rollcalls]
 
-## Get a single reply [GET /api/v1/rollcalls/{rollCallId}/replies/{replyId}]
+## Get a single reply [GET /api/v1/rollcalls/{roll_call_id}/replies/{reply_id}]
 
+
++ Parameters
+    + roll_call_id: (number, required) - RollCall id
+    + reply_id: (number, required) - Reply id
 
 + Request (application/json)
     + Headers
@@ -948,8 +1155,11 @@ a roll call to a single recipient. [POST /api/v1/rollcalls/{rollcallId}/recipien
                 }
             }
 
-## Add reply [POST /api/v1/rollcalls/{rollCallId}/replies]
+## Add reply [POST /api/v1/rollcalls/{roll_call_id}/replies]
 
+
++ Parameters
+    + roll_call_id: (number, required) - RollCall id
 
 + Request (application/json)
     + Headers
@@ -985,8 +1195,11 @@ a roll call to a single recipient. [POST /api/v1/rollcalls/{rollcallId}/recipien
                 }
             }
 
-## List roll call replies [GET /api/v1/rollcalls/{rollCallId}/replies]
+## List roll call replies [GET /api/v1/rollcalls/{roll_call_id}/replies]
 
+
++ Parameters
+    + roll_call_id: (number, required) - RollCall id
 
 + Request (application/json)
     + Headers

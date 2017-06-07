@@ -10,7 +10,6 @@ use RollCall\Http\Requests\Person\AddPersonRequest;
 use RollCall\Http\Requests\Person\DeletePersonRequest;
 use RollCall\Http\Requests\Person\UpdatePersonRequest;
 use RollCall\Http\Requests\Person\InvitePersonRequest;
-use RollCall\Http\Requests\Person\AcceptInviteRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
@@ -19,7 +18,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * @Resource("People", uri="/api/v1/organizations/{orgId}/people")
+ * @Resource("People", uri="/api/v1/organizations")
  */
 class PersonController extends ApiController
 {
@@ -36,7 +35,11 @@ class PersonController extends ApiController
     /**
      * Add member to an organization
      *
-     * @Post("/")
+     * @Post("/{org_id}/people")
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
+     *
      * @Versions({"v1"})
      * @Request({
      *       "name": "Testing Testing",
@@ -72,11 +75,12 @@ class PersonController extends ApiController
     /**
      * List members of an organization
      *
-     * @Get("/{?offset,limit}")
+     * @Get("/{org_id}/people/{?offset,limit}")
      * @Versions({"v1"})
      * @Parameters({
-     *     @Parameter("offset", default=0),
-     *     @Parameter("limit", default=0)
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("offset", default=0),
+     *   @Parameter("limit", default=0)
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -150,8 +154,13 @@ class PersonController extends ApiController
     /**
      * Find a member
      *
-     * @Get("/{personId}")
+     * @Get("{org_id}/people/{person_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "person": {
@@ -199,8 +208,13 @@ class PersonController extends ApiController
     /**
      * Delete member from an organization
      *
-     * @Delete("/{memberId}")
+     * @Delete("{org_id}/people/{person_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "person": {
@@ -233,13 +247,18 @@ class PersonController extends ApiController
     /**
      * Update organization member
      *
-     * @Put("/{memberId}")
+     * @Put("{org_id}/people/{person_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
      * @Request({
-           "name": "Updated org member",
-           "password": "newpassword",
-           "person_type": "user"
-        }, headers={"Authorization": "Bearer token"})
+     *     "name": "Updated org member",
+     *     "password": "newpassword",
+     *     "person_type": "user"
+     *   }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "person": {
      *         "id": 1,
@@ -269,8 +288,13 @@ class PersonController extends ApiController
     /**
      * Invite a member
      *
-     * @Post("/{personId}")
+     * @Post("{org_id}/people/{person_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "person": {
@@ -298,41 +322,4 @@ class PersonController extends ApiController
         // Return up to date Member
         return $this->response->item($member, new UserTransformer, 'person');
     }
-
-    /**
-     * Accept member invite
-     *
-     * @Post("invite/{organisationId}/accept/{personId}")
-     * @Versions({"v1"})
-     * @Request({
-     *     "invite_token": "aSecretToken",
-     *     "password": "newpassword",
-     *     "password_confirm": "newpassword"
-     * }, headers={"Authorization": "Bearer token"})
-     * @Response(200, body={
-     *     "person": {
-     *         "name": "User Name",
-     *         "role": "member",
-     *         "person_type": "user"
-     *     }
-     * })
-     *
-     * @param InviteMemberRequest $request
-     * @return Response
-     */
-    public function acceptInvite(AcceptInviteRequest $request, $organization_id, $person_id)
-    {
-        $member = $this->people->find($organization_id, $person_id);
-        if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
-            $member['password'] = $request['password'];
-            $member['person_type'] = 'user';
-            $member['role'] = 'member';
-            $member['invite_token'] = null;
-            $member = $this->people->update($organization_id, $member, $person_id);
-
-            return $this->response->item($member, new UserTransformer, 'person');
-        }
-        abort(401, 'Not authenticated');
-    }
-
 }

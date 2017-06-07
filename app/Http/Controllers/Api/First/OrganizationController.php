@@ -11,8 +11,10 @@ use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateMemberRequest;
+use RollCall\Http\Requests\Person\AcceptInviteRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
+use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
 use RollCall\Services\CreditService;
 use DB;
@@ -148,8 +150,11 @@ class OrganizationController extends ApiController
     /**
      * Get a single organization
      *
-     * @Get("/{orgId}")
+     * @Get("/{org_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
      * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
@@ -173,8 +178,11 @@ class OrganizationController extends ApiController
     /**
      * Update organization details
      *
-     * @Put("/{orgId}")
+     * @Put("/{org_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
      * @Request({
      *     "name": "Ushahidi",
      *     "subdomain": "ushahidi@rollcall.io"
@@ -201,11 +209,12 @@ class OrganizationController extends ApiController
     /**
      * Delete an organization
      *
-     * @Delete("/{orgId}")
+     * @Delete("/{org_id}")
      * @Versions({"v1"})
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
+     * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *   "organization": {
      *        "id": 3,
@@ -225,4 +234,46 @@ class OrganizationController extends ApiController
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 
+     /**
+     * Accept member invite
+     *
+     * @Post("invite/{org_id}/accept/{person_id}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
+     * @Request({
+     *     "invite_token": "aSecretToken",
+     *     "password": "newpassword",
+     *     "password_confirm": "newpassword"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "person": {
+     *         "name": "User Name",
+     *         "role": "member",
+     *         "person_type": "user"
+     *     }
+     * })
+     *
+     * @todo turn this into a person resource
+     *
+     * @param InviteMemberRequest $request
+     * @return Response
+     */
+    public function acceptInvite(AcceptInviteRequest $request, $organization_id, $person_id)
+    {
+        $member = $this->people->find($organization_id, $person_id);
+        if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
+            $member['password'] = $request['password'];
+            $member['person_type'] = 'user';
+            $member['role'] = 'member';
+            $member['invite_token'] = null;
+            $member = $this->people->update($organization_id, $member, $person_id);
+
+            return $this->response->item($member, new UserTransformer, 'person');
+        }
+        abort(401, 'Not authenticated');
+    }
 }
