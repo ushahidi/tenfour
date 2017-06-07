@@ -21,8 +21,8 @@ class CsvImporterCest
 
             'read' => function () {
                 return [
-                    ['Mary', 'designer', '254922222000', 'mary@ushahidi.com', 'MV Building, Waiyaki Way', '@md'],
-                    ['Linda', 'software developer', '254923333300', 'linda@ushahidi.com', 'P.O. Box 42, Nairobi', '@lk']
+                    ['Mary', 'designer', '254722111111', 'mary@ushahidi.com', 'MV Building, Waiyaki Way', '@md'],
+                    ['Linda', 'software developer', '254722111222', 'linda@ushahidi.com', 'P.O. Box 42, Nairobi', '@lk']
                 ];
             }
         ]);
