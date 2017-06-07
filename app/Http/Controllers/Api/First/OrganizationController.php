@@ -150,8 +150,11 @@ class OrganizationController extends ApiController
     /**
      * Get a single organization
      *
-     * @Get("/{orgId}")
+     * @Get("/{org_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
      * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
@@ -175,8 +178,11 @@ class OrganizationController extends ApiController
     /**
      * Update organization details
      *
-     * @Put("/{orgId}")
+     * @Put("/{org_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
      * @Request({
      *     "name": "Ushahidi",
      *     "subdomain": "ushahidi@rollcall.io"
@@ -203,11 +209,12 @@ class OrganizationController extends ApiController
     /**
      * Delete an organization
      *
-     * @Delete("/{orgId}")
+     * @Delete("/{org_id}")
      * @Versions({"v1"})
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
+     * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *   "organization": {
      *        "id": 3,

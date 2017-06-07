@@ -13,7 +13,7 @@ use RollCall\Http\Response;
 use Dingo\Api\Auth\Auth;
 
 /**
- * @Resource("Replies", uri="/api/v1/rollcalls/{rollCallId}/replies")
+ * @Resource("Replies", uri="/api/v1/rollcalls")
  */
 class ReplyController extends ApiController
 {
@@ -28,8 +28,13 @@ class ReplyController extends ApiController
     /**
      * Get a single reply
      *
-     * @Get("/{replyId}")
+     * @Get("/{roll_call_id}/replies/{reply_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id"),
+     *   @Parameter("reply_id", type="number", required=true, description="Reply id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "reply": {
@@ -90,8 +95,12 @@ class ReplyController extends ApiController
     /**
      * Add reply
      *
-     * @Post("/")
+     * @Post("/{roll_call_id}/replies/")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id")
+     * })
+     *
      * @Request({
      *     "answer": "yes",
      *     "message": "I am OK"
@@ -154,8 +163,12 @@ class ReplyController extends ApiController
     /**
      * List roll call replies
      *
-     * @Get("/")
+     * @Get("/{roll_call_id}/replies/")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "replies": {

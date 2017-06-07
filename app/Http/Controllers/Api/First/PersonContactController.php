@@ -13,7 +13,7 @@ use RollCall\Http\Response;
 use Illuminate\Http\Request;
 
 /**
- * @Resource("Contacts", uri="/api/v1/organizations/{orgId}/people/{personId}/contacts")
+ * @Resource("Contacts", uri="/api/v1/organizations")
  */
 class PersonContactController extends ApiController
 {
@@ -28,7 +28,12 @@ class PersonContactController extends ApiController
     /**
      * Add member contact
      *
-     * @Post("/")
+     * @Post("/{org_id}/people/{person_id}/contacts")
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
      * @Versions({"v1"})
      * @Request({
      *       "type": "email",
@@ -55,8 +60,14 @@ class PersonContactController extends ApiController
     /**
      * Update member contact
      *
-     * @Put("/{contactId}")
+     * @Put("{org_id}/people/{person_id}/contacts/{contact_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     *   @Parameter("contact_id", type="number", required=true, description="Contact id")
+     * })
+     *
      * @Request({
      *       "type": "email",
      *       "contact": "linda@ushahidi.com",
@@ -82,8 +93,14 @@ class PersonContactController extends ApiController
     /**
      * Delete member contact
      *
-     * @Delete("/{contactId}")
+     * @Delete("{org_id}/people/{person_id}/contacts/{contact_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     *   @Parameter("contact_id", type="number", required=true, description="Contact id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "contact": {
@@ -128,5 +145,4 @@ class PersonContactController extends ApiController
 
         return response('OK', 200);
     }
-
 }
