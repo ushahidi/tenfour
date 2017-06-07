@@ -211,13 +211,13 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+            'subdomain'  => 'testing',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+            'subdomain'  => 'testing',
         ]);
     }
 
@@ -256,7 +256,7 @@ class OrganizationCest
       $I->haveHttpHeader('Content-Type', 'application/json');
       $I->sendPUT($this->endpoint."/$id", [
           'name' => 'Rollcall Org',
-          'subdomain'  => 'rollcall',
+          'subdomain'  => 'testing',
           'settings'  => ['channels' => ['email' => ['enabled' => true]]],
       ]);
       $I->seeResponseCodeIs(200);

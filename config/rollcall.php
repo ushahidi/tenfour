@@ -8,7 +8,7 @@ return [
 
     'domain' => env('APP_DOMAIN', 'rollcall.io'),
 
-    'reserved_words' => ['app'],
+    'reserved_words' => ['app', 'rollcall', 'www', 'staging', 'admin'],
 
     'messaging' => [
         'incoming_driver' => env('RC_MESSAGING_INCOMING', 'aws-ses-sns'),
