@@ -31,7 +31,7 @@ class SendVerificationEmail implements ShouldQueue
      */
     public function handle(MessageServiceFactory $message_service_factory)
     {
-        $url = 'https://' . config('rollcall.domain') . '/organization/email/confirmation/?email='.urlencode($this->address['address']).'&token=' . $this->address['verification_token'];
+        $url = 'https://app.' . config('rollcall.domain') . '/organization/email/confirmation/?email='.urlencode($this->address['address']).'&token=' . $this->address['verification_token'];
         $subject = 'Validate your RollCall email address';
 
         $message_service = $message_service_factory->make('email');
