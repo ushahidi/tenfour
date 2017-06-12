@@ -140,6 +140,28 @@ class PersonCest
     }
 
     /*
+     * Add invalid phone number
+     *
+     */
+    public function addInvalidPhoneNumber(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $org_id = 2;
+        $I->wantTo('Add invalid phone number');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
+            'contact' => 'Invalid phone',
+            'type'    => 'phone',
+            'organization_id' => $org_id,
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+    }
+
+
+    /*
      * Ensure that default role for new member is 'member' if unspecified
      *
      */

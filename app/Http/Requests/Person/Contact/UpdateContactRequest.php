@@ -19,7 +19,7 @@ class UpdateContactRequest extends UpdatePersonRequest
 
         $rules['type']    = 'in:phone,email';
 
-        $rules['contact'] = Rule::unique('contacts')
+        $rules['contact'] .= '|'. Rule::unique('contacts')
             ->ignore($this->request->get('id'), 'id')
             ->where('organization_id', $this->request->get('organization_id'));
 
