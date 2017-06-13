@@ -460,7 +460,8 @@ class RollCallCest
      */
     public function createRollCallWithCredits(ApiTester $I)
     {
-        $credits_expected = $_ENV['URL_SHORTENER_BITLY_USERNAME'] ? 0 : -1;
+        $credits_before = 1;
+        $credits_after = 0;
 
         $I->wantTo('Create a roll call with credits');
         $I->amAuthenticatedAsOrgAdmin();
@@ -474,7 +475,7 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'credits'   => 1,
+            'credits'   => $credits_before,
         ]);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -497,7 +498,7 @@ class RollCallCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([ 'organization' => [
             'id'        => 2,
-            'credits'   => $credits_expected,
+            'credits'   => $credits_after,
         ]]);
     }
 

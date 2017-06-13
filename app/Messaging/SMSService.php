@@ -14,15 +14,6 @@ use GrahamCampbell\Throttle\Facades\Throttle;
 
 class SMSService implements MessageService
 {
-    public function sendWithCredits($organization_id, $view, $to, $msg = '', $additional_params = []) {
-        $this->setView($view);
-        $this->send($to, $msg, $additional_params);
-
-        // TODO calculate credits to deduct based on $to - region and operator
-
-        App::make('RollCall\Services\CreditService')->addCreditAdjustment($organization_id, -1, 'rollcall');
-    }
-
     public function setView($view)
     {
         $this->view = $view;
@@ -198,14 +189,10 @@ class SMSService implements MessageService
         return $message;
     }
 
-    public function sendResponseReceivedSMS($to, $organization_id = null) {
+    public function sendResponseReceivedSMS($to) {
         Log::info('Sending "response received" sms to: ' . $to);
 
-        if (isset($organization_id)) {
-            $this->sendWithCredits($organization_id, 'sms.response_received', $to);
-        } else {
-            $this->setView('sms.response_received');
-            $this->send($to);
-        }
+        $this->setView('sms.response_received');
+        $this->send($to);
     }
 }
