@@ -31,6 +31,13 @@ class EloquentUserProvider extends IlluminateUserProvider
             unset($credentials['username']);
         }
 
+        // Check organization
+        if ($credentials['organization']) {
+            $credentials['organizations.name'] = $credentials['organization'];
+            unset($credentials['organization']);
+            $query->join('organizations', 'organizations.id', '=', 'contacts.organization_id');
+        }
+
         foreach ($credentials as $key => $value) {
             if (! Str::contains($key, 'password')) {
                 $query->where($key, $value);

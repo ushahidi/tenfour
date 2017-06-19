@@ -17,6 +17,7 @@ class AuthCest
             'scope' => 'user',
             'username' => 'admin@ushahidi.com',
             'password' => 'westgate',
+            'organization' => 'RollCall',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(200);
@@ -45,6 +46,7 @@ class AuthCest
             'scope' => 'user',
             'username' => 'admin@ushahidi.com',
             'password' => 'invalid',
+            'organization' => 'RollCall',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(401);
