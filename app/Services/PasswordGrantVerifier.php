@@ -3,6 +3,7 @@ namespace RollCall\Services;
 
 use Illuminate\Support\Facades\Auth;
 use RollCall\Contracts\Repositories\PersonRepository;
+use Illuminate\Http\Request;
 
 class PasswordGrantVerifier
 {
@@ -10,12 +11,15 @@ class PasswordGrantVerifier
      * @var PersonRepository
      */
     protected $people;
+
     /**
      * @param PersonRepository $people
+     * @param Request $request
      */
-    public function __construct(PersonRepository $people)
+    public function __construct(PersonRepository $people, Request $request)
     {
         $this->people = $people;
+        $this->request = $request;
     }
     /**
      * @param $username
@@ -26,8 +30,9 @@ class PasswordGrantVerifier
     public function verify($username, $password)
     {
         $credentials = [
-    	        'username' => $username,
-                'password' => $password,
+            'username'     => $username,
+            'password'     => $password,
+            'organization' => $this->request->organization,
         ];
 
         if (Auth::once($credentials)) {
