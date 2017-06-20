@@ -8,6 +8,8 @@ use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberToCarrierMapper;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -77,6 +79,18 @@ class ApiServiceProvider extends ServiceProvider
 
         $this->app->bind('RollCall\Contracts\Contacts\CsvTransformer',
                          'RollCall\Contacts\CsvTransformer');
+
+        $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
+            ->needs('libphonenumber\PhoneNumberUtil')
+            ->give(function () {
+                return PhoneNumberUtil::getInstance();
+            });
+
+        $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
+            ->needs('libphonenumber\PhoneNumberToCarrierMapper')
+            ->give(function () {
+                return PhoneNumberToCarrierMapper::getInstance();
+            });
     }
 
     /** Recursively list all traits defined on final class */

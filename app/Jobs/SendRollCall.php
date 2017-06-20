@@ -18,6 +18,7 @@ use RollCall\Messaging\SMSService;
 use UrlShortener;
 
 use Log;
+use App;
 
 define('SMS_BYTECOUNT', 140);
 
@@ -101,12 +102,16 @@ class SendRollCall implements ShouldQueue
                 $to = $contact['contact'];
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
+
                     if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
                         Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
                         continue;
                     }
+
                     $message_service->send($to, new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient));
+
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
+
                     // Send reminder SMS to unresponsive recipient
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
 
@@ -133,6 +138,9 @@ class SendRollCall implements ShouldQueue
                         // send together
                         $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
                     }
+
+                    App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], -1, 'rollcall');
+
                 } else if ($contact['type'] === 'slack' && isset($send_via['slack'])) {
                     // TODO send private message on slack
                     // https://github.com/ushahidi/RollCall/issues/633
@@ -195,20 +203,23 @@ class SendRollCall implements ShouldQueue
     private function sendRollCallSMS(SMSService $message_service, $to, $msg, $params) {
         // \Log::info('Sending "RollCallSMS" to=' . $to . ' msg=' . $msg);
 
-        $message_service->sendWithCredits($this->roll_call['organization_id'], 'sms.rollcall', $to, $msg, $params);
+        $message_service->setView('sms.rollcall');
+        $message_service->send($to, $msg, $params);
     }
 
     private function sendRollCallURLSMS(SMSService $message_service, $to, $rollcall_url) {
         // \Log::info('Sending "RollCallURLSMS" to=' . $to . ' msg=' . $rollcall_url);
 
-        $message_service->sendWithCredits($this->roll_call['organization_id'], 'sms.rollcall_url', $to, $rollcall_url);
+        $message_service->setView('sms.rollcall_url');
+        $message_service->send($to, $rollcall_url);
     }
 
     private function sendReminderSMS(SMSService $message_service, $to, $rollcall_url) {
         // \Log::info('Sending "ReminderSMS" to=' . $to . ' msg=' . $rollcall_url);
         // @TODO include previous rollcall message
 
-        $message_service->sendWithCredits($this->roll_call['organization_id'], 'sms.unresponsive', $to, $rollcall_url);
+        $message_service->setView('sms.unresponsive');
+        $message_service->send($to, $rollcall_url);
     }
 
     private function shortenUrl($url) {

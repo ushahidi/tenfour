@@ -13,6 +13,8 @@ use RollCall\Http\Response;
 use Illuminate\Http\Request;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use RollCall\Messaging\PhoneNumberAdapter;
+use App;
 
 /**
  * @Resource("Contacts", uri="/api/v1/organizations")
@@ -57,23 +59,8 @@ class PersonContactController extends ApiController
     {
         $input = $request->all();
 
-        if ($input['type'] == 'phone') {
-
-            // Store country code, national number
-            $util = PhoneNumberUtil::getInstance();
-            $number = $util->parse($input['contact'], null);
-            $national_number = $number->getNationalNumber();
-            $country_code = $number->getCountryCode();
-
-            // Store carrier
-            $carrierMapper = PhoneNumberToCarrierMapper::getInstance();
-            $carrier = $carrierMapper->getNameForNumber($number, 'en');
-
-            $input['meta'] = [
-                'national_number' => $national_number,
-                'country_code'    => $country_code,
-                'carrier'         => $carrier,
-            ];
+        if ($input['type'] === 'phone') {
+            $this->formatPhoneInput($input);
         }
 
         return $this->response->item($this->people->addContact($organization_id, $user_id, $input),
@@ -109,7 +96,13 @@ class PersonContactController extends ApiController
      */
     public function update(UpdateContactRequest $request, $organization_id, $user_id, $contact_id)
     {
-        return $this->response->item($this->people->updateContact($organization_id, $user_id, $request->all(), $contact_id),
+        $input = $request->all();
+
+        if ($input['type'] === 'phone') {
+            $this->formatPhoneInput($input);
+        }
+
+        return $this->response->item($this->people->updateContact($organization_id, $user_id, $input, $contact_id),
                                      new ContactTransformer, 'contact');
     }
 
@@ -167,5 +160,22 @@ class PersonContactController extends ApiController
         // public API method, don't expose anything in the response
 
         return response('OK', 200);
+    }
+
+    protected function formatPhoneInput(array &$input)
+    {
+
+        $phone_number_adapter = App::make('RollCall\Messaging\PhoneNumberAdapter',
+                                          [
+                                              $input['contact']
+                                          ]);
+
+        $input['contact'] = $phone_number_adapter->getNormalizedNumber();
+
+        $input['meta'] = [
+            'national_number' => $phone_number_adapter->getNationalNumber(),
+            'country_code'    => $phone_number_adapter->getCountryCode(),
+            'carrier'         => $phone_number_adapter->getCarrier(),
+        ];
     }
 }
