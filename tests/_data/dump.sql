@@ -67,7 +67,7 @@ INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VA
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('9', '6', '2', '1', 'email', 'org_member2@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('10', '1', '2', '1', 'email', 'test+contact2@ushahidi.com');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('11', '7', '3', '1', 'email', 'test+contact2@organization2.com');
-INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('12', '9', '2', '1', 'phone', '0792999998');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('12', '9', '2', '1', 'phone', '254722123456');
 
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
