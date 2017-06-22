@@ -113,13 +113,10 @@ class SMSService implements MessageService
         SMS::driver($driver);
 
         $messages_per_second = config('sms.'.$driver.'.messages_per_second');
-        $time = 1/60; // Pass time in minutes to the cache store
 
         if ($messages_per_second) {
-            $throttler = Throttle::get([
-                'ip'    => $from,
-                'route' => $to,
-            ], $messages_per_second, $time);
+
+            $throttler = ThrottleAdapter::get($from, $to, $messages_per_second);
 
             // If we have exceeded the limit return the job back to the queue
             if ($throttler->attempt()) {
