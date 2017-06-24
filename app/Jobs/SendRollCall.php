@@ -72,6 +72,12 @@ class SendRollCall implements ShouldQueue
         }, $creator_contacts[0]);
 
         $creator['email'] = $contact['contact'];
+        $creditAdjustmentMeta = [
+            'credits' => 0,
+            'recipients' => 0,
+            'contacts' => 0,
+            'rollcall_id' => $this->roll_call['id'],
+        ];
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
@@ -139,7 +145,8 @@ class SendRollCall implements ShouldQueue
                         $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
                     }
 
-                    App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], -1, 'rollcall');
+                    $creditAdjustmentMeta['credits']++;
+                    $creditAdjustmentMeta['contacts']++;
 
                 } else if ($contact['type'] === 'slack' && isset($send_via['slack'])) {
                     // TODO send private message on slack
@@ -148,7 +155,10 @@ class SendRollCall implements ShouldQueue
 
                 // Log message for recipient
                 $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
+                $creditAdjustmentMeta['recipients']++;
             }
+
+            App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], 0-$creditAdjustmentMeta['credits'], 'rollcall', $creditAdjustmentMeta);
         }
     }
 
@@ -158,8 +168,13 @@ class SendRollCall implements ShouldQueue
     protected function getSendVia($contacts) {
         $send_via = [];
         $preferred = [];
+        $subscription = $this->organization['current_subscription'];
 
         if (!isset($this->roll_call['send_via']) || empty($this->roll_call['send_via'])) {
+            return [];
+        }
+
+        if (!$subscription || $subscription['status'] !== 'active') {
             return [];
         }
 
@@ -223,6 +238,10 @@ class SendRollCall implements ShouldQueue
     }
 
     private function shortenUrl($url) {
+        if (!config('urlshortner.bitly.username')) {
+            return $url;
+        }
+        
         try {
             $url = UrlShortener::shorten($url);
         } catch (\Waavi\UrlShortener\Exceptions\InvalidResponseException $e) {

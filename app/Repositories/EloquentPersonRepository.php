@@ -6,6 +6,7 @@ use RollCall\Models\User;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Http\Transformers\OrganizationTransformer;
 use DB;
 use Validator;
 
@@ -156,12 +157,16 @@ class EloquentPersonRepository implements PersonRepository
             ])
             ->with('notifications')
             ->with('organization')
+            ->with('organization.subscriptions')
             ->firstOrFail();
 
         $user = $userModel->toArray();
 
         $user['has_logged_in'] = $userModel->hasLoggedIn();
         $user['organization']['credits'] = $this->creditService->getBalance($user['organization']['id']);
+        $user['organization']['current_subscription'] = $userModel->organization->currentSubscription();
+
+        $user['organization'] = (new OrganizationTransformer)->transform($user['organization']);
 
         // @todo can we remove this?
         foreach ($user['rollcalls'] as &$roll_call)

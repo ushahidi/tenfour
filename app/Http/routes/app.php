@@ -59,3 +59,6 @@ Route::post('rollcalls/{rollcall}/replies', ['uses' => 'Api\First\ReplyControlle
 // Address verification
 Route::post('verification/email', 'VerificationController@sendEmailVerification');
 Route::get('verification/email', 'VerificationController@verifyEmail');
+
+// ChargeBee Webhooks
+Route::post('/chargebee/webhook', 'ChargeBeeWebhookController@handle')->middleware('auth.basic.chargebee-webhook');

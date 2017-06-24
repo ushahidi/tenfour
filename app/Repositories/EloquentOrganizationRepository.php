@@ -17,29 +17,15 @@ use RollCall\Services\CreditService;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
-    protected $currentUserId = NULL;
-
     public function __construct(StorageService $storageService, CreditService $creditService)
     {
         $this->storageService = $storageService;
         $this->creditService = $creditService;
     }
 
-    public function setCurrentUserId($currentUserId)
-    {
-        $this->currentUserId = $currentUserId;
-    }
-
     public function all($subdomain = false, $name = false)
     {
         $query = Organization::select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture');
-
-        // If we're authenticated, just return orgs we're a member of
-        if ($this->currentUserId) {
-            $query->join('users', 'organizations.id', '=', 'users.organization_id');
-            $query->select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture', 'users.id as user_id', 'role');
-            $query->where('users.id', $this->currentUserId);
-        }
 
         // Filter by subdomain
         if ($subdomain) {
@@ -92,17 +78,20 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
     public function find($id)
     {
-        $org = Organization::with('settings')
+        $orgModel = Organization::with('settings')
+            ->with('subscriptions')
             ->leftJoin('users', function ($join) {
                 $join
                 ->on('organizations.id', '=', 'users.organization_id')
                 ->on('users.role', '=', DB::raw('\'owner\'')); // @todo Is there a better way than using raw()?
             })
             ->select('organizations.id', 'organizations.name', 'subdomain', 'organizations.profile_picture', 'users.id as user_id', 'role')
-            ->findOrFail($id)
-            ->toArray();
+            ->findOrFail($id);
+
+        $org = $orgModel->toArray();
 
         $org['credits'] = $this->creditService->getBalance($id);
+        $org['current_subscription'] = $orgModel->currentSubscription();
 
         return $org;
     }

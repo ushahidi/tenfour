@@ -80,6 +80,12 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('RollCall\Contracts\Contacts\CsvTransformer',
                          'RollCall\Contacts\CsvTransformer');
 
+        $this->app->bind('RollCall\Contracts\Repositories\SubscriptionRepository',
+                         'RollCall\Repositories\EloquentSubscriptionRepository');
+
+        $this->app->bind('RollCall\Contracts\Services\PaymentService',
+                         'RollCall\Services\Payments\ChargeBeePaymentService');
+                         
         $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
             ->needs('libphonenumber\PhoneNumberUtil')
             ->give(function () {

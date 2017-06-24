@@ -99,9 +99,23 @@ class User extends Model implements AuthenticatableContract,
         return $this->contact;
     }
 
+    public function email()
+    {
+        $email = $this->contacts->where('type', 'email')->first();
+
+        return $email ? $email->contact : null;
+    }
+
+    public function phone()
+    {
+        $phone = $this->contacts->where('type', 'phone')->first();
+
+        return $phone ? $phone->contact : null;
+    }
+
     public function hasLoggedIn()
     {
-            return isset($this->password) && !empty($this->password);
+        return isset($this->password) && !empty($this->password);
     }
 
     /**
@@ -119,7 +133,7 @@ class User extends Model implements AuthenticatableContract,
             case 'database':
                 return $this->notifications();
             case 'mail':
-                return $this->contact;
+                return $this->email();
             case 'nexmo':
                 return $this->phone_number;
         }

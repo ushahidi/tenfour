@@ -29,6 +29,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \RollCall\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.basic.chargebee-webhook' => \RollCall\Http\Middleware\ChargeBeeWebhookAuthentication::class,
         'csrf' => App\Http\Middleware\VerifyCsrfToken::class,
         'guest' => \RollCall\Http\Middleware\RedirectIfAuthenticated::class,
         'oauth' => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,

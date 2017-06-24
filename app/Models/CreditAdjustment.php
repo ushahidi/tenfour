@@ -18,7 +18,7 @@ class CreditAdjustment extends Model
      *
      * @var array
      */
-    protected $fillable = ['adjustment', 'balance', 'type'];
+    protected $fillable = ['adjustment', 'balance', 'type', 'meta'];
 
     /**
      * The attributes that should be casted to native types.
@@ -26,6 +26,7 @@ class CreditAdjustment extends Model
      * @var array
      */
     protected $casts = [
+        'meta' => 'json'
     ];
 
     /**

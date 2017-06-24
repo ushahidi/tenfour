@@ -55,4 +55,11 @@ $api->version($version, [
     $api->get($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@find']);
     $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@listReplies']);
     $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@addReply']);
+
+    // Subscriptions
+    $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');
+    $api->post($base.'organizations/{organization}/subscriptions/hostedpage', ['uses' => 'SubscriptionController@createHostedPage']);
+    $api->put($base.'organizations/{organization}/subscriptions/hostedpage/{subscription}', ['uses' => 'SubscriptionController@updateHostedPage']);
+    $api->post($base.'organizations/{organization}/subscriptions/hostedpagesuccess/{subscription}', ['uses' => 'SubscriptionController@confirmHostedPage']);
+
 });

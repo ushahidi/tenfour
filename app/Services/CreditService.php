@@ -3,12 +3,16 @@
 namespace RollCall\Services;
 
 use RollCall\Models\Organization;
+use RollCall\Models\Subscription;
 use RollCall\Models\CreditAdjustment;
 use DB;
 use App;
+use Log;
 
 class CreditService
 {
+    const CREDITS_PER_USER_PER_MONTH = 5;
+
     public function __construct()
     {
     }
@@ -34,17 +38,21 @@ class CreditService
         $creditAdjustment->save();
     }
 
-    public function addCreditAdjustment($organization_id, $adjustment, $type = 'misc') {
-        DB::transaction(function () use ($organization_id, $adjustment, $type) {
-            $creditAdjustment = new CreditAdjustment;
+    public function addCreditAdjustment($organization_id, $adjustment, $type = 'misc', $meta = null) {
+        $creditAdjustment = new CreditAdjustment;
+
+        DB::transaction(function () use ($creditAdjustment, $organization_id, $adjustment, $type, $meta) {
             $creditAdjustment->organization_id = $organization_id;
             $creditAdjustment->adjustment = $adjustment;
             $creditAdjustment->balance = 0;
             $creditAdjustment->type = $type;
+            $creditAdjustment->meta = $meta;
             $creditAdjustment->save();
 
             $this->syncBalance($creditAdjustment);
         });
+
+        return $creditAdjustment;
     }
 
     protected function syncBalance($creditAdjustment) {
@@ -52,16 +60,32 @@ class CreditService
             ->where('organization_id', $creditAdjustment['organization_id'])
             ->sum('adjustment');
 
-        CreditAdjustment::findOrFail($creditAdjustment['id'])->update(['balance' => $balance]);
+        $creditAdjustment->update(['balance' => $balance]);
     }
 
     public function expireCreditsOnUnpaid() {
-        foreach (DB::table('organizations')->where('paid_until', '<', date('Y-m-d H:i:s'))->get() as $org) {
-            DB::transaction(function () use ($org) {
-                $balance = $this->getBalance($org->id);
+
+        $expiredSubscriptions = Subscription
+            ::where(function ($query) {
+                $query->whereNotNull('next_billing_at')
+                      ->where('next_billing_at', '<', date('Y-m-d H:i:s'));
+            })
+            ->orWhere(function ($query) {
+                $query->whereNull('next_billing_at')
+                      ->whereNotNull('trial_ends_at')
+                      ->where('trial_ends_at', '<', date('Y-m-d H:i:s'));
+            })
+            ->with('organization')
+            ->get();
+
+        foreach ($expiredSubscriptions as $subscription) {
+            DB::transaction(function () use ($subscription) {
+                $balance = $this->getBalance($subscription->organization->id);
+                $meta = ['previousBalance' => $balance];
 
                 if ($balance !== 0) {
-                    $this->addCreditAdjustment($org->id, 0 - $balance, 'expire');
+                    Log::info('Expiring credits for organization ' . $subscription->organization->id);
+                    $this->addCreditAdjustment($subscription->organization->id, 0 - $balance, 'expire', $meta);
                 }
             });
         }

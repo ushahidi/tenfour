@@ -6,6 +6,7 @@ use RollCall\Models\User;
 use RollCall\Models\Organization;
 use RollCall\Models\Contact;
 use RollCall\Models\CreditAdjustment;
+use RollCall\Models\Subscription;
 
 class OrganizationTableSeeder extends Seeder
 {
@@ -20,6 +21,19 @@ class OrganizationTableSeeder extends Seeder
             'adjustment' => 240,
             'balance' => 240,
             'type' => 'init'
+        ]);
+
+        Subscription::firstOrCreate([
+            'organization_id' => $organization->id,
+            'subscription_id' => 'test_subscription',
+            'customer_id' => 'test_customer',
+            'status' => 'active',
+            'plan_id' => 'standard-plan',
+            'quantity' => 40,
+            'card_type' => 'Visa',
+            'last_four' => '1111',
+            'trial_ends_at' => '2016-10-30 12:05:01',
+            'next_billing_at' => '2026-10-30 12:05:01',
         ]);
 
         $organization->update([

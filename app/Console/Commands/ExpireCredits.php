@@ -6,21 +6,21 @@ use RollCall\Contracts\Repositories\OrganizationRepository;
 use Illuminate\Console\Command;
 use App;
 
-class SyncCredits extends Command
+class ExpireCredits extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'credits:sync';
+    protected $signature = 'credits:expire';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sync credits with payment gateway, reset credits at end of month and do free trial stuff.';
+    protected $description = 'Reset credits at end of month';
 
     /**
      * Create a new command instance.
@@ -42,8 +42,5 @@ class SyncCredits extends Command
     public function handle(OrganizationRepository $organizations)
     {
         $this->creditService->expireCreditsOnUnpaid();
-
-        // TODO: do chargebee stuff
-
     }
 }

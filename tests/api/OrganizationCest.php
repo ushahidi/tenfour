@@ -20,14 +20,11 @@ class OrganizationCest
                 [
                     'name'    => 'RollCall',
                     'subdomain'     => 'rollcall',
-                    'user' => [
-                        'id'   => 5,
-                        'role' => 'admin',
-                    ]
                 ],
             ]
         ]);
     }
+
     /*
      * Cannot get a list of organizations without Authentication
      *
@@ -55,6 +52,12 @@ class OrganizationCest
                 'name'    => 'Testers',
                 'subdomain'     => 'testers'
             ]]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'subscription_status' => 'active'
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'subscriptions' => []
         ]);
         $I->dontSeeResponseContainsJson([
             [
@@ -99,31 +102,6 @@ class OrganizationCest
     }
 
     /*
-     * List organizations that belong to the current user
-     *
-     */
-    public function filterOrganizationsByCurrentUser(ApiTester $I)
-    {
-        $endpoint = $this->endpoint . '/?user=me';
-        $I->wantTo('Get a list of all organizations that the current user belongs to');
-        $I->amAuthenticatedAsUser();
-        $I->sendGET($endpoint);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            [
-                'name'    => 'RollCall',
-                'subdomain'     => 'rollcall',
-                'user' => [
-                    'id'   => 1,
-                    'role' => 'member',
-                ]
-            ]
-
-        ]);
-    }
-
-    /*
      * View organization as an org admin
      *
      */
@@ -138,6 +116,7 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             'name'      => 'RollCall',
             'subdomain' => 'rollcall',
+            'subscription_status' => 'active',
             'credits'   => 1,
             'user' => [
                 'id'   => 4,

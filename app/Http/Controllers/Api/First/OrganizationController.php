@@ -53,16 +53,6 @@ class OrganizationController extends ApiController
      */
     public function index(GetOrganizationsRequest $request)
     {
-        if ($this->auth->user() && !isset($this->auth->user()->id)) {
-            \Log::error('User is authenticated but has no user id');
-            return response('No user id', 403);
-        }
-
-        // Pass current user ID to repo if the user is a member of an organization
-        if (isset($this->auth->user()->organization_id)) {
-            $this->organizations->setCurrentUserId($this->auth->user()->id);
-        }
-
         $organizations = $this->organizations->all($request->query('subdomain'), $request->query('name'));
 
         return $this->response->collection($organizations, new OrganizationTransformer, 'organizations');
@@ -112,7 +102,6 @@ class OrganizationController extends ApiController
             'name'      => $input['name'],
             'subdomain' => strtolower($input['subdomain']),
             'settings'  => $settings,
-            'paid_until'=> DB::raw('NOW()')
         ];
 
         // Get owner details
