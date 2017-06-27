@@ -24,6 +24,9 @@ class PhoneNumberAdapterCest
                 ),
                 'format' => Stub::once(function () {
                     return '+254722123456';
+                }),
+                'getRegionCodeForNumber' => Stub::once(function () {
+                    return 'KE';
                 })
             ]
         );
@@ -56,6 +59,12 @@ class PhoneNumberAdapterCest
     {
         $t->assertEquals($this->phone_number_adapter->getCarrier(),
                          'Safaricom');
+    }
+
+    public function getRegionCode(UnitTester $t)
+    {
+        $t->assertEquals($this->phone_number_adapter->getRegionCode(),
+                         'KE');
     }
 
     public function testNormalization(UnitTester $t)

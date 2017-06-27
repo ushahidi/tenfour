@@ -3,11 +3,13 @@
 namespace RollCall\Http\Controllers;
 
 use Log;
+use App;
 use RollCall\Messaging\Storage\Reply as ReplyStorage;
 use RollCall\Messaging\SMSService;
 use RollCall\Messaging\Validators\NexmoMessageValidator;
 use Illuminate\Http\Request;
 use SMS;
+use libphonenumber\NumberParseException;
 
 class SMSController extends Controller
 {
@@ -50,7 +52,13 @@ class SMSController extends Controller
         );
 
         if ($saved) {
-            $this->message_service->sendResponseReceivedSMS($from);
+            try {
+                $from = App::make('RollCall\Messaging\PhoneNumberAdapter', [$from]);
+                $this->message_service->sendResponseReceivedSMS($from);
+            } catch (NumberParseException $exception) {
+                // Somehow the number format could not be parsed
+                Log::info("[SMSController] Could not parse MSISDN: " . $from);
+            }
         }
 
         return response('Accepted', 200);

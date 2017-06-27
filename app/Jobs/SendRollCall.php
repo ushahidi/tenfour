@@ -16,6 +16,7 @@ use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Models\Organization;
 use RollCall\Messaging\SMSService;
 use UrlShortener;
+use libphonenumber\NumberParseException;
 
 use Log;
 use App;
@@ -117,6 +118,13 @@ class SendRollCall implements ShouldQueue
                     $message_service->send($to, new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient));
 
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
+                    // Wrap phone number
+                    try {
+                        $to = App::make('RollCall\Messaging\PhoneNumberAdapter', [$to]);
+                    } catch (NumberParseException $exception) {
+                        // Can't send a message to an invalid number
+                        continue;
+                    }
 
                     // Send reminder SMS to unresponsive recipient
                     $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);

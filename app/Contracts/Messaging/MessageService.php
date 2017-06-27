@@ -12,7 +12,7 @@ interface MessageService
 
     /* Send a message to a destination or list of destination
      *
-     * @param string|array $to
+     * @param object|string|array $to
      * @param object|string $message
      * @param array $additional_params
      */

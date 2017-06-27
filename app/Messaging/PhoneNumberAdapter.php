@@ -57,6 +57,11 @@ class PhoneNumberAdapter
         return $this->carrier_mapper->getNameForNumber($this->number, 'en');
     }
 
+    public function getRegionCode()
+    {
+        return $this->util->getRegionCodeForNumber($this->number);
+    }
+
     public function getNormalizedNumber()
     {
         return $this->util->format($this->number, PhoneNumberFormat::E164);

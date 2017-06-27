@@ -17,7 +17,6 @@ Route::get('/', function () {
 });
 
 Route::post('oauth/access_token', function() {
-
     Validator::make(Input::all(), [
         'username'     => 'required_if:grant_type,password|email',
         'password'     => 'required_if:grant_type,password',
