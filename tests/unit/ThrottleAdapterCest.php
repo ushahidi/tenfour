@@ -2,7 +2,6 @@
 
 use Codeception\Util\Stub;
 use RollCall\Messaging\ThrottleAdapter;
-//use Mockery as M;
 use GrahamCampbell\Throttle\Facades\Throttle;
 
 class ThrottleAdapterCest
@@ -21,7 +20,7 @@ class ThrottleAdapterCest
                 'ip'    => 'from',
                 'route' => 'to',
             ], $messages_per_second, $time);
-        
+
         ThrottleAdapter::get('from', 'to', $messages_per_second);
     }
 }
