@@ -165,9 +165,10 @@ class SendRollCall implements ShouldQueue
                 $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
                 $creditAdjustmentMeta['recipients']++;
             }
-
-            App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], 0-$creditAdjustmentMeta['credits'], 'rollcall', $creditAdjustmentMeta);
         }
+
+        App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], 0-$creditAdjustmentMeta['credits'], 'rollcall', $creditAdjustmentMeta);
+
     }
 
     /*
@@ -249,7 +250,7 @@ class SendRollCall implements ShouldQueue
         if (!config('urlshortner.bitly.username')) {
             return $url;
         }
-        
+
         try {
             $url = UrlShortener::shorten($url);
         } catch (\Waavi\UrlShortener\Exceptions\InvalidResponseException $e) {

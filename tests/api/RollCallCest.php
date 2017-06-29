@@ -460,7 +460,7 @@ class RollCallCest
      */
     public function createRollCallWithCredits(ApiTester $I)
     {
-        $credits_before = 1;
+        $credits_before = 2;
         $credits_after = 0;
 
         $I->wantTo('Create a roll call with credits');
@@ -486,6 +486,9 @@ class RollCallCest
             'recipients' => [
                 [
                     'id' => 9
+                ],
+                [
+                    'id' => 4
                 ]
             ],
             'answers' => []
@@ -521,6 +524,9 @@ class RollCallCest
                 ],
                 [
                     'id' => 4
+                ],
+                [
+                    'id' => 9
                 ]
             ],
             'answers' => []
