@@ -11,25 +11,24 @@ Before setting up the project, make sure you have the following installed:
 git clone git@github.com:ushahidi/rollcall-api.git
 cd rollcall-api
 composer install
-vagrant up
-./artisan migrate
 ```
 
-### Get some sample data
-
-```bash
-./artisan db:seed
-```
-
-#### Log in as an organization owner
-Use the email `rollcall@ushahidi.com` with password `westgate`
-
-#### Environment configuration
+### Environment configuration
 
 Copy the environment configuration.
 
 ```bash
 cp .env.example .env
+```
+
+### Run migrations and add sample data
+
+```bash
+vagrant up
+vagrant ssh
+cd rollcall
+./artisan migrate
+./artisan db:seed
 ```
 
 And finally, add the following to your `/etc/hosts` file:
@@ -39,3 +38,6 @@ And finally, add the following to your `/etc/hosts` file:
 ```
 
 Go to http://rollcall.dev/ in your browser to verify that everything worked.
+
+### Log in as an organization owner
+Use the email `rollcall@ushahidi.com` with password `westgate`
