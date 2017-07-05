@@ -690,7 +690,7 @@ class PersonCest
             'client_secret' => 'secret',
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
-            'organization' => 'RollCall',
+            'subdomain' => 'rollcall',
             'password' => 'another_password',
             'grant_type' => 'password'
         ]);
@@ -709,7 +709,7 @@ class PersonCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/password/email', [
             'username' => 'test@ushahidi.com',
-            'organization' => 'RollCall'
+            'subdomain' => 'rollcall'
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -718,7 +718,7 @@ class PersonCest
             'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
             'password_confirmation' => 'cake1234',
-            'organization' => 'RollCall',
+            'subdomain' => 'rollcall',
             'token' => $record['token']
         ]);
         $I->seeResponseCodeIs(200);
@@ -729,7 +729,7 @@ class PersonCest
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
-            'organization' => 'RollCall',
+            'subdomain' => 'rollcall',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(200);

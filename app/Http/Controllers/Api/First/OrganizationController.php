@@ -176,7 +176,6 @@ class OrganizationController extends ApiController
      * })
      * @Request({
      *     "name": "Ushahidi",
-     *     "subdomain": "ushahidi@rollcall.io"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
@@ -193,7 +192,7 @@ class OrganizationController extends ApiController
      */
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->update($request->all(), $organization_id);
+        $organization = $this->organizations->update($request->except('subdomain'), $organization_id);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 

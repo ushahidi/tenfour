@@ -18,9 +18,9 @@ Route::get('/', function () {
 
 Route::post('oauth/access_token', function() {
     Validator::make(Input::all(), [
-        'username'     => 'required_if:grant_type,password|email',
-        'password'     => 'required_if:grant_type,password',
-        'organization' => 'required_if:grant_type,password',
+        'username'  => 'required_if:grant_type,password|email',
+        'password'  => 'required_if:grant_type,password',
+        'subdomain' => 'required_if:grant_type,password',
     ])->validate();
 
     return Response::json(Authorizer::issueAccessToken());

@@ -31,10 +31,8 @@ class EloquentUserProvider extends IlluminateUserProvider
             unset($credentials['username']);
         }
 
-        // Check organization
-        if ($credentials['organization']) {
-            $credentials['organizations.name'] = $credentials['organization'];
-            unset($credentials['organization']);
+        // Check subdomain
+        if ($credentials['subdomain']) {
             $query->join('organizations', 'organizations.id', '=', 'contacts.organization_id');
         }
 

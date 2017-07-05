@@ -190,13 +190,35 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall Org',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'name' => 'Rollcall Org',
+        ]);
+    }
+
+    /*
+     * Update organization subdomain
+     *
+     * FIXME: Currently, updating a subdomain will fail silently since
+     * it's immutable.
+     */
+    public function updateOrganizationSubdomain(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Update organization details as the admin');
+        $I->amAuthenticatedAsOrgOwner();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$id", [
+            'name' => 'Rollcall Org',
             'subdomain'  => 'testing',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Rollcall Org',
-            'subdomain'  => 'testing',
+            'subdomain'  => 'rollcall',
         ]);
     }
 

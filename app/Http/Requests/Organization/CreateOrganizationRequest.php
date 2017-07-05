@@ -25,9 +25,17 @@ class CreateOrganizationRequest extends UpdateOrganizationRequest
     public function rules()
     {
         return parent::rules() + [
-            'owner'    => 'required',
-            'email'    => 'required|email',
-            'password' => 'required|min:8'
+            'owner'     => 'required',
+            'email'     => 'required|email',
+            'password'  => 'required|min:8',
+            'subdomain' => 'required|alpha_dash|reserved_word',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'subdomain.reserved_word' => 'The subdomain is reserved. Please choose another name'
         ];
     }
 }
