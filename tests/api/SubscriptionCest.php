@@ -61,7 +61,7 @@ class SubscriptionCest
     {
         $payload = $this->makeChargeBeeEvent('payment_succeeded');
         $I->wantTo('Handle a ChargeBee payment succeeded event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -94,7 +94,7 @@ class SubscriptionCest
         $payload['content']['subscription']['status'] = 'cancelled';
 
         $I->wantTo('Handle a ChargeBee payment failed event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -118,7 +118,7 @@ class SubscriptionCest
         $payload['content']['subscription']['status'] = 'cancelled';
 
         $I->wantTo('Handle a ChargeBee subscription cancelled event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -134,7 +134,7 @@ class SubscriptionCest
         $payload = $this->makeChargeBeeEvent('subscription_reactivated');
 
         $I->wantTo('Handle a ChargeBee subscription reactivated event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -150,7 +150,7 @@ class SubscriptionCest
         $payload = $this->makeChargeBeeEvent('subscription_renewed');
 
         $I->wantTo('Handle a ChargeBee subscription renewed event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -168,7 +168,7 @@ class SubscriptionCest
         $payload = $this->makeChargeBeeEvent('subscription_deleted');
 
         $I->wantTo('Handle a ChargeBee subscription deleted event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -186,7 +186,7 @@ class SubscriptionCest
         $payload = $this->makeChargeBeeEvent('subscription_changed');
 
         $I->wantTo('Handle a ChargeBee subscription changed event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
@@ -217,7 +217,7 @@ class SubscriptionCest
         $payload = $this->makeChargeBeeEvent('subscription_trial_end_reminder');
 
         $I->wantTo('Handle a ChargeBee trial end reminder event');
-        // $I->amAuthenticatedAsChargeBee();
+        $I->amAuthenticatedAsChargeBee();
         $I->sendPOST($this->webhookEndpoint, $payload);
         $I->seeResponseCodeIs(200);
 
