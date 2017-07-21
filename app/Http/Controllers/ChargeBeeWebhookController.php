@@ -230,7 +230,7 @@ class ChargeBeeWebhookController extends Controller
         $subscription->update([
             'status'            => $payload->subscription->status,
             'next_billing_at'   => $payload->subscription->next_billing_at,
-            'trial_ends_at'     => $payload->subscription->trial_end,
+            'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'quantity'          => $payload->subscription->plan_quantity,
         ]);
 
