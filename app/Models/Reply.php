@@ -19,7 +19,7 @@ class Reply extends Model
      * @var array
      */
 
-    protected $fillable = ['answer','location_text', 'message', 'contact_id', 'roll_call_id', 'user_id', 'message_id'];
+    protected $fillable = ['answer', 'location_text', 'location_geo', 'message', 'contact_id', 'roll_call_id', 'user_id', 'message_id'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -27,6 +27,15 @@ class Reply extends Model
      * @var array
      */
     protected $hidden = ['pivot'];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'location_geo' => 'json'
+    ];
 
     /**
      *
