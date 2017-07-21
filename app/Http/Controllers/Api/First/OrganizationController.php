@@ -85,6 +85,8 @@ class OrganizationController extends ApiController
         $owner = [];
         $contact = [];
 
+        $location = geoip()->getLocation();
+
         // Email and SMS is enabled for all new accounts by default
         $settings = [
             'channels' => [
@@ -92,7 +94,9 @@ class OrganizationController extends ApiController
                     'enabled' => true
                 ],
                 'sms' => [
-                    'enabled' => true
+                    'enabled' => true,
+                    'default_region' => $location->iso_code,
+                    'regions' => []
                 ]
             ]
         ];
