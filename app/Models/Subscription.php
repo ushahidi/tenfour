@@ -13,12 +13,12 @@ class Subscription extends Model
 {
     // use HandlesWebhooks;
 
-    protected $fillable = ['subscription_id', 'customer_id', 'status', 'plan_id', 'organization_id', 'quantity', 'last_four', 'expiry_month', 'expiry_year', 'card_type', 'trial_ends_at', 'ends_at', 'next_billing_at'];
+    protected $fillable = ['subscription_id', 'customer_id', 'status', 'plan_id', 'organization_id', 'quantity', 'last_four', 'expiry_month', 'expiry_year', 'card_type', 'trial_ends_at', 'ends_at', 'next_billing_at', 'promo_code', 'promo_ends_at'];
 
     /**
      * @var array
      */
-    protected $dates = ['ends_at', 'trial_ends_at', 'next_billing_at'];
+    protected $dates = ['ends_at', 'trial_ends_at', 'next_billing_at', 'promo_ends_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

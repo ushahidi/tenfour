@@ -232,6 +232,9 @@ class ChargeBeeWebhookController extends Controller
             'next_billing_at'   => $payload->subscription->next_billing_at,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'quantity'          => $payload->subscription->plan_quantity,
+            'promo_code'        => isset($payload->subscription->coupons) && count($payload->subscription->coupons) ? $payload->subscription->coupons[0]->coupon_id : null,
+            'promo_ends_at'     => isset($payload->subscription->coupons) && count($payload->subscription->coupons) && isset($payload->subscription->coupons[0]->apply_till) ? $payload->subscription->coupons[0]->apply_till : null,
+
         ]);
 
         if ($payload->card) {

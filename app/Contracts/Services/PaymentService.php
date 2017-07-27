@@ -13,4 +13,6 @@ interface PaymentService
     public function retrieveSubscription($subscription_id);
     public function cancelSubscription($subscription_id);
     public function reactivateSubscription($subscription_id);
+
+    public function retrieveCoupon($promo_code);
 }

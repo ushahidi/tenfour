@@ -244,8 +244,6 @@ class SubscriptionController extends ApiController
 
         $result = $this->payments->retrieveSubscription($subscription_id);
 
-        // \Log::info($result);
-
         $subscription = $this->subscriptions->create($organization_id, $result);
 
         if ($subscription['status'] === 'cancelled') {

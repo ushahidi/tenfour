@@ -14,9 +14,13 @@ class EloquentSubscriptionRepository implements SubscriptionRepository
     {
     }
 
-    public function all($organization_id, $offset = 0, $limit = 0)
+    public function all($organization_id = null , $offset = 0, $limit = 0)
     {
-        return Subscription::where('organization_id', '=', $organization_id)->get()->toArray();
+        if ($organization_id) {
+            return Subscription::where('organization_id', '=', $organization_id)->get()->toArray();
+        } else {
+            return Subscription::all()->toArray();
+        }
     }
 
     public function update($organization_id, array $input, $id)
@@ -26,8 +30,6 @@ class EloquentSubscriptionRepository implements SubscriptionRepository
 
     public function create($organization_id, array $input)
     {
-        \Log::info($input);
-
         $subscription = Subscription::updateOrCreate([
             'subscription_id'   => $input['subscription']['id'],
             ],[
@@ -43,6 +45,8 @@ class EloquentSubscriptionRepository implements SubscriptionRepository
             'card_type'         => ucfirst($input['card']['card_type']),
             'expiry_month'      => $input['card']['expiry_month'],
             'expiry_year'       => $input['card']['expiry_year'],
+            'promo_code'        => isset($input['subscription']['coupons']) && count($input['subscription']['coupons']) ? $input['subscription']['coupons'][0]['coupon_id'] : null,
+            'promo_ends_at'     => isset($input['subscription']['coupons']) && count($input['subscription']['coupons']) && isset($input['subscription']['coupons'][0]['apply_till']) ? $input['subscription']['coupons'][0]['apply_till'] : null,
         ]);
 
         Addon::where('subscription_id', $input['subscription']['id'])->delete();

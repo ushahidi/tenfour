@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\OrgReset::class,
         \RollCall\Console\Commands\OrgPassword::class,
         \RollCall\Console\Commands\ExpireCredits::class,
+        \RollCall\Console\Commands\NotifyFreePromoEnding::class,
     ];
 
     /**
@@ -35,5 +36,6 @@ class Kernel extends ConsoleKernel
         //          ->everyMinute();
 
         $schedule->command(\RollCall\Console\Commands\ExpireCredits::class)->daily();
+        $schedule->command(\RollCall\Console\Commands\NotifyFreePromoEnding::class)->daily();
     }
 }

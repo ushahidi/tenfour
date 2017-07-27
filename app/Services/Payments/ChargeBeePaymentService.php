@@ -6,6 +6,7 @@ use RollCall\Contracts\Services\PaymentService;
 use ChargeBee_Environment;
 use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
+use ChargeBee_Coupon;
 
 class ChargeBeePaymentService implements PaymentService
 {
@@ -122,5 +123,13 @@ class ChargeBeePaymentService implements PaymentService
         $result = ChargeBee_Subscription::reactivate($subscription_id);
 
         return $this->toArray($result);
+    }
+
+    public function retrieveCoupon($promo_code)
+    {
+        $result = ChargeBee_Coupon::retrieve($promo_code);
+        $coupon = $result->coupon();
+
+        return $coupon->getValues();
     }
 }
