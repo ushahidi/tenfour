@@ -123,6 +123,8 @@ class ChargeBeeWebhookController extends Controller
 
         $meta = $payload;
 
+        // TODO credits expiry at end of billing cycle, add zeroing credit adjustment here
+
         $creditAdjustment = $this->creditService->addCreditAdjustment($subscription->organization->id, $credits, 'topup', $meta);
 
         $subscription->update([
@@ -190,7 +192,7 @@ class ChargeBeeWebhookController extends Controller
 
         // The client didn't handle the create subscription callback correctly
 
-        Log::error('[ChargeBee] Received SubscriptionCreated for non-existant subscription ' . $payload->subscription->id);
+        Log::error('[ChargeBee] Received SubscriptionCreated for non-existent subscription ' . $payload->subscription->id);
 
         return response('OK', 200);
 
@@ -202,9 +204,14 @@ class ChargeBeeWebhookController extends Controller
 
         $subscription->update([
             'next_billing_at'   => $payload->subscription->next_billing_at,
-            'trial_ends_at'     => $payload->subscription->trial_end,
+            'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
+
+        // TODO this is where we do any coupon magic for recurring
+        // if coupon is a 100% discount, then add X credits adjustment now
+        // https://github.com/ushahidi/RollCall/issues/735
+        // https://rollcall.chargebee.com/events/ev_2rprAVkcQSZBhCS112C/details
 
         Log::info('[ChargeBee] Processed SubscriptionRenewed for subscription ' . $subscription->subscription_id);
 

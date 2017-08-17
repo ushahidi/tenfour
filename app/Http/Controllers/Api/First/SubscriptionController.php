@@ -246,6 +246,10 @@ class SubscriptionController extends ApiController
 
         $subscription = $this->subscriptions->create($organization_id, $result);
 
+        // TODO this is where we do any coupon magic for signup
+        // if coupon is a 100% discount, then add X credits adjustment now
+        // https://github.com/ushahidi/RollCall/issues/735
+
         if ($subscription['status'] === 'cancelled') {
             $this->payments->reactivateSubscription($subscription_id);
         }
