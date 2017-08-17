@@ -4,7 +4,6 @@ namespace RollCall\Http\Requests\RollCall;
 
 use Dingo\Api\Http\FormRequest;
 use RollCall\Traits\UserAccess;
-use App;
 
 class CreateRollCallRequest extends FormRequest
 {
@@ -44,4 +43,5 @@ class CreateRollCallRequest extends FormRequest
             'recipients.*.id' => 'required|exists:users,id'
         ];
     }
+
 }

@@ -4,56 +4,21 @@ namespace RollCall\Messaging;
 
 use Log;
 use SMS;
+use App;
 use RollCall\Contracts\Messaging\MessageService;
-use libphonenumber\PhoneNumberUtil;
-use libphonenumber\NumberParseException;
-use libphonenumber\PhoneNumberFormat;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
 use GrahamCampbell\Throttle\Facades\Throttle;
 
 class SMSService implements MessageService
 {
-
     public function setView($view)
     {
         $this->view = $view;
     }
 
-    private function getRegionCode($to)
-    {
-        // Get region code. The assumption is that all phone numbers are passed as
-        // international numbers
-        if (! starts_with($to, '+')) {
-            $phone_number = '+'.$to;
-        } else {
-            $phone_number = $to;
-        }
-
-        $phone_number_util = PhoneNumberUtil::getInstance();
-
-        try {
-            $phone_number_obj = $phone_number_util->parse($phone_number, null);
-        }
-
-        catch (NumberParseException $exception) {
-            // Can't send a message to an invalid number
-            return '';
-        }
-
-        return $phone_number_util->getRegionCodeForNumber($phone_number_obj);
-    }
-
-    private function normalizePhoneNumber($phone_number) {
-      $util = PhoneNumberUtil::getInstance();
-
-      return $util->format(
-        $util->parse($phone_number, null),
-        PhoneNumberFormat::E164);
-    }
-
     public function getKeyword($to)
     {
-        $region_code = $this->getRegionCode($to);
+        $region_code = $to->getRegionCode();
         $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
 
         if (!$driver) {
@@ -65,7 +30,7 @@ class SMSService implements MessageService
 
     public function send($to, $msg = '', $additional_params = [], $subject = null)
     {
-        $region_code = $this->getRegionCode($to);
+        $region_code = $to->getRegionCode();
 
         // Get driver
         $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
@@ -80,12 +45,7 @@ class SMSService implements MessageService
         $additional_params['from'] = $from;
         $additional_params['msg'] =  $msg;
 
-        try {
-          $to = $this->normalizePhoneNumber($to);
-        } catch (NumberParseException $exception) {
-          Log::error('Could not normalize the phone number: ' . $to);
-          // @TODO should this raise an exception, or let the driver send to this number anyway
-        }
+        $to = $to->getNormalizedNumber();
 
         $view = isset($this->view) ? $this->view : $msg;
 
@@ -113,13 +73,10 @@ class SMSService implements MessageService
         SMS::driver($driver);
 
         $messages_per_second = config('sms.'.$driver.'.messages_per_second');
-        $time = 1/60; // Pass time in minutes to the cache store
 
         if ($messages_per_second) {
-            $throttler = Throttle::get([
-                'ip'    => $from,
-                'route' => $to,
-            ], $messages_per_second, $time);
+
+            $throttler = ThrottleAdapter::get($from, $to, $messages_per_second);
 
             // If we have exceeded the limit return the job back to the queue
             if ($throttler->attempt()) {
@@ -190,7 +147,8 @@ class SMSService implements MessageService
     }
 
     public function sendResponseReceivedSMS($to) {
-        Log::info('Sending "response received" sms to: ' . $to);
+        Log::info('Sending "response received" sms to: ' . $to->getNormalizedNumber());
+
         $this->setView('sms.response_received');
         $this->send($to);
     }

@@ -20,21 +20,18 @@ class OrganizationCest
                 [
                     'name'    => 'RollCall',
                     'subdomain'     => 'rollcall',
-                    'user' => [
-                        'id'   => 5,
-                        'role' => 'admin',
-                    ]
                 ],
             ]
         ]);
     }
+
     /*
-     * Get all organizations as an admin
+     * Cannot get a list of organizations without Authentication
      *
      */
     public function cannotGetAllOrganizationsWithoutAuth(ApiTester $I)
     {
-        $I->wantTo('Can not a list of all organizations with out auth');
+        $I->wantTo('Cannot a list of all organizations without auth');
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(403);
         $I->seeResponseIsJson();
@@ -55,6 +52,12 @@ class OrganizationCest
                 'name'    => 'Testers',
                 'subdomain'     => 'testers'
             ]]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'subscription_status' => 'active'
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'subscriptions' => []
         ]);
         $I->dontSeeResponseContainsJson([
             [
@@ -99,31 +102,6 @@ class OrganizationCest
     }
 
     /*
-     * List organizations that belong to the current user
-     *
-     */
-    public function filterOrganizationsByCurrentUser(ApiTester $I)
-    {
-        $endpoint = $this->endpoint . '/?user=me';
-        $I->wantTo('Get a list of all organizations that the current user belongs to');
-        $I->amAuthenticatedAsUser();
-        $I->sendGET($endpoint);
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            [
-                'name'    => 'RollCall',
-                'subdomain'     => 'rollcall',
-                'user' => [
-                    'id'   => 1,
-                    'role' => 'member',
-                ]
-            ]
-
-        ]);
-    }
-
-    /*
      * View organization as an org admin
      *
      */
@@ -136,13 +114,29 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name'    => 'RollCall',
-            'subdomain'     => 'rollcall',
+            'name'      => 'RollCall',
+            'subdomain' => 'rollcall',
+            'subscription_status' => 'active',
+            'credits'   => 2,
             'user' => [
                 'id'   => 4,
                 'role' => 'owner',
             ]
         ]);
+    }
+
+    /*
+     * View another organization by id
+     *
+     */
+    public function viewAnotherOrganizationAsOrgAdmin(ApiTester $I)
+    {
+        $id = 1;
+        $endpoint = $this->endpoint . '/' . $id;
+        $I->wantTo('View another organization as an org admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($endpoint);
+        $I->seeResponseCodeIs(403);
     }
 
     /*
@@ -155,11 +149,11 @@ class OrganizationCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'organization_name' => 'Test org',
-            'subdomain'         => 'test',
-            'name'              => 'Mary Mata',
-            'email'             => 'mary@ushahidi.org',
-            'password'          => 'testtest',
+            'name'      => 'Test org',
+            'subdomain' => 'test',
+            'owner'     => 'Mary Mata',
+            'email'     => 'mary@ushahidi.org',
+            'password'  => 'testtest',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -196,7 +190,29 @@ class OrganizationCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
             'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'name' => 'Rollcall Org',
+        ]);
+    }
+
+    /*
+     * Update organization subdomain
+     *
+     * FIXME: Currently, updating a subdomain will fail silently since
+     * it's immutable.
+     */
+    public function updateOrganizationSubdomain(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Update organization details as the admin');
+        $I->amAuthenticatedAsOrgOwner();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$id", [
+            'name' => 'Rollcall Org',
+            'subdomain'  => 'testing',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -241,7 +257,7 @@ class OrganizationCest
       $I->haveHttpHeader('Content-Type', 'application/json');
       $I->sendPUT($this->endpoint."/$id", [
           'name' => 'Rollcall Org',
-          'subdomain'  => 'rollcall',
+          'subdomain'  => 'testing',
           'settings'  => ['channels' => ['email' => ['enabled' => true]]],
       ]);
       $I->seeResponseCodeIs(200);
@@ -278,4 +294,22 @@ class OrganizationCest
         ]);
     }
 
+    /*
+     * Create organization using reserved subdomain
+     *
+     */
+    public function createOrganizationWithReservedDomain(ApiTester $I)
+    {
+        $I->wantTo('Create an organization using reserved name');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'name'      => 'Application providers',
+            'subdomain' => 'app',
+            'owner'     => 'Mary Mata',
+            'email'     => 'mary@ushahidi.org',
+            'password'  => 'testtest',
+        ]);
+        $I->seeResponseCodeIs(422);
+    }
 }

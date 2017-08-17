@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\ResendRollCall::class,
         \RollCall\Console\Commands\OrgReset::class,
         \RollCall\Console\Commands\OrgPassword::class,
+        \RollCall\Console\Commands\ExpireCredits::class,
+        \RollCall\Console\Commands\NotifyFreePromoEnding::class,
     ];
 
     /**
@@ -32,5 +34,8 @@ class Kernel extends ConsoleKernel
         // Disable pulling SMS, this doesn't work well with multiple providers
         // $schedule->command(\RollCall\Console\Commands\ReceiveSMS::class)
         //          ->everyMinute();
+
+        $schedule->command(\RollCall\Console\Commands\ExpireCredits::class)->daily();
+        $schedule->command(\RollCall\Console\Commands\NotifyFreePromoEnding::class)->daily();
     }
 }

@@ -26,7 +26,8 @@ class UpdateOrganizationRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'subdomain'  => 'required',
         ];
     }
+
+
 }

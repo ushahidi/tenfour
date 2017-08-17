@@ -1,22 +1,34 @@
 - name: "Test"
   service: test
   command: composer test -- --env=testing
+
+
 - type: parallel
   steps:
   - name: "Deploy (develop)"
     service: deploy
     command: >
-      ENV=staging ansible-playbook -i ./hosts -l staging
+      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO_VERSION=master
+      ENV=staging
+      TF_FOLDER=tf/staging
+      ush-ansible-playbook.sh -vv -i ./hosts -l staging
         -e API_VERSION_SRC=/vols/src
         api-deploy-version.yml
     tag: develop
+
   - name: "Deploy (master)"
     service: deploy
     command: >
-      ENV=production ansible-playbook -i ./hosts -l production
+      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO_VERSION=master
+      ENV=production
+      TF_FOLDER=tf/production
+      ush-ansible-playbook.sh -vv -i ./hosts -l production
         -e API_VERSION_SRC=/vols/src
         api-deploy-version.yml
     tag: master
+
   - type: serial
     tag: develop
     steps:

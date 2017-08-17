@@ -17,6 +17,12 @@ Route::get('/', function () {
 });
 
 Route::post('oauth/access_token', function() {
+    Validator::make(Input::all(), [
+        'username'  => 'required_if:grant_type,password|email',
+        'password'  => 'required_if:grant_type,password',
+        'subdomain' => 'required_if:grant_type,password',
+    ])->validate();
+
     return Response::json(Authorizer::issueAccessToken());
 });
 
@@ -33,7 +39,7 @@ Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
 Route::post('sms/receive/africastalking', 'SMSController@receiveAfricasTalking');
 Route::match(['get', 'post'], 'sms/receive/nexmo', 'SMSController@receiveNexmo');
 
-Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\PersonController@acceptInvite']);
+Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\OrganizationController@acceptInvite']);
 
 // Unsubscribe from emails
 Route::post('unsubscribe', ['uses' => 'Api\First\PersonContactController@unsubscribe']);
@@ -52,3 +58,6 @@ Route::post('rollcalls/{rollcall}/replies', ['uses' => 'Api\First\ReplyControlle
 // Address verification
 Route::post('verification/email', 'VerificationController@sendEmailVerification');
 Route::get('verification/email', 'VerificationController@verifyEmail');
+
+// ChargeBee Webhooks
+Route::post('/chargebee/webhook', 'ChargeBeeWebhookController@handle')->middleware('auth.basic.chargebee-webhook');

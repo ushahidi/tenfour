@@ -7,6 +7,9 @@ use Validator;
 use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberToCarrierMapper;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -15,6 +18,7 @@ class ApiServiceProvider extends ServiceProvider
         Validator::extend('org_contact', 'RollCall\Validators\OrgMemberValidator@validateContact');
         Validator::extend('input_image', 'RollCall\Validators\ImageValidator@validateProfilePictureUpload');
         Validator::extend('phone_number', 'RollCall\Validators\PhoneNumberValidator@validatePhoneNumber');
+        Validator::extend('reserved_word', 'RollCall\Validators\ReservedWordValidator@validateName');
 
         $this->app->resolving(function ($object, $app) {
             if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
@@ -30,6 +34,10 @@ class ApiServiceProvider extends ServiceProvider
 
         $exception->register(function(\League\OAuth2\Server\Exception\InvalidCredentialsException $e) {
             throw new UnauthorizedHttpException('Bearer', $e->getMessage(), $e);
+        });
+
+        $exception->register(function(\Illuminate\Validation\ValidationException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         });
     }
 
@@ -71,6 +79,24 @@ class ApiServiceProvider extends ServiceProvider
 
         $this->app->bind('RollCall\Contracts\Contacts\CsvTransformer',
                          'RollCall\Contacts\CsvTransformer');
+
+        $this->app->bind('RollCall\Contracts\Repositories\SubscriptionRepository',
+                         'RollCall\Repositories\EloquentSubscriptionRepository');
+
+        $this->app->bind('RollCall\Contracts\Services\PaymentService',
+                         'RollCall\Services\Payments\ChargeBeePaymentService');
+                         
+        $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
+            ->needs('libphonenumber\PhoneNumberUtil')
+            ->give(function () {
+                return PhoneNumberUtil::getInstance();
+            });
+
+        $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
+            ->needs('libphonenumber\PhoneNumberToCarrierMapper')
+            ->give(function () {
+                return PhoneNumberToCarrierMapper::getInstance();
+            });
     }
 
     /** Recursively list all traits defined on final class */

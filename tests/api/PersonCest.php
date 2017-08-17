@@ -131,9 +131,35 @@ class PersonCest
             'contact' => [
                 'contact' => '+12077200713',
                 'type'    => 'phone',
+                'meta'    => [
+                    'country_code'    => '1',
+                    'national_number' => '2077200713',
+                ]
             ]
         ]);
     }
+
+    /*
+     * Add invalid phone number
+     *
+     */
+    public function addInvalidPhoneNumber(ApiTester $I)
+    {
+        $id = 2;
+        $user_id = 1;
+        $org_id = 2;
+        $I->wantTo('Add invalid phone number');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$id/people/$user_id/contacts", [
+            'contact' => 'Invalid phone',
+            'type'    => 'phone',
+            'organization_id' => $org_id,
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+    }
+
 
     /*
      * Ensure that default role for new member is 'member' if unspecified
@@ -664,6 +690,7 @@ class PersonCest
             'client_secret' => 'secret',
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
+            'subdomain' => 'rollcall',
             'password' => 'another_password',
             'grant_type' => 'password'
         ]);
@@ -682,6 +709,7 @@ class PersonCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/password/email', [
             'username' => 'test@ushahidi.com',
+            'subdomain' => 'rollcall'
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -690,6 +718,7 @@ class PersonCest
             'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
             'password_confirmation' => 'cake1234',
+            'subdomain' => 'rollcall',
             'token' => $record['token']
         ]);
         $I->seeResponseCodeIs(200);
@@ -700,6 +729,7 @@ class PersonCest
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
+            'subdomain' => 'rollcall',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(200);

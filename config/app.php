@@ -162,7 +162,7 @@ return [
         GrahamCampbell\Throttle\ThrottleServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
         Waavi\UrlShortener\UrlShortenerServiceProvider::class,
-
+        \Torann\GeoIP\GeoIPServiceProvider::class,
     ],
 
     /*
@@ -219,7 +219,7 @@ return [
         'Throttle' => GrahamCampbell\Throttle\Facades\Throttle::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
         'UrlShortener' => Waavi\UrlShortener\Facades\UrlShortener::class,
-
+        'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
     ],
 
 ];

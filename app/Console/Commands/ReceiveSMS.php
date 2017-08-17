@@ -66,6 +66,8 @@ class ReceiveSMS extends Command
 
         foreach ($messages as $message)
         {
+            Log::info('[ReceiveSMS] Received SMS message from: ' . $message['from'] . " with id: " . $message['id']);
+
             if (!starts_with($message['from'], '+')) {
                 $message['from'] = '+' . $message['from'];
             }

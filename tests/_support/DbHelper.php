@@ -28,6 +28,11 @@ class DbHelper extends \Codeception\Module\Db
         // Delete roles;
         // $dbh->exec('TRUNCATE TABLE roles');
 
+
+        $dbh->exec('TRUNCATE TABLE credit_adjustments');
+        $dbh->exec('TRUNCATE TABLE subscriptions');
+        $dbh->exec('TRUNCATE TABLE addons');
+
         // Delete test organizations
         $dbh->exec('TRUNCATE TABLE organizations');
 
@@ -54,5 +59,6 @@ class DbHelper extends \Codeception\Module\Db
         $dbh->exec('TRUNCATE TABLE unverified_addresses');
 
         $dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+
     }
 }

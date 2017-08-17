@@ -11,9 +11,12 @@ use RollCall\Http\Requests\Organization\GetOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
 use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
 use RollCall\Http\Requests\Organization\UpdateMemberRequest;
+use RollCall\Http\Requests\Person\AcceptInviteRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
+use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
+use RollCall\Services\CreditService;
 use DB;
 
 /**
@@ -22,13 +25,14 @@ use DB;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response)
+    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService)
     {
         $this->organizations = $organizations;
         $this->people = $people;
         $this->contacts = $contacts;
         $this->auth = $auth;
         $this->response = $response;
+        $this->creditService = $creditService;
     }
 
     /**
@@ -49,14 +53,6 @@ class OrganizationController extends ApiController
      */
     public function index(GetOrganizationsRequest $request)
     {
-        if ($this->auth->user() && !isset($this->auth->user()['id'])) {
-            \Log::error('User is authenticated but has no user id');
-            return response('No user id', 403);
-        }
-
-        // Pass current user ID to repo
-        $this->organizations->setCurrentUserId($this->auth->user()['id']);
-
         $organizations = $this->organizations->all($request->query('subdomain'), $request->query('name'));
 
         return $this->response->collection($organizations, new OrganizationTransformer, 'organizations');
@@ -89,6 +85,8 @@ class OrganizationController extends ApiController
         $owner = [];
         $contact = [];
 
+        $location = geoip()->getLocation();
+
         // Email and SMS is enabled for all new accounts by default
         $settings = [
             'channels' => [
@@ -96,21 +94,23 @@ class OrganizationController extends ApiController
                     'enabled' => true
                 ],
                 'sms' => [
-                    'enabled' => true
+                    'enabled' => true,
+                    'default_region' => $location->iso_code,
+                    'regions' => []
                 ]
             ]
         ];
 
         // Get organization params
         $org_input = [
-            'name'      => $input['organization_name'],
+            'name'      => $input['name'],
             'subdomain' => strtolower($input['subdomain']),
             'settings'  => $settings,
         ];
 
         // Get owner details
         $owner_input = [
-            'name'     => $input['name'],
+            'name'     => $input['owner'],
             'role'     => 'owner',
             'password' => $input['password'],
         ];
@@ -122,6 +122,8 @@ class OrganizationController extends ApiController
 
         DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
             $organization = $this->organizations->create($org_input);
+
+            $this->creditService->createStartingBalance($organization['id']);
 
             $owner = $this->people->create($organization['id'], $owner_input);
 
@@ -143,8 +145,11 @@ class OrganizationController extends ApiController
     /**
      * Get a single organization
      *
-     * @Get("/{orgId}")
+     * @Get("/{org_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
      * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
@@ -168,11 +173,13 @@ class OrganizationController extends ApiController
     /**
      * Update organization details
      *
-     * @Put("/{orgId}")
+     * @Put("/{org_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
      * @Request({
      *     "name": "Ushahidi",
-     *     "subdomain": "ushahidi@rollcall.io"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
@@ -189,18 +196,19 @@ class OrganizationController extends ApiController
      */
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->update($request->all(), $organization_id);
+        $organization = $this->organizations->update($request->except('subdomain'), $organization_id);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 
     /**
      * Delete an organization
      *
-     * @Delete("/{orgId}")
+     * @Delete("/{org_id}")
      * @Versions({"v1"})
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
+     * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *   "organization": {
      *        "id": 3,
@@ -220,4 +228,46 @@ class OrganizationController extends ApiController
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 
+     /**
+     * Accept member invite
+     *
+     * @Post("invite/{org_id}/accept/{person_id}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
+     * @Request({
+     *     "invite_token": "aSecretToken",
+     *     "password": "newpassword",
+     *     "password_confirm": "newpassword"
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body={
+     *     "person": {
+     *         "name": "User Name",
+     *         "role": "member",
+     *         "person_type": "user"
+     *     }
+     * })
+     *
+     * @todo turn this into a person resource
+     *
+     * @param InviteMemberRequest $request
+     * @return Response
+     */
+    public function acceptInvite(AcceptInviteRequest $request, $organization_id, $person_id)
+    {
+        $member = $this->people->find($organization_id, $person_id);
+        if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
+            $member['password'] = $request['password'];
+            $member['person_type'] = 'user';
+            $member['role'] = 'member';
+            $member['invite_token'] = null;
+            $member = $this->people->update($organization_id, $member, $person_id);
+
+            return $this->response->item($member, new UserTransformer, 'person');
+        }
+        abort(401, 'Not authenticated');
+    }
 }

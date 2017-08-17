@@ -42,7 +42,7 @@ class PasswordController extends Controller
     {
         $this->validate($request, ['username' => 'required|email']);
 
-        $response = Password::sendResetLink($request->only('username'), function (Message $message) {
+        $response = Password::sendResetLink($request->only('username', 'subdomain'), function (Message $message) {
             $message->subject($this->getEmailSubject());
         });
 
@@ -70,7 +70,7 @@ class PasswordController extends Controller
         ]);
 
         $credentials = $request->only(
-            'username', 'password', 'password_confirmation', 'token'
+            'username', 'subdomain', 'password', 'password_confirmation', 'token'
         );
 
         $response = Password::reset($credentials, function ($user, $password) {

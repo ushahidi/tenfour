@@ -36,6 +36,9 @@ $api->version($version, [
     $api->put($base.'organizations/{organization}/files/{file}', ['uses' => 'ContactFilesController@update']);
     $api->post($base. 'organizations/{organization}/files/{file}/contacts', ['uses' => 'ContactFilesController@importContacts']);
 
+    // Supported regions for an org
+    $api->get($base.'organizations/{organization}/regions', ['uses' => 'RegionController@all']);
+
     //Rollcalls
     ////////////////////////////////////////////////////////////////////
     $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
@@ -52,4 +55,11 @@ $api->version($version, [
     $api->get($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@find']);
     $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@listReplies']);
     $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@addReply']);
+
+    // Subscriptions
+    $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');
+    $api->post($base.'organizations/{organization}/subscriptions/hostedpage', ['uses' => 'SubscriptionController@createHostedPage']);
+    $api->put($base.'organizations/{organization}/subscriptions/hostedpage/{subscription}', ['uses' => 'SubscriptionController@updateHostedPage']);
+    $api->post($base.'organizations/{organization}/subscriptions/hostedpagesuccess/{subscription}', ['uses' => 'SubscriptionController@confirmHostedPage']);
+
 });

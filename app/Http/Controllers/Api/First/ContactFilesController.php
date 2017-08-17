@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App;
 
 /**
- * @Resource("Files", uri="/api/v1/organizations/{orgId}/files")
+ * @Resource("Files", uri="/api/v1/organizations")
  */
 class ContactFilesController extends ApiController
 {
@@ -25,19 +25,23 @@ class ContactFilesController extends ApiController
     /**
      * File Upload
      *
-     * @Post("/")
+     * @Post("/{org_id}/files")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id")
+     * })
+     *
      * @Request({"file": "sample.csv"}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "file": {
-     *         "columns": [
+     *         "columns": {
      *             "Name",
      *             "Description",
      *             "Phone",
      *             "Email",
      *             "Address",
      *            "Twitter"
-     *         ],
+     *         },
      *         "id": 2,
      *         "organization": {
      *             "id": 2,
@@ -72,15 +76,20 @@ class ContactFilesController extends ApiController
     /**
      * Update File Upload
      *
-     * @Put("/{file_id}")
+     * @Put("/{orgId}/files/{file_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("file_id", type="number", required=true, description="File id")
+     * })
+     *
      * @Request({
-     *     "columns": ['name','description', 'phone', 'email', 'address', 'twitter']
-     *     "maps_to": ['name', null, 'phone', 'email', null, 'twitter']
+     *     "columns": {"name", "description", "phone", "email", "address", "twitter"},
+     *     "maps_to": {"name", null, "phone", "email", null, "twitter"}
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "columns": ['name','description', 'phone', 'email', 'address', 'twitter']
-     *     "maps_to": ['name', null, 'phone', 'email', null, 'twitter']
+     *     "columns": {"name","description", "phone", "email", "address", "twitter"},
+     *     "maps_to": {"name", null, "phone", "email", null, "twitter"}
      * })
      *
      * @param Request $request
@@ -101,11 +110,16 @@ class ContactFilesController extends ApiController
     /**
      * Import contacts
      *
-     * @Post("/{file_id}/contacts")
+     * @Post("/{orgId}/files/{file_id}/contacts")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("file_id", type="number", required=true, description="File id")
+     * })
+     *
      * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     'count' : 2
+     *     "count" : 2
      * })
      *
      * @param Request $request

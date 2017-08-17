@@ -63,7 +63,6 @@ class RollCallReceived extends Notification
         $org = Organization::findOrFail($this->roll_call->user->organization['id']);
 
         $client_url = $org->url();
-        $domain = config('rollcall.domain');
 
         $params['roll_call_url'] = $client_url .'/rollcalls/'. $this->roll_call['id'];
         $params['message']= $this->roll_call['message'];

@@ -11,33 +11,31 @@ class UpdateContactRequest extends UpdatePersonRequest
     {
         $rules = [];
 
+        $rules['type'] = 'in:phone,email';
+
         if ($this->input('type') === 'phone') {
             $rules['contact'] = 'phone_number';
         } elseif ($this->input('type') === 'email') {
             $rules['contact'] = 'email';
         }
 
-        $rules['type']    = 'in:phone,email';
-
-        $rules['contact'] = Rule::unique('contacts')
-            ->ignore($this->request->get('id'), 'id')
-            ->where('organization_id', $this->request->get('organization_id'));
+        $rules['contact'] .= '|'. Rule::unique('contacts')
+                            ->ignore($this->route('contact'))
+                            ->where('organization_id', $this->route('organization'));
 
         return $rules;
     }
 
     public function messages()
     {
+        $messages = [];
+
         if ($this->input('type') === 'phone') {
-            return [
-                'contact.unique' => 'Phone number already in use, choose a different one'
-            ];
+            $messages['contact.unique'] = 'Phone number already in use, choose a different one';
         } elseif ($this->input('type') === 'email') {
-            return [
-                'contact.unique' => 'Email already in use, choose a different one'
-            ];
+            $messages['contact.unique'] = 'Email already in use, choose a different one';
         }
 
+        return $messages;
     }
-
 }

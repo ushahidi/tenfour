@@ -30,6 +30,17 @@ class OrganizationTransformer extends TransformerAbstract
             }
         }
 
+        if (isset($organization['subscriptions'])) {
+            if (isset($organization['current_subscription'])) {
+                $organization['subscription_status'] = $organization['current_subscription']['status'];
+            } else {
+                $organization['subscription_status'] = 'none';
+            }
+        }
+
+        unset($organization['subscriptions']);
+        unset($organization['current_subscription']);
+
         $organization['id'] = (int) $organization['id'];
         $organization['uri'] = '/organizations/' . $organization['id'];
 

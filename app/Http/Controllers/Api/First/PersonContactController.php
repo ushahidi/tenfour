@@ -11,9 +11,13 @@ use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\ContactTransformer;
 use RollCall\Http\Response;
 use Illuminate\Http\Request;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberToCarrierMapper;
+use RollCall\Messaging\PhoneNumberAdapter;
+use App;
 
 /**
- * @Resource("Contacts", uri="/api/v1/organizations/{orgId}/people/{personId}/contacts")
+ * @Resource("Contacts", uri="/api/v1/organizations")
  */
 class PersonContactController extends ApiController
 {
@@ -28,7 +32,12 @@ class PersonContactController extends ApiController
     /**
      * Add member contact
      *
-     * @Post("/")
+     * @Post("/{org_id}/people/{person_id}/contacts")
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     * })
+     *
      * @Versions({"v1"})
      * @Request({
      *       "type": "email",
@@ -48,15 +57,27 @@ class PersonContactController extends ApiController
      */
     public function store(AddContactRequest $request, $organization_id, $user_id)
     {
-        return $this->response->item($this->people->addContact($organization_id, $user_id, $request->all()),
+        $input = $request->all();
+
+        if ($input['type'] === 'phone') {
+            $this->formatPhoneInput($input);
+        }
+
+        return $this->response->item($this->people->addContact($organization_id, $user_id, $input),
                                      new ContactTransformer, 'contact');
     }
 
     /**
      * Update member contact
      *
-     * @Put("/{contactId}")
+     * @Put("{org_id}/people/{person_id}/contacts/{contact_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     *   @Parameter("contact_id", type="number", required=true, description="Contact id")
+     * })
+     *
      * @Request({
      *       "type": "email",
      *       "contact": "linda@ushahidi.com",
@@ -75,15 +96,27 @@ class PersonContactController extends ApiController
      */
     public function update(UpdateContactRequest $request, $organization_id, $user_id, $contact_id)
     {
-        return $this->response->item($this->people->updateContact($organization_id, $user_id, $request->all(), $contact_id),
+        $input = $request->all();
+
+        if ($input['type'] === 'phone') {
+            $this->formatPhoneInput($input);
+        }
+
+        return $this->response->item($this->people->updateContact($organization_id, $user_id, $input, $contact_id),
                                      new ContactTransformer, 'contact');
     }
 
     /**
      * Delete member contact
      *
-     * @Delete("/{contactId}")
+     * @Delete("{org_id}/people/{person_id}/contacts/{contact_id}")
      * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     *   @Parameter("contact_id", type="number", required=true, description="Contact id")
+     * })
+     *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "contact": {
@@ -129,4 +162,20 @@ class PersonContactController extends ApiController
         return response('OK', 200);
     }
 
+    protected function formatPhoneInput(array &$input)
+    {
+
+        $phone_number_adapter = App::make('RollCall\Messaging\PhoneNumberAdapter',
+                                          [
+                                              $input['contact']
+                                          ]);
+
+        $input['contact'] = $phone_number_adapter->getNormalizedNumber();
+
+        $input['meta'] = [
+            'national_number' => $phone_number_adapter->getNationalNumber(),
+            'country_code'    => $phone_number_adapter->getCountryCode(),
+            'carrier'         => $phone_number_adapter->getCarrier(),
+        ];
+    }
 }

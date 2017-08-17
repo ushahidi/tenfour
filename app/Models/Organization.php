@@ -38,6 +38,25 @@ class Organization extends Model
         return $this->hasMany('RollCall\Models\User');
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany('RollCall\Models\Subscription');
+    }
+
+    public function currentSubscription()
+    {
+        if (count($this->subscriptions)) {
+            return $this->subscriptions[0];
+        } else {
+            return null;
+        }
+    }
+
+    public function owner()
+    {
+        return $this->members->where('role', 'owner')->first();
+    }
+
     /**
      *
      * An organization has rollcalls
@@ -56,12 +75,17 @@ class Organization extends Model
         return $this->hasMany('RollCall\Models\Setting');
     }
 
-    public function url()
+    public function url($path = '')
     {
+        if (config('app.env') === 'local') {
+            return 'http://localhost:8080' . $path;
+        }
+
         return 'https://' .
             $this->subdomain .
             '.' .
-            config('rollcall.domain');
+            config('rollcall.domain') .
+            $path;
     }
 
 }
