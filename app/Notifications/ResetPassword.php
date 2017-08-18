@@ -50,7 +50,8 @@ class ResetPassword extends Notification
         $resetLink = url($this->organization->url() .
             '/login/reset-password/' .
             $this->token .
-            '?email=' . urlencode($this->email));
+            '?email=' . urlencode($this->email) .
+            '&subdomain=' . urlencode($this->organization['subdomain']));
 
         $data = [
             'link'                    => $resetLink,
