@@ -68,7 +68,7 @@ class SubscriptionCest
         // check that the credit adjustment has been made
         $I->seeRecord('credit_adjustments', [
             'organization_id'         => 2,
-            'adjustment'              => 1050,
+            'adjustment'              => 1048,
             'type'                    => 'topup',
         ]);
 

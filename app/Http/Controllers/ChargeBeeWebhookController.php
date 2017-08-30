@@ -10,6 +10,8 @@ use RollCall\Services\CreditService;
 use Illuminate\Http\Request;
 use ChargeBee_Environment;
 use ChargeBee_Subscription;
+use ChargeBee_Coupon;
+use ChargeBee_InvalidRequestException;
 use RollCall\Notifications\PaymentFailed;
 use RollCall\Notifications\PaymentSucceeded;
 use RollCall\Notifications\TrialEnding;
@@ -104,6 +106,16 @@ class ChargeBeeWebhookController extends Controller
         return response('OK', 200);
     }
 
+    protected function topup($organization_id, $credits, $meta, $zeroing)
+    {
+        if ($zeroing) {
+            $balance = $this->creditService->getBalance($organization_id);
+            $credits -= $balance;
+        }
+
+        return $this->creditService->addCreditAdjustment($organization_id, $credits, 'topup', $meta);
+    }
+
     public function handlePaymentSucceeded($payload)
     {
         $subscription = $this->getSubscription($payload);
@@ -123,9 +135,7 @@ class ChargeBeeWebhookController extends Controller
 
         $meta = $payload;
 
-        // TODO credits expiry at end of billing cycle, add zeroing credit adjustment here
-
-        $creditAdjustment = $this->creditService->addCreditAdjustment($subscription->organization->id, $credits, 'topup', $meta);
+        $creditAdjustment = $this->topup($subscription->organization->id, $credits, $meta, true);
 
         $subscription->update([
             'next_billing_at'   => $payload->subscription->next_billing_at,
@@ -208,10 +218,20 @@ class ChargeBeeWebhookController extends Controller
             'status'            => $payload->subscription->status,
         ]);
 
-        // TODO this is where we do any coupon magic for recurring
-        // if coupon is a 100% discount, then add X credits adjustment now
-        // https://github.com/ushahidi/RollCall/issues/735
-        // https://rollcall.chargebee.com/events/ev_2rprAVkcQSZBhCS112C/details
+        if ($subscription['promo_code']) {
+            // https://github.com/ushahidi/RollCall/issues/735
+            try {
+                $coupon_result = ChargeBee_Coupon::retrieve($subscription['promo_code']);
+                if ($coupon_result->coupon()->discountPercentage == 100) {
+                    $meta = $payload;
+                    $meta->rc_freepromo = true;
+                    $creditAdjustment = $this->topup($subscription->organization->id, config('credits.freepromo'), $meta, true);
+                }
+            }
+            catch (ChargeBee_InvalidRequestException $e) {}
+            catch (Exception $e) {}
+        }
+
 
         Log::info('[ChargeBee] Processed SubscriptionRenewed for subscription ' . $subscription->subscription_id);
 
