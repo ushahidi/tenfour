@@ -750,6 +750,14 @@ class PersonCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'blocked' => 1));
+
+        $I->seeRecord('notifications', [
+            'notifiable_id'           => '4',
+            'notifiable_type'         => 'RollCall\Models\User',
+            'type'                    => 'RollCall\Notifications\Unsubscribe',
+            'data'                    => '{"person_name":"Test user","person_id":1,"profile_picture":false,"initials":"TU","contact":"test@ushahidi.com","contact_type":"email"}'
+        ]);
+
     }
 
 }

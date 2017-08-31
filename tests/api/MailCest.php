@@ -16,7 +16,7 @@ class MailCest
         $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
         $I->sendPost($endpoint, $reply);
         $I->seeResponseCodeIs(200);
-        
+
         $I->seeRecord('replies', [
             'message' => 'Confirmed',
             'contact_id' => $contact_id,
@@ -93,12 +93,19 @@ class MailCest
         $I->wantTo('Handle SES complaints');
         $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
         $I->sendPost($endpoint, $complaint);
+        $I->seeResponseCodeIs(200);
 
         $I->seeRecord('roll_calls', [
             'id' => '1',
             'complaint_count' => $count,
         ]);
 
-        $I->seeResponseCodeIs(200);
+        // check a notification has been sent
+        $I->seeRecord('notifications', [
+            'notifiable_id'           => '4',
+            'notifiable_type'         => 'RollCall\Models\User',
+            'type'                    => 'RollCall\Notifications\Complaint',
+            'data'                    => '{"person_name":"Admin user","person_id":2,"profile_picture":false,"initials":"AU","rollcall_message":"Westgate under siege","rollcall_id":1}'
+        ]);
     }
 }

@@ -183,7 +183,7 @@ class EloquentPersonRepository implements PersonRepository
             ->find($id);
     }
 
-    protected function getAdmins($organization_id)
+    public function getAdmins($organization_id)
     {
         return User::where('organization_id', $organization_id)
             ->whereIn('role', ['admin', 'owner'])

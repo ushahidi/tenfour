@@ -60,5 +60,12 @@ interface PersonRepository extends OrgCrudRepository
      */
     public function deleteContact($organization_id, $user_id, $contact_id);
 
-
+    /**
+     * Get the admins for an organization
+     *
+     * @param int $organization_id
+     *
+     * @return array
+     */
+    public function getAdmins($organization_id);
 }
