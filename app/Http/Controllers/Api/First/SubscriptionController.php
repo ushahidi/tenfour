@@ -44,16 +44,16 @@ class SubscriptionController extends ApiController
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "subscriptions": {{
+     *     "subscriptions": {
      *         "id": "1",
      *         "status": "in_trial",
      *         "card_type": "Visa",
      *         "last_four": "1111",
      *         "expiry_month": 12,
      *         "expiry_year": 1,
-     *         "trial_ends_at": "2017-06-02 15:38:33,
+     *         "trial_ends_at": "2017-06-02 15:38:33",
      *         "next_billing_at": "2017-06-02 15:38:33",
-     *     }}
+     *     }
      * })
      *
      * @param Request $request
@@ -71,8 +71,8 @@ class SubscriptionController extends ApiController
      * @Get("{org_id}/subscriptions/{subscription_id}")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("org_id", type="number", required=true, description="Organization id")
-     *   @Parameter("subscription_id", type="number", required="true, description="Subscription id")
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -83,8 +83,8 @@ class SubscriptionController extends ApiController
      *         "last_four": "1111",
      *         "expiry_month": 12,
      *         "expiry_year": 1,
-     *         "trial_ends_at": "2017-06-02 15:38:33,
-     *         "next_billing_at": "2017-06-02 15:38:33",
+     *         "trial_ends_at": "2017-06-02 15:38:33",
+     *         "next_billing_at": "2017-06-02 15:38:33"
      *     }
      * })
      *
@@ -103,12 +103,10 @@ class SubscriptionController extends ApiController
      * @Delete("{org_id}/subscriptions/{subscription_id}")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("org_id", type="number", required=true, description="Organization id")
-     *   @Parameter("subscription_id", type="number", required="true, description="Subscription id")
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
      * })
-     * @Request({
-     *
-     * }, headers={"Authorization": "Bearer token"})
+     * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *   "subscription": {
      *        "id": 1,
@@ -179,11 +177,12 @@ class SubscriptionController extends ApiController
      * @Put("{org_id}/subscriptions/hostedpage")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("org_id", type="number", required=true, description="Organization id")
-     *   @Parameter("subscription_id", type="number", required="true, description="Subscription id")
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
      * })
      * @Request({
      *     "callback": "http://subdomain.rollcall.io/callback",
+     * })
      * @Response(200, body={
      *     "url": "http://api.chargebee.com/hostedpage?xxx"
      * })
@@ -215,11 +214,12 @@ class SubscriptionController extends ApiController
      * @Post("{org_id}/subscriptions/hostedpage/confirm")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("org_id", type="number", required=true, description="Organization id")
-     *   @Parameter("subscription_id", type="number", required="true, description="Subscription id")
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
      * })
      * @Request({
      *     "subscription_id": "cb123uijh12iu3h87",
+     * })
      * @Response(200, body={
      *   "subscription": {
      *        "id": 1,
