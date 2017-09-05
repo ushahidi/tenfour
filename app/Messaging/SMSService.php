@@ -8,38 +8,70 @@ use App;
 use RollCall\Contracts\Messaging\MessageService;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
 use GrahamCampbell\Throttle\Facades\Throttle;
+use RollCall\Models\SMS as OutgoingSMS;
 
 class SMSService implements MessageService
 {
+
+    private $view;
+    private $iterator;
+
     public function setView($view)
     {
         $this->view = $view;
     }
 
-    public function getKeyword($to)
+    public function setIterator($iterator)
     {
-        $region_code = $to->getRegionCode();
+        $this->iterator = $iterator;
+    }
+
+    public function getDriver($region_code)
+    {
+        if (config('sms.driver') == 'log') {
+            return 'log';
+        }
+
         $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
 
         if (!$driver) {
             $driver = config('rollcall.messaging.sms_providers.default.driver');
         }
 
-        return config('sms.'.$driver.'.keyword');
+        return $driver;
     }
 
-    public function send($to, $msg = '', $additional_params = [], $subject = null)
+    public function getKeyword($to)
     {
         $region_code = $to->getRegionCode();
 
-        // Get driver
-        $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
-        $from = config('rollcall.messaging.sms_providers.'.$region_code.'.from');
+        $driver = $this->getDriver($region_code);
 
-        if (! $driver) {
-            $driver = config('rollcall.messaging.sms_providers.default.driver');
-            $from = config('rollcall.messaging.sms_providers.default.from');
+        return config('sms.'.$driver.'.keyword');
+    }
+
+    public function send($to, $msg = '', $additional_params = [], $subject = null, $from = null)
+    {
+        $region_code = $to->getRegionCode();
+
+        if ($from == null) {
+            // Get 'from' address from iterator if set
+            if ($this->iterator) {
+                $from = $this->iterator->current();
+            } else {
+                $from = config('rollcall.messaging.sms_providers.'.$region_code.'.from');
+
+                if (!$from) {
+                    $from = config('rollcall.messaging.sms_providers.default.from');
+                }
+
+                if (is_array($from)) {
+                    $from = $from[0];
+                }
+            }
         }
+
+        $driver = $this->getDriver($region_code);
 
         $additional_params['keyword'] = config('sms.'.$driver.'.keyword');
         $additional_params['from'] = $from;
@@ -89,12 +121,34 @@ class SMSService implements MessageService
             SMS::send($view, $additional_params, function($sms) use ($to) {
                 $sms->to($to);
             });
+
+            $this->logSMS(
+                $to,
+                $from,
+                $driver,
+                isset($additional_params['rollcall_id'])?$additional_params['rollcall_id']:0,
+                isset($additional_params['sms_type'])?$additional_params['sms_type']:'other',
+                view($view, $additional_params));
+
             $job->delete();
         } catch (SMSNotSentException $e) {
+            Log::warning($e);
             // Retry in 3 seconds
             $job->release(3);
         }
 
+    }
+
+    protected function logSMS($to, $from, $driver, $rollcall_id = 0, $type = 'other', $message = '')
+    {
+        $sms = new OutgoingSMS;
+        $sms->to = $to;
+        $sms->from = $from;
+        $sms->driver = $driver;
+        $sms->rollcall_id = $rollcall_id;
+        $sms->type = $type;
+        $sms->message = $message;
+        $sms->save();
     }
 
     public function getMessages(Array $options = [])
@@ -146,10 +200,15 @@ class SMSService implements MessageService
         return $message;
     }
 
-    public function sendResponseReceivedSMS($to) {
+    public function sendResponseReceivedSMS($to, $from = null, $rollcall_id = 0) {
         Log::info('Sending "response received" sms to: ' . $to->getNormalizedNumber());
 
+        $params = [
+            'sms_type' => 'response_received',
+            'rollcall_id' => $rollcall_id
+        ];
+
         $this->setView('sms.response_received');
-        $this->send($to);
+        $this->send($to, null, $params, null, $from);
     }
 }

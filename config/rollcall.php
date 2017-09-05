@@ -17,27 +17,27 @@ return [
         'sms_providers' => [
             'KE' => [
                 'driver' => 'africastalking',
-                'from' => env('AFRICASTALKING_SRC_ADDR', '20880')
+                'from' => explode('|', env('AFRICASTALKING_SRC_ADDR', '20880|20881'))
             ],
             'US' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => explode('|', env('NEXMO_SRC_ADDR_US', env('NEXMO_SRC_ADDR', 'rollcall')))
             ],
             'NZ' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => explode('|', env('NEXMO_SRC_ADDR_NZ', env('NEXMO_SRC_ADDR', 'rollcall')))
             ],
             'CA' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => explode('|', env('NEXMO_SRC_ADDR_US', env('NEXMO_SRC_ADDR', 'rollcall')))
             ],
             'IE' => [
                 'driver' => 'nexmo',
-                'from' => '353870604184'
+                'from' => explode('|', env('NEXMO_SRC_ADDR_IE', env('NEXMO_SRC_ADDR', 'rollcall')))
             ],
             'default' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => explode('|', env('NEXMO_SRC_ADDR', 'rollcall'))
             ],
         ],
 
@@ -51,5 +51,7 @@ return [
         // Bounce and complaints thresholds
         'bounce_threshold' => env('BOUNCE_THRESHOLD', 3),
         'complaint_threshold' => env('COMPLAINT_THRESHOLD', 3),
+
+        'skip_number_shuffle' => env('SKIP_NUMBER_SHUFFLE', false),
     ]
 ];

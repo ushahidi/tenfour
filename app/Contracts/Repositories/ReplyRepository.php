@@ -53,4 +53,9 @@ interface ReplyRepository extends CrudRepository
      * @return int
      */
     public function getLastReplyId();
+
+    /**
+     * Save a reply
+     */
+    public function save($from, $message, $message_id = 0, $roll_call_id = null, $provider = null, $outgoing_number = null);
 }

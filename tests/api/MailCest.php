@@ -108,4 +108,33 @@ class MailCest
             'data'                    => '{"person_name":"Admin user","person_id":2,"profile_picture":false,"initials":"AU","rollcall_message":"Westgate under siege","rollcall_id":1}'
         ]);
     }
+
+    public function receiveRollCallMail(ApiTester $I)
+    {
+        $I->wantTo('Receive a RollCall mail');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/api/v1/rollcalls', [
+            'message' => 'Sinkhole has opened. Are you ok?',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 3
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
+            ]
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Sinkhole has opened. Are you ok?",
+            'type'        => 'rollcall',
+            'to'          => 'org_member@ushahidi.com',
+            'rollcall_id' => 7,
+            'from'        => 'rollcall-7@qa.rollcall.io'
+        ]);
+    }
 }

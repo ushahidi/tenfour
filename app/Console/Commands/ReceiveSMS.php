@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 use Log;
 use RollCall\Messaging\SMSService;
-use RollCall\Messaging\Storage\Reply as ReplyStorage;
+use RollCall\Contracts\Repositories\ReplyRepository;
 
 class ReceiveSMS extends Command
 {
@@ -33,19 +33,19 @@ class ReceiveSMS extends Command
 
     /**
      * The storage instance.
-     * @var RollCall\Messaging\Storage\Reply
+     * @var RollCall\Contracts\Repositories\ReplyRepository
      */
-    protected $reply_storage;
+    protected $replies;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(SMSService $message_service, ReplyStorage $reply_storage)
+    public function __construct(SMSService $message_service, ReplyRepository $replies)
     {
         $this->message_service = $message_service;
-        $this->reply_storage = $reply_storage;
+        $this->replies = $replies;
 
         parent::__construct();
     }
@@ -57,10 +57,13 @@ class ReceiveSMS extends Command
      */
     public function handle()
     {
+        Log::warning('Disabled sms:receive command as it is unused and needs maintenance.');
+        return;
+
         // Get last reply id from provider
         // TODO: Track provider ids separately. Also this is most likely provider
         // dependent
-        $last_reply_id = $this->reply_storage->getLastReplyId();
+        $last_reply_id = $this->replies->getLastReplyId();
 
         $messages = $this->message_service->getMessages(['lastReceivedId' => $last_reply_id]);
 
@@ -72,7 +75,11 @@ class ReceiveSMS extends Command
                 $message['from'] = '+' . $message['from'];
             }
 
-            $saved = $this->reply_storage->save($from, $message['message'], $message['id']);
+            $saved = $this->replies->save($from, $message['message'], $message['id']);
+
+            // TODO:
+            // send "Response received" from same number it was received on
+            // log sms with relevant rollcall_id
 
             if ($saved) {
                 $this->message_service->sendResponseReceivedSMS($message['from']);

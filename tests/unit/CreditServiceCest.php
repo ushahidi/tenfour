@@ -16,7 +16,7 @@ class CreditServiceCest
 
         $t->assertEquals(
             $this->creditService->getBalance($org_id),
-            2
+            3
         );
     }
 
@@ -28,7 +28,7 @@ class CreditServiceCest
 
         $t->assertEquals(
             $this->creditService->getBalance($org_id),
-            1
+            2
         );
     }
 
@@ -36,7 +36,7 @@ class CreditServiceCest
     {
         $org_id = 2;
 
-        $this->creditService->addCreditAdjustment($org_id, -3);
+        $this->creditService->addCreditAdjustment($org_id, -4);
 
         // allow credits to be overdrawn
 
@@ -52,7 +52,7 @@ class CreditServiceCest
 
         $t->assertEquals(
             $this->creditService->getBalance($org_id),
-            2
+            3
         );
 
         $this->creditService->expireCreditsOnUnpaid();

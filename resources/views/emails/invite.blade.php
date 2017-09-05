@@ -112,7 +112,24 @@
             border: 0 !important;
             font-size: 16px !important;
         }
+    }
 
+    .avatar-alpha {
+        margin: 0 auto;
+        font-family: 'Lato', Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 1em;
+        font-weight: 700;
+        color: #FFFFFF;
+        text-align: center;
+        line-height: 90px;
+         width: 90px;
+        height: 90px;
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        border-radius: 50px;
+        max-width: 90px;
+        border: 1px solid #DCDCDC;
+        background-color: #222222;
     }
 
     @media screen and (max-width: 375px) {
@@ -176,9 +193,12 @@
                         <table cellspacing="0" cellpadding="0" border="0" width="100%">
                             <tbody><tr>
                               	<td class="padding-copy" align="center">
-                                  <!-- TODO: use $message->embed -->
-                                    <img src="{{ $profile_picture }}" alt="Manage your account" style="display: block; color: #666666; font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px;" class="img-max" border="0" height="80" width="80"></td>
-
+                                  @if($profile_picture)
+                                      <!-- TODO: use $message->embed -->
+                                      <img src="{{ $profile_picture }}" alt="{{$org_name}}" style="display: block; color: #666666; font-family: Lato, Helvetica, arial, sans-serif; font-size: 16px;" class="img-max" border="0" height="80" width="80"></td>
+                                  @else
+                                      <div class="avatar-alpha">{{$initials}}</div>
+                                  @endif
                             </tr>
                             <tr>
                                 <td>

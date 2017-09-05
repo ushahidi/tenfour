@@ -117,7 +117,7 @@ class OrganizationCest
             'name'      => 'RollCall',
             'subdomain' => 'rollcall',
             'subscription_status' => 'active',
-            'credits'   => 2,
+            'credits'   => 3,
             'user' => [
                 'id'   => 4,
                 'role' => 'owner',

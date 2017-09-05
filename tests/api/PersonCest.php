@@ -608,6 +608,12 @@ class PersonCest
                 'invite_sent' => true
             ]
         ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "RollCall invited you to join Rollcall",
+            'type'        => 'invite',
+            'to'          => 'org_member2@ushahidi.com',
+        ]);
     }
 
     /**
@@ -734,6 +740,12 @@ class PersonCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Reset Password",
+            'type'        => 'ResetPassword',
+            'to'          => 'test@ushahidi.com',
+        ]);
     }
 
     /**

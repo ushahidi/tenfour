@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use RollCall\Models\Organization;
 use RollCall\Models\User;
 use RollCall\Contracts\Messaging\MessageServiceFactory;
+use RollCall\Http\Transformers\UserTransformer;
 use Log;
 
 class SendInvite implements ShouldQueue
@@ -66,6 +67,8 @@ class SendInvite implements ShouldQueue
             'url' => $url,
             'org_name' => $org['name'],
             'profile_picture' => $org['profile_picture'],
+            'initials' => UserTransformer::generateInitials($org['name']),
+            'type' => 'invite'
           ], $subject);
         } else {
           Log::info('Cannot invite a member with no email address');

@@ -4,7 +4,8 @@
  * https://simplesoftware.io/docs/simple-sms#docs-configuration for more information.
  */
 return [
-    'driver' => env('SMS_DRIVER', 'email'),
+    // global override rollcall.messaging.sms_providers.XX.driver for testing, debugging, etc
+    'driver' => env('SMS_DRIVER', null),
 
     'from' => env('SMS_FROM', 'Your Number or Email'),
 
