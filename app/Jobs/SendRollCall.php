@@ -315,7 +315,7 @@ class SendRollCall implements ShouldQueue
     }
 
     private function shortenUrl($url) {
-        if (!config('urlshortner.bitly.username')) {
+        if (!config('urlshortener.bitly.username')) {
             return $url;
         }
 
