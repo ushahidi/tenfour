@@ -82,6 +82,8 @@ class SendRollCall implements ShouldQueue
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
+            \Log::debug('Sending RollCall ' . $this->roll_call['id'] . ' to recipient ' . $recipient['id']);
+
             // Check if user has a pending reply
             $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByUser($recipient['id']);
 
@@ -101,6 +103,8 @@ class SendRollCall implements ShouldQueue
 
             foreach($contacts as $contact)
             {
+                \Log::debug('Sending RollCall ' . $this->roll_call['id'] . ' to contact ' . $contact['id']);
+
                 if ($contact['blocked']) {
                     continue;
                 }
@@ -225,6 +229,10 @@ class SendRollCall implements ShouldQueue
 
     protected function dispatchRollCallReminderViaSMS($roll_call_repo, $message_service, $contact, $recipient, $to, $org_url, $from) {
         $unreplied_sms_roll_call = $roll_call_repo->getLastUnrepliedByContact($contact['id'], $from);
+
+        if ($unreplied_sms_roll_call['id'] === $this->roll_call['id']) {
+            return;
+        }
 
         if ($unreplied_sms_roll_call && $unreplied_sms_roll_call['id'] && $unreplied_sms_roll_call['from']) {
             $reminder_reply_token = $roll_call_repo->getReplyToken($unreplied_sms_roll_call['id'], $recipient['id']);

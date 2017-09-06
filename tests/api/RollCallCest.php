@@ -992,6 +992,11 @@ class RollCallCest
             'rollcall_id' => '7',
             'type'        => 'rollcall'
         ]);
+
+        $I->seeNumRecords(1, 'outgoing_sms_log', [
+            'rollcall_id' => '7',
+            'type'        => 'reminder'
+        ]); // from a previous test
     }
 
     /*
