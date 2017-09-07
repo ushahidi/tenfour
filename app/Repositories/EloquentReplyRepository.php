@@ -143,10 +143,10 @@ class EloquentReplyRepository implements ReplyRepository
                   "from"          => $outgoing_number
                 ];
             } else {
-                Log::warning('Could not find the RollCall for incoming message from ' . $from);
+                \Log::warning('Could not find the RollCall for incoming message from ' . $from);
             }
         } else {
-            Log::warning('Could not find the contact details for incoming message from ' . $from);
+            \Log::warning('Could not find the contact details for incoming message from ' . $from);
         }
 
         return false;
