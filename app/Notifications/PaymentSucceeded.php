@@ -17,7 +17,7 @@ class PaymentSucceeded extends Notification
      *
      * @return void
      */
-    public function __construct(Subscription $subscription, CreditAdjustment $creditAdjustment)
+    public function __construct(Subscription $subscription, $creditAdjustment)
     {
         $this->subscription = $subscription;
         $this->creditAdjustment = $creditAdjustment;

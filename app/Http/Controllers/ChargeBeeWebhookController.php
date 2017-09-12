@@ -123,6 +123,8 @@ class ChargeBeeWebhookController extends Controller
         // 5 text message (SMS) credits per plan quantity
         // plus addon quantity
 
+        // TODO this webhook will need to be updated to handle mid-cycle payments
+
         $credits = CreditService::CREDITS_PER_USER_PER_MONTH * $payload->subscription->plan_quantity;
 
         if (isset($subscription->addons)) {
@@ -143,7 +145,10 @@ class ChargeBeeWebhookController extends Controller
             'status'            => $payload->subscription->status,
         ]);
 
-        $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, $creditAdjustment));
+        $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
+            "adjustment" => $credits,
+            "balance" => $creditAdjustment->balance
+        ]));
 
         Log::info('[ChargeBee] Processed PaymentSucceeded for subscription ' . $subscription->subscription_id);
 
