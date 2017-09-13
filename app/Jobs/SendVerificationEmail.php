@@ -35,10 +35,16 @@ class SendVerificationEmail implements ShouldQueue
         $subject = 'Verify your RollCall email address';
 
         $message_service = $message_service_factory->make('email');
-        $message_service->setView('emails.verification');
+        $message_service->setView('emails.general');
         $message_service->send($this->address['address'], '', [
-            'url' => $url,
-            'type' => 'verification'
+            'type' => 'verification',
+            'action_url' => $url,
+            'action_text' => $subject,
+            'subject' => $subject,
+            'profile_picture' => config('mail.empty_account_img'),
+            'org_subdomain' => 'www',
+            'org_name' => 'RollCall',
+            'body' => 'Ushahidi uses RollCall to reach people like you on any device and get quick answers to urgent questions.<br><br>Verifying your email address will allow you to create an account and an organization on RollCall.'
         ], $subject);
     }
 }

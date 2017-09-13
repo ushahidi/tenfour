@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use RollCall\Models\Subscription;
+use RollCall\Http\Transformers\UserTransformer;
 
 use Carbon\Carbon;
 
@@ -43,11 +44,21 @@ class TrialEnding extends Notification
      */
     public function toMail($notifiable)
     {
+        $body = 'Your RollCall free trial is ending in ' . $this->days() . ' days. Hope you enjoyed using it!<br><br>' .
+            'After this time we will automatically charge your account.';
+
         return (new MailMessage)
-                    ->line('Your RollCall free trial is ending in ' . $this->days() . ' days. Hope you enjoyed using it!')
-                    ->line('After this time we will automatically charge your account.')
-                    ->action('Review my Payment Settings', $this->url())
-                    ->line('Thank you for using RollCall!');
+            ->view('emails.general', [
+                'action_url'      => $this->url(),
+                'action_text'     => 'Review my Payment Settings',
+                'subject'         => 'Free Trial Ending',
+                'profile_picture' => $this->subscription->organization->profile_picture,
+                'org_subdomain'   => $this->subscription->organization->subdomain,
+                'org_name'        => $this->subscription->organization->name,
+                'initials'        => UserTransformer::generateInitials($this->subscription->organization->name),
+                'body'            => $body
+            ])
+            ->subject('Free Trial Ending');
     }
 
     private function url()

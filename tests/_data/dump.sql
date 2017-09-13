@@ -3,7 +3,7 @@ INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'RollCall', 'rollca
 INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
 INSERT INTO organizations (id, name, subdomain) VALUES ('4', 'Dummy org', 'dummy');
 
-INSERT INTO subscriptions (organization_id, subscription_id, customer_id, status, plan_id, quantity, card_type, trial_ends_at) VALUES ('2', 'sub1', 'cust1', 'active', 'standard-plan', 10, 'visa', '2016-10-30 12:05:01');
+INSERT INTO subscriptions (organization_id, subscription_id, customer_id, status, plan_id, quantity, card_type, trial_ends_at, last_four) VALUES ('2', 'sub1', 'cust1', 'active', 'standard-plan', 10, 'visa', '2016-10-30 12:05:01', '1234');
 INSERT INTO addons (subscription_id, name, addon_id, quantity) VALUES (1, "extra-credits", "extra-credits", 1000);
 INSERT INTO credit_adjustments (organization_id, adjustment, balance) VALUES (2, 3, 3);
 

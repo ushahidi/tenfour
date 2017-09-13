@@ -62,13 +62,17 @@ class SendInvite implements ShouldQueue
           $subject = $this->organization['name'] . ' invited you to join Rollcall';
 
           $message_service = $message_service_factory->make('email');
-          $message_service->setView('emails.invite');
+          $message_service->setView('emails.general');
           $message_service->send($email, $msg, [
-            'url' => $url,
+            'action_url' => $url,
+            'action_text' => 'Join ' . $org['name'] . '\'s RollCall',
+            'subject' => $subject,
             'org_name' => $org['name'],
+            'org_subdomain' => $org['subdomain'],
             'profile_picture' => $org['profile_picture'],
             'initials' => UserTransformer::generateInitials($org['name']),
-            'type' => 'invite'
+            'type' => 'invite',
+            'body' => $org['name'] . ' uses RollCall to reach people like you on any device and get quick answers to urgent questions. By joining ' . $org['name'] . ' on RollCall, you\'ll be able to easily see and respond to questions, and configure notifications.'
           ], $subject);
         } else {
           Log::info('Cannot invite a member with no email address');

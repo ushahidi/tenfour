@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use RollCall\Models\Subscription;
 use RollCall\Models\CreditAdjustment;
+use RollCall\Http\Transformers\UserTransformer;
 
 class PaymentSucceeded extends Notification
 {
@@ -42,12 +43,22 @@ class PaymentSucceeded extends Notification
      */
     public function toMail($notifiable)
     {
+        $body = 'You just successfully authorized a payment for RollCall on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '. <br><br>' .
+            'We have applied ' . $this->creditAdjustment->adjustment . ' credits to your account. <br><br>' .
+            'Your account now has ' . $this->creditAdjustment->balance . ' credits.';
+
         return (new MailMessage)
-                    ->line('You just successfully authorized a payment for RollCall on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '.')
-                    ->line('We have applied ' . $this->creditAdjustment->adjustment . ' credits to your account.')
-                    ->line('Your account now has ' . $this->creditAdjustment->balance . ' credits.')
-                    ->action('Review my Payment Settings', $this->url())
-                    ->line('Thank you for using RollCall!');
+            ->view('emails.general', [
+                'action_url'      => $this->url(),
+                'action_text'     => 'Review my Payment Settings',
+                'subject'         => 'Payment Succeeded',
+                'profile_picture' => $this->subscription->organization->profile_picture,
+                'org_subdomain'   => $this->subscription->organization->subdomain,
+                'org_name'        => $this->subscription->organization->name,
+                'initials'        => UserTransformer::generateInitials($this->subscription->organization->name),
+                'body'            => $body
+            ])
+            ->subject('Payment Succeeded');
     }
 
     private function url()
