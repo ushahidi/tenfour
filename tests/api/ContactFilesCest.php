@@ -85,9 +85,6 @@ class ContactFilesCest
         $I->seeInDatabase('contacts', ['contact' => 'mary@ushahidi.com']);
         $I->seeInDatabase('contacts', ['contact' => '+254722111222']);
         $I->seeResponseCodeIs(200);
-        $I->seeResponseContainsJson([
-            'count' => 2
-        ]);
     }
 
     /*

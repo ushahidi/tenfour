@@ -48,14 +48,14 @@ class EloquentContactRepository implements ContactRepository
                 $query->select('users.id', 'users.name');
             }
         ])
-            ->findOrFail($id)
-            ->toArray();
+        ->findOrFail($id)
+        ->toArray();
     }
 
     public function delete($id)
     {
-		$contact = Contact::findOrFail($id);
-		$contact->delete();
+    		$contact = Contact::findOrFail($id);
+    		$contact->delete();
 
         return $contact->toArray();
     }

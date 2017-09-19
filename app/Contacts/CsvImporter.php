@@ -9,8 +9,10 @@ use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
 use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 use DB;
 use Validator;
+use Exception;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use Illuminate\Validation\ValidationException;
 
 class CsvImporter implements CsvImporterInterface
 {
@@ -90,10 +92,20 @@ class CsvImporter implements CsvImporterInterface
                         'email' => 'email'
                     ]);
 
-                    $validator->validate();
+                    try {
+                        $validator->validate();
+                    } catch (ValidationException $e) {
+                        throw new Exception('Contact "' . $user_input['name'] . '" has invalid ' . $type . ' data "' . $contact . '"');
+                    }
 
                     if ($type == 'phone' && ! starts_with($contact, '+')) {
                         $contact = '+'.$contact;
+                    }
+
+                    $existing_contact = $this->contacts->getByContact($contact);
+
+                    if ($existing_contact) {
+                        throw new Exception('A contact already exists with ' . $type . ' data "' . $contact . '"');
                     }
 
                     $contact_input = [
