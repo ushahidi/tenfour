@@ -115,6 +115,8 @@ class SendRollCall implements ShouldQueue
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
 
+                    \Log::debug('dispatching via email');
+
                     $this->dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient);
 
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
@@ -186,11 +188,15 @@ class SendRollCall implements ShouldQueue
     }
 
     protected function dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient) {
+        \Log::debug('in dispatchRollCallViaEmail()');
+
         if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
             Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
             return;
         }
 
+        \Log::debug('passing to message_service->send()');
+        
         $message_service->send(
             $to,
             new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient),
