@@ -14,11 +14,7 @@ class MailService implements MessageService
 
     public function send($to, $msg, $additional_params = [], $subject = null)
     {
-        \Log::debug('in to message_service->send()');
-
         if ($msg instanceof Mailable) {
-            \Log::debug('is mailable');
-
             Mail::to($to)->send($msg);
 
             $this->logMail(
@@ -31,8 +27,6 @@ class MailService implements MessageService
         } else {
             $params = ['msg' => $msg] + $additional_params;
             $subject = $subject ? $subject : str_limit($msg, $limit = 50, $end = '...');
-
-            \Log::debug('is queued');
 
             Mail::queue($this->view, $params, function($message) use ($to, $subject) {
                 $message->to($to);

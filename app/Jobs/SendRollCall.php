@@ -82,8 +82,6 @@ class SendRollCall implements ShouldQueue
 
         foreach($this->roll_call['recipients'] as $recipient)
         {
-            \Log::debug('Sending RollCall ' . $this->roll_call['id'] . ' to recipient ' . $recipient['id']);
-
             // Check if user has a pending reply
             $unreplied_roll_call_id = $roll_call_repo->getLastUnrepliedByUser($recipient['id']);
 
@@ -103,8 +101,6 @@ class SendRollCall implements ShouldQueue
 
             foreach($contacts as $contact)
             {
-                \Log::debug('Sending RollCall ' . $this->roll_call['id'] . ' to contact ' . $contact['id']);
-
                 if ($contact['blocked']) {
                     continue;
                 }
@@ -114,8 +110,6 @@ class SendRollCall implements ShouldQueue
                 $from = null;
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
-
-                    \Log::debug('dispatching via email');
 
                     $this->dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient);
 
@@ -188,15 +182,11 @@ class SendRollCall implements ShouldQueue
     }
 
     protected function dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient) {
-        \Log::debug('in dispatchRollCallViaEmail()');
-
         if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
             Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
             return;
         }
 
-        \Log::debug('passing to message_service->send()');
-        
         $message_service->send(
             $to,
             new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient),
