@@ -86,8 +86,7 @@ FORMAT: 1A
     + Body
 
             {
-                "name": "Ushahidi",
-                "subdomain": "ushahidi@rollcall.io"
+                "name": "Ushahidi"
             }
 
 + Response 200 (application/json)
@@ -616,9 +615,7 @@ FORMAT: 1A
 + Response 200 (application/json)
     + Body
 
-            {
-                "count": 2
-            }
+            []
 
 # RollCalls [/api/v1/rollcalls]
 
@@ -919,7 +916,7 @@ FORMAT: 1A
                 }
             }
 
-## Update a roll call [PUT /api/v1/rollcalls/{roll_call_id}]
+## Update/resend a roll call [PUT /api/v1/rollcalls/{roll_call_id}]
 
 
 + Parameters
@@ -1282,4 +1279,151 @@ FORMAT: 1A
                         }
                     }
                 ]
+            }
+
+# Subscriptions [/api/v1/organizations]
+
+## Get all subscriptions [GET /api/v1/organizations/{org_id}/subscriptions]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscriptions": {
+                    "id": "1",
+                    "status": "in_trial",
+                    "card_type": "Visa",
+                    "last_four": "1111",
+                    "expiry_month": 12,
+                    "expiry_year": 1,
+                    "trial_ends_at": "2017-06-02 15:38:33",
+                    "next_billing_at": "2017-06-02 15:38:33"
+                }
+            }
+
+## Get a single subscription [GET /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscription": {
+                    "id": "1",
+                    "status": "in_trial",
+                    "card_type": "Visa",
+                    "last_four": "1111",
+                    "expiry_month": 12,
+                    "expiry_year": 1,
+                    "trial_ends_at": "2017-06-02 15:38:33",
+                    "next_billing_at": "2017-06-02 15:38:33"
+                }
+            }
+
+## Cancel a subscription [DELETE /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscription": {
+                    "id": 1,
+                    "status": "cancelled"
+                }
+            }
+
+## Create an ChargeBee Hosted Page subscription url [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "callback": "http://subdomain.rollcall.io/callback"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "url": "http://api.chargebee.com/hostedpage?xxx"
+            }
+
+## Create a ChargeBee hosted page url for updating the subscription [PUT /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Body
+
+            {
+                "callback": "http://subdomain.rollcall.io/callback"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "url": "http://api.chargebee.com/hostedpage?xxx"
+            }
+
+## API endpoint called by client after successful ChargeBee subscription creation [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage/confirm]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Body
+
+            {
+                "subscription_id": "cb123uijh12iu3h87"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscription": {
+                    "id": 1,
+                    "status": "active"
+                }
             }
