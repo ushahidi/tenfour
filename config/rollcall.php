@@ -1,4 +1,8 @@
 <?php
+$getNexmoFrom = function( $region ) {
+  return explode('|', env('NEXMO_SRC_ADDR_' . $region, env('NEXMO_SRC_ADDR', 'rollcall')));
+};
+
 return [
     // The app's credentials for the API
     'app_client' => [
@@ -21,19 +25,31 @@ return [
             ],
             'US' => [
                 'driver' => 'nexmo',
-                'from' => explode('|', env('NEXMO_SRC_ADDR_US', env('NEXMO_SRC_ADDR', 'rollcall')))
+                'from' => $getNexmoFrom('US')
             ],
             'NZ' => [
                 'driver' => 'nexmo',
-                'from' => explode('|', env('NEXMO_SRC_ADDR_NZ', env('NEXMO_SRC_ADDR', 'rollcall')))
+                'from' => $getNexmoFrom('NZ')
             ],
             'CA' => [
                 'driver' => 'nexmo',
-                'from' => explode('|', env('NEXMO_SRC_ADDR_US', env('NEXMO_SRC_ADDR', 'rollcall')))
+                'from' => $getNexmoFrom('CA')
             ],
             'IE' => [
                 'driver' => 'nexmo',
-                'from' => explode('|', env('NEXMO_SRC_ADDR_IE', env('NEXMO_SRC_ADDR', 'rollcall')))
+                'from' => $getNexmoFrom('IE')
+            ],
+            'UK' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('UK')
+            ],
+            'FR' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('FR')
+            ],
+            'HU' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('HU')
             ],
             'default' => [
                 'driver' => 'nexmo',
