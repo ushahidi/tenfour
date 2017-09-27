@@ -95,7 +95,7 @@ class CsvImporter implements CsvImporterInterface
                     try {
                         $validator->validate();
                     } catch (ValidationException $e) {
-                        throw new Exception(
+                        throw new CsvImportException(
                             'Contact "' . $user_input['name'] . '" has invalid ' .
                             $type . ' data "' . $contact . '". ' .
                             'Phone numbers must be in international format (e.g. +254723674180) and be ' .
@@ -110,7 +110,7 @@ class CsvImporter implements CsvImporterInterface
                     $existing_contact = $this->contacts->getByContact($contact);
 
                     if ($existing_contact) {
-                        throw new Exception(
+                        throw new CsvImportException(
                             'A contact already exists with ' . $type . ' data "' . $contact . '" ' .
                             'RollCall will not import duplicate contacts. Please include only ' .
                             'new contacts in the CSV file.'

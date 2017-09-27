@@ -3,6 +3,7 @@
 namespace RollCall\Exceptions;
 
 use Exception;
+use RollCall\Contacts\CsvImportException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,6 +19,7 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         HttpException::class,
         ModelNotFoundException::class,
+        CsvImportException::Class,
     ];
 
     /**
