@@ -42,7 +42,7 @@ class ImportFailed extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = 'The import failed with the message: <br><br>' . $this->exception->getMessage();
+        $body = $this->exception->getMessage();
 
         return (new MailMessage)
             ->view('emails.general', [
@@ -60,7 +60,7 @@ class ImportFailed extends Notification
 
     private function url()
     {
-        return $this->organization->url('/import/menu');
+        return $this->organization->url('/people/import/menu');
     }
 
     /**
