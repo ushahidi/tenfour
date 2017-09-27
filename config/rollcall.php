@@ -39,7 +39,7 @@ return [
                 'driver' => 'nexmo',
                 'from' => $getNexmoFrom('IE')
             ],
-            'UK' => [
+            'GB' => [
                 'driver' => 'nexmo',
                 'from' => $getNexmoFrom('UK')
             ],
