@@ -88,4 +88,13 @@ class Organization extends Model
             $path;
     }
 
+    /*
+     *
+     * An organization has groups
+     */
+    public function groups()
+    {
+        return $this->hasMany('RollCall\Models\Group');
+    }
+
 }

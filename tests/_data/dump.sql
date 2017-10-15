@@ -120,3 +120,12 @@ VALUES
 
 -- Add test unverified address
 INSERT INTO unverified_addresses (id, address, verification_token) VALUES ('1', 'mary@ushahidi.com', 'token');
+
+-- Add test organization groups
+INSERT INTO groups (id, name, organization_id) VALUES ('1', 'Test Group 1', '1');
+INSERT INTO groups (id, name, organization_id) VALUES ('2', 'Test Group 2', '2');
+INSERT INTO groups (id, name, organization_id) VALUES ('3', 'Test Group 3', '1');
+
+-- Add test group members
+INSERT INTO group_users (group_id, user_id) VALUES ('1', '2');
+INSERT INTO group_users (group_id, user_id) VALUES ('2', '2');

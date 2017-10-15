@@ -193,4 +193,13 @@ class User extends Model implements AuthenticatableContract,
         $mail->type = $class;
         $mail->save();
     }
+
+    /**
+     * A user belongs to groups
+     *
+     */
+    public function groups()
+    {
+        return $this->belongsToMany('RollCall\Models\Group', 'group_users');
+    }
 }

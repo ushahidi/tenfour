@@ -16,7 +16,6 @@ class CreateGroupUsersTable extends Migration
         Schema::create('group_users', function (Blueprint $table) {
             $table->integer('group_id')->unsigned()->default(0);
             $table->integer('user_id')->unsigned();
-            $table->primary(['group_id', 'user_id']);
         });
     }
 
