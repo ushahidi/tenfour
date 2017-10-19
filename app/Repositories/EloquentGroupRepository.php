@@ -35,24 +35,78 @@ class EloquentGroupRepository implements GroupRepository
     // OrgCrudRepository
     public function create($organization_id, array $input)
     {
-        //create a group with members
-        $group = Group::create(['organization_id' => $organization_id, 'name' => $input['name']]);
+        if (isset($input['name'])) {
+            $name = $input['name'];
+        }
+
+        if (isset($input['description'])) {
+            $description = $input['description'];
+        }
+
+        if (isset($input['_input_image'])) {
+            $file = $input['_input_image'];
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, uniqid(), 'useravatar');
+            unset($input['_input_image']);
+        }
+
+        $group = new Group;
+        $group->fill($input, $name, $description);
+
+        $group->organization_id = $organization_id;
+        $group->save();
+
+        //Notification::send($this->getAdmins($organization['id']),
+            //new PersonJoinedOrganization($user));
+
+        //return $group->toArray();
 
         $memberIds = collect($input['members'])->pluck('id')->all();
         $group->members()->sync($memberIds);
   
         return $group->fresh()
             ->toArray();
+        /*
+        //create a group with members
+        $group = Group::create(['organization_id' => $organization_id, 'name' => $input['name']]);
+
+        if (isset($input['_input_image'])) {
+            $file = $input['_input_image'];
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, uniqid(), 'useravatar');
+            unset($input['_input_image']);
+        }
+
+        $memberIds = collect($input['members'])->pluck('id')->all();
+        $group->members()->sync($memberIds);
+  
+        return $group->fresh()
+            ->toArray();
+        */
     }
 
     // OrgCrudRepository
     public function update($organization_id, array $input, $id)
     {
-        $input = array_only($input, ['members']);
+        $input = array_only($input, ['members', 'name']);
 
         $group = Group::where('id', $id)
             ->where('organization_id', $organization_id)
             ->firstOrFail();
+
+        if (isset($input['name'])) {
+            $group->name = $input['name'];
+        }
+
+        if (isset($input['desc'])) {
+            $group->description = $input['description'];
+        }
+        /* Updating user-avatar */
+        if (isset($input['_input_image']))
+        {
+            $file = $input['_input_image'];
+            $input['profile_picture'] = $this->storageService->storeBase64File($file, uniqid($user_id), 'useravatar');
+            unset($input['_input_image']);
+        }
+        /* end of user-avatar-code */
 
         $group->save();
 

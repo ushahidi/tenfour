@@ -6,6 +6,7 @@ use RollCall\Models\User;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Contracts\Repositories\GroupRepository;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use DB;
 use Validator;
@@ -20,10 +21,11 @@ use RollCall\Services\CreditService;
 
 class EloquentPersonRepository implements PersonRepository
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, StorageService $storageService, CreditService $creditService)
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, GroupRepository $groups, StorageService $storageService, CreditService $creditService)
     {
         $this->roll_calls = $roll_calls;
         $this->contacts = $contacts;
+        $this->groups = $groups;
         $this->storageService = $storageService;
         $this->creditService = $creditService;
     }
@@ -157,6 +159,7 @@ class EloquentPersonRepository implements PersonRepository
             ])
             ->with('notifications')
             ->with('organization')
+            ->with('groups')
             ->with('organization.subscriptions')
             ->firstOrFail();
 

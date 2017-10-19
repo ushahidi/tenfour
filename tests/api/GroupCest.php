@@ -16,6 +16,7 @@ class GroupCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/groups", [
             'name'  => 'Test group',
+            'description' => 'First Rollcall group',
             'members' => [
                 [
                     'id' => 3
@@ -30,6 +31,7 @@ class GroupCest
         $I->seeResponseContainsJson([
             'group' => [
                 'name' => 'Test group',
+                'description' => 'First Rollcall group',
                 'members' => [
                     [
                         'id' => 3
@@ -54,7 +56,7 @@ class GroupCest
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id/groups/$group_id", [
-            'name' => 'Test Group 1',
+            'name' => 'Test Group Update',
             'members' => [
                 [
                     'id' => 2
@@ -66,7 +68,7 @@ class GroupCest
         $I->seeResponseContainsJson([
             'group' => [
                 'id' => 1,
-                'name' => 'Test Group 1',
+                'name' => 'Test Group Update',
                 'members' => [
                     [
                         'id' => 2
