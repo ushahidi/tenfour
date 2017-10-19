@@ -96,7 +96,7 @@ class EloquentGroupRepository implements GroupRepository
             $group->name = $input['name'];
         }
 
-        if (isset($input['desc'])) {
+        if (isset($input['description'])) {
             $group->description = $input['description'];
         }
         /* Updating user-avatar */
