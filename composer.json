@@ -27,7 +27,8 @@
         "guzzlehttp/guzzle": "^6.2",
         "waavi/url-shortener": "1.0.x",
         "chargebee/chargebee-php": ">=2, <3",
-        "torann/geoip": "^1.0"
+        "torann/geoip": "^1.0",
+        "shiftonelabs/laravel-sqs-fifo-queue": "^1.0"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",

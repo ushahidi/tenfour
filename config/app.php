@@ -163,6 +163,7 @@ return [
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
         Waavi\UrlShortener\UrlShortenerServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
+        ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
     ],
 
     /*

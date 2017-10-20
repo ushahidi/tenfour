@@ -57,6 +57,17 @@ return [
             'region' => env('S3_REGION','your-region'),
         ],
 
+        'sqs-fifo' => [
+            'driver' => 'sqs-fifo',
+            'key' => env('S3_KEY'),
+            'secret' => env('S3_SECRET'),
+            'prefix' => 'https://sqs.us-east-1.amazonaws.com/513259414768', // TEMP hardcode
+            'queue' => 'rollcall-staging-sms-send', // TEMP hardcode
+            'region' => 'us-east-1',  // TEMP hardcode
+            'group' => 'default',
+            'deduplicator' => 'unique',
+        ],
+
         'iron' => [
             'driver'  => 'iron',
             'host'    => 'mq-aws-us-east-1.iron.io',

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b8b1761e63dfa62cfcebda9528488df",
+    "content-hash": "500df702fd504f7cee2aa3634f98e856",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -3077,6 +3077,63 @@
             "time": "2017-02-09T17:35:04+00:00"
         },
         {
+            "name": "shiftonelabs/laravel-sqs-fifo-queue",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue.git",
+                "reference": "e8bd82aea490b0791e034737b16ee74f0f2d5b39"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shiftonelabs/laravel-sqs-fifo-queue/zipball/e8bd82aea490b0791e034737b16ee74f0f2d5b39",
+                "reference": "e8bd82aea490b0791e034737b16ee74f0f2d5b39",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "~3.0",
+                "illuminate/queue": ">=4.1",
+                "php": ">=5.5.0",
+                "ramsey/uuid": "~3.0"
+            },
+            "require-dev": {
+                "illuminate/encryption": ">=4.1",
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~4.0",
+                "shiftonelabs/codesniffer-standard": "0.*",
+                "squizlabs/php_codesniffer": "2.*",
+                "vlucas/phpdotenv": "~2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ShiftOneLabs\\LaravelSqsFifoQueue\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick Carlo-Hickman",
+                    "email": "patrick@shiftonelabs.com"
+                }
+            ],
+            "description": "Adds a Laravel queue driver for Amazon SQS FIFO queues.",
+            "homepage": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue",
+            "keywords": [
+                "aws",
+                "fifo",
+                "illuminate",
+                "laravel",
+                "lumen",
+                "queue",
+                "sqs"
+            ],
+            "time": "2017-02-14T20:21:56+00:00"
+        },
+        {
             "name": "simplesoftwareio/simple-sms",
             "version": "3.0.1",
             "source": {
@@ -3140,6 +3197,7 @@
                 "twilio",
                 "zenvia"
             ],
+            "abandoned": true,
             "time": "2016-07-04T14:52:38+00:00"
         },
         {
