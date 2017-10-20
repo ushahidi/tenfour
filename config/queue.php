@@ -59,11 +59,11 @@ return [
 
         'sqs-fifo' => [
             'driver' => 'sqs-fifo',
-            'key' => env('S3_KEY'),
-            'secret' => env('S3_SECRET'),
-            'prefix' => 'https://sqs.us-east-1.amazonaws.com/513259414768', // TEMP hardcode
-            'queue' => 'rollcall-staging-sms-send', // TEMP hardcode
-            'region' => 'us-east-1',  // TEMP hardcode
+            'key' => env('SQS_KEY'),
+            'secret' => env('SQS_SECRET'),
+            'prefix' => env('SQS_PREFIX'),
+            'queue' => env('SQS_QUEUE'),
+            'region' => env('SQS_REGION'),
             'group' => 'default',
             'deduplicator' => 'unique',
         ],
