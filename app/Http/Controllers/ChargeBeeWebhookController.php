@@ -54,7 +54,7 @@ class ChargeBeeWebhookController extends Controller
 
         if (!$subscription) {
             Log::warning('[ChargeBee] No subscription found for id ' . $payload->subscription->id);
-            return abort(404, 'No subscription found');
+            return abort(200, 'No subscription found');
         }
 
         return $subscription;
