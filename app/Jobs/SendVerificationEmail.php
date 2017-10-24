@@ -38,6 +38,7 @@ class SendVerificationEmail implements ShouldQueue
         $message_service = $message_service_factory->make('email');
         $message_service->setView('emails.verification');
         $message_service->send($this->address['address'], '', [
+            'type' => 'verification',
             'action_url' => $shortener->shorten($url),
         ], $subject);
     }
