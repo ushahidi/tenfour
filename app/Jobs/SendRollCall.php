@@ -15,7 +15,8 @@ use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Models\Organization;
 use RollCall\Messaging\SMSService;
-use UrlShortener;
+use RollCall\Services\URLShortenerService;
+
 use libphonenumber\NumberParseException;
 
 use Log;
@@ -46,8 +47,10 @@ class SendRollCall implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
+    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo, URLShortenerService $shortener)
     {
+        $this->shortener = $shortener;
+
         $this->organization = $org_repo->find($this->roll_call['organization_id']);
         $this->channels = $org_repo->getSetting($this->roll_call['organization_id'], 'channels');
 
@@ -201,7 +204,7 @@ class SendRollCall implements ShouldQueue
 
         $params = [];
         $rollcall_url = $org_url .'/r/'. $this->roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
-        $rollcall_url = $params['rollcall_url'] = $this->shortenUrl($rollcall_url);
+        $rollcall_url = $params['rollcall_url'] = $this->shortener->shorten($rollcall_url);
         $params['answers'] = $this->roll_call['answers'];
         $params['keyword'] = $message_service->getKeyword($to);
         $msg = $this->roll_call['message'];
@@ -232,7 +235,7 @@ class SendRollCall implements ShouldQueue
 
         if ($unreplied_sms_roll_call && $unreplied_sms_roll_call['id'] && $unreplied_sms_roll_call['from']) {
             $reminder_reply_token = $roll_call_repo->getReplyToken($unreplied_sms_roll_call['id'], $recipient['id']);
-            $reminder_sms_url = $this->shortenUrl($org_url .'/r/'. $unreplied_sms_roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
+            $reminder_sms_url = $this->shortener->shorten($org_url .'/r/'. $unreplied_sms_roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
             $this->sendReminderSMS($message_service, $to, $reminder_sms_url, $from, $unreplied_sms_roll_call['id']);
         }
     }
@@ -316,20 +319,6 @@ class SendRollCall implements ShouldQueue
 
         $message_service->setView('sms.unresponsive');
         $message_service->send($to, $rollcall_url, $params, null, $from);
-    }
-
-    private function shortenUrl($url) {
-        if (!config('urlshortener.bitly.username')) {
-            return $url;
-        }
-
-        try {
-            $url = UrlShortener::shorten($url);
-        } catch (\Waavi\UrlShortener\Exceptions\InvalidResponseException $e) {
-            \Log::error($e);
-        }
-
-        return $url;
     }
 
 }

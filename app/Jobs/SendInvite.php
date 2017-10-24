@@ -10,6 +10,7 @@ use RollCall\Models\Organization;
 use RollCall\Models\User;
 use RollCall\Contracts\Messaging\MessageServiceFactory;
 use RollCall\Http\Transformers\UserTransformer;
+use RollCall\Services\URLShortenerService;
 use Log;
 
 class SendInvite implements ShouldQueue
@@ -38,7 +39,7 @@ class SendInvite implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory)
+    public function handle(MessageServiceFactory $message_service_factory, URLShortenerService $shortener)
     {
         $org = Organization::findOrFail($this->organization['id']);
         $client_url = $org->url();
@@ -64,7 +65,7 @@ class SendInvite implements ShouldQueue
           $message_service = $message_service_factory->make('email');
           $message_service->setView('emails.general');
           $message_service->send($email, $msg, [
-            'action_url' => $url,
+            'action_url' => $shortener->shorten($url),
             'action_text' => 'Join ' . $org['name'] . '\'s RollCall',
             'subject' => $subject,
             'org_name' => $org['name'],
