@@ -8,6 +8,7 @@ use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\GroupRepository;
 use RollCall\Http\Transformers\OrganizationTransformer;
+use RollCall\Http\Transformers\UserTransformer;
 use DB;
 use Validator;
 
@@ -176,6 +177,15 @@ class EloquentPersonRepository implements PersonRepository
         {
             $roll_call += $this->roll_calls->getCounts($roll_call['id']);
         }
+
+        foreach ($user['rollcalls'] as &$rollcall)
+        {
+            foreach ($rollcall['recipients'] as &$recipient)
+            {
+                  $recipient = (new UserTransformer)->transform($recipient);
+            }
+        }
+
         return $user;
     }
 
