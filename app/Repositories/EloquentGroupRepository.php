@@ -4,7 +4,7 @@ namespace RollCall\Repositories;
 use RollCall\Models\Organization;
 use RollCall\Models\Group;
 use RollCall\Contracts\Repositories\GroupRepository;
-use RollCall\Http\Transformers\OrganizationTransformer;
+use RollCall\Http\Transformers\UserTransformer;
 use DB;
 use Validator;
 
@@ -26,10 +26,17 @@ class EloquentGroupRepository implements GroupRepository
               ->limit($limit);
         }
 
-        $groups = $query->get();
+        $groups = $query->get()->toArray();
 
-        return $groups->toArray();
+        foreach ($groups as &$group)
+        {
+            foreach ($group['members'] as &$member)
+            {
+                  $member = (new UserTransformer)->transform($member);
+            }
+        }
 
+        return $groups;
     }
 
     // OrgCrudRepository
@@ -62,7 +69,7 @@ class EloquentGroupRepository implements GroupRepository
 
         $memberIds = collect($input['members'])->pluck('id')->all();
         $group->members()->sync($memberIds);
-  
+
         return $group->fresh()
             ->toArray();
         /*
@@ -77,7 +84,7 @@ class EloquentGroupRepository implements GroupRepository
 
         $memberIds = collect($input['members'])->pluck('id')->all();
         $group->members()->sync($memberIds);
-  
+
         return $group->fresh()
             ->toArray();
         */
@@ -134,9 +141,14 @@ class EloquentGroupRepository implements GroupRepository
     public function find($organization_id, $id)
     {
         $group = Group::where('id', $id)
-            ->firstOrFail();
+            ->firstOrFail()->toArray();
 
-        return $group->toArray();
+        foreach ($group['members'] as &$member)
+        {
+              $member = (new UserTransformer)->transform($member);
+        }
+
+        return $group;
     }
 
 }
