@@ -79,7 +79,7 @@ class RollCall extends Model
      */
     public function messages()
     {
-        return $this->belongsToMany('RollCall\Models\Contact', 'roll_call_messages')->withTimestamps();
+        return $this->belongsToMany('RollCall\Models\Contact', 'roll_call_messages')->withTimestamps()->withPivot('from');
     }
 
     /**

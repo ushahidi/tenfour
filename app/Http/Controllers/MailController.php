@@ -4,7 +4,7 @@ namespace RollCall\Http\Controllers;
 
 use Log;
 use Route;
-use RollCall\Messaging\Storage\Reply as ReplyStorage;
+use RollCall\Contracts\Repositories\ReplyRepository;
 use Illuminate\Http\Request;
 
 use Aws\Sns\Message;
@@ -19,11 +19,11 @@ class MailController extends Controller
     /**
      * @var RollCall\Messaging\Storage\Replies
      */
-    protected $reply_storage;
+    protected $replies;
 
-    public function __construct(ReplyStorage $reply_storage)
+    public function __construct(ReplyRepository $replies)
     {
-        $this->reply_storage = $reply_storage;
+        $this->replies = $replies;
     }
 
     /**
@@ -51,7 +51,7 @@ class MailController extends Controller
             $rollcall_id = $matches[1];
         }
 
-        $this->reply_storage->save($from, $visibleMessage, $message_id, $rollcall_id, $provider);
+        $this->replies->save($from, $visibleMessage, $message_id, $rollcall_id, $provider);
     }
 
     protected function receiveMailgun() {

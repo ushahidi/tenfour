@@ -96,7 +96,9 @@ class EloquentRollCallRepository implements RollCallRepository
         $organizations = resolve('RollCall\Contracts\Repositories\OrganizationRepository');
         $channels = $organizations->getSetting($roll_call['organization_id'], 'channels');
 
-        if (isset($channels->slack) && isset($channels->slack->enabled) &&
+        if (isset($channels->slack) &&
+            isset($channels->slack->enabled) &&
+            isset($channels->slack->webhook_url) &&
             in_array('slack', $roll_call['send_via'])) {
             $roll_call->_slack_webhook_url = $channels->slack->webhook_url;
         }
@@ -110,8 +112,15 @@ class EloquentRollCallRepository implements RollCallRepository
         $input = array_only($input, ['status', 'sent', 'recipients']);
 
         $roll_call = RollCall::findorFail($id);
-        $roll_call->sent = $input['sent'];
-        $roll_call->status = $input['status'];
+
+        if (isset($input['sent'])) {
+            $roll_call->sent = $input['sent'];
+        }
+
+        if (isset($input['status'])) {
+            $roll_call->status = $input['status'];
+        }
+
         $roll_call->save();
 
         if (isset($input['recipients'])) {
@@ -165,13 +174,17 @@ class EloquentRollCallRepository implements RollCallRepository
                     ->value('reply_token');
     }
 
-    public function getLastSentMessageId($contact_id = null)
+    public function getLastSentMessageId($contact_id = null, $from = null)
     {
         $query = DB::table('roll_call_messages')
                ->select('roll_call_id');
 
         if ($contact_id) {
             $query->where('contact_id', $contact_id);
+        }
+
+        if ($from) {
+            $query->where('from', $from);
         }
 
         return $query->orderBy('roll_call_id', 'desc')->take(1)->value('roll_call_id');
@@ -204,17 +217,66 @@ class EloquentRollCallRepository implements RollCallRepository
                ->toArray();
     }
 
-    public function getLastUnrepliedByContact($contact_id)
+    public function getLastUnrepliedByContact($contact_id, $from)
     {
-        return DB::table('roll_call_messages')
+        $unreplied = DB::table('roll_call_messages')
             ->leftJoin('replies', function ($join) {
                 $join->on('roll_call_messages.roll_call_id', '=', 'replies.roll_call_id');
             })
             ->where('roll_call_messages.contact_id', '=', $contact_id)
+            ->where('roll_call_messages.from', '=', $from)
             ->whereNull('replies.id')
             ->orderBy('roll_call_messages.roll_call_id', 'desc')
             ->take(1)
-            ->value('roll_call_messages.roll_call_id');
+            ->select('roll_call_messages.roll_call_id', 'roll_call_messages.from')
+            ->get()
+            ->toArray();
+
+        if ($unreplied && count($unreplied)) {
+            return [
+              'id' => $unreplied[0]->roll_call_id,
+              'from' => $unreplied[0]->from
+            ];
+        } else {
+            return null;
+        }
+    }
+
+    public function getOutgoingNumberForRollCallToContact($roll_call_id, $contact_id)
+    {
+      return DB::table('roll_call_messages')
+          ->where('roll_call_id', '=', $roll_call_id)
+          ->where('contact_id', '=', $contact_id)
+          ->value('from');
+    }
+
+    public function isOutgoingNumberActive($contact_id, $from)
+    {
+        $messages_with_no_reply = DB::table('roll_call_messages')
+            ->leftJoin('replies', function ($join) {
+                $join->on('roll_call_messages.roll_call_id', '=', 'replies.roll_call_id');
+            })
+            ->where('roll_call_messages.contact_id', '=', $contact_id)
+            ->where('roll_call_messages.from', '=', $from)
+            ->whereNull('replies.id')
+            ->get()
+            ->toArray();
+
+        return count($messages_with_no_reply) > 0;
+    }
+
+    public function hasRepliedToRollCall($user_id, $roll_call_id)
+    {
+          $replies = DB::table('roll_call_messages')
+            ->leftJoin('replies', function ($join) {
+                $join->on('roll_call_messages.roll_call_id', '=', 'replies.roll_call_id');
+            })
+            ->where('replies.user_id', '=', $user_id)
+            ->where('roll_call_messages.roll_call_id', '=', $roll_call_id)
+            ->get()
+            ->toArray();
+
+          return count($replies) > 0;
     }
 
     public function getLastUnrepliedByUser($user_id)
@@ -233,11 +295,11 @@ class EloquentRollCallRepository implements RollCallRepository
             ->value('roll_call_messages.roll_call_id');
     }
 
-    public function addMessage($id, $contact_id)
+    public function addMessage($id, $contact_id, $from)
     {
         $roll_call = RollCall::findorFail($id);
 
-        $roll_call->messages()->attach($contact_id);
+        $roll_call->messages()->attach($contact_id, ['from' => $from]);
 
         return RollCall::findorFail($id)
             ->messages()

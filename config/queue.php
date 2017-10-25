@@ -51,10 +51,21 @@ return [
 
         'sqs' => [
             'driver' => 'sqs',
-            'key'    => 'your-public-key',
-            'secret' => 'your-secret-key',
-            'queue'  => 'your-queue-url',
-            'region' => 'us-east-1',
+            'key'    => env('S3_KEY','your-key'),
+            'secret' => env('S3_SECRET','your-secret'),
+            'queue'  => env('SQS_URL', 'your-queue-url'),
+            'region' => env('S3_REGION','your-region'),
+        ],
+
+        'sqs-fifo' => [
+            'driver' => 'sqs-fifo',
+            'key' => env('SQS_KEY'),
+            'secret' => env('SQS_SECRET'),
+            'prefix' => env('SQS_PREFIX'),
+            'queue' => env('SQS_QUEUE'),
+            'region' => env('SQS_REGION'),
+            'group' => 'default',
+            'deduplicator' => 'unique',
         ],
 
         'iron' => [

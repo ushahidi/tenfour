@@ -7,16 +7,22 @@ use markdunphy\SesSnsTypes\Notification\BounceMessage;
 use markdunphy\SesSnsTypes\Notification\ComplaintMessage;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Contracts\Repositories\PersonRepository;
 use Log;
+use Illuminate\Support\Facades\Notification;
+use RollCall\Notifications\Complaint;
+use RollCall\Models\Contact;
+use RollCall\Models\RollCall;
 
 class SESBounceController extends Controller
 {
     use ValidatesMessages;
 
-    public function __construct(ContactRepository $contacts, RollCallRepository $roll_calls)
+    public function __construct(ContactRepository $contacts, RollCallRepository $roll_calls, PersonRepository $people)
     {
         $this->contacts = $contacts;
         $this->roll_calls = $roll_calls;
+        $this->people = $people;
     }
 
     /**
@@ -131,7 +137,13 @@ class SESBounceController extends Controller
                     $new_count = $roll_call['complaint_count'] + 1;
                     $this->roll_calls->setComplaintCount($new_count, $roll_call_id);
                 }
+
+                $roll_call_obj = RollCall::where('id', $roll_call_id)->first();
             }
+
+            $contact_obj = Contact::where('id', $contact['id'])->first();
+
+            Notification::send($this->people->getAdmins($contact_obj->user->organization->id), new Complaint($contact_obj->user, $roll_call_obj));
         }
     }
 }

@@ -7,6 +7,7 @@ use ChargeBee_Environment;
 use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use ChargeBee_Coupon;
+use ChargeBee_InvalidRequestException;
 
 class ChargeBeePaymentService implements PaymentService
 {
@@ -127,8 +128,14 @@ class ChargeBeePaymentService implements PaymentService
 
     public function retrieveCoupon($promo_code)
     {
-        $result = ChargeBee_Coupon::retrieve($promo_code);
-        $coupon = $result->coupon();
+        try {
+            $result = ChargeBee_Coupon::retrieve($promo_code);
+            $coupon = $result->coupon();
+        } catch (ChargeBee_InvalidRequestException $e) {
+            return null;
+        } catch (Exception $e) {
+            return null;
+        }
 
         return $coupon->getValues();
     }

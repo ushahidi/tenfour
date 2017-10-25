@@ -22,6 +22,13 @@ class AddressVerificationCest
         $I->seeResponseContainsJson([
               'address' => 'john@ushahidi.com',
         ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Verify your RollCall email address",
+            'type'        => 'verification',
+            'to'          => 'john@ushahidi.com',
+        ]);
+
     }
 
     /*

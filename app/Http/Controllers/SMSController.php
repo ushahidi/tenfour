@@ -4,7 +4,7 @@ namespace RollCall\Http\Controllers;
 
 use Log;
 use App;
-use RollCall\Messaging\Storage\Reply as ReplyStorage;
+use RollCall\Contracts\Repositories\ReplyRepository;
 use RollCall\Messaging\SMSService;
 use RollCall\Messaging\Validators\NexmoMessageValidator;
 use Illuminate\Http\Request;
@@ -18,9 +18,9 @@ class SMSController extends Controller
      */
     protected $reply_storage;
 
-    public function __construct(ReplyStorage $reply_storage, SMSService $message_service)
+    public function __construct(ReplyRepository $replies, SMSService $message_service)
     {
-        $this->reply_storage = $reply_storage;
+        $this->replies = $replies;
         $this->message_service = $message_service;
     }
 
@@ -40,21 +40,28 @@ class SMSController extends Controller
         Log::info("[SMSController] Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
 
         $from = $incoming->from();
+        $to = $incoming->to();
 
         if (!starts_with($from, '+')) {
             $from = '+' . $from;
         }
 
-        $saved = $this->reply_storage->save(
+        $reply_obj = $this->replies->save(
             $from,
             $incoming->message(),
-            $incoming->id()
+            $incoming->id(),
+            null,
+            null,
+            $to
         );
 
-        if ($saved) {
+        if ($reply_obj) {
+            $response_from = $reply_obj['from'];
+            $roll_call_id = $reply_obj['roll_call_id'];
+
             try {
-                $from = App::make('RollCall\Messaging\PhoneNumberAdapter', [$from]);
-                $this->message_service->sendResponseReceivedSMS($from);
+                $response_to = App::make('RollCall\Messaging\PhoneNumberAdapter', [$from]);
+                $this->message_service->sendResponseReceivedSMS($response_to, $response_from, $roll_call_id);
             } catch (NumberParseException $exception) {
                 // Somehow the number format could not be parsed
                 Log::info("[SMSController] Could not parse MSISDN: " . $from);

@@ -4,7 +4,8 @@
  * https://simplesoftware.io/docs/simple-sms#docs-configuration for more information.
  */
 return [
-    'driver' => env('SMS_DRIVER', 'email'),
+    // global override rollcall.messaging.sms_providers.XX.driver for testing, debugging, etc
+    'driver' => env('SMS_DRIVER', null),
 
     'from' => env('SMS_FROM', 'Your Number or Email'),
 
@@ -72,4 +73,9 @@ return [
         'passcode' => env('ZENVIA_PASSCODE','Your Zenvia Passcode'),
         'call_back_option' => env('ZENVIA_CALLBACK_OPTION', 'NONE')
     ],
+
+    'log' => [
+        'messages_per_second' => 1
+    ],
+
 ];

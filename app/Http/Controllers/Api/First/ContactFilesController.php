@@ -10,16 +10,20 @@ use RollCall\Http\Transformers\FileUploadTransformer;
 use RollCall\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use App;
+use RollCall\Jobs\ImportCSV;
+use Dingo\Api\Auth\Auth;
+use Exception;
 
 /**
  * @Resource("Files", uri="/api/v1/organizations")
  */
 class ContactFilesController extends ApiController
 {
-    public function __construct(ContactFilesRepository $files, Response $response)
+    public function __construct(ContactFilesRepository $files, Response $response, Auth $auth)
     {
         $this->files = $files;
         $this->response = $response;
+        $this->auth = $auth;
     }
 
     /**
@@ -119,7 +123,6 @@ class ContactFilesController extends ApiController
      *
      * @Request({}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "count" : 2
      * })
      *
      * @param Request $request
@@ -129,27 +132,12 @@ class ContactFilesController extends ApiController
      */
     public function importContacts(ImportRequest $request, $organization_id, $file_id)
     {
-        $file_details = $this->files->find($file_id);
+        try {
+            dispatch(new ImportCSV($this->auth->user()['id'], $organization_id, $file_id));
+        } catch (Exception $e) {
+            return response('UNPROCESSABLE ENTITY', 422);
+        }
 
-        $path = $file_details['filename'];
-        $map = $file_details['maps_to'];
-
-        $transformer = App::make('RollCall\Contracts\Contacts\CsvTransformer', [$map]);
-
-        $reader = App::make('RollCall\Contracts\Contacts\CsvReader', [$path]);
-
-        $people = App::make('RollCall\Contracts\Repositories\PersonRepository');
-        $contacts = App::make('RollCall\Contracts\Repositories\ContactRepository');
-
-        $importer = App::make('RollCall\Contracts\Contacts\CsvImporter',
-                              [$reader, $transformer, $contacts, $people, $organization_id]);
-
-        $count = $importer->import();
-
-        Storage::delete($path);
-
-        return [
-            'count' => $count
-        ];
+        return response('OK', 200);
     }
 }

@@ -64,7 +64,7 @@ interface RollCallRepository extends CrudRepository
 
      * @return array
      */
-    public function addMessage($id, $contact_id);
+    public function addMessage($id, $contact_id, $from);
 
     /**
      * Update a user's response status
@@ -90,7 +90,7 @@ interface RollCallRepository extends CrudRepository
      *
      * @return int
      */
-    public function getLastUnrepliedByContact($contact_id);
+    public function getLastUnrepliedByContact($contact_id, $from);
 
     /**
      * Set complaint count
@@ -119,4 +119,28 @@ interface RollCallRepository extends CrudRepository
      * @return int
      */
     public function getLastUnrepliedByUser($user_id);
+
+    /**
+     * Does this $from number have any unreplied rollcalls for a contact
+     *
+     * @param $from
+     * @param int $contact_id
+     */
+    public function isOutgoingNumberActive($contact_id, $from);
+
+    /**
+     * Get the outgoing number that a RollCall was sent to a Contact
+     *
+     * @param int $roll_call_id
+     * @param int $contact_id
+     */
+    public function getOutgoingNumberForRollCallToContact($roll_call_id, $contact_id);
+
+    /**
+     * Has a user replied to a rollcall
+     *
+     * @param int $user_id
+     * @param int $roll_call_id
+     */
+    public function hasRepliedToRollCall($user_id, $roll_call_id);
 }

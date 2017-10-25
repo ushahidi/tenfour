@@ -12,6 +12,7 @@ use RollCall\Models\Subscription;
 use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\SubscriptionRepository;
 use RollCall\Contracts\Services\PaymentService;
+use RollCall\Services\CreditService;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Transformers\SubscriptionTransformer;
@@ -25,13 +26,14 @@ use DB;
 class SubscriptionController extends ApiController
 {
 
-    public function __construct(SubscriptionRepository $subscriptions, Auth $auth, Response $response, OrganizationRepository $organizations, PaymentService $payments)
+    public function __construct(SubscriptionRepository $subscriptions, Auth $auth, Response $response, OrganizationRepository $organizations, PaymentService $payments, CreditService $credits)
     {
         $this->subscriptions = $subscriptions;
         $this->auth = $auth;
         $this->response = $response;
         $this->organizations = $organizations;
         $this->payments = $payments;
+        $this->credits = $credits;
     }
 
     /**
@@ -245,6 +247,15 @@ class SubscriptionController extends ApiController
         $result = $this->payments->retrieveSubscription($subscription_id);
 
         $subscription = $this->subscriptions->create($organization_id, $result);
+
+        if ($subscription['promo_code']) {
+            // https://github.com/ushahidi/RollCall/issues/735
+            $coupon = $this->payments->retrieveCoupon($subscription['promo_code']);
+
+            if ($coupon && $coupon['discount_percentage'] == 100) {
+                $this->credits->addCreditAdjustment($organization_id, config('credits.freepromo'), 'topup', ['rc_freepromo' => true]);
+            }
+        }
 
         if ($subscription['status'] === 'cancelled') {
             $this->payments->reactivateSubscription($subscription_id);

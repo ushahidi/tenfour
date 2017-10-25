@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use RollCall\Contracts\Messaging\MessageServiceFactory;
+use RollCall\Services\URLShortenerService;
 
 class SendVerificationEmail implements ShouldQueue
 {
@@ -29,13 +30,16 @@ class SendVerificationEmail implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory)
+    public function handle(MessageServiceFactory $message_service_factory, URLShortenerService $shortener)
     {
         $url = 'https://app.' . config('rollcall.domain') . '/organization/email/confirmation/?email='.urlencode($this->address['address']).'&token=' . urlencode($this->address['verification_token']);
         $subject = 'Verify your RollCall email address';
 
         $message_service = $message_service_factory->make('email');
         $message_service->setView('emails.verification');
-        $message_service->send($this->address['address'], '', ['url' => $url], $subject);
+        $message_service->send($this->address['address'], '', [
+            'type' => 'verification',
+            'action_url' => $shortener->shorten($url),
+        ], $subject);
     }
 }

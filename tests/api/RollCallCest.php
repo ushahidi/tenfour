@@ -323,6 +323,7 @@ class RollCallCest
         $I->sendPOST($this->endpoint, [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
+            'send_via' => ['email'],
             'recipients' => [
                 [
                     'id' => 3
@@ -460,8 +461,8 @@ class RollCallCest
      */
     public function createRollCallWithCredits(ApiTester $I)
     {
-        $credits_before = 2;
-        $credits_after = 0;
+        $credits_before = 3;
+        $credits_after = 1;
 
         $I->wantTo('Create a roll call with credits');
         $I->amAuthenticatedAsOrgAdmin();
@@ -527,6 +528,9 @@ class RollCallCest
                 ],
                 [
                     'id' => 9
+                ],
+                [
+                    'id' => 10
                 ]
             ],
             'answers' => []
@@ -775,5 +779,284 @@ class RollCallCest
         $I->wantTo('Not get a RollCall using an invalid reply token');
         $I->sendGet('/rollcalls/' . $roll_call_id . '?token=' . $token);
         $I->seeResponseCodeIs(403);
+    }
+
+    /*
+     * Send RollCalls with rotating numbers
+    */
+    public function sendRollCallsWithRotatingNumbers(ApiTester $I)
+    {
+        $I->wantTo('Send RollCalls with rotating numbers');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Alien Attack! are you ok?',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Alien Attack Part II! are you ok?',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        // All SMS has been sent
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20880',
+            'rollcall_id' => '7',
+            'type'        => 'rollcall',
+            'message'     => "Alien Attack! are you ok?\nReply with \"OK\" in your response"
+        ]);
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20880',
+            'rollcall_id' => '7',
+            'type'        => 'rollcall_url',
+        ]);
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'rollcall_id' => '8',
+            'type'        => 'rollcall',
+            'message'     => "Alien Attack Part II! are you ok?\nReply with \"OK\" in your response"
+        ]);
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'rollcall_id' => '8',
+            'type'        => 'rollcall_url',
+        ]);
+    }
+
+    /*
+     * Send RollCall reminder to a contact when all outgoing numbers
+     * are active.
+     */
+    public function receiveARollCallReminder(ApiTester $I)
+    {
+        $I->wantTo('Receive a RollCall reminder');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $attack = [
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $attack['message'] = 'Alien Attack Part 1!';
+        $I->sendPOST($this->endpoint, $attack);
+        $I->seeResponseCodeIs(200);
+        $attack['message'] = 'Alien Attack Part 2!';
+        $I->sendPOST($this->endpoint, $attack);
+        $I->seeResponseCodeIs(200);
+        $attack['message'] = 'Alien Attack Part 3!';
+        $I->sendPOST($this->endpoint, $attack);
+        $I->seeResponseCodeIs(200);
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20880',
+            'rollcall_id' => '7',
+            'type'        => 'reminder'
+        ]);
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20880',
+            'rollcall_id' => '9',
+            'type'        => 'rollcall',
+            'message'     => "Alien Attack Part 3!\nReply with \"OK\" in your response"
+        ]);
+    }
+
+    /*
+     * Resend a RollCall should resend to unreplied users
+     *
+     */
+    public function resendRollCallToUnreplied(ApiTester $I)
+    {
+        $I->wantTo('Resend a RollCall to unreplied');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Resending a RollCall',
+            'organization_id' => 2,
+            'send_via' => ['sms'],
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendPUT('/api/v1/organizations/2/people/1/contacts/1', [
+            'contact'         => '+254721674181',
+            'type'            => 'phone',
+            'organization_id' => 2,
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendPUT($this->endpoint.'/7', [
+            'message' => 'Resending a RollCall',
+            'organization_id' => 2,
+            'send_via' => ['sms'],
+            'recipients' => [
+                [
+                    'id' => 10
+                ],
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['rollcall' =>
+            [
+                'message' => 'Resending a RollCall',
+                'organization' => [
+                    'id' => 2
+                ],
+                'user' => [
+                    'id' => 5
+                ],
+                'recipients' => [
+                    [
+                        'id' => 10
+                    ],
+                    [
+                        'id' => 1
+                    ]
+                ]
+            ]
+        ]);
+
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 1,
+            'roll_call_id'    => 7,
+            'response_status' => 'waiting',
+        ]);
+
+        $I->seeRecord('roll_call_recipients', [
+            'user_id'         => 10,
+            'roll_call_id'    => 7,
+            'response_status' => 'waiting',
+        ]);
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20880',
+            'rollcall_id' => '7',
+            'type'        => 'rollcall'
+        ]);
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674181',
+            'from'        => '20880',
+            'rollcall_id' => '7',
+            'type'        => 'rollcall'
+        ]);
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254722123457',
+            'from'        => '20880',
+            'rollcall_id' => '7',
+            'type'        => 'rollcall'
+        ]);
+
+        $I->seeNumRecords(1, 'outgoing_sms_log', [
+            'rollcall_id' => '7',
+            'type'        => 'reminder'
+        ]); // from a previous test
+    }
+
+    /*
+     * Resend a RollCall should not resend to replied users
+     *
+     */
+    public function resendRollCallNotToReplied(ApiTester $I)
+    {
+        $I->wantTo('Resend a RollCall to replied');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Resending a RollCall',
+            'organization_id' => 2,
+            'send_via' => ['sms'],
+            'recipients' => [
+                [
+                    'id' => 5
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendPOST($this->endpoint.'/7/replies', [
+            'message'  => 'Test response',
+            'answer'   => 'yes'
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint.'/7', [
+            'message' => 'Resending a RollCall',
+            'organization_id' => 2,
+            'send_via' => ['sms'],
+            'recipients' => [
+                [
+                    'id' => 5
+                ],
+                [
+                    'id' => 4
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendGET('/api/v1/organizations'."/2");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['organization' => [
+            'name'      => 'RollCall',
+            'subdomain' => 'rollcall',
+            'subscription_status' => 'active',
+            'credits'   => 1,       // <-- I should only have used 2 credits
+            'user' => [
+                'id'   => 4,
+                'role' => 'owner',
+            ]
+        ]]);
     }
 }

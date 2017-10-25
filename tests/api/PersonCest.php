@@ -608,6 +608,12 @@ class PersonCest
                 'invite_sent' => true
             ]
         ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "RollCall invited you to join Rollcall",
+            'type'        => 'invite',
+            'to'          => 'org_member2@ushahidi.com',
+        ]);
     }
 
     /**
@@ -734,6 +740,12 @@ class PersonCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Reset Password",
+            'type'        => 'ResetPassword',
+            'to'          => 'test@ushahidi.com',
+        ]);
     }
 
     /**
@@ -750,6 +762,14 @@ class PersonCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeInDatabase('contacts', array('contact' => 'test@ushahidi.com', 'blocked' => 1));
+
+        $I->seeRecord('notifications', [
+            'notifiable_id'           => '4',
+            'notifiable_type'         => 'RollCall\Models\User',
+            'type'                    => 'RollCall\Notifications\Unsubscribe',
+            'data'                    => '{"person_name":"Test user","person_id":1,"profile_picture":false,"initials":"TU","contact":"test@ushahidi.com","contact_type":"email"}'
+        ]);
+
     }
 
 }

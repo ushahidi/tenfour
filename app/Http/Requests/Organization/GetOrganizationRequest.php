@@ -16,6 +16,10 @@ class GetOrganizationRequest extends FormRequest
      */
     public function authorize()
     {
+        if (!$this->user()) {
+            return false;
+        }
+        
         // An org owner/ admin can view an organization
         //
         // Temporary access given to members to view organization and people

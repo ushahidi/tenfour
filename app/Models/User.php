@@ -13,12 +13,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
 use RollCall\Notifications\ResetPassword;
 use Illuminate\Support\Str;
+use RollCall\Models\Mail as OutgoingMail;
 
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Notifiable;
+    use Authenticatable, Authorizable, CanResetPassword;
+
+    use Notifiable {
+      notify as protected notifiableNotify;
+    }
 
     /**
      * The database table used by the model.
@@ -32,7 +37,7 @@ class User extends Model implements AuthenticatableContract,
 	 *
 	 * @var array
 	 */
-    protected $fillable = ['name', 'description', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent', 'person_type', 'role', 'profile_picture', 'first_time_login'];
+    protected $fillable = ['name', 'description', 'password', 'invite_sent', 'invite_token', 'config_profile_reviewed', 'config_self_test_sent', 'person_type', 'role', 'profile_picture', 'first_time_login', 'terms_of_service'];
 
   	/**
   	 * The attributes excluded from the model's JSON form.
@@ -164,5 +169,37 @@ class User extends Model implements AuthenticatableContract,
         }
 
         return $this->role === 'owner';
+    }
+
+    public function notify($notification)
+    {
+        if (in_array('mail', $notification->via($this))) {
+            $this->logOutgoingMailNotification($notification);
+        }
+
+        return $this->notifiableNotify($notification);
+    }
+
+    private function logOutgoingMailNotification($notification)
+    {
+        $class = join('', array_slice(explode('\\', get_class($notification)), -1));
+        $subject = trim(join(' ', preg_split('/(?=[A-Z])/',$class)));
+
+        $mail = new OutgoingMail;
+        $mail->to = $this->email();
+        $mail->from = config('mail.from.address');
+        $mail->subject = $subject;
+        $mail->rollcall_id = 0;
+        $mail->type = $class;
+        $mail->save();
+    }
+
+    /**
+     * A user belongs to groups
+     *
+     */
+    public function groups()
+    {
+        return $this->belongsToMany('RollCall\Models\Group', 'group_users');
     }
 }

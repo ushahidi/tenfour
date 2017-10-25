@@ -42,3 +42,4 @@
     - name: "Deploy Docs (master)"
       service: awscli
       command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/rollcall/master --acl public-read
+      tag: master

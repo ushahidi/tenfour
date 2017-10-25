@@ -3,8 +3,11 @@ namespace RollCall\Repositories;
 
 use RollCall\Models\Reply;
 use RollCall\Models\RollCall;
-use RollCall\Contracts\Repositories\ReplyRepository;
+use RollCall\Models\User;
+use RollCall\Messaging\AnswerParser;
 use RollCall\Contracts\Repositories\RollCallRepository;
+use RollCall\Contracts\Repositories\ReplyRepository;
+use RollCall\Contracts\Repositories\ContactRepository;
 use DB;
 
 use Illuminate\Support\Facades\Notification;
@@ -12,6 +15,12 @@ use RollCall\Notifications\ReplyReceived;
 
 class EloquentReplyRepository implements ReplyRepository
 {
+    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts)
+    {
+        $this->roll_calls = $roll_calls;
+        $this->contacts = $contacts;
+    }
+
     public function create(array $input)
     {
         return Reply::create($input)
@@ -32,7 +41,11 @@ class EloquentReplyRepository implements ReplyRepository
     public function update(array $input, $id)
     {
         $reply = Reply::findorFail($id);
-        $reply->answer = $input['answer'];
+
+        if (isset($input['answer'])) {
+            $reply->answer = $input['answer'];
+        }
+        
         $reply->message = $input['message'];
         $reply->location_text = $input['location_text'];
         $reply->save();
@@ -82,5 +95,70 @@ class EloquentReplyRepository implements ReplyRepository
     public function all()
     {
         //
+    }
+
+    public function save($from, $message, $message_id = 0, $roll_call_id = null, $provider = null, $outgoing_number = null)
+    {
+        $contact = $this->contacts->getByContact($from);
+
+        if ($contact) {
+
+            if ($roll_call_id) {
+                // Just check the rollcall was actually sent to this user
+                $roll_call_id = $this->roll_calls->getSentRollCallId($contact['id'], $roll_call_id);
+            } else {
+                // Get last roll call id that was sent to the the the contact
+                $roll_call_id = $this->roll_calls->getLastSentMessageId($contact['id'], $outgoing_number);
+            }
+
+            // Add reply if roll call exists
+            if ($roll_call_id) {
+
+                $roll_call = $this->roll_calls->find($roll_call_id);
+
+                $answer = AnswerParser::parse($message, $roll_call['answers']);
+
+                $input = [
+                    'message'      => $message,
+                    'user_id'      => $contact['user']['id'],
+                    'roll_call_id' => $roll_call_id,
+                    'contact_id'   => $contact['id'],
+                    'answer'       => $answer,
+                    'message_id'   => $message_id,
+                ];
+
+                $this->create($input);
+
+                // Update response status
+                $this->roll_calls->updateRecipientStatus($roll_call_id, $contact['user']['id'], 'replied');
+
+                // Update user checklist self test status
+                if ($roll_call['self_test_roll_call']) {
+                    $this->updateUserSelfTest($contact['user']['id']);
+                }
+
+                if (!$outgoing_number) {
+                    $outgoing_number = $this->roll_calls->getOutgoingNumberForRollCallToContact($roll_call_id, $contact['id']);
+                }
+
+                return [
+                  "roll_call_id"  => $roll_call_id,
+                  "contact_id"    => $contact['id'],
+                  "from"          => $outgoing_number
+                ];
+            } else {
+                \Log::warning('Could not find the RollCall for incoming message from ' . $from);
+            }
+        } else {
+            \Log::warning('Could not find the contact details for incoming message from ' . $from);
+        }
+
+        return false;
+    }
+
+    protected function updateUserSelfTest($user_id) {
+        $user = User::findOrFail($user_id);
+        $user['config_self_test_sent'] = 1;
+        $user->save();
     }
 }

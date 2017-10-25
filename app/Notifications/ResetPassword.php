@@ -5,6 +5,7 @@ namespace RollCall\Notifications;
 use App;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use RollCall\Http\Transformers\UserTransformer;
 
 class ResetPassword extends Notification
 {
@@ -50,16 +51,24 @@ class ResetPassword extends Notification
         $resetLink = url($this->organization->url() .
             '/login/reset-password/' .
             $this->token .
-            '?email=' . urlencode($this->email));
+            '?email=' . urlencode($this->email) .
+            '&subdomain=' . urlencode($this->organization['subdomain']));
+
+        $subject = 'Reset Password';
 
         $data = [
-            'link'                    => $resetLink,
-            'organization_subdomain'  => $this->organization['subdomain'],
-            'organization_name'       => $this->organization['name'],
+            'action_url'      => $resetLink,
+            'action_text'     => $subject,
+            'subject'         => 'Need to reset your password?',
+            'org_subdomain'   => $this->organization['subdomain'],
+            'org_name'        => $this->organization['name'],
+            'profile_picture' => $this->organization['profile_picture'],
+            'initials'        => UserTransformer::generateInitials($this->organization['name']),
+            'body'            => 'You\'re receiving this email because we received a request to reset the password for your ' . $this->organization['name'] . ' RollCall account.'
         ];
 
         return (new MailMessage)
-            ->view('emails.reset_password', $data)
-            ->subject('Reset Password');
+            ->view('emails.general', $data)
+            ->subject($subject);
     }
 }

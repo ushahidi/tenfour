@@ -366,7 +366,7 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Update a roll call
+     * Update/resend a roll call
      *
      * @Put("/{roll_call_id}")
      * @Parameters({
@@ -467,7 +467,12 @@ class RollCallController extends ApiController
         // Send roll call to new recipients
         if ($request->input('recipients')) {
             $roll_call_to_dispatch = $roll_call;
-            $roll_call_to_dispatch['recipients'] = $request->input('recipients');
+
+            $roll_call_to_dispatch['recipients'] = array_filter(
+                $request->input('recipients'),
+                function ($recipient) use ($roll_call) {
+                    return !$this->roll_calls->hasRepliedToRollCall($recipient['id'], $roll_call['id']);
+                });
 
             if (!$this->creditService->hasSufficientCredits($roll_call_to_dispatch)) {
                 return response('Payment Required', 402);

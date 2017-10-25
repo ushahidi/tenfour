@@ -16,7 +16,7 @@ class MailCest
         $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
         $I->sendPost($endpoint, $reply);
         $I->seeResponseCodeIs(200);
-        
+
         $I->seeRecord('replies', [
             'message' => 'Confirmed',
             'contact_id' => $contact_id,
@@ -93,12 +93,48 @@ class MailCest
         $I->wantTo('Handle SES complaints');
         $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
         $I->sendPost($endpoint, $complaint);
+        $I->seeResponseCodeIs(200);
 
         $I->seeRecord('roll_calls', [
             'id' => '1',
             'complaint_count' => $count,
         ]);
 
-        $I->seeResponseCodeIs(200);
+        // check a notification has been sent
+        $I->seeRecord('notifications', [
+            'notifiable_id'           => '4',
+            'notifiable_type'         => 'RollCall\Models\User',
+            'type'                    => 'RollCall\Notifications\Complaint',
+            'data'                    => '{"person_name":"Admin user","person_id":2,"profile_picture":false,"initials":"AU","rollcall_message":"Westgate under siege","rollcall_id":1}'
+        ]);
+    }
+
+    public function receiveRollCallMail(ApiTester $I)
+    {
+        $I->wantTo('Receive a RollCall mail');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/api/v1/rollcalls', [
+            'message' => 'Sinkhole has opened. Are you ok?',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 3
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
+            ]
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Sinkhole has opened. Are you ok?",
+            'type'        => 'rollcall',
+            'to'          => 'org_member@ushahidi.com',
+            'rollcall_id' => 7,
+            'from'        => 'rollcall-7@qa.rollcall.io'
+        ]);
     }
 }

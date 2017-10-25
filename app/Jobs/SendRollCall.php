@@ -15,7 +15,8 @@ use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Models\Organization;
 use RollCall\Messaging\SMSService;
-use UrlShortener;
+use RollCall\Services\URLShortenerService;
+
 use libphonenumber\NumberParseException;
 
 use Log;
@@ -46,8 +47,10 @@ class SendRollCall implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo)
+    public function handle(MessageServiceFactory $message_service_factory, RollCallRepository $roll_call_repo, ContactRepository $contact_repo, OrganizationRepository $org_repo, PersonRepository $person_repo, URLShortenerService $shortener)
     {
+        $this->shortener = $shortener;
+
         $this->organization = $org_repo->find($this->roll_call['organization_id']);
         $this->channels = $org_repo->getSetting($this->roll_call['organization_id'], 'channels');
 
@@ -107,68 +110,134 @@ class SendRollCall implements ShouldQueue
 
                 $message_service = $message_service_factory->make($contact['type']);
                 $to = $contact['contact'];
+                $from = null;
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
 
-                    if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
-                        Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
-                        continue;
-                    }
-
-                    $message_service->send($to, new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient));
+                    $this->dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient);
 
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
-                    // Wrap phone number
+
                     try {
                         $to = App::make('RollCall\Messaging\PhoneNumberAdapter', [$to]);
                     } catch (NumberParseException $exception) {
-                        // Can't send a message to an invalid number
+                        Log::warning("Can't send a message to an invalid number: " . $exception);
                         continue;
                     }
 
-                    // Send reminder SMS to unresponsive recipient
-                    $unreplied_sms_roll_call_id = $roll_call_repo->getLastUnrepliedByContact($contact['id']);
+                    $from = $this->getFromNumber($roll_call_repo, $contact, $to);
 
-                    if ($unreplied_sms_roll_call_id) {
-                        $reminder_reply_token = $roll_call_repo->getReplyToken($unreplied_sms_roll_call_id, $recipient['id']);
-                        $reminder_sms_url = $this->shortenUrl($org_url .'/r/'. $unreplied_sms_roll_call_id .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
-                        $this->sendReminderSMS($message_service, $to, $reminder_sms_url);
+                    if ($roll_call_repo->isOutgoingNumberActive($contact['id'], $from)) {
+                        // only send reminder if we are reusing a number on which there is an active rollcall
+                        $this->dispatchRollCallReminderViaSMS($roll_call_repo, $message_service, $contact, $recipient, $to, $org_url, $from);
                     }
 
-                    $params = [];
-                    $rollcall_url = $org_url .'/r/'. $this->roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
-                    $rollcall_url = $params['rollcall_url'] = $this->shortenUrl($rollcall_url );
-                    $params['answers'] = $this->roll_call['answers'];
-                    $params['keyword'] = $message_service->getKeyword($to);
-                    $msg = $this->roll_call['message'];
-
-                    if ($this->isURLOnSMSBoundary('sms.rollcall', ['msg' => $msg] + $params)) {
-                        // send sms without rollcall url
-                        unset($params['rollcall_url']);
-                        $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
-                        // send rollcall url
-                        $this->sendRollCallURLSMS($message_service, $to, $rollcall_url);
-                    } else {
-                        // send together
-                        $this->sendRollCallSMS($message_service, $to, $msg, ['msg' => $msg] + $params);
-                    }
+                    $this->dispatchRollCallViaSMS($message_service, $from, $to, $recipient, $org_url);
 
                     $creditAdjustmentMeta['credits']++;
                     $creditAdjustmentMeta['contacts']++;
 
                 } else if ($contact['type'] === 'slack' && isset($send_via['slack'])) {
-                    // TODO send private message on slack
-                    // https://github.com/ushahidi/RollCall/issues/633
+
+                    $this->dispatchRollCallViaSlack();
                 }
 
-                // Log message for recipient
-                $roll_call_repo->addMessage($this->roll_call['id'], $contact['id']);
+                $roll_call_repo->addMessage($this->roll_call['id'], $contact['id'], $from);
                 $creditAdjustmentMeta['recipients']++;
             }
         }
 
         App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], 0-$creditAdjustmentMeta['credits'], 'rollcall', $creditAdjustmentMeta);
+    }
 
+    protected function getFromNumber($roll_call_repo, $contact, $to) {
+        // if there is already a from number used for this contact/rollcall then use that
+        $previously_sent_from = $roll_call_repo->getOutgoingNumberForRollCallToContact($this->roll_call['id'], $contact['id']);
+
+        if ($previously_sent_from) {
+            return $previously_sent_from;
+        }
+
+        $region_code = $to->getRegionCode();
+
+        $from = config('rollcall.messaging.sms_providers.'.$region_code.'.from');
+
+        if (! $from) {
+            $from = config('rollcall.messaging.sms_providers.default.from');
+        }
+
+        if (is_array($from)) {
+            if (!config('rollcall.messaging.skip_number_shuffle')) {
+                shuffle($from);
+            }
+
+            // if possible, get an outgoing number with no unreplied rollcalls for this user
+            foreach ($from as $from_number) {
+                if (!$roll_call_repo->isOutgoingNumberActive($contact['id'], $from_number)) {
+                    return $from_number;
+                }
+            }
+
+            return $from[0];
+        } else {
+            return $from;
+        }
+    }
+
+    protected function dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient) {
+        if ($contact['bounce_count'] >= config('rollcall.messaging.bounce_threshold')) {
+            Log::info('Cannot send roll call for ' . $contact['contact'] . ' because bounces exceed threshold');
+            return;
+        }
+
+        $message_service->send(
+            $to,
+            new RollCallMail($this->roll_call, $this->organization, $creator, $contact, $recipient),
+            [
+                'rollcall_id' => $this->roll_call['id'],
+                'type' => 'rollcall'
+            ]
+        );
+    }
+
+    protected function dispatchRollCallViaSMS($message_service, $from, $to, $recipient, $org_url) {
+
+        $params = [];
+        $rollcall_url = $org_url .'/r/'. $this->roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
+        $rollcall_url = $params['rollcall_url'] = $this->shortener->shorten($rollcall_url);
+        $params['answers'] = $this->roll_call['answers'];
+        $params['keyword'] = $message_service->getKeyword($to);
+        $msg = $this->roll_call['message'];
+
+        if ($this->isURLOnSMSBoundary('sms.rollcall', ['msg' => $msg] + $params)) {
+            // send sms without rollcall url
+            unset($params['rollcall_url']);
+            $this->sendRollCallSMS($message_service, $from, $to, $msg, ['msg' => $msg] + $params);
+            // send rollcall url
+            $this->sendRollCallURLSMS($message_service, $from, $to, $rollcall_url);
+        } else {
+            // send together
+            $this->sendRollCallSMS($message_service, $from, $to, $msg, ['msg' => $msg] + $params);
+        }
+    }
+
+    protected function dispatchRollCallViaSlack() {
+        // TODO send private message on slack
+        // https://github.com/ushahidi/RollCall/issues/633
+    }
+
+    protected function dispatchRollCallReminderViaSMS($roll_call_repo, $message_service, $contact, $recipient, $to, $org_url, $from) {
+        $unreplied_sms_roll_call = $roll_call_repo->getLastUnrepliedByContact($contact['id'], $from);
+
+        if ($unreplied_sms_roll_call['id'] === $this->roll_call['id']) {
+            return;
+        }
+
+        if ($unreplied_sms_roll_call && $unreplied_sms_roll_call['id'] && $unreplied_sms_roll_call['from']) {
+            $reminder_reply_token = $roll_call_repo->getReplyToken($unreplied_sms_roll_call['id'], $recipient['id']);
+            $reminder_sms_url = $this->shortener->shorten($org_url .'/r/'. $unreplied_sms_roll_call['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
+            $this->sendReminderSMS($message_service, $to, $reminder_sms_url, $from, $unreplied_sms_roll_call['id']);
+        }
     }
 
     /*
@@ -224,40 +293,32 @@ class SendRollCall implements ShouldQueue
         return $count_with_url !== $count_without_url;
     }
 
-    private function sendRollCallSMS(SMSService $message_service, $to, $msg, $params) {
-        // \Log::info('Sending "RollCallSMS" to=' . $to . ' msg=' . $msg);
+    private function sendRollCallSMS(SMSService $message_service, $from, $to, $msg, $params) {
+        $params['sms_type'] = 'rollcall';
+        $params['rollcall_id'] = $this->roll_call['id'];
 
         $message_service->setView('sms.rollcall');
-        $message_service->send($to, $msg, $params);
+        $message_service->send($to, $msg, $params, null, $from);
     }
 
-    private function sendRollCallURLSMS(SMSService $message_service, $to, $rollcall_url) {
-        // \Log::info('Sending "RollCallURLSMS" to=' . $to . ' msg=' . $rollcall_url);
+    private function sendRollCallURLSMS(SMSService $message_service, $from, $to, $rollcall_url) {
+        $params = [
+            'sms_type' => 'rollcall_url',
+            'rollcall_id' => $this->roll_call['id']
+        ];
 
         $message_service->setView('sms.rollcall_url');
-        $message_service->send($to, $rollcall_url);
+        $message_service->send($to, $rollcall_url, $params, null, $from);
     }
 
-    private function sendReminderSMS(SMSService $message_service, $to, $rollcall_url) {
-        // \Log::info('Sending "ReminderSMS" to=' . $to . ' msg=' . $rollcall_url);
-        // @TODO include previous rollcall message
+    private function sendReminderSMS(SMSService $message_service, $to, $rollcall_url, $from, $rollcall_id) {
+        $params = [
+            'sms_type' => 'reminder',
+            'rollcall_id' => $rollcall_id
+        ];
 
         $message_service->setView('sms.unresponsive');
-        $message_service->send($to, $rollcall_url);
-    }
-
-    private function shortenUrl($url) {
-        if (!config('urlshortner.bitly.username')) {
-            return $url;
-        }
-
-        try {
-            $url = UrlShortener::shorten($url);
-        } catch (\Waavi\UrlShortener\Exceptions\InvalidResponseException $e) {
-            \Log::error($e);
-        }
-
-        return $url;
+        $message_service->send($to, $rollcall_url, $params, null, $from);
     }
 
 }

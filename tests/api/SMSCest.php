@@ -22,7 +22,6 @@ class SMSCest
         $I->seeResponseCodeIs(200);
     }
 
-
     public function receiveNexmoMOsWithoutSignature(ApiTester $I)
     {
         $endpoint = 'sms/receive/nexmo';
@@ -67,6 +66,60 @@ class SMSCest
             'message_id' => '000000FFFB0356D1',
         ]);
 
+
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function receiveResponseReceivedSMS(ApiTester $I)
+    {
+        $endpoint = 'sms/receive/africastalking';
+        $I->wantTo("Receive a 'response received' SMS");
+        $I->sendPost($endpoint, [
+            'from'  => '254792999999',
+            'to'    => '20880',
+            'text'  => 'Test get a response received SMS',
+            'id'    => '11111123',
+        ]);
+
+        $I->seeRecord('replies', [
+            'message' => 'Test get a response received SMS',
+            'message_id' => '11111123',
+            'roll_call_id' => 1,
+        ]);
+
+        $I->seeRecord('outgoing_sms_log', [
+            'message' => "RollCall has received your response.\n",
+            'type'    => 'response_received',
+            'to'      => '+254792999999',
+            'from'    => '20880'
+        ]);
+
+        $I->seeResponseCodeIs(200);
+    }
+
+    public function receiveResponseReceivedSMSAnotherNumber(ApiTester $I)
+    {
+        $endpoint = 'sms/receive/africastalking';
+        $I->wantTo("Receive a 'response received' SMS from another outgoing number");
+        $I->sendPost($endpoint, [
+            'from'  => '254792999999',
+            'to'    => '20881',
+            'text'  => 'Test get a response received SMS from another outgoing number',
+            'id'    => '1111112345',
+        ]);
+
+        $I->seeRecord('replies', [
+            'message' => 'Test get a response received SMS from another outgoing number',
+            'message_id' => '1111112345',
+            'roll_call_id' => 2,
+        ]);
+
+        $I->seeRecord('outgoing_sms_log', [
+            'message' => "RollCall has received your response.\n",
+            'type'    => 'response_received',
+            'to'      => '+254792999999',
+            'from'    => '20881'
+        ]);
 
         $I->seeResponseCodeIs(200);
     }

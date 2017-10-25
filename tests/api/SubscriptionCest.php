@@ -68,7 +68,7 @@ class SubscriptionCest
         // check that the credit adjustment has been made
         $I->seeRecord('credit_adjustments', [
             'organization_id'         => 2,
-            'adjustment'              => 1050,
+            'adjustment'              => 1047,
             'type'                    => 'topup',
         ]);
 
@@ -85,6 +85,12 @@ class SubscriptionCest
             'notifiable_id'           => '4',
             'notifiable_type'         => 'RollCall\Models\User',
             'type'                    => 'RollCall\Notifications\PaymentSucceeded',
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Payment Succeeded",
+            'type'        => 'PaymentSucceeded',
+            'to'          => 'org_owner@ushahidi.com',
         ]);
     }
 
@@ -109,6 +115,12 @@ class SubscriptionCest
             'notifiable_id'           => '4',
             'notifiable_type'         => 'RollCall\Models\User',
             'type'                    => 'RollCall\Notifications\PaymentFailed',
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Payment Failed",
+            'type'        => 'PaymentFailed',
+            'to'          => 'org_owner@ushahidi.com',
         ]);
     }
 
@@ -226,6 +238,12 @@ class SubscriptionCest
             'notifiable_id'           => '4',
             'notifiable_type'         => 'RollCall\Models\User',
             'type'                    => 'RollCall\Notifications\TrialEnding',
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Trial Ending",
+            'type'        => 'TrialEnding',
+            'to'          => 'org_owner@ushahidi.com',
         ]);
     }
 

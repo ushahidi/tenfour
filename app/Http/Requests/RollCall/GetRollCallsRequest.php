@@ -16,6 +16,10 @@ class GetRollCallsRequest extends FormRequest
      */
     public function authorize()
     {
+        if (!$this->user()) {
+            return false;
+        }
+
         // If filtering by organization check whether user is org owner/ org admin
         if (!$this->query('organization')) {
             $this->merge([

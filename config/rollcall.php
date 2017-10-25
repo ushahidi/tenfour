@@ -1,4 +1,8 @@
 <?php
+$getNexmoFrom = function( $region ) {
+  return explode('|', env('NEXMO_SRC_ADDR_' . $region, env('NEXMO_SRC_ADDR', 'rollcall')));
+};
+
 return [
     // The app's credentials for the API
     'app_client' => [
@@ -17,27 +21,39 @@ return [
         'sms_providers' => [
             'KE' => [
                 'driver' => 'africastalking',
-                'from' => env('AFRICASTALKING_SRC_ADDR', '20880')
+                'from' => explode('|', env('AFRICASTALKING_SRC_ADDR', '20880|20881'))
             ],
             'US' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => $getNexmoFrom('US')
             ],
             'NZ' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => $getNexmoFrom('NZ')
             ],
             'CA' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => $getNexmoFrom('CA')
             ],
             'IE' => [
                 'driver' => 'nexmo',
-                'from' => '353870604184'
+                'from' => $getNexmoFrom('IE')
+            ],
+            'GB' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('UK')
+            ],
+            'FR' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('FR')
+            ],
+            'HU' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('HU')
             ],
             'default' => [
                 'driver' => 'nexmo',
-                'from' => env('NEXMO_SRC_ADDR', 'rollcall')
+                'from' => explode('|', env('NEXMO_SRC_ADDR', 'rollcall'))
             ],
         ],
 
@@ -51,5 +67,7 @@ return [
         // Bounce and complaints thresholds
         'bounce_threshold' => env('BOUNCE_THRESHOLD', 3),
         'complaint_threshold' => env('COMPLAINT_THRESHOLD', 3),
+
+        'skip_number_shuffle' => env('SKIP_NUMBER_SHUFFLE', false),
     ]
 ];

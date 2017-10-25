@@ -2,7 +2,9 @@
 namespace RollCall\Repositories;
 
 use RollCall\Models\Contact;
+use RollCall\Notifications\Unsubscribe;
 use RollCall\Contracts\Repositories\ContactRepository;
+use Illuminate\Support\Facades\Notification;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberFormat;
 
@@ -46,14 +48,14 @@ class EloquentContactRepository implements ContactRepository
                 $query->select('users.id', 'users.name');
             }
         ])
-            ->findOrFail($id)
-            ->toArray();
+        ->findOrFail($id)
+        ->toArray();
     }
 
     public function delete($id)
     {
-		$contact = Contact::findOrFail($id);
-		$contact->delete();
+    		$contact = Contact::findOrFail($id);
+    		$contact->delete();
 
         return $contact->toArray();
     }
@@ -116,6 +118,11 @@ class EloquentContactRepository implements ContactRepository
 
       $contact['blocked'] = true;
       $contact->save();
+
+      $people = resolve('RollCall\Contracts\Repositories\PersonRepository');
+
+      Notification::send($people->getAdmins($contact->user->organization->id),
+          new Unsubscribe($contact->user, $contact));
 
       return $contact->toArray();
     }

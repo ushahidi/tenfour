@@ -41,7 +41,7 @@ return [
 			'class' => 'League\OAuth2\Server\Grant\RefreshTokenGrant',
 			'access_token_ttl' => 3600,
 			'refresh_token_ttl' => 604800,
-			'rotate_refresh_tokens' => false,
+			'rotate_refresh_tokens' => true,
 		],
 	],
 

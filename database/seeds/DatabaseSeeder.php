@@ -7,6 +7,7 @@ use RollCall\Seeders\UserTableSeeder;
 use RollCall\Seeders\RoleTableSeeder;
 use RollCall\Seeders\SettingsTableSeeder;
 use RollCall\Seeders\NotificationsTableSeeder;
+use RollCall\Seeders\GroupTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RollCall\Seeders\RollCallTableSeeder::class);
         $this->call(RollCall\Seeders\SettingsTableSeeder::class);
         $this->call(RollCall\Seeders\NotificationsTableSeeder::class);
+        $this->call(RollCall\Seeders\GroupTableSeeder::class);
 
         Model::reguard();
     }

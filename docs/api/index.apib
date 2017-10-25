@@ -86,8 +86,7 @@ FORMAT: 1A
     + Body
 
             {
-                "name": "Ushahidi",
-                "subdomain": "ushahidi@rollcall.io"
+                "name": "Ushahidi"
             }
 
 + Response 200 (application/json)
@@ -616,9 +615,7 @@ FORMAT: 1A
 + Response 200 (application/json)
     + Body
 
-            {
-                "count": 2
-            }
+            []
 
 # RollCalls [/api/v1/rollcalls]
 
@@ -919,7 +916,7 @@ FORMAT: 1A
                 }
             }
 
-## Update a roll call [PUT /api/v1/rollcalls/{roll_call_id}]
+## Update/resend a roll call [PUT /api/v1/rollcalls/{roll_call_id}]
 
 
 + Parameters
@@ -1282,4 +1279,395 @@ FORMAT: 1A
                         }
                     }
                 ]
+            }
+
+# Subscriptions [/api/v1/organizations]
+
+## Get all subscriptions [GET /api/v1/organizations/{org_id}/subscriptions]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscriptions": {
+                    "id": "1",
+                    "status": "in_trial",
+                    "card_type": "Visa",
+                    "last_four": "1111",
+                    "expiry_month": 12,
+                    "expiry_year": 1,
+                    "trial_ends_at": "2017-06-02 15:38:33",
+                    "next_billing_at": "2017-06-02 15:38:33"
+                }
+            }
+
+## Get a single subscription [GET /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscription": {
+                    "id": "1",
+                    "status": "in_trial",
+                    "card_type": "Visa",
+                    "last_four": "1111",
+                    "expiry_month": 12,
+                    "expiry_year": 1,
+                    "trial_ends_at": "2017-06-02 15:38:33",
+                    "next_billing_at": "2017-06-02 15:38:33"
+                }
+            }
+
+## Cancel a subscription [DELETE /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscription": {
+                    "id": 1,
+                    "status": "cancelled"
+                }
+            }
+
+## Create an ChargeBee Hosted Page subscription url [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "callback": "http://subdomain.rollcall.io/callback"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "url": "http://api.chargebee.com/hostedpage?xxx"
+            }
+
+## Create a ChargeBee hosted page url for updating the subscription [PUT /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Body
+
+            {
+                "callback": "http://subdomain.rollcall.io/callback"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "url": "http://api.chargebee.com/hostedpage?xxx"
+            }
+
+## API endpoint called by client after successful ChargeBee subscription creation [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage/confirm]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + subscription_id: (number, required) - Subscription id
+
++ Request (application/json)
+    + Body
+
+            {
+                "subscription_id": "cb123uijh12iu3h87"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "subscription": {
+                    "id": 1,
+                    "status": "active"
+                }
+            }
+
+# Groups [/api/v1/organizations]
+
+## Get all groups in an organization [GET /api/v1/organizations/{org_id}/groups/{?offset,limit}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + offset: (string, optional) - 
+        + Default: 0
+    + limit: (string, optional) - 
+        + Default: 0
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "groups": [
+                    {
+                        "name": "Test Group 1",
+                        "created_at": null,
+                        "id": 1,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/1"
+                    },
+                    {
+                        "name": "Test Group 2",
+                        "created_at": null,
+                        "id": 2,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/2"  
+                    },
+                    {
+                        "name": "Test Group 3",
+                        "created_at": null,
+                        "id": 3,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/3"
+                        }
+                    }
+                ]
+            }
+
+## Get a single group [GET /api/v1/organizations/{org_id}/groups/{group_id}]
+
+
++ Parameters
+    + group_id: (number, required) - Group id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": 
+                   {
+                        "name": "Test Group 1",
+                        "created_at": null,
+                        "id": 1,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/1"
+                    }
+            }
+
+## Create a group [POST /api/v1/organizations/{org_id}/groups]
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "name": "Testing Group",
+                "organization_id": 2,
+                "members": [
+                    {
+                        "id": 3
+                    },
+                    {
+                        "id": 1
+                    }
+                ]
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "created_at": "2017-03-18 19:19:27",
+                    "id": 6,
+                    "name": "Testing Group",
+                    "organization": {
+                        "id": 2,
+                        "uri": "/organizations/2"
+                    },
+                    "members": [
+                        {
+                            "id": 3,
+                            "uri": "/users/3"
+                        },
+                        {
+                            "id": 1,
+                            "uri": "/users/1"
+                        }
+                    ],
+                    "updated_at": "2017-03-18 19:19:27",
+                    "uri": "/organizations/2/groups/6",
+                }
+            }
+## Update a group [PUT /api/v1/organizations/{org_id}/groups/{group_id}]
+
+
++ Parameters
+    + group_id: (number, required) - Group id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "members": [
+                    {
+                        "id": 1
+                    },
+                    {
+                        "id": 2
+                    },
+                    {
+                        "id": 3
+                    }
+                ]
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "created_at": null,
+                    "id": 1,
+                    "name": "Test Group 1",
+                    "organization": {
+                        "id": 2,
+                        "uri": "/organizations/2"
+                    },
+                    "members": [
+                        {
+                            "id": 1,
+                            "uri": "/users/1"
+                        },
+                        {
+                            "id": 2,
+                            "uri": "/users/2"
+                        },
+                        {
+                            "id": 4,
+                            "uri": "/users/4"
+                        }
+                    ],
+                    "updated_at": "2017-03-18 19:32:34",
+                    "uri": "/organizations/2/groups/1"
+                }
+            }
+
+## Delete a group [DELETE /api/v1/organizations/{org_id}/groups/{group_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + group_id: (number, required) - Group id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "id": 3,
+                    "name": "Test Group 3"
+                }
             }

@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use RollCall\Models\Subscription;
+use RollCall\Http\Transformers\UserTransformer;
 
 class PaymentFailed extends Notification
 {
@@ -40,12 +41,22 @@ class PaymentFailed extends Notification
      */
     public function toMail($notifiable)
     {
+        $body = 'We failed to make your payment for RollCall on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '.<br><br>' .
+            'We will try to make payment on your card again.<br><br>' .
+            'In the meantime, please check your card information in RollCall settings.';
+
         return (new MailMessage)
-                    ->line('We failed to make your payment for RollCall on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '.')
-                    ->line('We will try to make payment on your card again.')
-                    ->line('In the meantime, please check your card information in RollCall settings.')
-                    ->action('Check my Payment Settings', $this->retryUrl())
-                    ->line('Thank you for using RollCall!');
+            ->view('emails.general', [
+                'action_url'      => $this->retryUrl(),
+                'action_text'     => 'Review my Payment Settings',
+                'subject'         => 'Payment Failed',
+                'profile_picture' => $this->subscription->organization->profile_picture,
+                'org_subdomain'   => $this->subscription->organization->subdomain,
+                'org_name'        => $this->subscription->organization->name,
+                'initials'        => UserTransformer::generateInitials($this->subscription->organization->name),
+                'body'            => $body
+            ])
+            ->subject('Payment Failed');
     }
 
     private function retryUrl()

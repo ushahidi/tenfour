@@ -10,6 +10,8 @@ use RollCall\Services\CreditService;
 use Illuminate\Http\Request;
 use ChargeBee_Environment;
 use ChargeBee_Subscription;
+use ChargeBee_Coupon;
+use ChargeBee_InvalidRequestException;
 use RollCall\Notifications\PaymentFailed;
 use RollCall\Notifications\PaymentSucceeded;
 use RollCall\Notifications\TrialEnding;
@@ -52,7 +54,7 @@ class ChargeBeeWebhookController extends Controller
 
         if (!$subscription) {
             Log::warning('[ChargeBee] No subscription found for id ' . $payload->subscription->id);
-            return abort(404, 'No subscription found');
+            return abort(200, 'No subscription found');
         }
 
         return $subscription;
@@ -104,12 +106,24 @@ class ChargeBeeWebhookController extends Controller
         return response('OK', 200);
     }
 
+    protected function topup($organization_id, $credits, $meta, $zeroing)
+    {
+        if ($zeroing) {
+            $balance = $this->creditService->getBalance($organization_id);
+            $credits -= $balance;
+        }
+
+        return $this->creditService->addCreditAdjustment($organization_id, $credits, 'topup', $meta);
+    }
+
     public function handlePaymentSucceeded($payload)
     {
         $subscription = $this->getSubscription($payload);
 
         // 5 text message (SMS) credits per plan quantity
         // plus addon quantity
+
+        // TODO this webhook will need to be updated to handle mid-cycle payments
 
         $credits = CreditService::CREDITS_PER_USER_PER_MONTH * $payload->subscription->plan_quantity;
 
@@ -123,7 +137,7 @@ class ChargeBeeWebhookController extends Controller
 
         $meta = $payload;
 
-        $creditAdjustment = $this->creditService->addCreditAdjustment($subscription->organization->id, $credits, 'topup', $meta);
+        $creditAdjustment = $this->topup($subscription->organization->id, $credits, $meta, true);
 
         $subscription->update([
             'next_billing_at'   => $payload->subscription->next_billing_at,
@@ -131,7 +145,10 @@ class ChargeBeeWebhookController extends Controller
             'status'            => $payload->subscription->status,
         ]);
 
-        $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, $creditAdjustment));
+        $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
+            "adjustment" => $credits,
+            "balance" => $creditAdjustment->balance
+        ]));
 
         Log::info('[ChargeBee] Processed PaymentSucceeded for subscription ' . $subscription->subscription_id);
 
@@ -190,7 +207,7 @@ class ChargeBeeWebhookController extends Controller
 
         // The client didn't handle the create subscription callback correctly
 
-        Log::error('[ChargeBee] Received SubscriptionCreated for non-existant subscription ' . $payload->subscription->id);
+        Log::error('[ChargeBee] Received SubscriptionCreated for non-existent subscription ' . $payload->subscription->id);
 
         return response('OK', 200);
 
@@ -202,9 +219,24 @@ class ChargeBeeWebhookController extends Controller
 
         $subscription->update([
             'next_billing_at'   => $payload->subscription->next_billing_at,
-            'trial_ends_at'     => $payload->subscription->trial_end,
+            'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
+
+        if ($subscription['promo_code']) {
+            // https://github.com/ushahidi/RollCall/issues/735
+            try {
+                $coupon_result = ChargeBee_Coupon::retrieve($subscription['promo_code']);
+                if ($coupon_result->coupon()->discountPercentage == 100) {
+                    $meta = $payload;
+                    $meta->rc_freepromo = true;
+                    $creditAdjustment = $this->topup($subscription->organization->id, config('credits.freepromo'), $meta, true);
+                }
+            }
+            catch (ChargeBee_InvalidRequestException $e) {}
+            catch (Exception $e) {}
+        }
+
 
         Log::info('[ChargeBee] Processed SubscriptionRenewed for subscription ' . $subscription->subscription_id);
 
