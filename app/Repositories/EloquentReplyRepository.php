@@ -41,7 +41,11 @@ class EloquentReplyRepository implements ReplyRepository
     public function update(array $input, $id)
     {
         $reply = Reply::findorFail($id);
-        $reply->answer = $input['answer'];
+
+        if (isset($input['answer'])) {
+            $reply->answer = $input['answer'];
+        }
+        
         $reply->message = $input['message'];
         $reply->location_text = $input['location_text'];
         $reply->save();
