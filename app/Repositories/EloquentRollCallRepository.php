@@ -96,7 +96,9 @@ class EloquentRollCallRepository implements RollCallRepository
         $organizations = resolve('RollCall\Contracts\Repositories\OrganizationRepository');
         $channels = $organizations->getSetting($roll_call['organization_id'], 'channels');
 
-        if (isset($channels->slack) && isset($channels->slack->enabled) &&
+        if (isset($channels->slack) &&
+            isset($channels->slack->enabled) &&
+            isset($channels->slack->webhook_url) &&
             in_array('slack', $roll_call['send_via'])) {
             $roll_call->_slack_webhook_url = $channels->slack->webhook_url;
         }
