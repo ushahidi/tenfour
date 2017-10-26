@@ -7,24 +7,14 @@ use SMS;
 use App;
 use RollCall\Contracts\Messaging\MessageService;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
+use GrahamCampbell\Throttle\Facades\Throttle;
 use RollCall\Models\SMS as OutgoingSMS;
-use Stiphle\Throttle\LeakyBucket;
-use Stiphle;
-use Illuminate\Support\Facades\Redis;
 
 class SMSService implements MessageService
 {
 
     private $view;
     private $iterator;
-    private $throttle;
-
-    public function __construct()
-    {
-        $this->throttle = new Stiphle\Throttle\LeakyBucket;
-        $storage = new Stiphle\Storage\Redis(Redis::connection());
-        $this->throttle->setStorage($storage);
-    }
 
     public function setView($view)
     {
@@ -117,7 +107,14 @@ class SMSService implements MessageService
         $messages_per_second = config('sms.'.$driver.'.messages_per_second');
 
         if ($messages_per_second) {
-            $throttled = $this->throttle->throttle($from, $messages_per_second, 1000);
+
+            $throttler = ThrottleAdapter::get($from, $to, $messages_per_second);
+
+            // If we have exceeded the limit return the job back to the queue
+            if ($throttler->attempt()) {
+                $job->release();
+                return;
+            }
         }
 
         try {

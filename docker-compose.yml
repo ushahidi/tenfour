@@ -12,13 +12,11 @@ services:
       - DB_PASSWORD=rollcall
       - APP_ENV=testing
       - APP_API_DOMAIN=localhost
-      - REDIS_HOST=redis
     extra_hosts:  # TODO: how things break if we take these out?
       - "rollcall.dev:127.0.0.1"
       - "api.rollcall.dev:127.0.0.1"
     depends_on:
       - mysql
-      - redis
     ports:
       - "8000:8000"
   mysql:
@@ -28,7 +26,3 @@ services:
       - MYSQL_USER=rollcall
       - MYSQL_PASSWORD=rollcall
       - MYSQL_ROOT_PASSWORD=root
-  redis:
-    image: redis:3.2
-    environment:
-      - REDIS_HOST=redis
