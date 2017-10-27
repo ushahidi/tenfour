@@ -7,6 +7,7 @@ test:
   links:
     - mysql
     - memcached
+    - redis
   environment:
     - DB_HOST=mysql
     - DB_PORT=3306
@@ -14,6 +15,8 @@ test:
     - DB_USERNAME=rollcall
     - DB_PASSWORD=rollcall
     - APP_ENV=testing
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
   extra_hosts:
     - "rollcall.dev:127.0.0.1"
     - "api.rollcall.dev:127.0.0.1"
@@ -40,6 +43,9 @@ deploy:
 memcached:
   image: memcached
 
+redis:
+  image: redis:3.2
+
 aglio:
   image: humangeo/aglio
   volumes:
@@ -53,4 +59,3 @@ awscli:
     - .:/vols/src
   encrypted_env_file: deployment.env.encrypted
   cached: true
-

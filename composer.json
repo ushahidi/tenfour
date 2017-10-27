@@ -22,13 +22,14 @@
         "league/flysystem-aws-s3-v3": "~1.0",
         "markdunphy/ses-sns-types": "^0.1.4",
         "willdurand/email-reply-parser": "^2.5",
-        "graham-campbell/throttle": "^5.3",
         "sentry/sentry-laravel": "^0.6.1",
         "guzzlehttp/guzzle": "^6.2",
         "waavi/url-shortener": "1.0.x",
         "chargebee/chargebee-php": ">=2, <3",
         "torann/geoip": "^1.0",
-        "shiftonelabs/laravel-sqs-fifo-queue": "^1.0"
+        "predis/predis": "^1.1",
+        "shiftonelabs/laravel-sqs-fifo-queue": "^1.0",
+        "davedevelopment/stiphle": "^0.9.2"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",
