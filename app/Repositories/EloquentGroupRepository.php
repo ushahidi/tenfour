@@ -93,7 +93,7 @@ class EloquentGroupRepository implements GroupRepository
     // OrgCrudRepository
     public function update($organization_id, array $input, $id)
     {
-        $input = array_only($input, ['members', 'name']);
+        $input = array_only($input, ['members', 'name', 'description']);
 
         $group = Group::where('id', $id)
             ->where('organization_id', $organization_id)
@@ -119,7 +119,7 @@ class EloquentGroupRepository implements GroupRepository
 
         if (isset($input['members'])) {
             $memberIds = collect($input['members'])->pluck('id')->all();
-            $group->members()->syncWithoutDetaching($memberIds);
+            $group->members()->sync($memberIds);
         }
 
         return $group->fresh()->toArray();
