@@ -255,6 +255,39 @@ class PersonCest
     }
 
     /*
+     * Update groups as member
+     *
+     */
+    public function updateMemberGroups(ApiTester $I)
+    {
+        $org_id = 2;
+        $user_id = 2;
+        $I->wantTo('Update a member\'s groups');
+        $I->amAuthenticatedAsOrgOwner();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$org_id/people/$user_id", [
+            'name' => 'Updated org member',
+            'groups' => [
+              [ 'id' => 1 ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->sendGET($this->endpoint."/$org_id/people/$user_id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'groups' => [
+              [ 'id' => 1 ],
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'groups' => [
+              [ 'id' => 2 ],
+            ]
+        ]);
+    }
+
+    /*
      * Update member contact
      *
      */

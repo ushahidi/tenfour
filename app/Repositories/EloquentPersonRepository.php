@@ -115,6 +115,11 @@ class EloquentPersonRepository implements PersonRepository
             // Update user
             $user->update($input);
 
+            // Update groups
+            if (isset($input['groups'])) {
+                $user->groups()->sync(collect($input['groups'])->pluck('id')->all());
+            }
+
             // Mark notifications read
             if (isset($input['notifications'])) {
                 $user->unreadNotifications->markAsRead();
