@@ -78,6 +78,7 @@ class NexmoMessageValidator
             }
         }
         catch (InvalidMOMessageException $e) {
+            \Log::error($e);
             return false;
         }
 
