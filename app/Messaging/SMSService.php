@@ -137,6 +137,7 @@ class SMSService implements MessageService
 
             $job->delete();
         } catch (SMSNotSentException $e) {
+            app('sentry')->captureException($e);
             Log::warning($e);
             // Retry in 3 seconds
             $job->release(3);
