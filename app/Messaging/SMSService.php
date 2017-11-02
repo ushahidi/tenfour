@@ -120,6 +120,8 @@ class SMSService implements MessageService
             $throttled = $this->throttle->throttle($from, $messages_per_second, 1000);
         }
 
+        Log::debug('Attempting to send an SMS from="'.$from.'" to="'.$to.'" with driver="'.$driver.'"');
+
         try {
             SMS::send($view, $additional_params, function($sms) use ($to) {
                 $sms->to($to);
