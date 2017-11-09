@@ -18,7 +18,8 @@ class EloquentGroupRepository implements GroupRepository
     public function all($organization_id, $offset = 0, $limit = 0)
     {
         $query = Group::where('organization_id', '=', $organization_id)
-                        ->orderBy('name', 'asc');
+                    ->with('members.contacts')
+                    ->orderBy('name', 'asc');
 
         if ($limit > 0) {
             $query
@@ -141,7 +142,9 @@ class EloquentGroupRepository implements GroupRepository
     public function find($organization_id, $id)
     {
         $group = Group::where('id', $id)
-            ->firstOrFail()->toArray();
+            ->with('members.contacts')
+            ->firstOrFail()
+            ->toArray();
 
         foreach ($group['members'] as &$member)
         {
