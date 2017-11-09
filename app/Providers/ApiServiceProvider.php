@@ -10,6 +10,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Queue\Events\JobFailed;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -39,6 +41,10 @@ class ApiServiceProvider extends ServiceProvider
         $exception->register(function(\Illuminate\Validation\ValidationException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         });
+
+        Queue::failing(function (JobFailed $event) {
+            app('sentry')->captureMessage('A job failed', $event);
+        });
     }
 
     public function register()
@@ -63,10 +69,10 @@ class ApiServiceProvider extends ServiceProvider
 
         $this->app->bind('RollCall\Contracts\Repositories\UnverifiedAddressRepository',
                          'RollCall\Repositories\EloquentUnverifiedAddressRepository');
-        
+
         $this->app->bind('RollCall\Contracts\Repositories\GroupRepository',
                          'RollCall\Repositories\EloquentGroupRepository');
-        
+
         $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
                          'RollCall\Messaging\MessageServiceFactory');
 
@@ -88,7 +94,7 @@ class ApiServiceProvider extends ServiceProvider
 
         $this->app->bind('RollCall\Contracts\Services\PaymentService',
                          'RollCall\Services\Payments\ChargeBeePaymentService');
-                         
+
         $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
             ->needs('libphonenumber\PhoneNumberUtil')
             ->give(function () {
