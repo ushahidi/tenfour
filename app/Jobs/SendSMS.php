@@ -10,10 +10,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 use SMS;
 use App;
+use Exception;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
 use RollCall\Models\SMS as OutgoingSMS;
-use Stiphle;
-use Illuminate\Support\Facades\Redis;
 
 class SendSMS implements ShouldQueue
 {
@@ -25,7 +24,11 @@ class SendSMS implements ShouldQueue
     protected $additional_params;
     protected $to;
 
-    private $throttle;
+    public function failed(Exception $exception)
+    {
+        Log::warning($exception);
+        app('sentry')->captureException($exception);
+    }
 
     /**
      * Create a new job instance.
@@ -48,9 +51,6 @@ class SendSMS implements ShouldQueue
      */
     public function handle()
     {
-        $throttle = new Stiphle\Throttle\LeakyBucket;
-        $throttle->setStorage(new Stiphle\Storage\Redis(Redis::connection()));
-
         if ($this->from) {
             SMS::alwaysFrom($this->from);
         }
@@ -58,29 +58,17 @@ class SendSMS implements ShouldQueue
         // Set SMS driver for the region code
         SMS::driver($this->driver);
 
-        $messages_per_second = config('sms.'.$this->driver.'.messages_per_second');
+        // $messages_per_second = config('sms.'.$this->driver.'.messages_per_second');
 
-        if ($messages_per_second) {
-            $throttled = $throttle->throttle($this->from, $messages_per_second, 1000);
-        } else {
-            $throttled = 0;
-        }
-
-        Log::debug('Attempting to send an SMS from="'.$this->from.'" to="'.$this->to.'" with driver="'.$this->driver.'" (throttle='.$throttled.'ms)');
+        Log::debug('Attempting to send an SMS from="'.$this->from.'" to="'.$this->to.'" with driver="'.$this->driver.'"');
 
         $to = $this->to;
 
         try {
-            SMS::send($this->view, $this->additional_params, function($sms) use ($messages_per_second, $throttle) {
+            SMS::send($this->view, $this->additional_params, function($sms) {
                 $sms->to($this->to);
 
-                if ($messages_per_second) {
-                    $throttled = $throttle->throttle($this->from, $messages_per_second, 1000);
-                } else {
-                    $throttled = 0;
-                }
-
-                Log::debug('Successfully sent an SMS from="'.$this->from.'" to="'.$this->to.'" with driver="'.$this->driver.'" (throttle='.$throttled.'ms)');
+                Log::debug('Successfully sent an SMS from="'.$this->from.'" to="'.$this->to.'" with driver="'.$this->driver.'"');
             });
 
             $this->logSMS(
@@ -93,6 +81,7 @@ class SendSMS implements ShouldQueue
         } catch (SMSNotSentException $e) {
             app('sentry')->captureException($e);
             Log::warning($e);
+            $this->release(3);
         }
     }
 

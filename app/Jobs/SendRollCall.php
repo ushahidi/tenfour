@@ -21,6 +21,7 @@ use libphonenumber\NumberParseException;
 use Swift_Validate;
 use Log;
 use App;
+use Exception;
 
 define('SMS_BYTECOUNT', 140);
 
