@@ -12,7 +12,7 @@ class URLShortenerService
 
     public function shorten($url)
     {
-        if (!config('urlshortener.bitly.username')) {
+        if (!config('urlshortener.driver')) {
             return $url;
         }
 
