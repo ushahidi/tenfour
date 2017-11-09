@@ -18,7 +18,7 @@ use RollCall\Messaging\SMSService;
 use RollCall\Services\URLShortenerService;
 
 use libphonenumber\NumberParseException;
-
+use Swift_Validate;
 use Log;
 use App;
 
@@ -40,6 +40,12 @@ class SendRollCall implements ShouldQueue
     public function __construct(array $roll_call)
     {
         $this->roll_call = $roll_call;
+    }
+
+    public function failed(Exception $exception)
+    {
+        Log::warning($exception);
+        app('sentry')->captureException($exception);
     }
 
     /**
@@ -114,14 +120,19 @@ class SendRollCall implements ShouldQueue
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
 
-                    $this->dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient);
+                    if (Swift_Validate::email($to)) {
+                        $this->dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient);
+                    } else {
+                        Log::warning("Can't send a RollCall to an invalid email address: '" . $to . "'");
+                        continue;
+                    }
 
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
 
                     try {
                         $to = App::make('RollCall\Messaging\PhoneNumberAdapter', [$to]);
                     } catch (NumberParseException $exception) {
-                        Log::warning("Can't send a message to an invalid number: " . $exception);
+                        Log::warning("Can't send a RollCall to an invalid phone number: " . $exception);
                         continue;
                     }
 

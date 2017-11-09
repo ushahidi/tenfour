@@ -6,11 +6,7 @@ use Log;
 use SMS;
 use App;
 use RollCall\Contracts\Messaging\MessageService;
-use SimpleSoftwareIO\SMS\SMSNotSentException;
-use RollCall\Models\SMS as OutgoingSMS;
-use Stiphle\Throttle\LeakyBucket;
-use Stiphle;
-use Illuminate\Support\Facades\Redis;
+use RollCall\Jobs\SendSMS;
 
 class SMSService implements MessageService
 {
@@ -21,9 +17,6 @@ class SMSService implements MessageService
 
     public function __construct()
     {
-        $this->throttle = new Stiphle\Throttle\LeakyBucket;
-        $storage = new Stiphle\Storage\Redis(Redis::connection());
-        $this->throttle->setStorage($storage);
     }
 
     public function setView($view)
@@ -91,71 +84,9 @@ class SMSService implements MessageService
 
         $view = isset($this->view) ? $this->view : $msg;
 
-        $queue = resolve('\Illuminate\Queue\QueueManager');
-
-        $queue->push('RollCall\Messaging\SMSService@handleQueuedMessage', compact('view', 'additional_params', 'driver', 'from', 'to'));
+        dispatch((new SendSMS($view, $additional_params, $driver, $from, $to))/*->onQueue('sms')*/);
     }
 
-    /**
-     * Handles a queue message.
-     *
-     * @param \Illuminate\Queue\Jobs\Job $job
-     * @param array                      $data
-     */
-    public function handleQueuedMessage($job, $data)
-    {
-        extract($data);
-
-        // Set 'from' address if configured
-        if ($from) {
-            SMS::alwaysFrom($from);
-        }
-
-        // Set SMS driver for the region code
-        SMS::driver($driver);
-
-        $messages_per_second = config('sms.'.$driver.'.messages_per_second');
-
-        if ($messages_per_second) {
-            $throttled = $this->throttle->throttle($from, $messages_per_second, 1000);
-        }
-
-        Log::debug('Attempting to send an SMS from="'.$from.'" to="'.$to.'" with driver="'.$driver.'"');
-
-        try {
-            SMS::send($view, $additional_params, function($sms) use ($to) {
-                $sms->to($to);
-            });
-
-            $this->logSMS(
-                $to,
-                $from,
-                $driver,
-                isset($additional_params['rollcall_id'])?$additional_params['rollcall_id']:0,
-                isset($additional_params['sms_type'])?$additional_params['sms_type']:'other',
-                view($view, $additional_params));
-
-            $job->delete();
-        } catch (SMSNotSentException $e) {
-            app('sentry')->captureException($e);
-            Log::warning($e);
-            // Retry in 3 seconds
-            $job->release(3);
-        }
-
-    }
-
-    protected function logSMS($to, $from, $driver, $rollcall_id = 0, $type = 'other', $message = '')
-    {
-        $sms = new OutgoingSMS;
-        $sms->to = $to;
-        $sms->from = $from;
-        $sms->driver = $driver;
-        $sms->rollcall_id = $rollcall_id;
-        $sms->type = $type;
-        $sms->message = $message;
-        $sms->save();
-    }
 
     public function getMessages(Array $options = [])
     {

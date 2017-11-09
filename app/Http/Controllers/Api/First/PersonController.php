@@ -317,7 +317,7 @@ class PersonController extends ApiController
         $member['invite_sent'] = true;
 
         $this->people->update($organization_id, $member, $user_id);
-        $this->dispatch(new SendInvite($member, $organization));
+        $this->dispatch((new SendInvite($member, $organization))/*->onQueue('mails')*/);
 
         // Return up to date Member
         return $this->response->item($member, new UserTransformer, 'person');

@@ -133,7 +133,7 @@ class ContactFilesController extends ApiController
     public function importContacts(ImportRequest $request, $organization_id, $file_id)
     {
         try {
-            dispatch(new ImportCSV($this->auth->user()['id'], $organization_id, $file_id));
+            dispatch((new ImportCSV($this->auth->user()['id'], $organization_id, $file_id))/*->onQueue('import_csv')*/);
         } catch (Exception $e) {
             return response('UNPROCESSABLE ENTITY', 422);
         }

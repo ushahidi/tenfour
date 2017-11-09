@@ -31,6 +31,6 @@ class ResendRollCall extends Command
     {
         $roll_call = $rollcalls->find($this->argument('id'));
 
-        dispatch(new SendRollCall($roll_call));
+        dispatch((new SendRollCall($roll_call))/*->onQueue('rollcalls')*/);
     }
 }
