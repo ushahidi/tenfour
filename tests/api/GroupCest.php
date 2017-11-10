@@ -44,14 +44,14 @@ class GroupCest
         ]);
     }
 
-    /* 
+    /*
      * Update group
      *
      */
     public function updateGroup(ApiTester $I)
     {
-        $id = 1;
-        $group_id = 1;
+        $id = 2;
+        $group_id = 2;
         $I->wantTo('Update group details as the admin');
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -67,7 +67,7 @@ class GroupCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'group' => [
-                'id' => 1,
+                'id' => 2,
                 'name' => 'Test Group Update',
                 'members' => [
                     [
@@ -76,6 +76,28 @@ class GroupCest
                 ]
             ]
         ]);
+    }
+
+    /*
+     * Update group
+     *
+     */
+    public function updateGroupAsBadUser(ApiTester $I)
+    {
+        $id = 1;
+        $group_id = 1;
+        $I->wantTo('Update group details as a bad user');
+        $I->amAuthenticatedAsAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint."/$id/groups/$group_id", [
+            'name' => 'Test Group Update',
+            'members' => [
+                [
+                    'id' => 2
+                ]
+            ]
+        ]);
+        $I->seeResponseCodeIs(403);
     }
 
     /*
