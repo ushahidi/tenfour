@@ -17,10 +17,11 @@ class UpdateGroupRequest extends FormRequest
      */
     public function authorize()
     {
-        $group = App::make('RollCall\Contracts\Repositories\GroupRepository')
-                 ->find($this->route('organization'), $this->route('group'));
+        if ($this->user()->isAdmin($this->route('organization'))) {
+            return true;
+        }
 
-        return true;
+        return false;
     }
 
     public function rules()
