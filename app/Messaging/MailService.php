@@ -14,6 +14,17 @@ class MailService implements MessageService
         dispatch((new SendMail($to, $msg, $this->view, $additional_params, $subject))/*->onQueue('mails')*/);
     }
 
+    protected function logMail($to, $from, $subject, $type, $rollcall_id)
+    {
+        $mail = new OutgoingMail;
+        $mail->to = $to;
+        $mail->from = $from;
+        $mail->subject = $subject;
+        $mail->rollcall_id = $rollcall_id;
+        $mail->type = $type;
+        $mail->save();
+    }
+
     public function getMessages(Array $options = [])
     {
         //

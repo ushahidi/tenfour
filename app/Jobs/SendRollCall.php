@@ -120,7 +120,6 @@ class SendRollCall implements ShouldQueue
                 $from = null;
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
-
                     if (Swift_Validate::email($to)) {
                         $this->dispatchRollCallViaEmail($message_service, $contact, $to, $creator, $recipient);
                     } else {

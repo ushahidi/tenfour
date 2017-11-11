@@ -5,6 +5,7 @@ use RollCall\Models\Organization;
 use RollCall\Models\Group;
 use RollCall\Contracts\Repositories\GroupRepository;
 use RollCall\Http\Transformers\UserTransformer;
+
 use DB;
 use Validator;
 

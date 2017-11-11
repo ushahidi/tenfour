@@ -44,7 +44,7 @@ class GroupCest
         ]);
     }
 
-    /*
+     /*
      * Update group
      *
      */

@@ -22,6 +22,7 @@ class UpdateGroupRequest extends FormRequest
         }
 
         return false;
+
     }
 
     public function rules()

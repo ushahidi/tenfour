@@ -87,6 +87,17 @@ class SMSService implements MessageService
         dispatch((new SendSMS($view, $additional_params, $driver, $from, $to))/*->onQueue('sms')*/);
     }
 
+    protected function logSMS($to, $from, $driver, $rollcall_id = 0, $type = 'other', $message = '')
+    {
+        $sms = new OutgoingSMS;
+        $sms->to = $to;
+        $sms->from = $from;
+        $sms->driver = $driver;
+        $sms->rollcall_id = $rollcall_id;
+        $sms->type = $type;
+        $sms->message = $message;
+        $sms->save();
+    }
 
     public function getMessages(Array $options = [])
     {
