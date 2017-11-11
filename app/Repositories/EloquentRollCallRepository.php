@@ -151,6 +151,16 @@ class EloquentRollCallRepository implements RollCallRepository
     }
 
     public function setReplyToken($roll_call_id, $user_id) {
+        $reply_token = DB::table('roll_call_recipients')
+            ->where('roll_call_id', '=', $roll_call_id)
+            ->where('user_id', '=', $user_id)
+            ->value('reply_token');
+
+        if ($reply_token) {
+            // always reuse, never overwrite a reply token
+            return $reply_token;
+        }
+
         $token = Hash::Make(config('app.key'));
 
         DB::table('roll_call_recipients')

@@ -37,7 +37,7 @@ class SMSController extends Controller
 
         $incoming = SMS::receive();
 
-        Log::info("[SMSController] Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
+        Log::info("[SMSController:".$driver."] Received SMS message from " . $incoming->from() . " with id: " . $incoming->id());
 
         $from = $incoming->from();
         $to = $incoming->to();
@@ -91,6 +91,7 @@ class SMSController extends Controller
     public function receiveNexmo(Request $request, NexmoMessageValidator $validator)
     {
         if (! $validator->isValid($request)) {
+            Log::error('Received an invalid request from nexmo');
             return response('Hi', 200);
         }
 

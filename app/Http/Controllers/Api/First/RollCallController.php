@@ -360,7 +360,7 @@ class RollCallController extends ApiController
         }
 
         // Send roll call
-        dispatch(new SendRollCall($roll_call));
+        dispatch((new SendRollCall($roll_call))/*->onQueue('rollcalls')*/);
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
     }
@@ -478,7 +478,7 @@ class RollCallController extends ApiController
                 return response('Payment Required', 402);
             }
 
-            dispatch(new SendRollCall($roll_call_to_dispatch));
+            dispatch((new SendRollCall($roll_call_to_dispatch))/*->onQueue('rollcalls')*/);
         }
 
         return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
@@ -520,7 +520,7 @@ class RollCallController extends ApiController
             'id' => $recipient_id,
         ]);
 
-        dispatch(new SendRollCall($roll_call));
+        dispatch((new SendRollCall($roll_call))/*->onQueue('rollcalls')*/);
 
         $recipient = $this->roll_calls->getRecipient($id, $recipient_id);
         return $this->response->item($recipient, new UserTransformer, 'recipient');

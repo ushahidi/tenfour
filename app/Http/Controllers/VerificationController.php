@@ -24,7 +24,7 @@ class VerificationController extends Controller
         ];
         $address = $this->addresses->create($payload);
 
-        dispatch(new SendVerificationEmail($payload));
+        dispatch((new SendVerificationEmail($payload))/*->onQueue('mails')*/);
 
         return $address;
     }

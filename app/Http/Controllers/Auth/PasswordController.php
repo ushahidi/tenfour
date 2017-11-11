@@ -3,6 +3,7 @@
 namespace RollCall\Http\Controllers\Auth;
 
 use RollCall\Http\Controllers\Controller;
+use RollCall\Models\User;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -41,6 +42,16 @@ class PasswordController extends Controller
     public function postEmail(Request $request)
     {
         $this->validate($request, ['username' => 'required|email']);
+
+        $user = User::leftJoin('organizations', 'users.organization_id', '=', 'organizations.id')
+            ->leftJoin('contacts', 'contacts.user_id', '=', 'users.id')
+            ->where('organizations.subdomain', '=', $request->input('subdomain'))
+            ->where('contacts.contact', '=', $request->input('username'))
+            ->first();
+
+        if (!$user || !isset($user['person_type']) || $user['person_type'] !== 'user') {
+            return response('', 403);
+        }
 
         $response = Password::sendResetLink($request->only('username', 'subdomain'), function (Message $message) {
             $message->subject($this->getEmailSubject());

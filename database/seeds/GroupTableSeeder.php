@@ -19,7 +19,7 @@ class GroupTableSeeder extends Seeder
         $group->members()->sync($members, false);
     }
 
-    protected function addGroups($organization, $users) 
+    protected function addGroups($organization, $users)
     {
         $group = Group::create([
             'organization_id' => $organization->id,
@@ -28,7 +28,12 @@ class GroupTableSeeder extends Seeder
 
         $this->addUsersToGroup($users, $group);
 
-        return $group;
+        $group2 = Group::create([
+            'organization_id' => $organization->id,
+            'name' => 'Test Group 2'
+        ]);
+
+        $this->addUsersToGroup($users, $group2);
     }
 
     /**

@@ -14,6 +14,12 @@ class RollCall extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected $roll_call;
+    protected $organization;
+    protected $creator;
+    protected $contact;
+    protected $user;
+
     /**
      * Create a new message instance.
      *
@@ -55,7 +61,7 @@ class RollCall extends Mailable
 
         $has_custom_answers = false;
 
-        if ($this->roll_call['answers']) {          
+        if ($this->roll_call['answers']) {
           foreach ($this->roll_call['answers'] as $index => $answer) {
               $this->roll_call['answers'][$index]['url'] = $client_url . '/r/' . $this->roll_call['id'] . '/' . $index . $user_url_fragment;
 

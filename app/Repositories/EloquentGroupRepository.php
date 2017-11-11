@@ -4,7 +4,8 @@ namespace RollCall\Repositories;
 use RollCall\Models\Organization;
 use RollCall\Models\Group;
 use RollCall\Contracts\Repositories\GroupRepository;
-use RollCall\Http\Transformers\OrganizationTransformer;
+use RollCall\Http\Transformers\UserTransformer;
+
 use DB;
 use Validator;
 
@@ -18,7 +19,8 @@ class EloquentGroupRepository implements GroupRepository
     public function all($organization_id, $offset = 0, $limit = 0)
     {
         $query = Group::where('organization_id', '=', $organization_id)
-                        ->orderBy('name', 'asc');
+                    ->with('members.contacts')
+                    ->orderBy('name', 'asc');
 
         if ($limit > 0) {
             $query
@@ -26,10 +28,17 @@ class EloquentGroupRepository implements GroupRepository
               ->limit($limit);
         }
 
-        $groups = $query->get();
+        $groups = $query->get()->toArray();
 
-        return $groups->toArray();
+        foreach ($groups as &$group)
+        {
+            foreach ($group['members'] as &$member)
+            {
+                  $member = (new UserTransformer)->transform($member);
+            }
+        }
 
+        return $groups;
     }
 
     // OrgCrudRepository
@@ -62,7 +71,7 @@ class EloquentGroupRepository implements GroupRepository
 
         $memberIds = collect($input['members'])->pluck('id')->all();
         $group->members()->sync($memberIds);
-  
+
         return $group->fresh()
             ->toArray();
         /*
@@ -77,7 +86,7 @@ class EloquentGroupRepository implements GroupRepository
 
         $memberIds = collect($input['members'])->pluck('id')->all();
         $group->members()->sync($memberIds);
-  
+
         return $group->fresh()
             ->toArray();
         */
@@ -86,7 +95,7 @@ class EloquentGroupRepository implements GroupRepository
     // OrgCrudRepository
     public function update($organization_id, array $input, $id)
     {
-        $input = array_only($input, ['members', 'name']);
+        $input = array_only($input, ['members', 'name', 'description']);
 
         $group = Group::where('id', $id)
             ->where('organization_id', $organization_id)
@@ -112,7 +121,7 @@ class EloquentGroupRepository implements GroupRepository
 
         if (isset($input['members'])) {
             $memberIds = collect($input['members'])->pluck('id')->all();
-            $group->members()->syncWithoutDetaching($memberIds);
+            $group->members()->sync($memberIds);
         }
 
         return $group->fresh()->toArray();
@@ -134,9 +143,16 @@ class EloquentGroupRepository implements GroupRepository
     public function find($organization_id, $id)
     {
         $group = Group::where('id', $id)
-            ->firstOrFail();
+            ->with('members.contacts')
+            ->firstOrFail()
+            ->toArray();
 
-        return $group->toArray();
+        foreach ($group['members'] as &$member)
+        {
+              $member = (new UserTransformer)->transform($member);
+        }
+
+        return $group;
     }
 
 }
