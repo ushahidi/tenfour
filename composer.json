@@ -28,7 +28,8 @@
         "chargebee/chargebee-php": ">=2, <3",
         "torann/geoip": "^1.0",
         "predis/predis": "^1.1",
-        "shiftonelabs/laravel-sqs-fifo-queue": "^1.0"
+        "shiftonelabs/laravel-sqs-fifo-queue": "^1.0",
+        "segmentio/analytics-php": "^1.5"
     },
     "require-dev": {
         "itsgoingd/clockwork": "~1.13",

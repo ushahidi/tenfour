@@ -16,6 +16,7 @@ use RollCall\Contracts\Repositories\PersonRepository;
 use RollCall\Models\Organization;
 use RollCall\Messaging\SMSService;
 use RollCall\Services\URLShortenerService;
+use RollCall\Services\AnalyticsService;
 
 use libphonenumber\NumberParseException;
 use Swift_Validate;
@@ -159,6 +160,12 @@ class SendRollCall implements ShouldQueue
         }
 
         App::make('RollCall\Services\CreditService')->addCreditAdjustment($this->roll_call['organization_id'], 0-$creditAdjustmentMeta['credits'], 'rollcall', $creditAdjustmentMeta);
+
+        (new AnalyticsService())->track('RollCall Sent', [
+            'org_id'            => $this->roll_call['organization_id'],
+            'roll_call_id'      => $this->roll_call['id'],
+            'total_recipients'  => count($this->roll_call['recipients']),
+        ]);
     }
 
     protected function getFromNumber($roll_call_repo, $contact, $to) {

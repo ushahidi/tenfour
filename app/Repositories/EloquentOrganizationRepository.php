@@ -6,6 +6,7 @@ use RollCall\Models\Setting;
 use RollCall\Contracts\Repositories\OrganizationRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\PersonRepository;
+use RollCall\Services\AnalyticsService;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -73,6 +74,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
             $this->updateSettings($input['settings'], $organization->id);
         }
 
+        (new AnalyticsService())->track('Organization Added', [
+            'org_id'          => $organization->id,
+            'subdomain'       => $organization->subdomain,
+        ]);
+
         return $this->find($organization->id);
     }
 
@@ -101,9 +107,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
         $organization = Organization::findorFail($id);
 
         // Foreign Keys should take care of deleting members!
-
         // ... then delete the organization
         $organization->delete();
+
+        (new AnalyticsService())->track('Organization Removed', [
+            'org_id'          => $id,
+        ]);
+
         return $organization->toArray();
     }
 
@@ -132,6 +142,11 @@ class EloquentOrganizationRepository implements OrganizationRepository
                 'values' => $setting
             ]);
         };
+
+        (new AnalyticsService())->track('Settings Changed', [
+            'org_id'      => $id,
+            'settings'    => $settings,
+        ]);
     }
 
 }

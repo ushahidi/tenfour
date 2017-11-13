@@ -4,6 +4,8 @@ namespace RollCall\Repositories;
 use RollCall\Models\Contact;
 use RollCall\Notifications\Unsubscribe;
 use RollCall\Contracts\Repositories\ContactRepository;
+use RollCall\Services\AnalyticsService;
+
 use Illuminate\Support\Facades\Notification;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberFormat;
@@ -38,7 +40,18 @@ class EloquentContactRepository implements ContactRepository
     {
         $contact = Contact::create($input);
 
+        (new AnalyticsService())->track('Contact Added', [
+            'org_id'          => $contact->organization_id,
+            'contact_id'      => $contact->id,
+            'total_contacts'  => $this->getOrganizationContactCount($contact->organization_id),
+        ]);
+
         return $contact->toArray();
+    }
+
+    private function getOrganizationContactCount($org_id)
+    {
+        return Contact::where('organization_id', '=', $org_id)->count();
     }
 
     public function find($id)
@@ -55,6 +68,13 @@ class EloquentContactRepository implements ContactRepository
     public function delete($id)
     {
     		$contact = Contact::findOrFail($id);
+
+        (new AnalyticsService())->track('Contact Removed', [
+            'org_id'          => $contact->organization_id,
+            'contact_id'      => $id,
+            'total_contacts'  => $this->getOrganizationContactCount($contact->organization_id),
+        ]);
+
     		$contact->delete();
 
         return $contact->toArray();

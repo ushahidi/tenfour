@@ -8,10 +8,12 @@ use RollCall\Messaging\AnswerParser;
 use RollCall\Contracts\Repositories\RollCallRepository;
 use RollCall\Contracts\Repositories\ReplyRepository;
 use RollCall\Contracts\Repositories\ContactRepository;
-use DB;
-
-use Illuminate\Support\Facades\Notification;
+use RollCall\Services\AnalyticsService;
 use RollCall\Notifications\ReplyReceived;
+
+use DB;
+use Illuminate\Support\Facades\Notification;
+use Carbon\Carbon;
 
 class EloquentReplyRepository implements ReplyRepository
 {
@@ -21,19 +23,27 @@ class EloquentReplyRepository implements ReplyRepository
         $this->contacts = $contacts;
     }
 
+    // TODO DEPRECATED Consider merging this with `addReply`
     public function create(array $input)
     {
-        return Reply::create($input)
-            ->toArray();
+        return Reply::create($input)->toArray();
     }
 
     public function addReply(array $input, $id)
     {
         $reply = Reply::create($input)->toArray();
+
         $rollcall = RollCall::findOrFail($id);
 
         Notification::send($rollcall->recipients,
             new ReplyReceived(new Reply($reply)));
+
+        (new AnalyticsService())->track('RollCall Responded', [
+            'org_id'            => $rollcall['organization_id'],
+            'roll_call_id'      => $rollcall['id'],
+            'user_id'           => $rollcall['user_id'],
+            'response_time'     => Carbon::now()->diffInSeconds($rollcall['created_at']),
+        ]);
 
         return $reply;
     }
@@ -45,7 +55,7 @@ class EloquentReplyRepository implements ReplyRepository
         if (isset($input['answer'])) {
             $reply->answer = $input['answer'];
         }
-        
+
         $reply->message = $input['message'];
         $reply->location_text = $input['location_text'];
         $reply->save();
@@ -127,7 +137,7 @@ class EloquentReplyRepository implements ReplyRepository
                     'message_id'   => $message_id,
                 ];
 
-                $this->create($input);
+                $this->addReply($input, $roll_call_id);
 
                 // Update response status
                 $this->roll_calls->updateRecipientStatus($roll_call_id, $contact['user']['id'], 'replied');
