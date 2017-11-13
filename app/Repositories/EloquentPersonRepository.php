@@ -19,6 +19,7 @@ use RollCall\Notifications\PersonLeftOrganization;
 use Illuminate\Support\Facades\Hash;
 use RollCall\Services\StorageService;
 use RollCall\Services\CreditService;
+use RollCall\Services\AnalyticsService;
 
 class EloquentPersonRepository implements PersonRepository
 {
@@ -79,7 +80,24 @@ class EloquentPersonRepository implements PersonRepository
         Notification::send($this->getAdmins($organization['id']),
             new PersonJoinedOrganization($user));
 
+        (new AnalyticsService())->track('Person Added', [
+            'org_id'        => $organization->id,
+            'user_id'       => $user->id,
+            'total_members' => $this->getOrganizationMemberCount($organization_id),
+            'total_users'   => $this->getOrganizationUserCount($organization_id),
+        ]);
+
         return $user->toArray();
+    }
+
+    private function getOrganizationMemberCount($org_id)
+    {
+        return User::where('organization_id', '=', $org_id)->where('person_type', '=', 'member')->count();
+    }
+
+    private function getOrganizationUserCount($org_id)
+    {
+        return User::where('organization_id', '=', $org_id)->where('person_type', '=', 'user')->count();
     }
 
     // OrgCrudRepository
@@ -140,6 +158,13 @@ class EloquentPersonRepository implements PersonRepository
 
         Notification::send($this->getAdmins($user->organization_id),
             new PersonLeftOrganization($user));
+
+        (new AnalyticsService())->track('Person Removed', [
+            'org_id'        => $organization_id,
+            'user_id'       => $user_id,
+            'total_members' => $this->getOrganizationMemberCount($organization_id),
+            'total_users'   => $this->getOrganizationUserCount($organization_id),
+        ]);
 
         return $user->toArray();
     }

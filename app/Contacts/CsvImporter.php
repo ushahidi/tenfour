@@ -69,11 +69,11 @@ class CsvImporter implements CsvImporterInterface
 
     public function import()
     {
-        $count = 0;
         $rows = $this->reader->read();
+        $members = [];
 
         // Transform data for input and save it
-        DB::transaction(function () use ($rows, &$count) {
+        DB::transaction(function () use ($rows, &$members) {
             foreach($rows as $row)
             {
                 $row = $this->transformer->transform($row);
@@ -87,6 +87,10 @@ class CsvImporter implements CsvImporterInterface
                 // Save contacts
                 foreach ($contacts as $type => $contact)
                 {
+                    if (!$contact || empty($contact)) {
+                        continue;
+                    }
+                    
                     $validator = Validator::make([$type => $contact], [
                         'phone' => 'phone_number',
                         'email' => 'email'
@@ -144,10 +148,11 @@ class CsvImporter implements CsvImporterInterface
                     $this->contacts->create($contact_input);
                 }
 
-                $count++;
+                array_push($members, $person['id']);
             }
         });
 
-        return $count;
+        //return $count;
+        return $members;
     }
 }

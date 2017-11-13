@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 use RollCall\Models\User;
 use RollCall\Models\Organization;
@@ -15,6 +16,7 @@ use RollCall\Contracts\Repositories\ContactRepository;
 use RollCall\Contracts\Repositories\ContactFilesRepository;
 use RollCall\Notifications\ImportSucceeded;
 use RollCall\Notifications\ImportFailed;
+use RollCall\Jobs\SendInvite;
 
 use App;
 use Exception;
@@ -58,7 +60,17 @@ class ImportCSV implements ShouldQueue
         $importer = App::make('RollCall\Contracts\Contacts\CsvImporter',
             [$reader, $transformer, $contacts, $people, $this->organization_id]);
 
-        $count = $importer->import();
+        $members = $importer->import();
+        $count = count($members);
+
+        foreach ($members as $member_id) {
+            $invitee = $people->find($this->organization_id, $member_id);
+            $invitee['invite_token'] = Hash::Make(config('app.key'));
+            $invitee['invite_sent'] = true;
+            $people->update($this->organization_id, $invitee, $member_id);
+            
+            dispatch((new SendInvite($invitee, $organization->toArray())));
+        }
 
         Storage::delete($path);
 
@@ -73,6 +85,8 @@ class ImportCSV implements ShouldQueue
      */
     public function failed(Exception $exception)
     {
+        \Log::error($exception);
+
         $user = User::where('id', $this->user_id)->firstOrFail();
         $organization = Organization::where('id', $this->organization_id)->firstOrFail();
 

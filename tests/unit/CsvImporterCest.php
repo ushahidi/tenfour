@@ -22,7 +22,7 @@ class CsvImporterCest
             'read' => function () {
                 return [
                     ['Mary', 'designer', '254722111111', 'mary@ushahidi.com', 'MV Building, Waiyaki Way', '@md'],
-                    ['Linda', 'software developer', '254722111222', 'linda@ushahidi.com', 'P.O. Box 42, Nairobi', '@lk']
+                    ['Linda', 'software developer', '254722111222', 'linda@ushahidi.com', 'P.O. Box 42, Nairobi', '@lk'],
                 ];
             }
         ]);
@@ -62,7 +62,8 @@ class CsvImporterCest
 
     public function testImport(UnitTester $t)
     {
-        $count = $this->csv_importer->import();
-        $t->assertEquals($count, 2);
+        $members = $this->csv_importer->import();
+
+        $t->assertEquals(count($members), 2);
     }
 }

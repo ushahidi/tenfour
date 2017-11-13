@@ -35,6 +35,7 @@ class OrgDelete extends Command
         if ($this->option('force') ||
             $this->confirm("Are you sure you want to delete the organization named '" . $org['name'] . "'?")) {
 
+            // TODO use repository delete here
             Organization::where('id', $org['id'])->delete();
 
             $this->info("The organization '{$org['name']}' has been deleted.");
