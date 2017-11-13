@@ -87,6 +87,9 @@ class CsvImporter implements CsvImporterInterface
                 // Save contacts
                 foreach ($contacts as $type => $contact)
                 {
+                    if (!$contact || empty($contact)) {
+                        continue;
+                    }
                     $validator = Validator::make([$type => $contact], [
                         'phone' => 'phone_number',
                         'email' => 'email'

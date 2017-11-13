@@ -73,6 +73,8 @@ class ImportCSV implements ShouldQueue
      */
     public function failed(Exception $exception)
     {
+        \Log::error($exception);
+
         $user = User::where('id', $this->user_id)->firstOrFail();
         $organization = Organization::where('id', $this->organization_id)->firstOrFail();
 
