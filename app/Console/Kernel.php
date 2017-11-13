@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\OrgDelete::class,
         \RollCall\Console\Commands\ExpireCredits::class,
         \RollCall\Console\Commands\NotifyFreePromoEnding::class,
+        \RollCall\Console\Commands\OrgAdmin::class,
     ];
 
     /**
