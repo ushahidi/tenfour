@@ -56,7 +56,7 @@ class CsvImporter implements CsvImporterInterface
      *
      * @var array
      */
-    private $contact_fields = ['email', 'twitter', 'phone'];
+    private $contact_fields = ['email', 'twitter', 'phone', 'address', 'slack'];
 
     public function __construct(CsvReaderInterface $reader, CsvTransformerInterface $transformer, ContactRepository $contacts, PersonRepository $people, $organization_id)
     {
@@ -90,7 +90,7 @@ class CsvImporter implements CsvImporterInterface
                     if (!$contact || empty($contact)) {
                         continue;
                     }
-                    
+
                     $validator = Validator::make([$type => $contact], [
                         'phone' => 'phone_number',
                         'email' => 'email'
@@ -125,6 +125,7 @@ class CsvImporter implements CsvImporterInterface
                         'contact' => $contact,
                         'type'    => $type,
                         'user_id' => $person['id'],
+                        'organization_id' => $this->organization_id,
                     ];
 
                     // Store country code and national number

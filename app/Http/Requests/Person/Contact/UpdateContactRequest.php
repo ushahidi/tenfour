@@ -11,7 +11,7 @@ class UpdateContactRequest extends UpdatePersonRequest
     {
         $rules = [];
 
-        $rules['type'] = 'in:phone,email';
+        $rules['type'] = 'in:phone,email,address,twitter,slack';
 
         if ($this->input('type') === 'phone') {
             $rules['contact'] = 'phone_number';
@@ -19,9 +19,11 @@ class UpdateContactRequest extends UpdatePersonRequest
             $rules['contact'] = 'email';
         }
 
-        $rules['contact'] .= '|'. Rule::unique('contacts')
-                            ->ignore($this->route('contact'))
-                            ->where('organization_id', $this->route('organization'));
+        if (isset($rules['contact'])) {
+            $rules['contact'] .= '|'. Rule::unique('contacts')
+                ->ignore($this->route('contact'))
+                ->where('organization_id', $this->route('organization'));
+        }
 
         return $rules;
     }

@@ -44,11 +44,10 @@ class EloquentRollCallRepository implements RollCallRepository
                 $query->where('user_id', $recipient_id);
             });
 
-            // Return Rollcalls owned by the receipient as well
-            $query->orWhere('user_id', $recipient_id);
-
-            //Return only the user's self test
-            $query->orwhere('self_test_roll_call', 1);
+            $query->orWhere([
+                ['self_test_roll_call', '=', 1],
+                ['user_id', '=', $recipient_id]
+            ]);
         }
 
         $roll_calls = $query->get()->toArray();
