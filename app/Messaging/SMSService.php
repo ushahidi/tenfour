@@ -84,7 +84,7 @@ class SMSService implements MessageService
 
         $view = isset($this->view) ? $this->view : $msg;
 
-        dispatch((new SendSMS($view, $additional_params, $driver, $from, $to))/*->onQueue('sms')*/);
+        dispatch((new SendSMS($view, $additional_params, $driver, $from, $to, $region_code))/*->onQueue('sms')*/);
     }
 
     protected function logSMS($to, $from, $driver, $rollcall_id = 0, $type = 'other', $message = '')

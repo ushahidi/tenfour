@@ -111,7 +111,7 @@ class CsvImporter implements CsvImporterInterface
                         $contact = '+'.$contact;
                     }
 
-                    $existing_contact = $this->contacts->getByContact($contact);
+                    $existing_contact = $this->contacts->getByContact($contact, $this->organization_id);
 
                     if ($existing_contact) {
                         throw new CsvImportException(

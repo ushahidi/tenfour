@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 use SMS;
 use App;
+use Statsd;
 use Exception;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
 use RollCall\Models\SMS as OutgoingSMS;
@@ -23,10 +24,12 @@ class SendSMS implements ShouldQueue
     protected $view;
     protected $additional_params;
     protected $to;
+    protected $region_code;
 
     public function failed(Exception $exception)
     {
         Log::warning($exception);
+        Statsd::increment('worker.sendsms.failed');
         app('sentry')->captureException($exception);
     }
 
@@ -35,13 +38,14 @@ class SendSMS implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($view, $additional_params, $driver, $from, $to)
+    public function __construct($view, $additional_params, $driver, $from, $to, $region_code)
     {
         $this->view = $view;
         $this->additional_params = $additional_params;
         $this->driver = $driver;
         $this->from = $from;
         $this->to = $to;
+        $this->region_code = $region_code;
     }
 
     /**
@@ -67,8 +71,6 @@ class SendSMS implements ShouldQueue
         try {
             SMS::send($this->view, $this->additional_params, function($sms) {
                 $sms->to($this->to);
-
-                Log::debug('Successfully sent an SMS from="'.$this->from.'" to="'.$this->to.'" with driver="'.$this->driver.'"');
             });
 
             $this->logSMS(
@@ -81,6 +83,7 @@ class SendSMS implements ShouldQueue
         } catch (SMSNotSentException $e) {
             app('sentry')->captureException($e);
             Log::warning($e);
+            Statsd::increment('message.sms.retry');
             $this->release(3);
         }
     }
@@ -95,5 +98,9 @@ class SendSMS implements ShouldQueue
         $sms->type = $type;
         $sms->message = $message;
         $sms->save();
+
+        Statsd::increment('message.sms.sent');
+        Statsd::increment('message.sms.sent.' . $this->region_code);
+
     }
 }

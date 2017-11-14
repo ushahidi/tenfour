@@ -113,15 +113,20 @@ class EloquentContactRepository implements ContactRepository
             ->toArray();
     }
 
-    public function getByContact($contact)
+    public function getByContact($contact, $org_id = null)
     {
         $contact = Contact::with([
             'user' => function ($query) {
                 $query->select('users.id', 'users.name');
             }
         ])
-            ->where('contact', $contact)
-            ->get();
+            ->where('contact', $contact);
+
+        if ($org_id) {
+            $contact->where('organization_id', '=', $org_id);
+        }
+
+        $contact = $contact->get();
 
         if (!$contact->isEmpty()) {
             $contact = $contact->first()->toArray();

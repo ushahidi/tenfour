@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "21337d670e13def596fd270c09581c3b",
+    "content-hash": "c350bae88e705f616be0f1711166aa53",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -1928,6 +1928,52 @@
                 "server"
             ],
             "time": "2016-09-13T13:42:53+00:00"
+        },
+        {
+            "name": "league/statsd",
+            "version": "1.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/statsd.git",
+                "reference": "bee97e7ab60f0342f1f7b71748c012a04fcdbbb2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/statsd/zipball/bee97e7ab60f0342f1f7b71748c012a04fcdbbb2",
+                "reference": "bee97e7ab60f0342f1f7b71748c012a04fcdbbb2",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "silex/silex": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\StatsD\\": "src",
+                    "League\\StatsD\\Test\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marc Qualie",
+                    "email": "marc@marcqualie.com",
+                    "homepage": "http://marcqualie.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library for working with StatsD in PHP.",
+            "homepage": "https://github.com/thephpleague/statsd",
+            "keywords": [
+                "graphite",
+                "library",
+                "statsd"
+            ],
+            "time": "2017-07-17T17:01:13+00:00"
         },
         {
             "name": "lucadegasperi/oauth2-server-laravel",

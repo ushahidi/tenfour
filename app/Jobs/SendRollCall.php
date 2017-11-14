@@ -23,6 +23,7 @@ use Swift_Validate;
 use Log;
 use App;
 use Exception;
+use Statsd;
 
 define('SMS_BYTECOUNT', 140);
 
@@ -47,6 +48,7 @@ class SendRollCall implements ShouldQueue
     public function failed(Exception $exception)
     {
         Log::warning($exception);
+        Statsd::increment('worker.sendrollcall.failed');
         app('sentry')->captureException($exception);
     }
 
@@ -166,6 +168,8 @@ class SendRollCall implements ShouldQueue
             'roll_call_id'      => $this->roll_call['id'],
             'total_recipients'  => count($this->roll_call['recipients']),
         ]);
+
+        Statsd::increment('rollcall.sent');
     }
 
     protected function getFromNumber($roll_call_repo, $contact, $to) {
