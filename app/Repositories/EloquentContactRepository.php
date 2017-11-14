@@ -137,6 +137,18 @@ class EloquentContactRepository implements ContactRepository
         return $contact;
     }
 
+    public function getByMostRecentlyUsedContact($contact)
+    {
+        return Contact::with([
+            'user' => function ($query) {
+                $query->select('users.id', 'users.name');
+            }])
+            ->leftJoin('roll_call_messages', 'roll_call_messages.contact_id', '=', 'contacts.id')
+            ->where('contact', $contact)
+            ->orderBy('roll_call_messages.created_at', 'desc')
+            ->first();
+    }
+
     public function unsubscribe($token)
     {
       $contact = Contact::where('unsubscribe_token', $token)->firstOrFail();

@@ -109,7 +109,7 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function save($from, $message, $message_id = 0, $roll_call_id = null, $provider = null, $outgoing_number = null)
     {
-        $contact = $this->contacts->getByContact($from);
+        $contact = $this->contacts->getByMostRecentlyUsedContact($from);
 
         if ($contact) {
 
@@ -158,9 +158,11 @@ class EloquentReplyRepository implements ReplyRepository
                 ];
             } else {
                 \Log::warning('Could not find the RollCall for incoming message from ' . $from);
+                app('sentry')->captureMessage('Could not find the RollCall for incoming message from ' . $from);
             }
         } else {
             \Log::warning('Could not find the contact details for incoming message from ' . $from);
+            app('sentry')->captureMessage('Could not find the contact details for incoming message from ' . $from);
         }
 
         return false;

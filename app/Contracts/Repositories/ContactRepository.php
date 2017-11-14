@@ -16,10 +16,20 @@ interface ContactRepository extends CrudRepository
      * Filter contacts by contact
      *
      * @param string $contact
+     * @param int $org_id
      *
      * @return Array
      */
     public function getByContact($contact, $org_id = null);
+
+    /**
+     * Get the most recently used matching contact
+     *
+     * @param string $contact
+     *
+     * @return Array
+     */
+    public function getByMostRecentlyUsedContact($contact);
 
     /**
      * Set bounce count
