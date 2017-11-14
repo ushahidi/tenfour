@@ -164,6 +164,7 @@ return [
         Waavi\UrlShortener\UrlShortenerServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
         ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
+        League\StatsD\Laravel5\Provider\StatsdServiceProvider::class,
     ],
 
     /*
@@ -216,11 +217,12 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
-        'SMS' => RollCall\Messaging\Facades\SMS::class,
-        'Throttle' => GrahamCampbell\Throttle\Facades\Throttle::class,
-        'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
+        'SMS'       => RollCall\Messaging\Facades\SMS::class,
+        'Throttle'  => GrahamCampbell\Throttle\Facades\Throttle::class,
+        'Sentry'    => Sentry\SentryLaravel\SentryFacade::class,
         'UrlShortener' => Waavi\UrlShortener\Facades\UrlShortener::class,
-        'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
+        'GeoIP'     => \Torann\GeoIP\Facades\GeoIP::class,
+        'Statsd'    => League\StatsD\Laravel5\Facade\StatsdFacade::class,
     ],
 
 ];

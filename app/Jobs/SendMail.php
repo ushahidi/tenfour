@@ -12,6 +12,7 @@ use Log;
 use Mail;
 use Illuminate\Contracts\Mail\Mailable;
 use RollCall\Models\Mail as OutgoingMail;
+use Statsd;
 
 class SendMail implements ShouldQueue
 {
@@ -78,6 +79,7 @@ class SendMail implements ShouldQueue
     public function failed(Exception $exception)
     {
         Log::warning($exception);
+        Statsd::increment('worker.sendmail.failed');
         app('sentry')->captureException($exception);
     }
 
@@ -90,5 +92,7 @@ class SendMail implements ShouldQueue
         $mail->rollcall_id = $rollcall_id;
         $mail->type = $type;
         $mail->save();
+
+        Statsd::increment('message.mail.sent');
     }
 }
