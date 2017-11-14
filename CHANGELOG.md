@@ -1,3 +1,28 @@
+Rollcall 1.0.0 (Beta Soft Launch release) - 14/11/2017
+-------------------------------------
+
+### Features
+
+* Monitor Message Sending (https://github.com/ushahidi/RollCall/issues/607) 
+* Invite all users to be a User on CSV Import(https://github.com/ushahidi/RollCall/issues/778) 
+* Command to Add/Remove ushahidi support user to a organization (https://github.com/ushahidi/RollCall/issues/814)
+* Integrate with Analytics (https://github.com/ushahidi/RollCall/issues/72)
+* Groups API (https://github.com/ushahidi/RollCall/issues/31)
+* Import CSV Job Queue (https://github.com/ushahidi/RollCall/issues/733)
+* Virtual number rotation (https://github.com/ushahidi/RollCall/issues/702)
+* Notifications for Bounce complaints (https://github.com/ushahidi/RollCall/issues/738)
+
+### Bug Fixes
+* Bug with URL shortener (https://github.com/ushahidi/RollCall/issues/497)
+* Fix email templating (https://github.com/ushahidi/RollCall/issues/694)
+* Small fixes for CVS import UX improvements (https://github.com/ushahidi/RollCall/issues/762)
+* Configure Gateway for UK, Hungary (https://github.com/ushahidi/RollCall/issues/718) 
+* Tweak Oauth2 refresh tokens config (https://github.com/ushahidi/RollCall/issues/660)
+* Throttle Limit (https://github.com/ushahidi/RollCall/issues/769)
+* Queue rework (https://github.com/ushahidi/RollCall/issues/812)
+
+
+
 Rollcall 1.0.0 (Bug Disco release) - 17/08/2017
 -------------------------------------
 
