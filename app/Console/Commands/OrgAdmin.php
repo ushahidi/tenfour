@@ -48,7 +48,7 @@ class OrgAdmin extends Command
         $organization = $organizations->findBySubdomain($this->argument('subdomain'));
 
         if ($this->option('remove')) {
-            $deleteContact = $contacts->getByContact($this->argument('email'));
+            $deleteContact = $contacts->getByContact($this->argument('email'), $organization['id']);
             User::where('id', $deleteContact['user_id'])->delete();
             $this->info("The user '" . $this->argument('email') . "' has been deleted.");
             return;

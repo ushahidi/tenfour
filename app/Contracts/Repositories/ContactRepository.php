@@ -19,7 +19,7 @@ interface ContactRepository extends CrudRepository
      *
      * @return Array
      */
-    public function getByContact($contact);
+    public function getByContact($contact, $org_id = null);
 
     /**
      * Set bounce count
