@@ -16,7 +16,7 @@ class EloquentRollCallRepository implements RollCallRepository
     {
     }
 
-    public function all($org_id = null, $user_id = null, $recipient_id = null, $offset = 0, $limit = 0)
+    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0)
     {
         $query = RollCall::query()
           ->orderBy('created_at', 'desc')
@@ -44,17 +44,19 @@ class EloquentRollCallRepository implements RollCallRepository
                 $query->where('user_id', $recipient_id);
             });
 
-            $query->orWhere([
-                ['self_test_roll_call', '=', 1],
-                ['user_id', '=', $recipient_id]
-            ]);
+            $query->orWhere('user_id', $recipient_id);
         }
 
         $roll_calls = $query->get()->toArray();
 
-        // Add reply and sent counts
-        foreach($roll_calls as &$roll_call)
+        foreach($roll_calls as $key => &$roll_call)
         {
+            // exclude others' self tests, but include my own
+            if ($auth_user_id && $roll_call['self_test_roll_call'] && $roll_call['user_id'] !== $auth_user_id) {
+                unset($roll_calls[$key]);
+                continue;
+            }
+
             $roll_call += $this->getCounts($roll_call['id']);
         }
 

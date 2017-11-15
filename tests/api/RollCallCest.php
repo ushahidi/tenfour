@@ -90,6 +90,45 @@ class RollCallCest
     }
 
     /*
+     * Get all roll calls as an admin excluding self tests
+     *
+     */
+    public function getAllRollCallsExcludingSelfTests(ApiTester $I)
+    {
+        $I->wantTo('Get a list of all roll calls as an admin excluding self tests');
+        $I->amAuthenticatedAsAdmin();
+        $I->sendGET($this->endpoint);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        // include my own self test
+        $I->seeResponseContainsJson([
+            'rollcalls' => [
+                [
+                    'id' => 7,
+                    'user' => [
+                        'id' => 2
+                    ],
+                    'self_test_roll_call' => 1
+                ]
+            ]
+        ]);
+
+        // exclude others' self tests
+        $I->dontSeeResponseContainsJson([
+            'rollcalls' => [
+                [
+                    'id' => 6,
+                    'user' => [
+                        'id' => 1
+                    ],
+                    'self_test_roll_call' => 1
+                ]
+            ]
+        ]);
+    }
+
+    /*
      * Filter roll calls by organization
      *
      */
@@ -226,8 +265,11 @@ class RollCallCest
         $I->sendGET($this->endpoint.'?organization=2');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
+
+        // user is a recipient
         $I->seeResponseContainsJson([
             [
+                'id' => 1,
                 'message' => 'Westgate under siege',
                 'organization' => [
                     'id' => 2
@@ -256,9 +298,12 @@ class RollCallCest
                 ]
             ]
         ]);
+
+        // organization is different
         $I->dontSeeResponseContainsJson([
             [
-                'message' => 'Yet another test roll call',
+                'id' => 2,
+                'message' => 'Another test roll call',
                 'organization' => [
                     'id' => 3
                 ],
@@ -268,6 +313,28 @@ class RollCallCest
                 ],
                 'recipients' => []
             ],
+        ]);
+
+        // user is sender
+        $I->seeResponseContainsJson([
+            [
+                'id' => 3,
+                'message' => 'yet another test roll call',
+                'user' => [
+                    'id' => 1
+                ],
+            ]
+        ]);
+
+        // user's self test
+        $I->seeResponseContainsJson([
+            [
+                'id' => 6,
+                'user' => [
+                    'id' => 1
+                ],
+                'self_test_roll_call' => 1
+            ]
         ]);
     }
 
@@ -823,27 +890,27 @@ class RollCallCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'rollcall',
             'message'     => "Alien Attack! are you ok?\nReply with \"OK\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'rollcall_url',
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'rollcall_id' => '8',
+            'rollcall_id' => '9',
             'type'        => 'rollcall',
             'message'     => "Alien Attack Part II! are you ok?\nReply with \"OK\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'rollcall_id' => '8',
+            'rollcall_id' => '9',
             'type'        => 'rollcall_url',
         ]);
     }
@@ -882,13 +949,13 @@ class RollCallCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'reminder'
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '9',
+            'rollcall_id' => '10',
             'type'        => 'rollcall',
             'message'     => "Alien Attack Part 3!\nReply with \"OK\" in your response"
         ]);
@@ -924,7 +991,7 @@ class RollCallCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPUT($this->endpoint.'/7', [
+        $I->sendPUT($this->endpoint.'/8', [
             'message' => 'Resending a RollCall',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -962,39 +1029,39 @@ class RollCallCest
 
         $I->seeRecord('roll_call_recipients', [
             'user_id'         => 1,
-            'roll_call_id'    => 7,
+            'roll_call_id'    => 8,
             'response_status' => 'waiting',
         ]);
 
         $I->seeRecord('roll_call_recipients', [
             'user_id'         => 10,
-            'roll_call_id'    => 7,
+            'roll_call_id'    => 8,
             'response_status' => 'waiting',
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'rollcall'
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674181',
             'from'        => '20880',
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'rollcall'
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254722123457',
             'from'        => '20880',
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'rollcall'
         ]);
 
         $I->seeNumRecords(1, 'outgoing_sms_log', [
-            'rollcall_id' => '7',
+            'rollcall_id' => '8',
             'type'        => 'reminder'
         ]); // from a previous test
     }
@@ -1022,14 +1089,14 @@ class RollCallCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPOST($this->endpoint.'/7/replies', [
+        $I->sendPOST($this->endpoint.'/8/replies', [
             'message'  => 'Test response',
             'answer'   => 'yes'
         ]);
         $I->seeResponseCodeIs(200);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint.'/7', [
+        $I->sendPUT($this->endpoint.'/8', [
             'message' => 'Resending a RollCall',
             'organization_id' => 2,
             'send_via' => ['sms'],

@@ -82,6 +82,7 @@ INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VAL
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('4', 'Roll call with answers', '2', 'pending', '0', '1', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","type":"custom"},{"answer":"Yes","color":"#E8C440","icon":"icon-check","type":"custom"}]');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers) VALUES ('5', 'Roll call with answers', '2', 'pending', '0', '2', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","type":"custom"},{"answer":"Yes","color":"#E8C440","icon":"icon-check","type":"custom"}]');
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers, self_test_roll_call) VALUES ('6', 'Did you receive this test RollCall?', '2', 'pending', '0', '1', '[{"answer":"Confirmed","color":"#BC6969","icon":"icon-check","type":"custom"}]', 1);
+INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id, answers, self_test_roll_call) VALUES ('7', 'Did you receive this test RollCall?', '2', 'pending', '0', '2', '[{"answer":"Confirmed","color":"#BC6969","icon":"icon-check","type":"custom"}]', 1);
 
 -- Add test roll call messages
 INSERT INTO roll_call_messages (contact_id, roll_call_id) VALUES ('1', '1');
