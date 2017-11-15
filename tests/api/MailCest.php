@@ -133,8 +133,8 @@ class MailCest
             'subject'     => "Sinkhole has opened. Are you ok?",
             'type'        => 'rollcall',
             'to'          => 'org_member@ushahidi.com',
-            'rollcall_id' => 7,
-            'from'        => 'rollcall-7@qa.rollcall.io'
+            'rollcall_id' => 8,
+            'from'        => 'rollcall-8@qa.rollcall.io'
         ]);
     }
 }
