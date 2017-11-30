@@ -259,15 +259,21 @@ class OrganizationController extends ApiController
     public function acceptInvite(AcceptInviteRequest $request, $organization_id, $person_id)
     {
         $member = $this->people->find($organization_id, $person_id);
+
         if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
             $member['person_type'] = 'user';
-            $member['role'] = 'member';
+
+            if ($member['role'] !== 'admin') {
+                $member['role'] = 'member';
+            }
+
             $member['invite_token'] = null;
             $member = $this->people->update($organization_id, $member, $person_id);
 
             return $this->response->item($member, new UserTransformer, 'person');
         }
+
         abort(401, 'Not authenticated');
     }
 }
