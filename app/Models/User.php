@@ -159,7 +159,7 @@ class User extends Model implements AuthenticatableContract,
             return false;
         }
 
-        return in_array($this->role, ['admin', 'member', 'owner']);
+        return in_array($this->role, ['admin', 'responder', 'owner', 'author', 'viewer']);
     }
 
     public function isOwner($orgId)

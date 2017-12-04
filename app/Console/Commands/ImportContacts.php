@@ -96,7 +96,7 @@ class ImportContacts extends Command
                 $member = User::firstOrCreate([
                     'name'            => $name,
                     'password'        => $password,
-                    'role'            => 'member'
+                    'role'            => 'responder'
 
                 ]);
             }

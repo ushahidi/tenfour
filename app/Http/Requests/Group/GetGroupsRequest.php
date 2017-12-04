@@ -15,8 +15,14 @@ class GetGroupsRequest extends FormRequest
      */
     public function authorize()
     {
-        // An org owner/ admin can view a list of groups in an organization
+        // An org owner/admin/author can view a list of groups in an organization
+
         if ($this->user()->isAdmin($this->route('organization'))) {
+            return true;
+        }
+
+        if (($this->user()->role === 'author' || $this->user()->role === 'viewer') &&
+            $this->user()->organization_id == $this->route('organization')) {
             return true;
         }
 

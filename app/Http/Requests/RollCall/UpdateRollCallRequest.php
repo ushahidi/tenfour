@@ -26,6 +26,12 @@ class UpdateRollCallRequest extends FormRequest
             return true;
         }
 
+        if ($this->user()->role === 'author' &&
+            $this->user()->organization_id === $this->input('organization_id')) {
+            return true;
+        }
+
+        return false;
     }
 
     public function rules()

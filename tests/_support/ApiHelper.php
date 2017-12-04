@@ -11,6 +11,8 @@ class ApiHelper extends \Codeception\Module
     protected $admin_token = 'admintoken';
     protected $orgadmin_token = 'orgadmintoken';
     protected $orgowner_token = 'orgownertoken';
+    protected $author_token = 'authortoken';
+    protected $viewer_token = 'viewertoken';
     protected $chargebee_username = 'chargebee';
     protected $chargebee_password = 'westgate';
 
@@ -39,8 +41,19 @@ class ApiHelper extends \Codeception\Module
         $this->getModule('REST')->amBearerAuthenticated($this->orgowner_token);
     }
 
+    public function amAuthenticatedAsAuthor()
+    {
+        $this->getModule('REST')->amBearerAuthenticated($this->author_token);
+    }
+
+    public function amAuthenticatedAsViewer()
+    {
+        $this->getModule('REST')->amBearerAuthenticated($this->viewer_token);
+    }
+
     public function amAuthenticatedAsChargeBee()
     {
         $this->getModule('REST')->amHttpAuthenticated($this->chargebee_username, $this->chargebee_password);
     }
+
 }

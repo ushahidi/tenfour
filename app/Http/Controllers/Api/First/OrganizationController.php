@@ -265,7 +265,7 @@ class OrganizationController extends ApiController
             $member['person_type'] = 'user';
 
             if ($member['role'] !== 'admin') {
-                $member['role'] = 'member';
+                $member['role'] = 'responder';
             }
 
             $member['invite_token'] = null;

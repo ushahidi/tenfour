@@ -1126,4 +1126,28 @@ class RollCallCest
             ]
         ]]);
     }
+
+
+    /*
+     * Create a roll call as author
+     *
+     */
+    public function createRollCallAsAuthor(ApiTester $I)
+    {
+        $I->wantTo('Create a rollcall as author');
+        $I->amAuthenticatedAsAuthor();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'message' => 'Westgate under siege, are you ok?',
+            'organization_id' => 2,
+            'send_via' => ['apponly'],
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+    }
 }

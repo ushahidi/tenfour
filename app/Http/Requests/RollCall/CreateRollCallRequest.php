@@ -20,6 +20,11 @@ class CreateRollCallRequest extends FormRequest
             return true;
         }
 
+        if ($this->user()->role === 'author' &&
+            $this->user()->organization_id === $this->input('organization_id')) {
+            return true;
+        }
+
         // Check if user is sending themselves a roll call
         if (count($this->input('recipients')) == 1 &&
             $this->isSelf($this->input('recipients.0.id'))) {

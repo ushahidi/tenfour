@@ -62,7 +62,7 @@ class EloquentPersonRepository implements PersonRepository
         $organization = Organization::findOrFail($organization_id);
 
         if (!isset($input['role'])) {
-            $input['role'] = 'member';
+            $input['role'] = 'responder';
         }
 
         if (isset($input['_input_image'])) {

@@ -10,16 +10,18 @@ INSERT INTO credit_adjustments (organization_id, adjustment, balance) VALUES (2,
 -- Add test users
 INSERT INTO users (id, name, description, password, person_type, invite_token, role, organization_id)
 VALUES
-('1', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2),
+('1', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2),
 ('2', 'Admin user','Admin user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 2),
-('3', 'Org member','Org member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2),
+('3', 'Org member','Org member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2),
 ('4', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'owner', 2),
 ('5', 'Org admin','Org admin','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 2),
-('6', 'Org member 2','Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'member', 'asupersecrettoken', 'member', 2),
+('6', 'Org member 2','Org Member 2','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'member', 'asupersecrettoken', 'responder', 2),
 ('7', 'Test user', 'Test user','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'admin', 3),
 ('8', 'Org owner','Org owner','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'owner', 3),
-('9', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2),
-('10', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'member', 2);
+('9', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2),
+('10', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2),
+('11', 'Author','Author role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'author', 2),
+('12', 'Viewer','Viewer role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'viewer', 2);
 
 -- Add OAuth tokens and scopes
 -- Clients
@@ -58,6 +60,18 @@ INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','u
 INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organization');
 INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
 
+--  Author
+INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('authortoken', 'organization');
+INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','11');
+INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('6', 'organization');
+INSERT INTO oauth_access_tokens VALUES ('authortoken',6,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
+
+--  Viewer
+INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('viewertoken', 'organization');
+INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','12');
+INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('7', 'organization');
+INSERT INTO oauth_access_tokens VALUES ('viewertoken',7,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
+
 --Add test contacts
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('1', '1', '2', '1', 'phone', '+254721674180');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact, unsubscribe_token) VALUES ('2', '1', '2', '1', 'email', 'test@ushahidi.com', 'testunsubscribetoken');
@@ -74,6 +88,7 @@ INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VA
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('13', '7', '3', '1', 'phone', '+254721674180');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('14', '10', '2', '1', 'phone', '+254722123457');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('15', '5', '2', '1', 'phone', '+254721674200');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('16', '11', '2', '1', 'email', 'test+author@organization2.com');
 
 --Add test roll calls
 INSERT INTO roll_calls (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');

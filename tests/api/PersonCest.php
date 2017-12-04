@@ -16,7 +16,7 @@ class PersonCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/people", [
             'name' => 'Mary Mata',
-            'role'  => 'member',
+            'role'  => 'responder',
             'password' => 'dancer01',
             'password_confirm' => 'dancer01',
             'person_type' => 'user',
@@ -27,7 +27,7 @@ class PersonCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Mary Mata',
-            'role' => 'member',
+            'role' => 'responder',
             'person_type' => 'user',
             'config_profile_reviewed' => true,
             'config_self_test_sent' => false,
@@ -162,7 +162,7 @@ class PersonCest
 
 
     /*
-     * Ensure that default role for new member is 'member' if unspecified
+     * Ensure that default role for new member is 'responder' if unspecified
      *
      */
     public function addMemberWithUnspecifiedRole(ApiTester $I)
@@ -179,7 +179,7 @@ class PersonCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'name' => 'Mary Mata',
-            'role' => 'member',
+            'role' => 'responder',
         ]);
     }
 
@@ -401,7 +401,7 @@ class PersonCest
                         'message' => 'Another test roll call'
                     ]
                 ],
-                'role' => 'member'
+                'role' => 'responder'
             ]
         ]);
     }
@@ -424,7 +424,7 @@ class PersonCest
             'person' => [
                 'id'    => $user_id,
                 'name'  => 'Test user',
-                'role'  => 'member'
+                'role'  => 'responder'
             ]
         ]);
     }
@@ -561,13 +561,13 @@ class PersonCest
                 ],
                 [
                     'id' => 1,
-                    'role' => 'member',
+                    'role' => 'responder',
                     'name' => 'Test user',
                     'initials' => 'TU'
                 ],
                 [
                     'id' => 3,
-                    'role' => 'member',
+                    'role' => 'responder',
                     'name' => 'Org member',
                     'initials' => 'OM'
                 ]
@@ -604,13 +604,13 @@ class PersonCest
                 ],
                 [
                     'id' => 1,
-                    'role' => 'member',
+                    'role' => 'responder',
                     'name' => 'Test user',
                     'initials' => 'TU'
                 ],
                 [
                     'id' => 3,
-                    'role' => 'member',
+                    'role' => 'responder',
                     'name' => 'Org member',
                     'initials' => 'OM'
                 ]
@@ -636,7 +636,7 @@ class PersonCest
             'person' => [
                 'name' => 'Org member 2',
                 'description' => 'Org Member 2',
-                'role' => 'member',
+                'role' => 'responder',
                 'person_type' => 'member',
                 'invite_sent' => true
             ]
@@ -668,7 +668,7 @@ class PersonCest
             'person' => [
                 'name' => 'Org member 2',
                 'description' => 'Org Member 2',
-                'role' => 'member',
+                'role' => 'responder',
                 'person_type' => 'user'
             ]
         ]);
