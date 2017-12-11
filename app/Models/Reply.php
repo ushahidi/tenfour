@@ -19,7 +19,7 @@ class Reply extends Model
      * @var array
      */
 
-    protected $fillable = ['answer', 'location_text', 'location_geo', 'message', 'contact_id', 'roll_call_id', 'user_id', 'message_id'];
+    protected $fillable = ['answer', 'location_text', 'location_geo', 'message', 'contact_id', 'roll_call_id', 'user_id', 'message_id', 'response_time'];
 
     /**
      * The attributes excluded from the model's JSON form.

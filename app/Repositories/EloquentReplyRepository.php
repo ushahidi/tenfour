@@ -31,9 +31,11 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function addReply(array $input, $id)
     {
-        $reply = Reply::create($input)->toArray();
-
         $rollcall = RollCall::findOrFail($id);
+
+        $input['response_time'] = Carbon::now()->diffInSeconds($rollcall['created_at']);
+
+        $reply = Reply::create($input)->toArray();
 
         Notification::send($rollcall->recipients,
             new ReplyReceived(new Reply($reply)));
@@ -42,7 +44,7 @@ class EloquentReplyRepository implements ReplyRepository
             'org_id'            => $rollcall['organization_id'],
             'roll_call_id'      => $rollcall['id'],
             'user_id'           => $rollcall['user_id'],
-            'response_time'     => Carbon::now()->diffInSeconds($rollcall['created_at']),
+            'response_time'     => $input['response_time'],
         ]);
 
         return $reply;
