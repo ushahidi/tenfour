@@ -10,10 +10,13 @@ use RollCall\Http\Requests\Person\AddPersonRequest;
 use RollCall\Http\Requests\Person\DeletePersonRequest;
 use RollCall\Http\Requests\Person\UpdatePersonRequest;
 use RollCall\Http\Requests\Person\InvitePersonRequest;
+use RollCall\Http\Requests\Person\NotifyPersonRequest;
 use Dingo\Api\Auth\Auth;
 use RollCall\Http\Transformers\UserTransformer;
+use RollCall\Models\Organization;
 use RollCall\Http\Response;
 use RollCall\Jobs\SendInvite;
+use RollCall\Notifications\PersonToPerson;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Hash;
 
@@ -288,7 +291,7 @@ class PersonController extends ApiController
     /**
      * Invite a member
      *
-     * @Post("{org_id}/people/{person_id}")
+     * @Post("{org_id}/people/{person_id}/invite")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
@@ -321,5 +324,33 @@ class PersonController extends ApiController
 
         // Return up to date Member
         return $this->response->item($member, new UserTransformer, 'person');
+    }
+
+    /**
+     * Notify the organization owner
+     *
+     * @Post("{org_id}/people/owner/notify")
+     * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     * })
+     *
+     * @Request({
+     *     "message": "The organization has no credits remaining",
+     *   }, headers={"Authorization": "Bearer token"})
+     * @Response(200, body="OK")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function notifyOwner(NotifyPersonRequest $request, $organization_id)
+    {
+        $organization = Organization::where('id', $organization_id)->firstOrFail();
+        $message = $request->input('message');
+        $from = $this->auth->user();
+
+        $organization->owner()->notify(new PersonToPerson($organization, $from, $message));
+
+        return response("OK", 200);
     }
 }

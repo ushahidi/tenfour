@@ -8,7 +8,6 @@ use Illuminate\Notifications\Messages\MailMessage;
 use RollCall\Models\User;
 use RollCall\Http\Transformers\UserTransformer;
 
-
 class PersonLeftOrganization extends Notification
 {
     use Queueable;

@@ -219,6 +219,7 @@
                                     </tbody></table>
                                 </td>
                             </tr>
+                            <?php if (isset($action_url)): ?>
                             <tr>
                                 <td align="center">
                                     <!-- BULLETPROOF BUTTON -->
@@ -250,6 +251,7 @@
                                     </tbody></table>
                                 </td>
                             </tr>
+                            <?php endif; ?>
                         </tbody></table>
                     </td>
                 </tr>

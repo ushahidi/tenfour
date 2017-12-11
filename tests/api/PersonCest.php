@@ -805,4 +805,22 @@ class PersonCest
 
     }
 
+    public function notifyOwner(ApiTester $I)
+    {
+        $orgId = 2;
+        $I->wantTo('Send a notification to the owner of the organization');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint."/$orgId/people/owner/notify", [
+            'message' => 'send_more_bees',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeRecord('notifications', [
+            'notifiable_id'           => '4',
+            'notifiable_type'         => 'RollCall\Models\User',
+            'type'                    => 'RollCall\Notifications\PersonToPerson',
+            'data'                    => '{"message":"send_more_bees","person_name":"Test user","person_id":1,"profile_picture":false,"initials":"TU"}'
+        ]);
+    }
+
 }
