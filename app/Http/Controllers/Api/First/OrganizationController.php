@@ -17,6 +17,8 @@ use RollCall\Http\Transformers\OrganizationTransformer;
 use RollCall\Http\Transformers\UserTransformer;
 use RollCall\Http\Response;
 use RollCall\Services\CreditService;
+use RollCall\Notifications\Welcome;
+use RollCall\Models\Organization;
 use DB;
 
 /**
@@ -132,6 +134,10 @@ class OrganizationController extends ApiController
                 'organization_id' => $organization['id'],
             ]);
         });
+
+        $organizationModel = Organization::findOrFail($organization['id']);
+
+        $organizationModel->owner()->notify(new Welcome($organizationModel));
 
         $result = $organization + [
             'user' => $owner + [
