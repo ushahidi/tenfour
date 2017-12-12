@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         \RollCall\Console\Commands\ExpireCredits::class,
         \RollCall\Console\Commands\NotifyFreePromoEnding::class,
         \RollCall\Console\Commands\OrgAdmin::class,
+        \RollCall\Console\Commands\SendWelcomeMail::class,
     ];
 
     /**
@@ -39,5 +40,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(\RollCall\Console\Commands\ExpireCredits::class)->daily();
         $schedule->command(\RollCall\Console\Commands\NotifyFreePromoEnding::class)->daily();
+        $schedule->command(\RollCall\Console\Commands\SendWelcomeMail::class)->daily();
     }
 }

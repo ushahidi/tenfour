@@ -9,10 +9,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 use RollCall\Models\Organization;
 use RollCall\Http\Transformers\UserTransformer;
 
-// Send welcome mail once someone has signed up & include subdomain
-// https://github.com/ushahidi/RollCall/issues/846
+// Send followup email who abandon at payments screen and let them know you have a free trial
+// https://github.com/ushahidi/RollCall/issues/847
 
-class Welcome extends Notification
+class WelcomeAbandoned extends Notification
 {
     use Queueable;
 
@@ -45,11 +45,11 @@ class Welcome extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = "Thanks for signing up for RollCall. You've made the first step towards ensuring your team's safety in an emergency." .
+        $body = "Thank you for checking out RollCall. RollCall helps you reach your team during an emergency." .
             "<br><br>" .
-            "If you have any question, you can talk to us in the app's chat window. Just log in to " .
+            "Finish signing up at " .
             "<a href='" . $this->url() . "'>" . $this->url() . "</a> " .
-            "with your email and password.";
+            " to make sure your team is prepared.";
 
         return (new MailMessage)
             ->view('emails.general', [
