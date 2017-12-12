@@ -4,6 +4,7 @@ namespace RollCall\Console\Commands;
 
 use RollCall\Notifications\Welcome;
 use RollCall\Notifications\WelcomeAbandoned;
+use RollCall\Services\AnalyticsService;
 use RollCall\Models\Organization;
 
 use Illuminate\Console\Command;
@@ -61,6 +62,11 @@ class SendWelcomeMail extends Command
             } else {
                 // - if org has not completed subscription then send followup
                 $organizationModel->owner()->notify(new WelcomeAbandoned($organizationModel));
+
+                (new AnalyticsService())->track('Organization Abandoned Onboarding', [
+                    'org_id'          => $organization->id,
+                    'subdomain'       => $organization->subdomain,
+                ]);
             }
         }
     }
