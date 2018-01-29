@@ -50,14 +50,14 @@ class RollCall extends Mailable
 
         $profile_picture = $this->creator['profile_picture'];
         $initials = UserTransformer::generateInitials($this->creator['name']);
-        $roll_call_url = $client_url .'/rollcalls/'. $this->roll_call['id'];
+        $roll_call_url = $client_url .'/checkins/'. $this->roll_call['id'];
         $subject = str_limit($this->roll_call['message'], $limit = 50, $end = '...');
 
         $user_url_fragment = '/' . $this->user['id'] . '?token=' . urlencode($this->user['reply_token']);
         $answer_url_no = $client_url . '/r/' . $this->roll_call['id'] . '/0' . $user_url_fragment;
         $answer_url_yes = $client_url . '/r/' . $this->roll_call['id'] . '/1' . $user_url_fragment;
-        $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer';
-        $reply_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/reply';
+        $answer_url = $client_url .'/checkins/'. $this->roll_call['id']. '/answer';
+        $reply_url = $client_url .'/checkins/'. $this->roll_call['id']. '/reply';
 
         $has_custom_answers = false;
 

@@ -34,7 +34,7 @@ class RollCallTransformer extends TransformerAbstract
         unset($roll_call['organization_id']);
 
         $roll_call['id'] = (int) $roll_call['id'];
-        $roll_call['uri'] = '/rollcalls/' . $roll_call['id'];
+        $roll_call['uri'] = '/checkins/' . $roll_call['id'];
 
         return $roll_call;
     }

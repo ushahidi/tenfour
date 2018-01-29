@@ -19,7 +19,7 @@ class ConcatinatedSMSCest
             ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
           ],
           'keyword'       => 'rollcall',
-          'rollcall_url'  => 'http://testingsubdomain.ushahidi.com/rollcalls/1/answer/2'
+          'rollcall_url'  => 'http://testingsubdomain.ushahidi.com/checkins/1/answer/2'
         ];
 
         $t->assertTrue(
@@ -33,7 +33,7 @@ class ConcatinatedSMSCest
           'msg'           => 'short',
           // 'answers'       => [],
           'keyword'       => 'rollcall',
-          'rollcall_url'  => 'http://testingsubdomain.ushahidi.com/rollcalls/1/answer/2'
+          'rollcall_url'  => 'http://testingsubdomain.ushahidi.com/checkins/1/answer/2'
         ];
 
         $t->assertFalse(

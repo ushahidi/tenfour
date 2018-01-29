@@ -64,12 +64,12 @@ class RollCallReceived extends Notification
 
         $client_url = $org->url();
 
-        $params['roll_call_url'] = $client_url .'/rollcalls/'. $this->roll_call['id'];
+        $params['roll_call_url'] = $client_url .'/checkins/'. $this->roll_call['id'];
         $params['message']= $this->roll_call['message'];
         $params['response_answers'] = '';
 
         foreach ($this->roll_call['answers'] as $index => $answer) {
-            $answer_url = $client_url .'/rollcalls/'. $this->roll_call['id']. '/answer/' . $index;
+            $answer_url = $client_url .'/checkins/'. $this->roll_call['id']. '/answer/' . $index;
             $params['response_answers'] .= "<" . $answer_url ."|" . $answer["answer"]. ">\t\t";
         }
 

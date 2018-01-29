@@ -13,7 +13,7 @@ use RollCall\Http\Response;
 use Dingo\Api\Auth\Auth;
 
 /**
- * @Resource("Replies", uri="/api/v1/rollcalls")
+ * @Resource("Replies", uri="/api/v1/checkins")
  */
 class ReplyController extends ApiController
 {
@@ -28,10 +28,10 @@ class ReplyController extends ApiController
     /**
      * Get a single reply
      *
-     * @Get("/{roll_call_id}/replies/{reply_id}")
+     * @Get("/{check_in_id}/replies/{reply_id}")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id"),
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id"),
      *   @Parameter("reply_id", type="number", required=true, description="Reply id")
      * })
      *
@@ -48,12 +48,12 @@ class ReplyController extends ApiController
      *           "location_text": null,
      *           "message": "I am OK",
      *           "message_id": null,
-     *           "rollcall": {
+     *           "checkin": {
      *               "id": 4,
-     *               "uri": "/rollcalls/4"
+     *               "uri": "/checkins/4"
      *           },
      *           "updated_at": null,
-     *           "uri": "/rollcalls/4/reply/1",
+     *           "uri": "/checkins/4/reply/1",
      *           "user": {
      *               "id": 1,
      *               "uri": "/users/1"
@@ -95,10 +95,10 @@ class ReplyController extends ApiController
     /**
      * Add reply
      *
-     * @Post("/{roll_call_id}/replies/")
+     * @Post("/{check_in_id}/replies/")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      *
      * @Request({
@@ -111,12 +111,12 @@ class ReplyController extends ApiController
      *         "created_at": "2016-03-15 20:27:54",
      *         "id": 6,
      *         "message": "I am OK",
-     *         "rollcall": {
+     *         "checkin": {
      *             "id": 1,
-     *             "uri": "/rollcalls/1"
+     *             "uri": "/checkins/1"
      *         },
      *         "updated_at": "2016-03-15 20:27:54",
-     *         "uri": "/rollcalls/1/reply/6",
+     *         "uri": "/checkins/1/reply/6",
      *         "user": {
      *             "id": 5,
      *             "uri": "/users/5"
@@ -161,12 +161,12 @@ class ReplyController extends ApiController
     }
 
     /**
-     * List roll call replies
+     * List check-in replies
      *
-     * @Get("/{roll_call_id}/replies/")
+     * @Get("/{check_in_id}/replies/")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      *
      * @Request(headers={"Authorization": "Bearer token"})
@@ -183,12 +183,12 @@ class ReplyController extends ApiController
      *             "location_text": null,
      *             "message": "I am OK",
      *             "message_id": null,
-     *             "rollcall": {
+     *             "checkin": {
      *                 "id": 1,
-     *                 "uri": "/rollcalls/1"
+     *                 "uri": "/checkins/1"
      *             },
      *             "updated_at": null,
-     *             "uri": "/rollcalls/1/reply/1",
+     *             "uri": "/checkins/1/reply/1",
      *             "user": {
      *                 "config_profile_reviewed": 0,
      *                 "config_self_test_sent": 0,
@@ -218,12 +218,12 @@ class ReplyController extends ApiController
      *             "location_text": null,
      *             "message": "Latest answer",
      *             "message_id": null,
-     *             "rollcall": {
+     *             "checkin": {
      *                 "id": 1,
-     *                 "uri": "/rollcalls/1"
+     *                 "uri": "/checkins/1"
      *             },
      *             "updated_at": null,
-     *             "uri": "/rollcalls/1/reply/3",
+     *             "uri": "/checkins/1/reply/3",
      *             "user": {
      *                 "config_profile_reviewed": 0,
      *                 "config_self_test_sent": 0,

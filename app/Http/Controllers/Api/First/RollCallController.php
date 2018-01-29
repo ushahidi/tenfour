@@ -23,7 +23,7 @@ use Dingo\Api\Auth\Auth;
 use App;
 
 /**
- * @Resource("RollCalls", uri="/api/v1/rollcalls")
+ * @Resource("Checkins", uri="/api/v1/checkins")
  */
 class RollCallController extends ApiController
 {
@@ -36,7 +36,7 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Get all roll calls for an organization
+     * Get all check-ins for an organization
      *
      * @Get("/{?offset,limit}")
      * @Versions({"v1"})
@@ -46,7 +46,7 @@ class RollCallController extends ApiController
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "rollcalls": {
+     *     "checkins": {
      *         {
      *             "answers": null,
      *             "complaint_count": 0,
@@ -77,10 +77,10 @@ class RollCallController extends ApiController
      *                     "message_id": null,
      *                     "rollcall": {
      *                         "id": 1,
-     *                         "uri": "/rollcalls/1"
+     *                         "uri": "/checkins/1"
      *                     },
      *                     "updated_at": null,
-     *                     "uri": "/rollcalls/1/reply/1",
+     *                     "uri": "/checkins/1/reply/1",
      *                     "user": {
      *                         "id": 1,
      *                         "uri": "/users/1"
@@ -93,7 +93,7 @@ class RollCallController extends ApiController
      *             "sent_count": 4,
      *             "status": "pending",
      *             "updated_at": null,
-     *             "uri": "/rollcalls/1",
+     *             "uri": "/checkins/1",
      *             "user": {
      *                 "id": 4,
      *                 "uri": "/users/4"
@@ -127,12 +127,12 @@ class RollCallController extends ApiController
      *                     "location_text": null,
      *                     "message": "Latest answer again",
      *                     "message_id": null,
-     *                     "rollcall": {
+     *                     "checkin": {
      *                         "id": 3,
-     *                         "uri": "/rollcalls/3"
+     *                         "uri": "/checkins/3"
      *                     },
      *                     "updated_at": null,
-     *                     "uri": "/rollcalls/3/reply/5",
+     *                     "uri": "/checkins/3/reply/5",
      *                     "user": {
      *                         "id": 4,
      *                         "uri": "/users/4"
@@ -145,7 +145,7 @@ class RollCallController extends ApiController
      *             "sent_count": 0,
      *             "status": "pending",
      *             "updated_at": null,
-     *             "uri": "/rollcalls/3",
+     *             "uri": "/checkins/3",
      *             "user": {
      *                 "id": 1,
      *                 "uri": "/users/1"
@@ -172,7 +172,7 @@ class RollCallController extends ApiController
      *             "sent_count": 1,
      *             "status": "pending",
      *             "updated_at": null,
-     *             "uri": "/rollcalls/4",
+     *             "uri": "/checkins/4",
      *             "user": {
      *                 "id": 1,
      *                 "uri": "/users/1"
@@ -206,20 +206,20 @@ class RollCallController extends ApiController
             $offset,
             $limit);
 
-        return $this->response->collection($roll_calls, new RollCallTransformer, 'rollcalls');
+        return $this->response->collection($roll_calls, new RollCallTransformer, 'checkins');
     }
 
     /**
-     * Get a single roll call
+     * Get a single check in
      *
-     * @Get("/{roll_call_id}")
+     * @Get("/{check_in_id}")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     *   @Parameter("check_in_id", type="number", required=true, description="check in id")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "rollcall": {
+     *     "checkin": {
      *         "answers": null,
      *         "complaint_count": 0,
      *         "created_at": null,
@@ -251,12 +251,12 @@ class RollCallController extends ApiController
      *                 "location_text": null,
      *                 "message": "I am OK",
      *                 "message_id": null,
-     *                 "rollcall": {
+     *                 "checkin": {
      *                     "id": 1,
-     *                     "uri": "/rollcalls/1"
+     *                     "uri": "/checkins/1"
      *                 },
      *                 "updated_at": null,
-     *                 "uri": "/rollcalls/1/reply/1",
+     *                 "uri": "/checkins/1/reply/1",
      *                 "user": {
      *                     "id": 1,
      *                     "role": "member",
@@ -270,7 +270,7 @@ class RollCallController extends ApiController
      *         "sent_count": 4,
      *         "status": "pending",
      *         "updated_at": null,
-     *         "uri": "/rollcalls/1",
+     *         "uri": "/checkins/1",
      *         "user": {
      *             "id": 4,
      *             "uri": "/users/4"
@@ -286,11 +286,11 @@ class RollCallController extends ApiController
     public function find(GetRollCallRequest $request, $id)
     {
         $roll_call = $this->roll_calls->find($id);
-        return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
+        return $this->response->item($roll_call, new RollCallTransformer, 'checkin');
     }
 
     /**
-     * Create a roll call
+     * Create a check in
      *
      * @Post("/")
      * @Versions({"v1"})
@@ -315,7 +315,7 @@ class RollCallController extends ApiController
      *     }
      *}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "rollcall": {
+     *     "checkin": {
      *         "answers": {
      *             "No",
      *             "Yes"
@@ -343,7 +343,7 @@ class RollCallController extends ApiController
      *         "sent": 0,
      *         "status": "pending",
      *         "updated_at": "2017-03-18 19:19:27",
-     *         "uri": "/rollcalls/6",
+     *         "uri": "/checkins/6",
      *         "user": {
      *             "id": 5,
      *             "uri": "/users/5"
@@ -368,15 +368,15 @@ class RollCallController extends ApiController
         // Send roll call
         dispatch((new SendRollCall($roll_call))/*->onQueue('rollcalls')*/);
 
-        return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
+        return $this->response->item($roll_call, new RollCallTransformer, 'checkin');
     }
 
     /**
-     * Update/resend a roll call
+     * Update/resend a check-in
      *
-     * @Put("/{roll_call_id}")
+     * @Put("/{check_in_id}")
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      * @Versions({"v1"})
      * @Request({
@@ -396,7 +396,7 @@ class RollCallController extends ApiController
      *     "status": "received"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "rollcall": {
+     *     "checkin": {
      *         "answers": null,
      *         "complaint_count": 0,
      *         "created_at": null,
@@ -453,7 +453,7 @@ class RollCallController extends ApiController
      *         "sent": 1,
      *         "status": "received",
      *         "updated_at": "2017-03-18 19:32:34",
-     *         "uri": "/rollcalls/1",
+     *         "uri": "/checkins/1",
      *         "user": {
      *             "id": 4,
      *             "uri": "/users/4"
@@ -487,16 +487,16 @@ class RollCallController extends ApiController
             dispatch((new SendRollCall($roll_call_to_dispatch))/*->onQueue('rollcalls')*/);
         }
 
-        return $this->response->item($roll_call, new RollCallTransformer, 'rollcall');
+        return $this->response->item($roll_call, new RollCallTransformer, 'checkin');
     }
 
     /**
-     * Resend a roll call to a single recipient.
+     * Resend a check-in request to a single recipient.
      *
-     * @Post("/{roll_call_id}/recipients/{recipient_id}/messages")
+     * @Post("/{check_in_id}/recipients/{recipient_id}/messages")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id"),
+     *   @Parameter("roll_call_id", type="number", required=true, description="Check-in id"),
      *   @Parameter("recipient_id", type="number", required=true, description="Recipient id")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
@@ -569,11 +569,11 @@ class RollCallController extends ApiController
     }
 
     /**
-     * List roll call messages
+     * List check-in messages
      *
-     * @Get("/{roll_call_id}/messages")
+     * @Get("/{check_in_id}/messages")
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer token"})
@@ -611,7 +611,7 @@ class RollCallController extends ApiController
     }
 
     /**
-     * Delete a roll call
+     * Delete a check-in
      *
      * @Delete("/")
      * @Versions({"v1"})

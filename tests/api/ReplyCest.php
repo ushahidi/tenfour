@@ -2,7 +2,7 @@
 
 class ReplyCest
 {
-    protected $endpoint = '/api/v1/rollcalls';
+    protected $endpoint = '/api/v1/checkins';
 
     public function getRepliesFilteredByUsers(ApiTester $I)
     {
@@ -112,7 +112,7 @@ class ReplyCest
                     'id' => 5
                 ],
                 'message'  => 'Test response',
-                'rollcall' => [
+                'checkin' => [
                     'id' => 1,
                 ]
             ]
@@ -134,10 +134,10 @@ class ReplyCest
                 'message'  => 'I am OK',
                 'location_text' => NULL,
                 'answer' => NULL,
-                'uri' => '/rollcalls/1/reply/1',
-                'rollcall' => [
+                'uri' => '/checkins/1/reply/1',
+                'checkin' => [
                     'id' => 1,
-                    'uri' => '/rollcalls/1',
+                    'uri' => '/checkins/1',
                 ],
                 'contact'  => [
                     'id'   => 1,
@@ -156,7 +156,7 @@ class ReplyCest
         $token = 'testtoken1';
         $I->wantTo('Add a reply with a reply token');
         // $I->sendGet();
-        $I->sendPOST('/rollcalls/' . $roll_call_id . '/replies', [
+        $I->sendPOST('/checkins/' . $roll_call_id . '/replies', [
             'message'     => 'Test response',
             'answer'      => 'yes',
             'rollCallId'  => $roll_call_id,
@@ -169,7 +169,7 @@ class ReplyCest
                     'id' => 2
                 ],
                 'message'  => 'Test response',
-                'rollcall' => [
+                'checkin' => [
                     'id' => 1,
                 ]
             ]
@@ -185,7 +185,7 @@ class ReplyCest
         $token = 'testtoken3';
         $I->wantTo('Not add a reply with an invalid reply token');
         // $I->sendGet();
-        $I->sendPOST('/rollcalls/' . $roll_call_id . '/replies', [
+        $I->sendPOST('/checkins/' . $roll_call_id . '/replies', [
             'message'     => 'Test response',
             'answer'      => 'yes',
             'rollCallId'  => $roll_call_id,

@@ -382,7 +382,7 @@ FORMAT: 1A
                 }
             }
 
-## Invite a member [POST /api/v1/organizations/{org_id}/people/{person_id}]
+## Invite a member [POST /api/v1/organizations/{org_id}/people/{person_id}/invite]
 
 
 + Parameters
@@ -404,6 +404,27 @@ FORMAT: 1A
                     "person_type": "user"
                 }
             }
+
+## Notify the organization owner [POST /api/v1/organizations/{org_id}/people/owner/notify]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "message": "The organization has no credits remaining"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            "OK"
 
 # Contacts [/api/v1/organizations]
 
@@ -617,9 +638,81 @@ FORMAT: 1A
 
             []
 
-# RollCalls [/api/v1/rollcalls]
+# Groups [/api/v1/organizations]
 
-## Get all roll calls for an organization [GET /api/v1/rollcalls{?offset,limit}]
+## Create a group in an organization [POST /api/v1/organizations/{org_id}/groups]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "name": "Testing Group",
+                "members": [
+                    {
+                        "id": 3
+                    },
+                    {
+                        "id": 1
+                    }
+                ]
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "id": 4,
+                    "created_at": "2017-03-18 19:19:27",
+                    "name": "Testing Group",
+                    "organization": {
+                        "id": 2,
+                        "uri": "/organizations/2"
+                    },
+                    "members": [
+                        {
+                            "id": 3,
+                            "uri": "/users/3"
+                        },
+                        {
+                            "id": 1,
+                            "uri": "/users/1"
+                        }
+                    ]
+                }
+            }
+
+## Delete a group from an organization [DELETE /api/v1/organizations/{org_id}/groups/{group_id}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + group_id: (number, required) - Group id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "name": "Test Group",
+                    "organization_id": 2,
+                    "updated_at": null
+                }
+            }
+
+## Get all groups for an organization [GET /api/v1/organizations{?offset,limit}]
 
 
 + Parameters
@@ -637,7 +730,171 @@ FORMAT: 1A
     + Body
 
             {
-                "rollcalls": [
+                "groups": [
+                    {
+                        "name": "Test Group 1",
+                        "created_at": null,
+                        "id": 1,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/1"
+                    },
+                    {
+                        "name": "Test Group 2",
+                        "created_at": null,
+                        "id": 2,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/2"
+                    },
+                    {
+                        "name": "Test Group 3",
+                        "created_at": null,
+                        "id": 3,
+                        "organization": {
+                            "id": 2,
+                            "uri": "/organizations/2"
+                        },
+                        "members": [
+                            {
+                                "id": 1,
+                                "uri": "/users/1"
+                            }
+                        ],
+                        "updated_at": null,
+                        "uri": "/organizations/2/groups/3"
+                    }
+                ]
+            }
+
+## Get a single group [GET /api/v1/organizations/{group_id}]
+
+
++ Parameters
+    + group_id: (number, required) - Group id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "id": 1,
+                    "name": "Test Group 1",
+                    "organization": {
+                        "id": 1,
+                        "uri": "/organizations/1"
+                    },
+                    "members": [
+                        {
+                            "id": 1,
+                            "uri": "/users/1"
+                        },
+                        {
+                            "id": 2,
+                            "uri": "/users/2"
+                        }
+                    ],
+                    "updated_at": null,
+                    "uri": "/organizations/2/groups/1"
+                }
+            }
+
+## Update a group [PUT /api/v1/organizations/{group_id}]
+
+
++ Parameters
+    + group_id: (number, required) - Group id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "organization_id": 2,
+                "members": [
+                    {
+                        "id": 1
+                    },
+                    {
+                        "id": 2
+                    }
+                ],
+                "name": "Test Group"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "group": {
+                    "created_at": null,
+                    "id": 1,
+                    "name": "Test Group",
+                    "organization": {
+                        "id": 2,
+                        "uri": "/organizations/2"
+                    },
+                    "members": [
+                        {
+                            "id": 1,
+                            "uri": "/users/1"
+                        },
+                        {
+                            "id": 2,
+                            "uri": "/users/2"
+                        }
+                    ],
+                    "updated_at": "2017-03-18 19:32:34",
+                    "uri": "/organization/1/groups/1"
+                }
+            }
+
+# Checkins [/api/v1/checkins]
+
+## Get all check-ins for an organization [GET /api/v1/checkins{?offset,limit}]
+
+
++ Parameters
+    + offset: (string, optional) - 
+        + Default: 0
+    + limit: (string, optional) - 
+        + Default: 0
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "checkins": [
                     {
                         "answers": null,
                         "complaint_count": 0,
@@ -668,10 +925,10 @@ FORMAT: 1A
                                 "message_id": null,
                                 "rollcall": {
                                     "id": 1,
-                                    "uri": "/rollcalls/1"
+                                    "uri": "/checkins/1"
                                 },
                                 "updated_at": null,
-                                "uri": "/rollcalls/1/reply/1",
+                                "uri": "/checkins/1/reply/1",
                                 "user": {
                                     "id": 1,
                                     "uri": "/users/1"
@@ -684,7 +941,7 @@ FORMAT: 1A
                         "sent_count": 4,
                         "status": "pending",
                         "updated_at": null,
-                        "uri": "/rollcalls/1",
+                        "uri": "/checkins/1",
                         "user": {
                             "id": 4,
                             "uri": "/users/4"
@@ -718,12 +975,12 @@ FORMAT: 1A
                                 "location_text": null,
                                 "message": "Latest answer again",
                                 "message_id": null,
-                                "rollcall": {
+                                "checkin": {
                                     "id": 3,
-                                    "uri": "/rollcalls/3"
+                                    "uri": "/checkins/3"
                                 },
                                 "updated_at": null,
-                                "uri": "/rollcalls/3/reply/5",
+                                "uri": "/checkins/3/reply/5",
                                 "user": {
                                     "id": 4,
                                     "uri": "/users/4"
@@ -736,7 +993,7 @@ FORMAT: 1A
                         "sent_count": 0,
                         "status": "pending",
                         "updated_at": null,
-                        "uri": "/rollcalls/3",
+                        "uri": "/checkins/3",
                         "user": {
                             "id": 1,
                             "uri": "/users/1"
@@ -763,7 +1020,7 @@ FORMAT: 1A
                         "sent_count": 1,
                         "status": "pending",
                         "updated_at": null,
-                        "uri": "/rollcalls/4",
+                        "uri": "/checkins/4",
                         "user": {
                             "id": 1,
                             "uri": "/users/1"
@@ -772,11 +1029,11 @@ FORMAT: 1A
                 ]
             }
 
-## Get a single roll call [GET /api/v1/rollcalls/{roll_call_id}]
+## Get a single check in [GET /api/v1/checkins/{check_in_id}]
 
 
 + Parameters
-    + roll_call_id: (number, required) - Roll Call id
+    + check_in_id: (number, required) - check in id
 
 + Request (application/json)
     + Headers
@@ -787,7 +1044,7 @@ FORMAT: 1A
     + Body
 
             {
-                "rollcall": {
+                "checkin": {
                     "answers": null,
                     "complaint_count": 0,
                     "created_at": null,
@@ -819,12 +1076,12 @@ FORMAT: 1A
                             "location_text": null,
                             "message": "I am OK",
                             "message_id": null,
-                            "rollcall": {
+                            "checkin": {
                                 "id": 1,
-                                "uri": "/rollcalls/1"
+                                "uri": "/checkins/1"
                             },
                             "updated_at": null,
-                            "uri": "/rollcalls/1/reply/1",
+                            "uri": "/checkins/1/reply/1",
                             "user": {
                                 "id": 1,
                                 "role": "member",
@@ -838,7 +1095,7 @@ FORMAT: 1A
                     "sent_count": 4,
                     "status": "pending",
                     "updated_at": null,
-                    "uri": "/rollcalls/1",
+                    "uri": "/checkins/1",
                     "user": {
                         "id": 4,
                         "uri": "/users/4"
@@ -846,7 +1103,7 @@ FORMAT: 1A
                 }
             }
 
-## Create a roll call [POST /api/v1/rollcalls]
+## Create a check in [POST /api/v1/checkins]
 
 
 + Request (application/json)
@@ -880,7 +1137,7 @@ FORMAT: 1A
     + Body
 
             {
-                "rollcall": {
+                "checkin": {
                     "answers": [
                         "No",
                         "Yes"
@@ -908,7 +1165,7 @@ FORMAT: 1A
                     "sent": 0,
                     "status": "pending",
                     "updated_at": "2017-03-18 19:19:27",
-                    "uri": "/rollcalls/6",
+                    "uri": "/checkins/6",
                     "user": {
                         "id": 5,
                         "uri": "/users/5"
@@ -916,11 +1173,11 @@ FORMAT: 1A
                 }
             }
 
-## Update/resend a roll call [PUT /api/v1/rollcalls/{roll_call_id}]
+## Update/resend a check-in [PUT /api/v1/checkins/{check_in_id}]
 
 
 + Parameters
-    + roll_call_id: (number, required) - Roll Call id
+    + check_in_id: (number, required) - Check-in id
 
 + Request (application/json)
     + Headers
@@ -949,7 +1206,7 @@ FORMAT: 1A
     + Body
 
             {
-                "rollcall": {
+                "checkin": {
                     "answers": null,
                     "complaint_count": 0,
                     "created_at": null,
@@ -1006,7 +1263,7 @@ FORMAT: 1A
                     "sent": 1,
                     "status": "received",
                     "updated_at": "2017-03-18 19:32:34",
-                    "uri": "/rollcalls/1",
+                    "uri": "/checkins/1",
                     "user": {
                         "id": 4,
                         "uri": "/users/4"
@@ -1014,11 +1271,11 @@ FORMAT: 1A
                 }
             }
 
-## Resend a roll call to a single recipient. [POST /api/v1/rollcalls/{roll_call_id}/recipients/{recipient_id}/messages]
+## Resend a check-in request to a single recipient. [POST /api/v1/checkins/{check_in_id}/recipients/{recipient_id}/messages]
 
 
 + Parameters
-    + roll_call_id: (number, required) - Roll Call id
+    + roll_call_id: (number, required) - Check-in id
     + recipient_id: (number, required) - Recipient id
 
 + Request (application/json)
@@ -1026,7 +1283,7 @@ FORMAT: 1A
 
             Authorization: Bearer token
 
-## List roll call recipients [GET /api/v1/rollcalls/{roll_call_id}/recipients]
+## List roll call recipients [GET /api/v1/checkins/{roll_call_id}/recipients]
 
 
 + Parameters
@@ -1057,11 +1314,11 @@ FORMAT: 1A
                 ]
             }
 
-## List roll call messages [GET /api/v1/rollcalls/{roll_call_id}/messages]
+## List check-in messages [GET /api/v1/checkins/{check_in_id}/messages]
 
 
 + Parameters
-    + roll_call_id: (number, required) - Roll Call id
+    + check_in_id: (number, required) - Check-in id
 
 + Request (application/json)
     + Headers
@@ -1094,7 +1351,7 @@ FORMAT: 1A
                 ]
             }
 
-## Delete a roll call [DELETE /api/v1/rollcalls]
+## Delete a check-in [DELETE /api/v1/checkins]
 
 
 + Request (application/json)
@@ -1110,13 +1367,13 @@ FORMAT: 1A
                 "status_code": 405
             }
 
-# Replies [/api/v1/rollcalls]
+# Replies [/api/v1/checkins]
 
-## Get a single reply [GET /api/v1/rollcalls/{roll_call_id}/replies/{reply_id}]
+## Get a single reply [GET /api/v1/checkins/{check_in_id}/replies/{reply_id}]
 
 
 + Parameters
-    + roll_call_id: (number, required) - RollCall id
+    + check_in_id: (number, required) - Check-in id
     + reply_id: (number, required) - Reply id
 
 + Request (application/json)
@@ -1139,12 +1396,12 @@ FORMAT: 1A
                     "location_text": null,
                     "message": "I am OK",
                     "message_id": null,
-                    "rollcall": {
+                    "checkin": {
                         "id": 4,
-                        "uri": "/rollcalls/4"
+                        "uri": "/checkins/4"
                     },
                     "updated_at": null,
-                    "uri": "/rollcalls/4/reply/1",
+                    "uri": "/checkins/4/reply/1",
                     "user": {
                         "id": 1,
                         "uri": "/users/1"
@@ -1152,11 +1409,11 @@ FORMAT: 1A
                 }
             }
 
-## Add reply [POST /api/v1/rollcalls/{roll_call_id}/replies]
+## Add reply [POST /api/v1/checkins/{check_in_id}/replies]
 
 
 + Parameters
-    + roll_call_id: (number, required) - RollCall id
+    + check_in_id: (number, required) - Check-in id
 
 + Request (application/json)
     + Headers
@@ -1178,12 +1435,12 @@ FORMAT: 1A
                     "created_at": "2016-03-15 20:27:54",
                     "id": 6,
                     "message": "I am OK",
-                    "rollcall": {
+                    "checkin": {
                         "id": 1,
-                        "uri": "/rollcalls/1"
+                        "uri": "/checkins/1"
                     },
                     "updated_at": "2016-03-15 20:27:54",
-                    "uri": "/rollcalls/1/reply/6",
+                    "uri": "/checkins/1/reply/6",
                     "user": {
                         "id": 5,
                         "uri": "/users/5"
@@ -1192,11 +1449,11 @@ FORMAT: 1A
                 }
             }
 
-## List roll call replies [GET /api/v1/rollcalls/{roll_call_id}/replies]
+## List check-in replies [GET /api/v1/checkins/{check_in_id}/replies]
 
 
 + Parameters
-    + roll_call_id: (number, required) - RollCall id
+    + check_in_id: (number, required) - Check-in id
 
 + Request (application/json)
     + Headers
@@ -1219,12 +1476,12 @@ FORMAT: 1A
                         "location_text": null,
                         "message": "I am OK",
                         "message_id": null,
-                        "rollcall": {
+                        "checkin": {
                             "id": 1,
-                            "uri": "/rollcalls/1"
+                            "uri": "/checkins/1"
                         },
                         "updated_at": null,
-                        "uri": "/rollcalls/1/reply/1",
+                        "uri": "/checkins/1/reply/1",
                         "user": {
                             "config_profile_reviewed": 0,
                             "config_self_test_sent": 0,
@@ -1254,12 +1511,12 @@ FORMAT: 1A
                         "location_text": null,
                         "message": "Latest answer",
                         "message_id": null,
-                        "rollcall": {
+                        "checkin": {
                             "id": 1,
-                            "uri": "/rollcalls/1"
+                            "uri": "/checkins/1"
                         },
                         "updated_at": null,
-                        "uri": "/rollcalls/1/reply/3",
+                        "uri": "/checkins/1/reply/3",
                         "user": {
                             "config_profile_reviewed": 0,
                             "config_self_test_sent": 0,
@@ -1425,249 +1682,5 @@ FORMAT: 1A
                 "subscription": {
                     "id": 1,
                     "status": "active"
-                }
-            }
-
-# Groups [/api/v1/organizations]
-
-## Get all groups in an organization [GET /api/v1/organizations/{org_id}/groups/{?offset,limit}]
-
-
-+ Parameters
-    + org_id: (number, required) - Organization id
-    + offset: (string, optional) - 
-        + Default: 0
-    + limit: (string, optional) - 
-        + Default: 0
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "groups": [
-                    {
-                        "name": "Test Group 1",
-                        "created_at": null,
-                        "id": 1,
-                        "organization": {
-                            "id": 2,
-                            "uri": "/organizations/2"
-                        },
-                        "members": [
-                            {
-                                "id": 1,
-                                "uri": "/users/1"
-                            }
-                        ],
-                        "updated_at": null,
-                        "uri": "/organizations/2/groups/1"
-                    },
-                    {
-                        "name": "Test Group 2",
-                        "created_at": null,
-                        "id": 2,
-                        "organization": {
-                            "id": 2,
-                            "uri": "/organizations/2"
-                        },
-                        "members": [
-                            {
-                                "id": 1,
-                                "uri": "/users/1"
-                            }
-                        ],
-                        "updated_at": null,
-                        "uri": "/organizations/2/groups/2"  
-                    },
-                    {
-                        "name": "Test Group 3",
-                        "created_at": null,
-                        "id": 3,
-                        "organization": {
-                            "id": 2,
-                            "uri": "/organizations/2"
-                        },
-                        "members": [
-                            {
-                                "id": 1,
-                                "uri": "/users/1"
-                            }
-                        ],
-                        "updated_at": null,
-                        "uri": "/organizations/2/groups/3"
-                        }
-                    }
-                ]
-            }
-
-## Get a single group [GET /api/v1/organizations/{org_id}/groups/{group_id}]
-
-
-+ Parameters
-    + group_id: (number, required) - Group id
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "group": 
-                   {
-                        "name": "Test Group 1",
-                        "created_at": null,
-                        "id": 1,
-                        "organization": {
-                            "id": 2,
-                            "uri": "/organizations/2"
-                        },
-                        "members": [
-                            {
-                                "id": 1,
-                                "uri": "/users/1"
-                            }
-                        ],
-                        "updated_at": null,
-                        "uri": "/organizations/2/groups/1"
-                    }
-            }
-
-## Create a group [POST /api/v1/organizations/{org_id}/groups]
-
-+ Parameters
-    + org_id: (number, required) - Organization id
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "name": "Testing Group",
-                "organization_id": 2,
-                "members": [
-                    {
-                        "id": 3
-                    },
-                    {
-                        "id": 1
-                    }
-                ]
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "group": {
-                    "created_at": "2017-03-18 19:19:27",
-                    "id": 6,
-                    "name": "Testing Group",
-                    "organization": {
-                        "id": 2,
-                        "uri": "/organizations/2"
-                    },
-                    "members": [
-                        {
-                            "id": 3,
-                            "uri": "/users/3"
-                        },
-                        {
-                            "id": 1,
-                            "uri": "/users/1"
-                        }
-                    ],
-                    "updated_at": "2017-03-18 19:19:27",
-                    "uri": "/organizations/2/groups/6",
-                }
-            }
-## Update a group [PUT /api/v1/organizations/{org_id}/groups/{group_id}]
-
-
-+ Parameters
-    + group_id: (number, required) - Group id
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "members": [
-                    {
-                        "id": 1
-                    },
-                    {
-                        "id": 2
-                    },
-                    {
-                        "id": 3
-                    }
-                ]
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "group": {
-                    "created_at": null,
-                    "id": 1,
-                    "name": "Test Group 1",
-                    "organization": {
-                        "id": 2,
-                        "uri": "/organizations/2"
-                    },
-                    "members": [
-                        {
-                            "id": 1,
-                            "uri": "/users/1"
-                        },
-                        {
-                            "id": 2,
-                            "uri": "/users/2"
-                        },
-                        {
-                            "id": 4,
-                            "uri": "/users/4"
-                        }
-                    ],
-                    "updated_at": "2017-03-18 19:32:34",
-                    "uri": "/organizations/2/groups/1"
-                }
-            }
-
-## Delete a group [DELETE /api/v1/organizations/{org_id}/groups/{group_id}]
-
-
-+ Parameters
-    + org_id: (number, required) - Organization id
-    + group_id: (number, required) - Group id
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            []
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "group": {
-                    "id": 3,
-                    "name": "Test Group 3"
                 }
             }

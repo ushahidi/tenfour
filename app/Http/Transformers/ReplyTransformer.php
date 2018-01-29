@@ -8,10 +8,10 @@ class ReplyTransformer extends TransformerAbstract
 {
     public function transform(array $reply)
     {
-        $reply['uri'] = '/rollcalls/' . $reply['roll_call_id'] . '/reply/' . $reply['id'];
+        $reply['uri'] = '/checkins/' . $reply['roll_call_id'] . '/reply/' . $reply['id'];
 
-        $reply['rollcall']['id'] = (int) $reply['roll_call_id'];
-        $reply['rollcall']['uri'] = '/rollcalls/' . $reply['roll_call_id'];
+        $reply['checkin']['id'] = (int) $reply['roll_call_id'];
+        $reply['checkin']['uri'] = '/checkins/' . $reply['roll_call_id'];
         unset($reply['roll_call_id']);
 
         if (!empty($reply['contact_id'])) {

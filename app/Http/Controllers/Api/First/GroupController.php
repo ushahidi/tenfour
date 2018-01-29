@@ -37,7 +37,7 @@ class GroupController extends ApiController
      *
      * @Versions({"v1"})
      * @Request({
-     *       "name": "Testing Group"
+     *       "name": "Testing Group",
      *       "members": {
      *         {
      *             "id": 3
@@ -45,12 +45,13 @@ class GroupController extends ApiController
      *         {
      *             "id": 1
      *         }
+     *       }
      *  }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "group": {
-     *         "id" : 4
+     *         "id" : 4,
      *         "created_at": "2017-03-18 19:19:27",
-     *         "name": "Testing Group"
+     *         "name": "Testing Group",
      *         "organization": {
      *             "id": 2,
      *             "uri": "/organizations/2"
@@ -119,7 +120,7 @@ class GroupController extends ApiController
      * @Response(200, body={
      *     "groups": {
      *         {
-     *             "name": Test Group 1,
+     *             "name": "Test Group 1",
      *             "created_at": null,
      *             "id": 1,
      *             "organization": {
@@ -134,10 +135,9 @@ class GroupController extends ApiController
      *             },
      *             "updated_at": null,
      *             "uri": "/organizations/2/groups/1",
-     *             }
      *         },
      *         {
-     *             "name": Test Group 2,
+     *             "name": "Test Group 2",
      *             "created_at": null,
      *             "id": 2,
      *             "organization": {
@@ -152,10 +152,9 @@ class GroupController extends ApiController
      *             },
      *             "updated_at": null,
      *             "uri": "/organizations/2/groups/2",
-     *             }
      *         },
      *         {
-     *             "name": Test Group 3,
+     *             "name": "Test Group 3",
      *             "created_at": null,
      *             "id": 3,
      *             "organization": {
@@ -170,7 +169,6 @@ class GroupController extends ApiController
      *             },
      *             "updated_at": null,
      *             "uri": "/organizations/2/groups/3",
-     *             }
      *         },
      *     }
      * })

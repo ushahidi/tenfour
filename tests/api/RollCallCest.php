@@ -2,7 +2,7 @@
 
 class RollCallCest
 {
-    protected $endpoint = '/api/v1/rollcalls';
+    protected $endpoint = '/api/v1/checkins';
 
     /*
      * Get all roll calls as an admin
@@ -16,7 +16,7 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'rollcalls' => [
+            'checkins' => [
                 [
                     'id' => 1,
                     'message' => 'Westgate under siege',
@@ -103,7 +103,7 @@ class RollCallCest
 
         // include my own self test
         $I->seeResponseContainsJson([
-            'rollcalls' => [
+            'checkins' => [
                 [
                     'id' => 7,
                     'user' => [
@@ -116,7 +116,7 @@ class RollCallCest
 
         // exclude others' self tests
         $I->dontSeeResponseContainsJson([
-            'rollcalls' => [
+            'checkins' => [
                 [
                     'id' => 6,
                     'user' => [
@@ -820,7 +820,7 @@ class RollCallCest
         $roll_call_id = 1;
         $token = 'testtoken1';
         $I->wantTo('Get a RollCall using a reply token');
-        $I->sendGet('/rollcalls/' . $roll_call_id . '?token=' . $token);
+        $I->sendGet('/checkins/' . $roll_call_id . '?token=' . $token);
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson(
             [
@@ -844,7 +844,7 @@ class RollCallCest
         $roll_call_id = 1;
         $token = 'testtoken3';
         $I->wantTo('Not get a RollCall using an invalid reply token');
-        $I->sendGet('/rollcalls/' . $roll_call_id . '?token=' . $token);
+        $I->sendGet('/checkins/' . $roll_call_id . '?token=' . $token);
         $I->seeResponseCodeIs(403);
     }
 
@@ -1007,7 +1007,7 @@ class RollCallCest
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['rollcall' =>
+        $I->seeResponseContainsJson(['checkin' =>
             [
                 'message' => 'Resending a RollCall',
                 'organization' => [
