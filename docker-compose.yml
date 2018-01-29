@@ -16,6 +16,8 @@ services:
     extra_hosts:  # TODO: how things break if we take these out?
       - "rollcall.dev:127.0.0.1"
       - "api.rollcall.dev:127.0.0.1"
+      - "tenfour.local:127.0.0.1"
+      - "api.tenfour.local:127.0.0.1"
     depends_on:
       - mysql
       - redis
