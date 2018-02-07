@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Notifications\Notifiable;
-use RollCall\Notifications\ResetPassword;
+use TenFour\Notifications\ResetPassword;
 use Illuminate\Support\Str;
-use RollCall\Models\Mail as OutgoingMail;
+use TenFour\Models\Mail as OutgoingMail;
 
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
@@ -60,7 +60,7 @@ class User extends Model implements AuthenticatableContract,
      */
     public function organization()
     {
-        return $this->belongsTo('RollCall\Models\Organization');
+        return $this->belongsTo('TenFour\Models\Organization');
     }
 
     /**
@@ -69,30 +69,30 @@ class User extends Model implements AuthenticatableContract,
      */
     public function contacts()
     {
-        return $this->hasMany('RollCall\Models\Contact');
+        return $this->hasMany('TenFour\Models\Contact');
     }
 
     /**
-     * An user has rollcalls
+     * An user has check-ins
      *
      */
-    public function rollcalls()
+    public function checkIns()
     {
-        return $this->hasMany('RollCall\Models\RollCall');
+        return $this->hasMany('TenFour\Models\CheckIn');
     }
 
     /**
      *
-     * Rollcalls that belong to the contact
+     * CheckIns that belong to the contact
      */
-    public function receivedRollcalls()
+    public function receivedCheckIns()
     {
-        return $this->belongsToMany('RollCall\Models\RollCall', 'roll_call_recipients');
+        return $this->belongsToMany('TenFour\Models\CheckIn', 'check_in_recipients');
     }
 
     public function replies()
     {
-        return $this->hasMany('Rollcall\Models\Reply');
+        return $this->hasMany('TenFour\Models\Reply');
     }
 
     public function sendPasswordResetNotification($token) {
@@ -189,7 +189,7 @@ class User extends Model implements AuthenticatableContract,
         $mail->to = $this->email();
         $mail->from = config('mail.from.address');
         $mail->subject = $subject;
-        $mail->rollcall_id = 0;
+        $mail->check_in_id = 0;
         $mail->type = $class;
         $mail->save();
     }
@@ -200,6 +200,6 @@ class User extends Model implements AuthenticatableContract,
      */
     public function groups()
     {
-        return $this->belongsToMany('RollCall\Models\Group', 'group_users');
+        return $this->belongsToMany('TenFour\Models\Group', 'group_users');
     }
 }

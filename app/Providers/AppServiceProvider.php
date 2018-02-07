@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Providers;
+namespace TenFour\Providers;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;

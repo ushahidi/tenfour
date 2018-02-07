@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Jobs;
+namespace TenFour\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -13,7 +13,7 @@ use App;
 use Statsd;
 use Exception;
 use SimpleSoftwareIO\SMS\SMSNotSentException;
-use RollCall\Models\SMS as OutgoingSMS;
+use TenFour\Models\SMS as OutgoingSMS;
 
 class SendSMS implements ShouldQueue
 {
@@ -77,7 +77,7 @@ class SendSMS implements ShouldQueue
                 $this->to,
                 $this->from,
                 $this->driver,
-                isset($this->additional_params['rollcall_id'])?$this->additional_params['rollcall_id']:0,
+                isset($this->additional_params['check_in_id'])?$this->additional_params['check_in_id']:0,
                 isset($this->additional_params['sms_type'])?$this->additional_params['sms_type']:'other',
                 view($this->view, $this->additional_params));
         } catch (SMSNotSentException $e) {
@@ -88,13 +88,13 @@ class SendSMS implements ShouldQueue
         }
     }
 
-    protected function logSMS($to, $from, $driver, $rollcall_id = 0, $type = 'other', $message = '')
+    protected function logSMS($to, $from, $driver, $check_in_id = 0, $type = 'other', $message = '')
     {
         $sms = new OutgoingSMS;
         $sms->to = $to;
         $sms->from = $from;
         $sms->driver = $driver;
-        $sms->rollcall_id = $rollcall_id;
+        $sms->check_in_id = $check_in_id;
         $sms->type = $type;
         $sms->message = $message;
         $sms->save();

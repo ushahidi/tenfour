@@ -396,9 +396,9 @@ class PersonCest
                         'type'    => 'email',
                     ]
                 ],
-                'rollcalls' => [
+                'checkins' => [
                     [
-                        'message' => 'Another test roll call'
+                        'message' => 'Another test check-in'
                     ]
                 ],
                 'role' => 'responder'
@@ -643,7 +643,7 @@ class PersonCest
         ]);
 
         $I->seeRecord('outgoing_mail_log', [
-            'subject'     => "RollCall invited you to join Rollcall",
+            'subject'     => "TenFourTest invited you to join TenFour",
             'type'        => 'invite',
             'to'          => 'org_member2@ushahidi.com',
         ]);
@@ -729,7 +729,7 @@ class PersonCest
             'client_secret' => 'secret',
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
-            'subdomain' => 'rollcall',
+            'subdomain' => 'tenfourtest',
             'password' => 'another_password',
             'grant_type' => 'password'
         ]);
@@ -748,7 +748,7 @@ class PersonCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('/password/email', [
             'username' => 'test@ushahidi.com',
-            'subdomain' => 'rollcall'
+            'subdomain' => 'tenfourtest'
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -757,7 +757,7 @@ class PersonCest
             'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
             'password_confirmation' => 'cake1234',
-            'subdomain' => 'rollcall',
+            'subdomain' => 'tenfourtest',
             'token' => $record['token']
         ]);
         $I->seeResponseCodeIs(200);
@@ -768,7 +768,7 @@ class PersonCest
             'scope' => 'user',
             'username' => 'test@ushahidi.com',
             'password' => 'cake1234',
-            'subdomain' => 'rollcall',
+            'subdomain' => 'tenfourtest',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(200);
@@ -782,7 +782,7 @@ class PersonCest
     }
 
     /**
-     * Unsubscribe from rollcall emails
+     * Unsubscribe from check-in emails
      */
     public function unsubscribe(ApiTester $I)
     {
@@ -798,8 +798,8 @@ class PersonCest
 
         $I->seeRecord('notifications', [
             'notifiable_id'           => '4',
-            'notifiable_type'         => 'RollCall\Models\User',
-            'type'                    => 'RollCall\Notifications\Unsubscribe',
+            'notifiable_type'         => 'TenFour\Models\User',
+            'type'                    => 'TenFour\Notifications\Unsubscribe',
             'data'                    => '{"person_name":"Test user","person_id":1,"profile_picture":false,"initials":"TU","contact":"test@ushahidi.com","contact_type":"email"}'
         ]);
 
@@ -817,8 +817,8 @@ class PersonCest
         $I->seeResponseCodeIs(200);
         $I->seeRecord('notifications', [
             'notifiable_id'           => '4',
-            'notifiable_type'         => 'RollCall\Models\User',
-            'type'                    => 'RollCall\Notifications\PersonToPerson',
+            'notifiable_type'         => 'TenFour\Models\User',
+            'type'                    => 'TenFour\Notifications\PersonToPerson',
             'data'                    => '{"message":"send_more_bees","person_name":"Test user","person_id":1,"profile_picture":false,"initials":"TU"}'
         ]);
     }

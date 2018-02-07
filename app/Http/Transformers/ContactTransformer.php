@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Http\Transformers;
+namespace TenFour\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
 

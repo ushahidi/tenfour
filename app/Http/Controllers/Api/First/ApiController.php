@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
 use Dingo\Api\Exception\ValidationHttpException;
 use Illuminate\Foundation\Bus\DispatchesJobs;

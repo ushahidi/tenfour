@@ -1,4 +1,4 @@
-## RollCall API
+## TenFour API
 
 [Get started](docs/getting_started.md)
 

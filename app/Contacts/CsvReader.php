@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Contacts;
+namespace TenFour\Contacts;
 
-use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
+use TenFour\Contracts\Contacts\CsvReader as CsvReaderInterface;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Storage;
 

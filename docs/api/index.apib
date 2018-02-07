@@ -1,6 +1,6 @@
 FORMAT: 1A
 
-# RollCall API
+# TenFour API
 
 # Organizations [/api/v1/organizations]
 
@@ -19,7 +19,7 @@ FORMAT: 1A
                 "organizations": [
                     {
                         "name": "Ushahidi",
-                        "subdomain": "ushahidi@rollcall.io"
+                        "subdomain": "ushahidi@tenfour.org"
                     }
                 ]
             }
@@ -35,7 +35,7 @@ FORMAT: 1A
 
             {
                 "name": "Ushahidi",
-                "subdomain": "ushahidi@rollcall.io"
+                "subdomain": "ushahidi@tenfour.org"
             }
 
 + Response 200 (application/json)
@@ -44,7 +44,7 @@ FORMAT: 1A
             {
                 "organization": {
                     "name": "Ushahidi",
-                    "subdomain": "ushahidi@rollcall.io"
+                    "subdomain": "ushahidi@tenfour.org"
                 }
             }
 
@@ -69,7 +69,7 @@ FORMAT: 1A
                 "organization": {
                     "id": 3,
                     "name": "Ushahidi",
-                    "subdomain": "ushahidi@rollcall.io"
+                    "subdomain": "ushahidi@tenfour.org"
                 }
             }
 
@@ -513,7 +513,7 @@ FORMAT: 1A
                 }
             }
 
-## Unsubscribe an email address from RollCalls [POST /api/v1/organizations/unsubscribe]
+## Unsubscribe an email address from check-ins [POST /api/v1/organizations/unsubscribe]
 
 
 + Request (application/json)
@@ -923,7 +923,7 @@ FORMAT: 1A
                                 "location_text": null,
                                 "message": "I am OK",
                                 "message_id": null,
-                                "rollcall": {
+                                "check_in": {
                                     "id": 1,
                                     "uri": "/checkins/1"
                                 },
@@ -1275,7 +1275,7 @@ FORMAT: 1A
 
 
 + Parameters
-    + roll_call_id: (number, required) - Check-in id
+    + check_in_id: (number, required) - Check-in id
     + recipient_id: (number, required) - Recipient id
 
 + Request (application/json)
@@ -1283,11 +1283,11 @@ FORMAT: 1A
 
             Authorization: Bearer token
 
-## List roll call recipients [GET /api/v1/checkins/{roll_call_id}/recipients]
+## List check-in recipients [GET /api/v1/checkins/{check_in_id}/recipients]
 
 
 + Parameters
-    + roll_call_id: (number, required) - Roll Call id
+    + check_in_id: (number, required) - Check-in id
 
 + Request (application/json)
     + Headers
@@ -1630,7 +1630,7 @@ FORMAT: 1A
     + Body
 
             {
-                "callback": "http://subdomain.rollcall.io/callback"
+                "callback": "http://subdomain.tenfour.org/callback"
             }
 
 + Response 200 (application/json)
@@ -1651,7 +1651,7 @@ FORMAT: 1A
     + Body
 
             {
-                "callback": "http://subdomain.rollcall.io/callback"
+                "callback": "http://subdomain.tenfour.org/callback"
             }
 
 + Response 200 (application/json)

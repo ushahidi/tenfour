@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Auth;
+namespace TenFour\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Auth\EloquentUserProvider as IlluminateUserProvider;

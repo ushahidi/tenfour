@@ -1,5 +1,5 @@
 suites:
     main:
-        namespace: RollCall
-        psr4_prefix: Rollcall
+        namespace: TenFour
+        psr4_prefix: TenFour
         src_path: app

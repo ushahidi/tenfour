@@ -1,16 +1,16 @@
 <?php
-namespace RollCall\Http\Transformers;
+namespace TenFour\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-class RollCallTransformer extends TransformerAbstract
+class CheckInTransformer extends TransformerAbstract
 {
 
-    public function transform(array $roll_call)
+    public function transform(array $check_in)
     {
         // Format contacts if they are present
-        if (isset($roll_call['messages'])) {
-            foreach ($roll_call['messages'] as &$contact)
+        if (isset($check_in['messages'])) {
+            foreach ($check_in['messages'] as &$contact)
             {
                 $contact['id'] = (int) $contact['id'];
                 $contact['uri'] = '/contacts/' . $contact['id'];
@@ -26,17 +26,17 @@ class RollCallTransformer extends TransformerAbstract
             }
         }
 
-        $roll_call['organization'] = [
-            'id'  => (int) $roll_call['organization_id'],
-            'uri' => '/organizations/' . $roll_call['organization_id'],
+        $check_in['organization'] = [
+            'id'  => (int) $check_in['organization_id'],
+            'uri' => '/organizations/' . $check_in['organization_id'],
         ];
 
-        unset($roll_call['organization_id']);
+        unset($check_in['organization_id']);
 
-        $roll_call['id'] = (int) $roll_call['id'];
-        $roll_call['uri'] = '/checkins/' . $roll_call['id'];
+        $check_in['id'] = (int) $check_in['id'];
+        $check_in['uri'] = '/checkins/' . $check_in['id'];
 
-        return $roll_call;
+        return $check_in;
     }
 
     /**
@@ -66,9 +66,9 @@ class RollCallTransformer extends TransformerAbstract
      *
      * @return League\Fractal\ItemResource
      */
-    public function includeUser(array $roll_call)
+    public function includeUser(array $check_in)
     {
-        $user = $roll_call['user'];
+        $user = $check_in['user'];
 
         return $this->item($user, new UserTransformer);
     }
@@ -78,9 +78,9 @@ class RollCallTransformer extends TransformerAbstract
      *
      * @return League\Fractal\ItemResource
      */
-    public function includeRecipients(array $roll_call)
+    public function includeRecipients(array $check_in)
     {
-        $recipients = $roll_call['recipients'];
+        $recipients = $check_in['recipients'];
 
         return $this->collection($recipients, new UserTransformer);
     }
@@ -90,9 +90,9 @@ class RollCallTransformer extends TransformerAbstract
      *
      * @return League\Fractal\ItemResource
      */
-    public function includeReplies(array $roll_call)
+    public function includeReplies(array $check_in)
     {
-        $replies = $roll_call['replies'];
+        $replies = $check_in['replies'];
 
         return $this->collection($replies, new ReplyTransformer);
     }

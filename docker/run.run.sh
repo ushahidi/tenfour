@@ -25,7 +25,7 @@ do
   sleep 0.1
 done
 
-php -S api.rollcall.dev:80 -t public public/index.php &
+php -S api.tenfour.local:80 -t public public/index.php &
 wait_for_mysql
 composer install --no-interaction
 cp .env.docker.run .env

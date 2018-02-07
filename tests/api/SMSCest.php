@@ -39,7 +39,7 @@ class SMSCest
 
     public function receiveNexmoMOsWithValidSignature(ApiTester $I)
     {
-        $secret = $I->getApplication()->config->get('rollcall.messaging.nexmo_security_secret');
+        $secret = $I->getApplication()->config->get('tenfour.messaging.nexmo_security_secret');
 
         // Current timestamp in UTC + 0
         $params = [
@@ -84,11 +84,11 @@ class SMSCest
         $I->seeRecord('replies', [
             'message' => 'Test get a response received SMS',
             'message_id' => '11111123',
-            'roll_call_id' => 1,
+            'check_in_id' => 1,
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
-            'message' => "RollCall has received your response.\n",
+            'message' => "TenFour has received your response.\n",
             'type'    => 'response_received',
             'to'      => '+254792999999',
             'from'    => '20880'
@@ -111,11 +111,11 @@ class SMSCest
         $I->seeRecord('replies', [
             'message' => 'Test get a response received SMS from another outgoing number',
             'message_id' => '1111112345',
-            'roll_call_id' => 2,
+            'check_in_id' => 2,
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
-            'message' => "RollCall has received your response.\n",
+            'message' => "TenFour has received your response.\n",
             'type'    => 'response_received',
             'to'      => '+254792999999',
             'from'    => '20881'

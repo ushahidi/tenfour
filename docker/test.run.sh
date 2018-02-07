@@ -29,7 +29,7 @@ function wait_for_redis {
 }
 
 sync
-php -S api.rollcall.dev:80 -t public public/index.php &
+php -S api.tenfour.local:80 -t public public/index.php &
 wait_for_mysql
 composer install --no-interaction
 cp .env.testing .env

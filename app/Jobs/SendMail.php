@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Jobs;
+namespace TenFour\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -11,7 +11,7 @@ use Exception;
 use Log;
 use Mail;
 use Illuminate\Contracts\Mail\Mailable;
-use RollCall\Models\Mail as OutgoingMail;
+use TenFour\Models\Mail as OutgoingMail;
 use Statsd;
 
 class SendMail implements ShouldQueue
@@ -53,7 +53,7 @@ class SendMail implements ShouldQueue
                 $this->msg->from[0]['address'],
                 $this->msg->subject,
                 isset($this->additional_params['type'])?$this->additional_params['type']:'other',
-                isset($this->additional_params['rollcall_id'])?$this->additional_params['rollcall_id']:0
+                isset($this->additional_params['check_in_id'])?$this->additional_params['check_in_id']:0
             );
         } else {
             $params = ['msg' => $this->msg] + $this->additional_params;
@@ -71,7 +71,7 @@ class SendMail implements ShouldQueue
                 isset($this->additional_params['from'])?$this->additional_params['from']:config('mail.from.address'),
                 $this->subject,
                 isset($this->additional_params['type'])?$this->additional_params['type']:'other',
-                isset($this->additional_params['rollcall_id'])?$this->additional_params['rollcall_id']:0
+                isset($this->additional_params['check_in_id'])?$this->additional_params['check_in_id']:0
             );
         }
     }
@@ -83,13 +83,13 @@ class SendMail implements ShouldQueue
         app('sentry')->captureException($exception);
     }
 
-    protected function logMail($to, $from, $subject, $type, $rollcall_id)
+    protected function logMail($to, $from, $subject, $type, $check_in_id)
     {
         $mail = new OutgoingMail;
         $mail->to = $to;
         $mail->from = $from;
         $mail->subject = $subject;
-        $mail->rollcall_id = $rollcall_id;
+        $mail->check_in_id = $check_in_id;
         $mail->type = $type;
         $mail->save();
 

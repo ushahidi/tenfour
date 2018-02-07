@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Contacts;
+namespace TenFour\Contacts;
 
-use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
+use TenFour\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 
 
 class CsvTransformer implements CsvTransformerInterface

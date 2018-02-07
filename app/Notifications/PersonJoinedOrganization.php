@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\User;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\User;
+use TenFour\Http\Transformers\UserTransformer;
 
 
 class PersonJoinedOrganization extends Notification
@@ -45,7 +45,7 @@ class PersonJoinedOrganization extends Notification
     //     return (new MailMessage)
     //                 ->line('A new person has joined the organization.')
     //                 // ->action('Notification Action', 'https://laravel.com')
-    //                 ->line('Thank you for using RollCall!');
+    //                 ->line('Thank you for using TenFour!');
     // }
 
     /**

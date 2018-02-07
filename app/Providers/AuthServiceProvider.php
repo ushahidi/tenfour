@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Providers;
+namespace TenFour\Providers;
 
 use Auth;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-use RollCall\Auth\EloquentUserProvider;
+use TenFour\Auth\EloquentUserProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'RollCall\Model' => 'RollCall\Policies\ModelPolicy',
+        'TenFour\Model' => 'TenFour\Policies\ModelPolicy',
     ];
 
     /**
@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Auth::provider('rollcall', function ($app, array $config) {
+        Auth::provider('tenfour', function ($app, array $config) {
             return new EloquentUserProvider($this->app['hash'], $config['model']);
         });
     }

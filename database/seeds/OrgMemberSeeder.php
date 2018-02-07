@@ -1,10 +1,10 @@
 <?php
-namespace RollCall\Seeders;
+namespace TenFour\Seeders;
 
 use Illuminate\Database\Seeder;
-use RollCall\Models\User;
-use RollCall\Models\Organization;
-use RollCall\Models\Contact;
+use TenFour\Models\User;
+use TenFour\Models\Organization;
+use TenFour\Models\Contact;
 use Illuminate\Support\Facades\Hash;
 
 class OrgMemberSeeder extends Seeder

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Middleware;
+namespace TenFour\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ class VerifyCsrfToken extends BaseVerifier
 
 	protected function shouldPassThrough($request)
 	{
-		if (Str::is('application/vnd.rollcall.v*', $request->header('accept'))) {
+		if (Str::is('application/vnd.tenfour.v*', $request->header('accept'))) {
 			return true;
 		}
 

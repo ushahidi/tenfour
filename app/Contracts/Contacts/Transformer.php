@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Contracts\Contacts;
+namespace TenFour\Contracts\Contacts;
 
 interface Transformer
 {

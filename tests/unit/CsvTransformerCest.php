@@ -1,6 +1,6 @@
 <?php
 
-use RollCall\Contacts\CsvTransformer;
+use TenFour\Contacts\CsvTransformer;
 
 class CsvTransformerCest
 {

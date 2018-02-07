@@ -1,14 +1,14 @@
 <?php
 
-namespace RollCall\Http;
+namespace TenFour\Http;
 
 use Dingo\Api\Routing\Helpers;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
 use League\Fractal;
 
-use RollCall\Contracts\Response as ResponseInterface;
-use RollCall\Serializers\CustomArraySerializer;
+use TenFour\Contracts\Response as ResponseInterface;
+use TenFour\Serializers\CustomArraySerializer;
 
 class Response implements ResponseInterface
 {

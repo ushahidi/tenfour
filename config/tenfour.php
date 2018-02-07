@@ -1,6 +1,6 @@
 <?php
 $getNexmoFrom = function( $region ) {
-  return explode('|', env('NEXMO_SRC_ADDR_' . $region, env('NEXMO_SRC_ADDR', 'rollcall')));
+  return explode('|', env('NEXMO_SRC_ADDR_' . $region, env('NEXMO_SRC_ADDR', 'tenfour')));
 };
 
 return [
@@ -10,9 +10,9 @@ return [
         'client_secret' => env('RC_CLIENT_SECRET', 'T7913s89oGgJ478J73MRHoO2gcRRLQ'),
     ],
 
-    'domain' => env('APP_DOMAIN', 'rollcall.io'),
+    'domain' => env('APP_DOMAIN', 'tenfour.org'),
 
-    'reserved_words' => ['app', 'rollcall', 'www', 'staging', 'admin'],
+    'reserved_words' => ['app', 'rollcall', 'tenfour', 'www', 'staging', 'admin'],
 
     'messaging' => [
         'incoming_driver' => env('RC_MESSAGING_INCOMING', 'aws-ses-sns'),
@@ -53,7 +53,7 @@ return [
             ],
             'default' => [
                 'driver' => 'nexmo',
-                'from' => explode('|', env('NEXMO_SRC_ADDR', 'rollcall'))
+                'from' => explode('|', env('NEXMO_SRC_ADDR', 'tenfour'))
             ],
         ],
 

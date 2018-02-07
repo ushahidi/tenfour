@@ -1,23 +1,23 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Http\Requests\RollCall\GetRollCallsRequest;
-use RollCall\Http\Requests\RollCall\GetRollCallRequest;
-use RollCall\Http\Requests\RollCall\CreateRollCallRequest;
-use RollCall\Http\Requests\RollCall\UpdateRollCallRequest;
-use RollCall\Http\Requests\RollCall\SendRollCallRequest;
-use RollCall\Http\Requests\RollCall\AddContactsRequest;
-use RollCall\Http\Requests\RollCall\AddReplyRequest;
-use RollCall\Http\Requests\RollCall\GetReplyRequest;
-use RollCall\Http\Transformers\RollCallTransformer;
-use RollCall\Http\Transformers\ContactTransformer;
-use RollCall\Http\Transformers\ReplyTransformer;
-use RollCall\Http\Transformers\UserTransformer;
-use RollCall\Http\Response;
-use RollCall\Jobs\SendRollCall;
-use RollCall\Services\CreditService;
+use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Http\Requests\CheckIn\GetCheckInsRequest;
+use TenFour\Http\Requests\CheckIn\GetCheckInRequest;
+use TenFour\Http\Requests\CheckIn\CreateCheckInRequest;
+use TenFour\Http\Requests\CheckIn\UpdateCheckInRequest;
+use TenFour\Http\Requests\CheckIn\SendCheckInRequest;
+use TenFour\Http\Requests\CheckIn\AddContactsRequest;
+use TenFour\Http\Requests\Reply\AddReplyRequest;
+use TenFour\Http\Requests\Reply\GetReplyRequest;
+use TenFour\Http\Transformers\CheckInTransformer;
+use TenFour\Http\Transformers\ContactTransformer;
+use TenFour\Http\Transformers\ReplyTransformer;
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Http\Response;
+use TenFour\Jobs\SendCheckIn;
+use TenFour\Services\CreditService;
 
 use Dingo\Api\Auth\Auth;
 use App;
@@ -25,11 +25,11 @@ use App;
 /**
  * @Resource("Checkins", uri="/api/v1/checkins")
  */
-class RollCallController extends ApiController
+class CheckInController extends ApiController
 {
-    public function __construct(RollCallRepository $roll_calls, Auth $auth, Response $response, CreditService $creditService)
+    public function __construct(CheckInRepository $check_ins, Auth $auth, Response $response, CreditService $creditService)
     {
-        $this->roll_calls = $roll_calls;
+        $this->check_ins = $check_ins;
         $this->auth = $auth;
         $this->response = $response;
         $this->creditService = $creditService;
@@ -75,7 +75,7 @@ class RollCallController extends ApiController
      *                     "location_text": null,
      *                     "message": "I am OK",
      *                     "message_id": null,
-     *                     "rollcall": {
+     *                     "check_in": {
      *                         "id": 1,
      *                         "uri": "/checkins/1"
      *                     },
@@ -185,7 +185,7 @@ class RollCallController extends ApiController
      * @param org_id
      * @return Response
      */
-    public function all(GetRollCallsRequest $request)
+    public function all(GetCheckInsRequest $request)
     {
         $user_id = null;
 
@@ -198,7 +198,7 @@ class RollCallController extends ApiController
             $user_id = $request->query('user');
         }
 
-        $roll_calls = $this->roll_calls->all(
+        $check_ins = $this->check_ins->all(
             $request->query('organization'),
             $user_id,
             $request->input('recipient_id'),
@@ -206,7 +206,7 @@ class RollCallController extends ApiController
             $offset,
             $limit);
 
-        return $this->response->collection($roll_calls, new RollCallTransformer, 'checkins');
+        return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
     }
 
     /**
@@ -283,10 +283,10 @@ class RollCallController extends ApiController
      *
      * @return Response
      */
-    public function find(GetRollCallRequest $request, $id)
+    public function find(GetCheckInRequest $request, $id)
     {
-        $roll_call = $this->roll_calls->find($id);
-        return $this->response->item($roll_call, new RollCallTransformer, 'checkin');
+        $check_in = $this->check_ins->find($id);
+        return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
 
     /**
@@ -355,20 +355,20 @@ class RollCallController extends ApiController
      * @return Response
      *
      */
-    public function create(CreateRollCallRequest $request)
+    public function create(CreateCheckInRequest $request)
     {
-        $roll_call = $this->roll_calls->create($request->input() + [
+        $check_in = $this->check_ins->create($request->input() + [
             'user_id' => $this->auth->user()['id'],
         ]);
 
-        if (!$this->creditService->hasSufficientCredits($roll_call)) {
+        if (!$this->creditService->hasSufficientCredits($check_in)) {
             return response('Payment Required', 402);
         }
 
-        // Send roll call
-        dispatch((new SendRollCall($roll_call))/*->onQueue('rollcalls')*/);
+        // Send check-in
+      dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
 
-        return $this->response->item($roll_call, new RollCallTransformer, 'checkin');
+        return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
 
     /**
@@ -466,28 +466,28 @@ class RollCallController extends ApiController
      *
      * @return Response
      */
-    public function update(UpdateRollCallRequest $request, $id)
+    public function update(UpdateCheckInRequest $request, $id)
     {
-        $roll_call = $this->roll_calls->update($request->all(), $id);
+        $check_in = $this->check_ins->update($request->all(), $id);
 
-        // Send roll call to new recipients
+        // Send check-in to new recipients
         if ($request->input('recipients')) {
-            $roll_call_to_dispatch = $roll_call;
+            $check_in_to_dispatch = $check_in;
 
-            $roll_call_to_dispatch['recipients'] = array_filter(
+            $check_in_to_dispatch['recipients'] = array_filter(
                 $request->input('recipients'),
-                function ($recipient) use ($roll_call) {
-                    return !$this->roll_calls->hasRepliedToRollCall($recipient['id'], $roll_call['id']);
+                function ($recipient) use ($check_in) {
+                    return !$this->check_ins->hasRepliedToCheckIn($recipient['id'], $check_in['id']);
                 });
 
-            if (!$this->creditService->hasSufficientCredits($roll_call_to_dispatch)) {
+            if (!$this->creditService->hasSufficientCredits($check_in_to_dispatch)) {
                 return response('Payment Required', 402);
             }
 
-            dispatch((new SendRollCall($roll_call_to_dispatch))/*->onQueue('rollcalls')*/);
+          dispatch((new SendCheckIn($check_in_to_dispatch))/*->onQueue('checkins')*/);
         }
 
-        return $this->response->item($roll_call, new RollCallTransformer, 'checkin');
+        return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
 
     /**
@@ -496,7 +496,7 @@ class RollCallController extends ApiController
      * @Post("/{check_in_id}/recipients/{recipient_id}/messages")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="Check-in id"),
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id"),
      *   @Parameter("recipient_id", type="number", required=true, description="Recipient id")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
@@ -513,32 +513,32 @@ class RollCallController extends ApiController
      *
      * @return Response
      */
-    public function addMessage(SendRollCallRequest $request, $id, $recipient_id)
+    public function addMessage(SendCheckInRequest $request, $id, $recipient_id)
     {
-        $this->roll_calls->updateRecipientStatus($id, $recipient_id, 'waiting');
+        $this->check_ins->updateRecipientStatus($id, $recipient_id, 'waiting');
 
-        // Get roll call and send to recipient
-        $roll_call = $this->roll_calls->find($id);
+        // Get check-in and send to recipient
+        $check_in = $this->check_ins->find($id);
 
-        $roll_call['recipients'] = [];
+        $check_in['recipients'] = [];
 
-        array_push($roll_call['recipients'], [
+        array_push($check_in['recipients'], [
             'id' => $recipient_id,
         ]);
 
-        dispatch((new SendRollCall($roll_call))/*->onQueue('rollcalls')*/);
+      dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
 
-        $recipient = $this->roll_calls->getRecipient($id, $recipient_id);
+        $recipient = $this->check_ins->getRecipient($id, $recipient_id);
         return $this->response->item($recipient, new UserTransformer, 'recipient');
     }
 
     /**
-     * List roll call recipients
+     * List check-in recipients
      *
-     * @Get("/{roll_call_id}/recipients")
+     * @Get("/{check_in_id}/recipients")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="Roll Call id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -562,9 +562,9 @@ class RollCallController extends ApiController
      *
      * @return Response
      */
-    public function listRecipients(GetRollCallRequest $request, $id)
+    public function listRecipients(GetCheckInRequest $request, $id)
     {
-        return $this->response->collection($this->roll_calls->getRecipients($id, $request->query('unresponsive')),
+        return $this->response->collection($this->check_ins->getRecipients($id, $request->query('unresponsive')),
                                      new UserTransformer, 'recipients');
     }
 
@@ -604,9 +604,9 @@ class RollCallController extends ApiController
      *
      * @return Response
      */
-    public function listMessages(GetRollCallRequest $request, $id)
+    public function listMessages(GetCheckInRequest $request, $id)
     {
-        return $this->response->collection($this->roll_calls->getMessages($id),
+        return $this->response->collection($this->check_ins->getMessages($id),
                                      new ContactTransformer, 'messages');
     }
 

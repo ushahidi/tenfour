@@ -16,7 +16,7 @@ class GroupCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/groups", [
             'name'  => 'Test group',
-            'description' => 'First Rollcall group',
+            'description' => 'First tenfour group',
             'members' => [
                 [
                     'id' => 3
@@ -31,7 +31,7 @@ class GroupCest
         $I->seeResponseContainsJson([
             'group' => [
                 'name' => 'Test group',
-                'description' => 'First Rollcall group',
+                'description' => 'First tenfour group',
                 'members' => [
                     [
                         'id' => 3

@@ -1,8 +1,8 @@
 <?php
-namespace RollCall\Services;
+namespace TenFour\Services;
 
 use Illuminate\Support\Facades\Auth;
-use RollCall\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
 use Illuminate\Http\Request;
 
 class PasswordGrantVerifier

@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
 use Log;
 use Aws\Sns\MessageValidator;

@@ -30,7 +30,7 @@ return [
     ],
 
     'stripe' => [
-        'model'  => RollCall\User::class,
+        'model'  => TenFour\User::class,
         'key'    => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],

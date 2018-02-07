@@ -1,22 +1,22 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Http\Requests\Person\GetPersonRequest;
-use RollCall\Http\Requests\Person\GetPeopleRequest;
-use RollCall\Http\Requests\Person\AddPersonRequest;
-use RollCall\Http\Requests\Person\DeletePersonRequest;
-use RollCall\Http\Requests\Person\UpdatePersonRequest;
-use RollCall\Http\Requests\Person\InvitePersonRequest;
-use RollCall\Http\Requests\Person\NotifyPersonRequest;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Http\Requests\Person\GetPersonRequest;
+use TenFour\Http\Requests\Person\GetPeopleRequest;
+use TenFour\Http\Requests\Person\AddPersonRequest;
+use TenFour\Http\Requests\Person\DeletePersonRequest;
+use TenFour\Http\Requests\Person\UpdatePersonRequest;
+use TenFour\Http\Requests\Person\InvitePersonRequest;
+use TenFour\Http\Requests\Person\NotifyPersonRequest;
 use Dingo\Api\Auth\Auth;
-use RollCall\Http\Transformers\UserTransformer;
-use RollCall\Models\Organization;
-use RollCall\Http\Response;
-use RollCall\Jobs\SendInvite;
-use RollCall\Notifications\PersonToPerson;
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Models\Organization;
+use TenFour\Http\Response;
+use TenFour\Jobs\SendInvite;
+use TenFour\Notifications\PersonToPerson;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Hash;
 

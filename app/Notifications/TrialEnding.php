@@ -1,13 +1,13 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\Subscription;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\Subscription;
+use TenFour\Http\Transformers\UserTransformer;
 
 use Carbon\Carbon;
 
@@ -44,7 +44,7 @@ class TrialEnding extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = 'Your RollCall free trial is ending in ' . $this->days() . ' days. Hope you enjoyed using it!<br><br>' .
+        $body = 'Your TenFour free trial is ending in ' . $this->days() . ' days. Hope you enjoyed using it!<br><br>' .
             'After this time we will automatically charge your account.';
 
         return (new MailMessage)

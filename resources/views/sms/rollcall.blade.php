@@ -1,2 +1,0 @@
-{!! $msg !!}
-Reply with<?php if (isset($keyword)): ?> "{{$keyword}}" and include<?php endif; ?> <?php if (isset($answers) && !empty($answers)): ?>@foreach ($answers as $answer)"{!!$answer['answer']!!}"<?php if ($loop->remaining == 1): ?> or <?php elseif (!$loop->last): ?>, <?php endif; ?>@endforeach<?php else: ?>"OK"<?php endif; ?> in your response<?php if (isset($rollcall_url)): ?>, or go to: {{ $rollcall_url }}<?php endif; ?>

@@ -83,8 +83,8 @@ class SubscriptionCest
         // check a notification has been sent
         $I->seeRecord('notifications', [
             'notifiable_id'           => '4',
-            'notifiable_type'         => 'RollCall\Models\User',
-            'type'                    => 'RollCall\Notifications\PaymentSucceeded',
+            'notifiable_type'         => 'TenFour\Models\User',
+            'type'                    => 'TenFour\Notifications\PaymentSucceeded',
         ]);
 
         $I->seeRecord('outgoing_mail_log', [
@@ -113,8 +113,8 @@ class SubscriptionCest
         // check a notification has been sent
         $I->seeRecord('notifications', [
             'notifiable_id'           => '4',
-            'notifiable_type'         => 'RollCall\Models\User',
-            'type'                    => 'RollCall\Notifications\PaymentFailed',
+            'notifiable_type'         => 'TenFour\Models\User',
+            'type'                    => 'TenFour\Notifications\PaymentFailed',
         ]);
 
         $I->seeRecord('outgoing_mail_log', [
@@ -236,8 +236,8 @@ class SubscriptionCest
         // check a notification has been sent
         $I->seeRecord('notifications', [
             'notifiable_id'           => '4',
-            'notifiable_type'         => 'RollCall\Models\User',
-            'type'                    => 'RollCall\Notifications\TrialEnding',
+            'notifiable_type'         => 'TenFour\Models\User',
+            'type'                    => 'TenFour\Notifications\TrialEnding',
         ]);
 
         $I->seeRecord('outgoing_mail_log', [

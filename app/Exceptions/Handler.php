@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Exceptions;
+namespace TenFour\Exceptions;
 
 use Exception;
-use RollCall\Contacts\CsvImportException;
+use TenFour\Contacts\CsvImportException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

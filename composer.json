@@ -1,7 +1,7 @@
 {
-    "name": "ushahidi/RollCall",
-    "description": "RollCall",
-    "keywords": ["ushahidi", "RollCall"],
+    "name": "ushahidi/TenFour",
+    "description": "A team emergency check in app for small businesses",
+    "keywords": ["ushahidi", "TenFour"],
     "license": "AGPL3",
     "require": {
         "php": ">=5.5.9",
@@ -48,7 +48,7 @@
             "database"
         ],
         "psr-4": {
-            "RollCall\\": "app/"
+            "TenFour\\": "app/"
         }
     },
     "autoload-dev": {

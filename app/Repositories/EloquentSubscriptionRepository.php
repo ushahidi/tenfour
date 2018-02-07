@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\Subscription;
-use RollCall\Models\Addon;
-use RollCall\Contracts\Repositories\SubscriptionRepository;
+use TenFour\Models\Subscription;
+use TenFour\Models\Addon;
+use TenFour\Contracts\Repositories\SubscriptionRepository;
 use DB;
 
 class EloquentSubscriptionRepository implements SubscriptionRepository

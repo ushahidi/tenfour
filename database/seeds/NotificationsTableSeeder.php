@@ -1,12 +1,12 @@
 <?php
-namespace RollCall\Seeders;
+namespace TenFour\Seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use RollCall\Models\User;
-use RollCall\Models\Organization;
-use RollCall\Notifications\PersonJoinedOrganization;
-use RollCall\Notifications\PersonLeftOrganization;
+use TenFour\Models\User;
+use TenFour\Models\Organization;
+use TenFour\Notifications\PersonJoinedOrganization;
+use TenFour\Notifications\PersonLeftOrganization;
 use Illuminate\Support\Facades\Notification;
 
 class NotificationsTableSeeder extends Seeder

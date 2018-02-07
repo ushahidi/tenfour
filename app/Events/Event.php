@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Events;
+namespace TenFour\Events;
 
 abstract class Event
 {

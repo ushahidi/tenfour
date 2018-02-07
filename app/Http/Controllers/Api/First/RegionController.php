@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Http\Requests\Region\GetSupportedRegionsRequest;
-use RollCall\Http\Transformers\RegionTransformer;
-use RollCall\Http\Response;
+use TenFour\Http\Requests\Region\GetSupportedRegionsRequest;
+use TenFour\Http\Transformers\RegionTransformer;
+use TenFour\Http\Response;
 use libphonenumber\PhoneNumberUtil;
 
 /**
@@ -16,13 +16,13 @@ class RegionController extends ApiController
     {
         $this->response = $response;
     }
-    
+
     public function all(GetSupportedRegionsRequest $request)
     {
         $util = PhoneNumberUtil::getInstance();
 
         // All configured regions are available for all orgs for now.
-        $providers =  config('rollcall.messaging.sms_providers');
+        $providers =  config('tenfour.messaging.sms_providers');
 
         unset($providers['default']);
 
@@ -30,11 +30,11 @@ class RegionController extends ApiController
         $supported_codes = array_keys($providers);
 
         $regions = [];
-        
+
         foreach($supported_codes as $code)
         {
             $country_code = $util->getCountryCodeForRegion($code);
-            
+
             array_push($regions, [
                 'country_code' => $country_code,
                 'code'         => $code

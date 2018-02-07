@@ -1,12 +1,12 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\User;
-use RollCall\Models\Organization;
-use RollCall\Models\Contact;
-use RollCall\Models\ContactFiles;
+use TenFour\Models\User;
+use TenFour\Models\Organization;
+use TenFour\Models\Contact;
+use TenFour\Models\ContactFiles;
 use League\Csv\Reader;
-use RollCall\Contracts\Repositories\ContactFilesRepository;
+use TenFour\Contracts\Repositories\ContactFilesRepository;
 
 class EloquentContactFilesRepository implements ContactFilesRepository
 {

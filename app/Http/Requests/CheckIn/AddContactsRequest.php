@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Http\Requests\RollCall;
+namespace TenFour\Http\Requests\CheckIn;
 
-class AddContactsRequest extends GetRollCallRequest
+class AddContactsRequest extends GetCheckInRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -11,7 +11,7 @@ class AddContactsRequest extends GetRollCallRequest
      */
     public function rules()
     {
-        $rules = 'required|integer|org_contact:'.$this->route('rollcall');
+        $rules = 'required|integer|org_contact:'.$this->route('checkin');
 
         if (is_array(head($this->all()))) {
             $contacts = [];

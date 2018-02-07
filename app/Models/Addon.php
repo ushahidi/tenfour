@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +13,6 @@ class Addon extends Model
      */
     public function subscription()
     {
-        return $this->belongsTo('RollCall\Models\Subscription');
+        return $this->belongsTo('TenFour\Models\Subscription');
     }
 }

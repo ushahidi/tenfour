@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Http\Requests\RollCall;
+namespace TenFour\Http\Requests\CheckIn;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
-class GetRollCallsRequest extends FormRequest
+class GetCheckInsRequest extends FormRequest
 {
     use UserAccess;
 
@@ -27,7 +27,7 @@ class GetRollCallsRequest extends FormRequest
             ]);
         }
 
-        // If user is *not* an admin/owner, filter to just their rollcalls
+        // If user is *not* an admin/owner, filter to just their check-ins
         // @todo find a better home for this?
         if (!$this->user()->isAdmin($this->query('organization'))) {
             $this->merge([

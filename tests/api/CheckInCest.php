@@ -1,16 +1,16 @@
 <?php
 
-class RollCallCest
+class CheckInCest
 {
     protected $endpoint = '/api/v1/checkins';
 
     /*
-     * Get all roll calls as an admin
+     * Get all check-ins as an admin
      *
      */
     public function getAllRollCalls(ApiTester $I)
     {
-        $I->wantTo('Get a list of all roll calls as an admin');
+        $I->wantTo('Get a list of all check-ins as an admin');
         $I->amAuthenticatedAsAdmin();
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
@@ -57,7 +57,7 @@ class RollCallCest
                     ]
                 ],
                 [
-                    'message' => 'yet another test roll call',
+                    'message' => 'yet another test check-in',
                     'organization' => [
                         'id' => 2
                     ],
@@ -79,23 +79,23 @@ class RollCallCest
                 ],
                 [
                     'id' => 4,
-                    'message' => 'Roll call with answers',
+                    'message' => 'check-in with answers',
                 ],
                 [
                     'id' => 5,
-                    'message' => 'Roll call with answers',
+                    'message' => 'check-in with answers',
                 ]
             ]
         ]);
     }
 
     /*
-     * Get all roll calls as an admin excluding self tests
+     * Get all check-ins as an admin excluding self tests
      *
      */
     public function getAllRollCallsExcludingSelfTests(ApiTester $I)
     {
-        $I->wantTo('Get a list of all roll calls as an admin excluding self tests');
+        $I->wantTo('Get a list of all check-ins as an admin excluding self tests');
         $I->amAuthenticatedAsAdmin();
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
@@ -109,7 +109,7 @@ class RollCallCest
                     'user' => [
                         'id' => 2
                     ],
-                    'self_test_roll_call' => 1
+                    'self_test_check_in' => 1
                 ]
             ]
         ]);
@@ -122,20 +122,20 @@ class RollCallCest
                     'user' => [
                         'id' => 1
                     ],
-                    'self_test_roll_call' => 1
+                    'self_test_check_in' => 1
                 ]
             ]
         ]);
     }
 
     /*
-     * Filter roll calls by organization
+     * Filter check-ins by organization
      *
      */
     public function filterRollCallsbyOrg(ApiTester $I)
     {
         $endpoint = $this->endpoint.'/?organization=2';
-        $I->wantTo('Get a list of all roll calls for an organization as an organization admin');
+        $I->wantTo('Get a list of all check-ins for an organization as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($endpoint);
         $I->seeResponseCodeIs(200);
@@ -156,13 +156,13 @@ class RollCallCest
     }
 
     /*
-     * Filter roll calls by user.
+     * Filter check-ins by user.
      *
      */
     public function filterRollCallsbyUser(ApiTester $I)
     {
         $endpoint = $this->endpoint.'/?organization=2&user=me';
-        $I->wantTo('Get a list of all roll calls sent out by a user');
+        $I->wantTo('Get a list of all check-ins sent out by a user');
         $I->amAuthenticatedAsOrgOwner();
         $I->sendGET($endpoint);
         $I->seeResponseCodeIs(200);
@@ -183,13 +183,13 @@ class RollCallCest
     }
 
     /*
-     * Get contacts for a roll call
+     * Get contacts for a check-in
      *
      */
     public function getMessages(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Get a list of contacts for a roll call as an organization admin');
+        $I->wantTo('Get a list of contacts for a check-in as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($this->endpoint.'/'.$id.'/messages');
         $I->seeResponseCodeIs(200);
@@ -225,13 +225,13 @@ class RollCallCest
     }
 
     /*
-     * Get contacts for a roll call
+     * Get contacts for a check-in
      *
      */
     public function getRecipients(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Get a list of contacts for a roll call as an organization admin');
+        $I->wantTo('Get a list of contacts for a check-in as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($this->endpoint.'/'.$id.'/recipients');
         $I->seeResponseCodeIs(200);
@@ -255,12 +255,12 @@ class RollCallCest
     }
 
     /*
-     * Get all roll calls in an organization as an authenticated user
+     * Get all check-ins in an organization as an authenticated user
      *
      */
     public function getAllRollCallsAsUser(ApiTester $I)
     {
-        $I->wantTo('Get a list of all roll calls for an organization as an authenticated user');
+        $I->wantTo('Get a list of all check-ins for an organization as an authenticated user');
         $I->amAuthenticatedAsUser();
         $I->sendGET($this->endpoint.'?organization=2');
         $I->seeResponseCodeIs(200);
@@ -303,7 +303,7 @@ class RollCallCest
         $I->dontSeeResponseContainsJson([
             [
                 'id' => 2,
-                'message' => 'Another test roll call',
+                'message' => 'Another test check-in',
                 'organization' => [
                     'id' => 3
                 ],
@@ -319,7 +319,7 @@ class RollCallCest
         $I->seeResponseContainsJson([
             [
                 'id' => 3,
-                'message' => 'yet another test roll call',
+                'message' => 'yet another test check-in',
                 'user' => [
                     'id' => 1
                 ],
@@ -333,19 +333,19 @@ class RollCallCest
                 'user' => [
                     'id' => 1
                 ],
-                'self_test_roll_call' => 1
+                'self_test_check_in' => 1
             ]
         ]);
     }
 
     /*
-     * Get roll call details as admin
+     * Get check-in details as admin
      *
      */
     public function getRollCall(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Get roll call details as an org admin');
+        $I->wantTo('Get check-in details as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($this->endpoint.'/'.$id);
         $I->seeResponseCodeIs(200);
@@ -365,13 +365,13 @@ class RollCallCest
     }
 
     /*
-     * Get roll call details as admin
+     * Get check-in details as admin
      *
      */
     public function getOtherRollCallAsMember(ApiTester $I)
     {
         $id = 5;
-        $I->wantTo('Failed to get roll call details as an member');
+        $I->wantTo('Failed to get check-in details as an member');
         $I->amAuthenticatedAsUser();
         $I->sendGET($this->endpoint.'/'.$id);
         $I->seeResponseCodeIs(403);
@@ -379,12 +379,12 @@ class RollCallCest
     }
 
     /*
-     * Create a roll call as org admin
+     * Create a check-in as org admin
      *
      */
     public function createRollCall(ApiTester $I)
     {
-        $I->wantTo('Create a roll call as admin');
+        $I->wantTo('Create a check-in as admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
@@ -404,16 +404,16 @@ class RollCallCest
               ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
             ]
         ]);
-        // This recipient DID respond to previous roll call
-        $I->seeRecord('roll_call_recipients', [
+        // This recipient DID respond to previous check-in
+        $I->seeRecord('check_in_recipients', [
             'user_id'         => 1,
-            'roll_call_id'    => 1,
+            'check_in_id'    => 1,
             'response_status' => 'replied',
         ]);
-        // This recipient did not respond to previous roll call
-        $I->seeRecord('roll_call_recipients', [
+        // This recipient did not respond to previous check-in
+        $I->seeRecord('check_in_recipients', [
             'user_id'         => 3,
-            'roll_call_id'    => 2,
+            'check_in_id'    => 2,
             'response_status' => 'unresponsive',
         ]);
         $I->seeResponseCodeIs(200);
@@ -440,12 +440,12 @@ class RollCallCest
     }
 
     /*
-     * Send roll call to self
+     * Send check-in to self
      *
      */
     public function sendRollCallToSelf(ApiTester $I)
     {
-        $I->wantTo('Send roll call to self');
+        $I->wantTo('Send check-in to self');
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
@@ -478,12 +478,12 @@ class RollCallCest
     }
 
     /*
-     * Create a roll call as org admin
+     * Create a check-in as org admin
      *
      */
     public function createRollCallWithoutAnswers(ApiTester $I)
     {
-        $I->wantTo('Create a roll call as admin');
+        $I->wantTo('Create a check-in as admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
@@ -523,7 +523,7 @@ class RollCallCest
     }
 
     /*
-     * Create a roll call with credits
+     * Create a check-in with credits
      *
      */
     public function createRollCallWithCredits(ApiTester $I)
@@ -531,13 +531,13 @@ class RollCallCest
         $credits_before = 3;
         $credits_after = 1;
 
-        $I->wantTo('Create a roll call with credits');
+        $I->wantTo('Create a check-in with credits');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT('/api/v1/organizations/2', [
-            'name' => 'Rollcall Org',
-            'subdomain'  => 'testing',
+            'name' => 'TenFourTest Org',
+            'subdomain'  => 'tenfourtest',
             'settings'  => ['channels' => ['sms' => ['enabled' => true]]],
         ]);
         $I->seeResponseCodeIs(200);
@@ -574,12 +574,12 @@ class RollCallCest
     }
 
     /*
-     * Create a roll call without enough credits
+     * Create a check-in without enough credits
      *
      */
     public function createRollCallWithoutCredits(ApiTester $I)
     {
-        $I->wantTo('Create a rollcall without enough credits');
+        $I->wantTo('Create a check-in without enough credits');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
@@ -606,12 +606,12 @@ class RollCallCest
     }
 
     /*
-     * Create an app only roll call without enough credits
+     * Create an app only check-in without enough credits
      *
      */
     public function createAppOnlyRollCallWithoutCredits(ApiTester $I)
     {
-        $I->wantTo('Create an "app only" rollcall without enough credits');
+        $I->wantTo('Create an "app only" check-in without enough credits');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
@@ -632,12 +632,12 @@ class RollCallCest
     }
 
     /*
-     * Create a roll call with errors
+     * Create a check-in with errors
      *
      */
     public function createRollCallWithErrors(ApiTester $I)
     {
-        $I->wantTo('Create an invalid roll call as admin and get errors');
+        $I->wantTo('Create an invalid check-in as admin and get errors');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
@@ -667,13 +667,13 @@ class RollCallCest
     }
 
     /*
-     * Add contact to roll call
+     * Add contact to check-in
      *
      */
     /*public function addContact(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Add contact to roll call');
+        $I->wantTo('Add contact to check-in');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/contacts', [
@@ -689,13 +689,13 @@ class RollCallCest
     }*/
 
     /*
-     * Add contacts to roll call
+     * Add contacts to check-in
      *
      */
     /*public function addContacts(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Add contact to roll call');
+        $I->wantTo('Add contact to check-in');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/contacts', [
@@ -722,13 +722,13 @@ class RollCallCest
     }*/
 
     /*
-     * Update a rollcall as admin
+     * Update a check-in as admin
      *
      */
     public function updateRollCall(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Update roll call details as the admin');
+        $I->wantTo('Update check-in details as the admin');
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint.'/'.$id, [
@@ -773,17 +773,17 @@ class RollCallCest
     }
 
     /*
-     * Send roll call to single recipient
+     * Send check-in to single recipient
      *
      */
     public function sendRollCallToRecipient(ApiTester $I)
     {
         $id = 1;
         $recipient_id = 4;
-        $I->wantTo('Send roll call to a single recipient');
-        $I->seeRecord('roll_call_recipients', [
+        $I->wantTo('Send check-in to a single recipient');
+        $I->seeRecord('check_in_recipients', [
             'user_id'         => 4,
-            'roll_call_id'    => 1,
+            'check_in_id'    => 1,
             'response_status' => 'unresponsive',
         ]);
         $I->amAuthenticatedAsAdmin();
@@ -800,12 +800,12 @@ class RollCallCest
     }
 
     /*
-     * Delete roll call
+     * Delete check-in
      */
     public function deleteRollCall(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Delete a roll call');
+        $I->wantTo('Delete a check-in');
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendDelete($this->endpoint."/$id");
@@ -813,14 +813,14 @@ class RollCallCest
     }
 
     /*
-     * As the user, I want to get a RollCall using a reply token
+     * As the user, I want to get a check-in using a reply token
      */
     public function getRollCallWithReplyToken(ApiTester $I)
     {
-        $roll_call_id = 1;
+        $check_in_id = 1;
         $token = 'testtoken1';
-        $I->wantTo('Get a RollCall using a reply token');
-        $I->sendGet('/checkins/' . $roll_call_id . '?token=' . $token);
+        $I->wantTo('Get a check-in using a reply token');
+        $I->sendGet('/checkins/' . $check_in_id . '?token=' . $token);
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson(
             [
@@ -841,19 +841,19 @@ class RollCallCest
      */
     public function getRollCallWithInvalidReplyToken(ApiTester $I)
     {
-        $roll_call_id = 1;
+        $check_in_id = 1;
         $token = 'testtoken3';
-        $I->wantTo('Not get a RollCall using an invalid reply token');
-        $I->sendGet('/checkins/' . $roll_call_id . '?token=' . $token);
+        $I->wantTo('Not get a check-in using an invalid reply token');
+        $I->sendGet('/checkins/' . $check_in_id . '?token=' . $token);
         $I->seeResponseCodeIs(403);
     }
 
     /*
-     * Send RollCalls with rotating numbers
+     * Send check-ins with rotating numbers
     */
     public function sendRollCallsWithRotatingNumbers(ApiTester $I)
     {
-        $I->wantTo('Send RollCalls with rotating numbers');
+        $I->wantTo('Send check-ins with rotating numbers');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -890,38 +890,38 @@ class RollCallCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '8',
-            'type'        => 'rollcall',
+            'check_in_id' => '8',
+            'type'        => 'check_in',
             'message'     => "Alien Attack! are you ok?\nReply with \"OK\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '8',
-            'type'        => 'rollcall_url',
+            'check_in_id' => '8',
+            'type'        => 'check_in_url',
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'rollcall_id' => '9',
-            'type'        => 'rollcall',
+            'check_in_id' => '9',
+            'type'        => 'check_in',
             'message'     => "Alien Attack Part II! are you ok?\nReply with \"OK\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'rollcall_id' => '9',
-            'type'        => 'rollcall_url',
+            'check_in_id' => '9',
+            'type'        => 'check_in_url',
         ]);
     }
 
     /*
-     * Send RollCall reminder to a contact when all outgoing numbers
+     * Send check-in reminder to a contact when all outgoing numbers
      * are active.
      */
     public function receiveARollCallReminder(ApiTester $I)
     {
-        $I->wantTo('Receive a RollCall reminder');
+        $I->wantTo('Receive a check-in reminder');
         $I->amAuthenticatedAsOrgAdmin();
 
         $attack = [
@@ -949,30 +949,30 @@ class RollCallCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '8',
+            'check_in_id' => '8',
             'type'        => 'reminder'
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '10',
-            'type'        => 'rollcall',
+            'check_in_id' => '10',
+            'type'        => 'check_in',
             'message'     => "Alien Attack Part 3!\nReply with \"OK\" in your response"
         ]);
     }
 
     /*
-     * Resend a RollCall should resend to unreplied users
+     * Resend a check-in should resend to unreplied users
      *
      */
     public function resendRollCallToUnreplied(ApiTester $I)
     {
-        $I->wantTo('Resend a RollCall to unreplied');
+        $I->wantTo('Resend a check-in to unreplied');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'message' => 'Resending a RollCall',
+            'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
             'recipients' => [
@@ -992,7 +992,7 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
 
         $I->sendPUT($this->endpoint.'/8', [
-            'message' => 'Resending a RollCall',
+            'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
             'recipients' => [
@@ -1009,7 +1009,7 @@ class RollCallCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(['checkin' =>
             [
-                'message' => 'Resending a RollCall',
+                'message' => 'Resending a check-in',
                 'organization' => [
                     'id' => 2
                 ],
@@ -1027,57 +1027,57 @@ class RollCallCest
             ]
         ]);
 
-        $I->seeRecord('roll_call_recipients', [
+        $I->seeRecord('check_in_recipients', [
             'user_id'         => 1,
-            'roll_call_id'    => 8,
+            'check_in_id'    => 8,
             'response_status' => 'waiting',
         ]);
 
-        $I->seeRecord('roll_call_recipients', [
+        $I->seeRecord('check_in_recipients', [
             'user_id'         => 10,
-            'roll_call_id'    => 8,
+            'check_in_id'    => 8,
             'response_status' => 'waiting',
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'rollcall_id' => '8',
-            'type'        => 'rollcall'
+            'check_in_id' => '8',
+            'type'        => 'check_in'
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674181',
             'from'        => '20880',
-            'rollcall_id' => '8',
-            'type'        => 'rollcall'
+            'check_in_id' => '8',
+            'type'        => 'check_in'
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254722123457',
             'from'        => '20880',
-            'rollcall_id' => '8',
-            'type'        => 'rollcall'
+            'check_in_id' => '8',
+            'type'        => 'check_in'
         ]);
 
         $I->seeNumRecords(1, 'outgoing_sms_log', [
-            'rollcall_id' => '8',
+            'check_in_id' => '8',
             'type'        => 'reminder'
         ]); // from a previous test
     }
 
     /*
-     * Resend a RollCall should not resend to replied users
+     * Resend a check-in should not resend to replied users
      *
      */
     public function resendRollCallNotToReplied(ApiTester $I)
     {
-        $I->wantTo('Resend a RollCall to replied');
+        $I->wantTo('Resend a check-in to replied');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'message' => 'Resending a RollCall',
+            'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
             'recipients' => [
@@ -1097,7 +1097,7 @@ class RollCallCest
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint.'/8', [
-            'message' => 'Resending a RollCall',
+            'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
             'recipients' => [
@@ -1116,8 +1116,8 @@ class RollCallCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(['organization' => [
-            'name'      => 'RollCall',
-            'subdomain' => 'rollcall',
+            'name'      => 'TenFourTest',
+            'subdomain' => 'tenfourtest',
             'subscription_status' => 'active',
             'credits'   => 1,       // <-- I should only have used 2 credits
             'user' => [
@@ -1129,12 +1129,12 @@ class RollCallCest
 
 
     /*
-     * Create a roll call as author
+     * Create a check-in as author
      *
      */
     public function createRollCallAsAuthor(ApiTester $I)
     {
-        $I->wantTo('Create a rollcall as author');
+        $I->wantTo('Create a check-in as author');
         $I->amAuthenticatedAsAuthor();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [

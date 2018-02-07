@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Person;
+namespace TenFour\Http\Requests\Person;
 
 class InvitePersonRequest extends UpdatePersonRequest
 {

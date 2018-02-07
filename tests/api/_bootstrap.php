@@ -3,13 +3,13 @@
 
 use Codeception\Util\Fixtures;
 
-function makeSNSMailNotification($from_email, $roll_call_id, $message) {
+function makeSNSMailNotification($from_email, $check_in_id, $message) {
 
   $Message = json_encode([
     'content' => 'From: John Doe <' . $from_email . '>
 Content-Type: multipart/alternative;boundary=\'Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C\'
 Mime-Version: 1.0
-To: RollCall <rollcall-' . $roll_call_id . '@rollcall.io>
+To: TenFour <checkin-' . $check_in_id . '@tenfour.org>
 
 --Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C
 Content-Transfer-Encoding: quoted-printable
@@ -80,7 +80,7 @@ Content-Type: text/plain;charset=utf-8
     "Type" => "Notification",
     "MessageId" => "bar",
     "TopicArn" => "baz",
-    "Subject" => "Re: Did you receive this test Rollcall?",
+    "Subject" => "Re: Did you receive this test check-in?",
     "Timestamp" => "2016-01-27T14:59:38.237Z",
     "SignatureVersion" => "1",
     "Signature" => true,

@@ -2,12 +2,12 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use RollCall\Seeders\OauthTableSeeder;
-use RollCall\Seeders\UserTableSeeder;
-use RollCall\Seeders\RoleTableSeeder;
-use RollCall\Seeders\SettingsTableSeeder;
-use RollCall\Seeders\NotificationsTableSeeder;
-use RollCall\Seeders\GroupTableSeeder;
+use TenFour\Seeders\OauthTableSeeder;
+use TenFour\Seeders\UserTableSeeder;
+use TenFour\Seeders\RoleTableSeeder;
+use TenFour\Seeders\SettingsTableSeeder;
+use TenFour\Seeders\NotificationsTableSeeder;
+use TenFour\Seeders\GroupTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        $this->call(RollCall\Seeders\OauthTableSeeder::class);
-        $this->call(RollCall\Seeders\OrganizationTableSeeder::class);
-        $this->call(RollCall\Seeders\OrgMemberSeeder::class);
-        $this->call(RollCall\Seeders\RollCallTableSeeder::class);
-        $this->call(RollCall\Seeders\SettingsTableSeeder::class);
-        $this->call(RollCall\Seeders\NotificationsTableSeeder::class);
-        $this->call(RollCall\Seeders\GroupTableSeeder::class);
+        $this->call(TenFour\Seeders\OauthTableSeeder::class);
+        $this->call(TenFour\Seeders\OrganizationTableSeeder::class);
+        $this->call(TenFour\Seeders\OrgMemberSeeder::class);
+        $this->call(TenFour\Seeders\CheckInTableSeeder::class);
+        $this->call(TenFour\Seeders\SettingsTableSeeder::class);
+        $this->call(TenFour\Seeders\NotificationsTableSeeder::class);
+        $this->call(TenFour\Seeders\GroupTableSeeder::class);
 
         Model::reguard();
     }

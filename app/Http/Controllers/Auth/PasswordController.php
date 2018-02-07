@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Controllers\Auth;
+namespace TenFour\Http\Controllers\Auth;
 
-use RollCall\Http\Controllers\Controller;
-use RollCall\Models\User;
+use TenFour\Http\Controllers\Controller;
+use TenFour\Models\User;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;

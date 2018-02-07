@@ -1,7 +1,7 @@
 <?php
-namespace RollCall\Contracts\Repositories;
+namespace TenFour\Contracts\Repositories;
 
-interface RollCallRepository extends CrudRepository
+interface CheckInRepository extends CrudRepository
 {
     /**
      * Get all
@@ -15,7 +15,7 @@ interface RollCallRepository extends CrudRepository
     public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0);
 
     /**
-     * Get roll call recipients
+     * Get check-in recipients
      *
      * @param int $id
 
@@ -24,7 +24,7 @@ interface RollCallRepository extends CrudRepository
     public function getRecipients($id, $unresponsive=null);
 
     /**
-     * Get roll call sent messages and optionally filter by user
+     * Get check-in sent messages and optionally filter by user
      *
      * @param int $id
 
@@ -33,12 +33,12 @@ interface RollCallRepository extends CrudRepository
     public function getMessages($id, $user_id = null);
 
     /**
-     * Get counts for rollcall
+     * Get counts for check-in
      *
-     * @param int $rollCallId
+     * @param int $check_in_id
      * @return array
      */
-    public function getCounts($rollCallId);
+    public function getCounts($check_in_id);
 
     /**
      * Get last sent message id and optionally filter by contact
@@ -48,16 +48,16 @@ interface RollCallRepository extends CrudRepository
     public function getLastSentMessageId($contact_id = null);
 
     /**
-     * Check rollcall was setn to contact id
+     * Check check-in was sent to contact id
      *
      * @param  $contact_id
-     * @param  $roll_call_id
-     * @return $roll_call_id
+     * @param  $check_in_id
+     * @return $check_in_id
      */
-    public function getSentRollCallId($contact_id, $roll_call_id);
+    public function getSentCheckInId($contact_id, $check_in_id);
 
     /**
-     * Add roll call sent to contact
+     * Add check-in sent to contact
      *
      * @param int $id
      * @param int $contact_id
@@ -69,22 +69,22 @@ interface RollCallRepository extends CrudRepository
     /**
      * Update a user's response status
      *
-     * @param int $roll_call_id
+     * @param int $check_in_id
      * @param int $user_id
      * @param int $status
      */
-    public function updateRecipientStatus($roll_call_id, $user_id, $status);
+    public function updateRecipientStatus($check_in_id, $user_id, $status);
 
     /**
      * Set a reply token for a user's response
      *
-     * @param int $roll_call_id
+     * @param int $check_in_id
      * @param int $user_id
      */
-    public function setReplyToken($roll_call_id, $user_id);
+    public function setReplyToken($check_in_id, $user_id);
 
     /**
-     * Get pending roll call reply by contact
+     * Get pending check-in reply by contact
      *
      * @param int $contact_id
      *
@@ -112,7 +112,7 @@ interface RollCallRepository extends CrudRepository
     public function getComplaintCountByOrg($org_id);
 
     /**
-     * Get pending roll call reply by contact
+     * Get pending check-in reply by contact
      *
      * @param int $contact_id
      *
@@ -121,7 +121,7 @@ interface RollCallRepository extends CrudRepository
     public function getLastUnrepliedByUser($user_id);
 
     /**
-     * Does this $from number have any unreplied rollcalls for a contact
+     * Does this $from number have any unreplied check-ins for a contact
      *
      * @param $from
      * @param int $contact_id
@@ -129,18 +129,18 @@ interface RollCallRepository extends CrudRepository
     public function isOutgoingNumberActive($contact_id, $from);
 
     /**
-     * Get the outgoing number that a RollCall was sent to a Contact
+     * Get the outgoing number that a check-in was sent to a Contact
      *
-     * @param int $roll_call_id
+     * @param int $check_in_id
      * @param int $contact_id
      */
-    public function getOutgoingNumberForRollCallToContact($roll_call_id, $contact_id);
+    public function getOutgoingNumberForCheckInToContact($check_in_id, $contact_id);
 
     /**
-     * Has a user replied to a rollcall
+     * Has a user replied to a check-in
      *
      * @param int $user_id
-     * @param int $roll_call_id
+     * @param int $check_in_id
      */
-    public function hasRepliedToRollCall($user_id, $roll_call_id);
+    public function hasRepliedToCheckIn($user_id, $check_in_id);
 }

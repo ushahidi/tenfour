@@ -1,8 +1,6 @@
 <?php
 
-namespace RollCall\Messaging;
-
-use RollCall\Contracts\Repositories\RollCallRepository;
+namespace TenFour\Messaging;
 
 class AnswerParser
 {

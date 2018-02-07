@@ -18,8 +18,8 @@ class OrganizationCest
         $I->seeResponseContainsJson([
             'organizations' => [
                 [
-                    'name'    => 'RollCall',
-                    'subdomain'     => 'rollcall',
+                    'name'    => 'TenFourTest',
+                    'subdomain'     => 'tenfourtest',
                 ],
             ]
         ]);
@@ -65,8 +65,8 @@ class OrganizationCest
                 'subdomain'     => 'dummy'
             ],
             [
-                'name'    => 'RollCall',
-                'subdomain'     => 'rollcall'
+                'name'    => 'TenFourTest',
+                'subdomain'     => 'tenfourtest'
             ]
         ]);
     }
@@ -95,8 +95,8 @@ class OrganizationCest
                 'subdomain'     => 'dummy'
             ],
             [
-                'name'    => 'RollCall',
-                'subdomain'     => 'rollcall'
+                'name'    => 'TenFourTest',
+                'subdomain'     => 'tenfourtest'
             ]
         ]);
     }
@@ -114,8 +114,8 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name'      => 'RollCall',
-            'subdomain' => 'rollcall',
+            'name'      => 'TenFourTest',
+            'subdomain' => 'tenfourtest',
             'subscription_status' => 'active',
             'credits'   => 3,
             'user' => [
@@ -189,12 +189,12 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
-            'name' => 'Rollcall Org',
+            'name' => 'TenFourTest',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'Rollcall Org',
+            'name' => 'TenFourTest',
         ]);
     }
 
@@ -211,14 +211,14 @@ class OrganizationCest
         $I->amAuthenticatedAsOrgOwner();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
-            'name' => 'Rollcall Org',
-            'subdomain'  => 'testing',
+            'name' => 'TenFourTest Org',
+            'subdomain'  => 'tenfourtesting',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'Rollcall Org',
-            'subdomain'  => 'rollcall',
+            'name' => 'TenFourTest Org',
+            'subdomain'  => 'tenfourtest',
         ]);
     }
 
@@ -233,8 +233,8 @@ class OrganizationCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$id", [
-            'name' => 'Rollcall',
-            'subdomain'  => 'rollcall',
+            'name' => 'TenFourTest',
+            'subdomain'  => 'tenfourtest',
             'people' => [
                 [
                     'id'   => '3',
@@ -256,7 +256,7 @@ class OrganizationCest
       $I->amAuthenticatedAsOrgOwner();
       $I->haveHttpHeader('Content-Type', 'application/json');
       $I->sendPUT($this->endpoint."/$id", [
-          'name' => 'Rollcall Org',
+          'name' => 'TenFourTest',
           'subdomain'  => 'testing',
           'settings'  => ['channels' => ['email' => ['enabled' => true]]],
       ]);
@@ -289,8 +289,8 @@ class OrganizationCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'name' => 'RollCall',
-            'subdomain'  => 'rollcall',
+            'name' => 'TenFourTest',
+            'subdomain'  => 'tenfourtest',
         ]);
     }
 

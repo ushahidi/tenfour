@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Http\Requests\RollCall;
+namespace TenFour\Http\Requests\CheckIn;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 use App;
 
-class GetRollCallRequest extends FormRequest
+class GetCheckInRequest extends FormRequest
 {
     use UserAccess;
 
@@ -17,13 +17,13 @@ class GetRollCallRequest extends FormRequest
      */
     public function authorize()
     {
-        $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
-                 ->find($this->route('rollcall'));
+        $check_in = App::make('TenFour\Contracts\Repositories\CheckInRepository')
+                 ->find($this->route('checkin'));
 
         $token = $this->request->get('token');
 
         if ($token && !empty($token)) {
-            return count(array_filter($rollCall['recipients'], function ($recipient) use ($token) {
+            return count(array_filter($check_in['recipients'], function ($recipient) use ($token) {
                 return $recipient['pivot']['reply_token'] === $token;
             })) > 0;
         }
@@ -32,15 +32,15 @@ class GetRollCallRequest extends FormRequest
             return false;
         }
 
-        // If user is a receipient or author, they can view the rollcall
-        // @todo this would be much easier with the full RollCall object
+        // If user is a receipient or author, they can view the check-in
+        // @todo this would be much easier with the full check-in object
         $userId = $this->auth->user()['id'];
 
-        if ($rollCall['user_id'] === $userId) {
+        if ($check_in['user_id'] === $userId) {
             return true;
         }
 
-        $matchedRecipient = array_filter($rollCall['recipients'], function ($recipient) use ($userId) {
+        $matchedRecipient = array_filter($check_in['recipients'], function ($recipient) use ($userId) {
             return $recipient['id'] === $userId;
         });
 
@@ -48,7 +48,7 @@ class GetRollCallRequest extends FormRequest
             return true;
         }
 
-        if ($this->user()->isAdmin($rollCall['organization_id'])) {
+        if ($this->user()->isAdmin($check_in['organization_id'])) {
             return true;
         }
 

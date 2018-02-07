@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +12,7 @@ class Role extends Model
 	 */
 	public function users()
 	{
-		return $this->hasMany('RollCall\Models\User');
+		return $this->hasMany('TenFour\Models\User');
 	}
 
 }

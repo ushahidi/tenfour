@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Http\Requests\RollCall;
+namespace TenFour\Http\Requests\CheckIn;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
-class CreateRollCallRequest extends FormRequest
+class CreateCheckInRequest extends FormRequest
 {
     use UserAccess;
 
@@ -25,7 +25,7 @@ class CreateRollCallRequest extends FormRequest
             return true;
         }
 
-        // Check if user is sending themselves a roll call
+        // Check if user is sending themselves a check-in
         if (count($this->input('recipients')) == 1 &&
             $this->isSelf($this->input('recipients.0.id'))) {
             return true;

@@ -1,7 +1,7 @@
 <?php
 
-use RollCall\Messaging\Validators\NexmoMessageValidator;
-use RollCall\Messaging\InvalidMOMessageException;
+use TenFour\Messaging\Validators\NexmoMessageValidator;
+use TenFour\Messaging\InvalidMOMessageException;
 use Illuminate\Http\Request;
 use Codeception\Util\Stub;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace TenFour\Http\Requests\Organization;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
 class UpdateOrganizationRequest extends FormRequest
 {

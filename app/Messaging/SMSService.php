@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
 use Log;
 use SMS;
 use App;
-use RollCall\Contracts\Messaging\MessageService;
-use RollCall\Jobs\SendSMS;
+use TenFour\Contracts\Messaging\MessageService;
+use TenFour\Jobs\SendSMS;
 
 class SMSService implements MessageService
 {
@@ -35,10 +35,10 @@ class SMSService implements MessageService
             return 'log';
         }
 
-        $driver = config('rollcall.messaging.sms_providers.'.$region_code.'.driver');
+        $driver = config('tenfour.messaging.sms_providers.'.$region_code.'.driver');
 
         if (!$driver) {
-            $driver = config('rollcall.messaging.sms_providers.default.driver');
+            $driver = config('tenfour.messaging.sms_providers.default.driver');
         }
 
         return $driver;
@@ -62,10 +62,10 @@ class SMSService implements MessageService
             if ($this->iterator) {
                 $from = $this->iterator->current();
             } else {
-                $from = config('rollcall.messaging.sms_providers.'.$region_code.'.from');
+                $from = config('tenfour.messaging.sms_providers.'.$region_code.'.from');
 
                 if (!$from) {
-                    $from = config('rollcall.messaging.sms_providers.default.from');
+                    $from = config('tenfour.messaging.sms_providers.default.from');
                 }
 
                 if (is_array($from)) {
@@ -87,13 +87,13 @@ class SMSService implements MessageService
         dispatch((new SendSMS($view, $additional_params, $driver, $from, $to, $region_code))/*->onQueue('sms')*/);
     }
 
-    protected function logSMS($to, $from, $driver, $rollcall_id = 0, $type = 'other', $message = '')
+    protected function logSMS($to, $from, $driver, $check_in_id = 0, $type = 'other', $message = '')
     {
         $sms = new OutgoingSMS;
         $sms->to = $to;
         $sms->from = $from;
         $sms->driver = $driver;
-        $sms->rollcall_id = $rollcall_id;
+        $sms->check_in_id = $check_in_id;
         $sms->type = $type;
         $sms->message = $message;
         $sms->save();
@@ -102,7 +102,7 @@ class SMSService implements MessageService
     public function getMessages(Array $options = [])
     {
         // Get configured drivers
-        $sms_providers = config('rollcall.messaging.sms_providers');
+        $sms_providers = config('tenfour.messaging.sms_providers');
 
         $drivers = [];
 
@@ -148,12 +148,12 @@ class SMSService implements MessageService
         return $message;
     }
 
-    public function sendResponseReceivedSMS($to, $from = null, $rollcall_id = 0) {
+    public function sendResponseReceivedSMS($to, $from = null, $check_in_id = 0) {
         Log::info('Sending "response received" sms to: ' . $to->getNormalizedNumber());
 
         $params = [
             'sms_type' => 'response_received',
-            'rollcall_id' => $rollcall_id
+            'check_in_id' => $check_in_id
         ];
 
         $this->setView('sms.response_received');

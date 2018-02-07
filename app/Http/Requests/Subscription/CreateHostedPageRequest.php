@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Subscription;
+namespace TenFour\Http\Requests\Subscription;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
 class CreateHostedPageRequest extends GetSubscriptionRequest
 {

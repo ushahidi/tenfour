@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Region;
+namespace TenFour\Http\Requests\Region;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
 class GetSupportedRegionsRequest extends FormRequest
 {

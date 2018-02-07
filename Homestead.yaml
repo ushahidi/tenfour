@@ -16,7 +16,7 @@ folders:
       to: "/home/vagrant/rollcall"
 
 sites:
-    - map: rollcall.dev
+    - map: tenfour.local
       to: "/home/vagrant/rollcall/public"
 
 databases:

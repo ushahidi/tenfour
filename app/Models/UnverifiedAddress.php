@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

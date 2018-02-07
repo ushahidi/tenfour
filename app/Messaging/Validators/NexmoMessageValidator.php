@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Messaging\Validators;
+namespace TenFour\Messaging\Validators;
 
 use Illuminate\Http\Request;
-use RollCall\Messaging\InvalidMOMessageException;
+use TenFour\Messaging\InvalidMOMessageException;
 
 class NexmoMessageValidator
 {

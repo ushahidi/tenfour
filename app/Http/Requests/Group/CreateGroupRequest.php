@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Group;
+namespace TenFour\Http\Requests\Group;
 use Dingo\Api\Http\FormRequest;
 
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
 class CreateGroupRequest extends FormRequest
 {

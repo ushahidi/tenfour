@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
 use Log;
 use Route;
-use RollCall\Contracts\Repositories\ReplyRepository;
+use TenFour\Contracts\Repositories\ReplyRepository;
 use Illuminate\Http\Request;
 
 use Aws\Sns\Message;
@@ -17,7 +17,7 @@ use EmailReplyParser\Parser\EmailParser;
 class MailController extends Controller
 {
     /**
-     * @var RollCall\Messaging\Storage\Replies
+     * @var TenFour\Messaging\Storage\Replies
      */
     protected $replies;
 
@@ -34,11 +34,11 @@ class MailController extends Controller
      */
     public function receive(Request $request)
     {
-        if (config('rollcall.messaging.incoming_driver') == 'mailgun') {
+        if (config('tenfour.messaging.incoming_driver') == 'mailgun') {
             return $this->receiveMailgun($request);
         }
 
-        if (config('rollcall.messaging.incoming_driver') == 'aws-ses-sns') {
+        if (config('tenfour.messaging.incoming_driver') == 'aws-ses-sns') {
             return $this->receiveAWS($request);
         }
     }
@@ -46,12 +46,12 @@ class MailController extends Controller
     protected function saveEmail($from, $message, $to, $message_id, $provider) {
         $visibleMessage = \EmailReplyParser\EmailReplyParser::parseReply($message);
 
-        $rollcall_id = null;
-        if (preg_match('/^rollcall-(\d*)@.*$/', $to, $matches)) {
-            $rollcall_id = $matches[1];
+        $check_in_id = null;
+        if (preg_match('/^checkin-(\d*)@.*$/', $to, $matches)) {
+            $check_in_id = $matches[1];
         }
 
-        $this->replies->save($from, $visibleMessage, $message_id, $rollcall_id, $provider);
+        $this->replies->save($from, $visibleMessage, $message_id, $check_in_id, $provider);
     }
 
     protected function receiveMailgun() {
@@ -72,7 +72,7 @@ class MailController extends Controller
             // @todo DI
             $message = Message::fromRawPostData();
 
-            if (config('rollcall.messaging.validate_sns_message')) {
+            if (config('tenfour.messaging.validate_sns_message')) {
                 // Validate the message and log errors if invalid.
                 $validator = new MessageValidator();
 

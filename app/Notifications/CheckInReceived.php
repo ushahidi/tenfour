@@ -1,17 +1,17 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\RollCall;
-use RollCall\Models\Organization;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\CheckIn;
+use TenFour\Models\Organization;
+use TenFour\Http\Transformers\UserTransformer;
 use Illuminate\Notifications\Messages\SlackMessage;
 
-class RollCallReceived extends Notification
+class CheckInReceived extends Notification
 {
     use Queueable;
 
@@ -20,9 +20,9 @@ class RollCallReceived extends Notification
      *
      * @return void
      */
-    public function __construct(RollCall $roll_call)
+    public function __construct(CheckIn $check_in)
     {
-        $this->roll_call = $roll_call;
+        $this->check_in = $check_in;
     }
 
     /**
@@ -45,10 +45,10 @@ class RollCallReceived extends Notification
     public function toArray($notifiable)
     {
         return [
-            'rollcall_message' => $this->roll_call->message,
-            'rollcall_id' => $this->roll_call->id,
-            'profile_picture' => $this->roll_call->user->profile_picture || null,
-            'initials' => UserTransformer::generateInitials($this->roll_call->user->name),
+            'check_in_message' => $this->check_in->message,
+            'check_in_id' => $this->check_in->id,
+            'profile_picture' => $this->check_in->user->profile_picture || null,
+            'initials' => UserTransformer::generateInitials($this->check_in->user->name),
         ];
     }
 
@@ -60,27 +60,27 @@ class RollCallReceived extends Notification
      */
     public function toSlack($notifiable)
     {
-        $org = Organization::findOrFail($this->roll_call->user->organization['id']);
+        $org = Organization::findOrFail($this->check_in->user->organization['id']);
 
         $client_url = $org->url();
 
-        $params['roll_call_url'] = $client_url .'/checkins/'. $this->roll_call['id'];
-        $params['message']= $this->roll_call['message'];
+        $params['check_in_url'] = $client_url .'/checkins/'. $this->check_in['id'];
+        $params['message']= $this->check_in['message'];
         $params['response_answers'] = '';
 
-        foreach ($this->roll_call['answers'] as $index => $answer) {
-            $answer_url = $client_url .'/checkins/'. $this->roll_call['id']. '/answer/' . $index;
+        foreach ($this->check_in['answers'] as $index => $answer) {
+            $answer_url = $client_url .'/checkins/'. $this->check_in['id']. '/answer/' . $index;
             $params['response_answers'] .= "<" . $answer_url ."|" . $answer["answer"]. ">\t\t";
         }
 
         return (new SlackMessage)
                     ->success()
-                    ->from($this->roll_call->user['name'], config('slack.from_emoji'))
+                    ->from($this->check_in->user['name'], config('slack.from_emoji'))
                     // ->to($this->contact['contact'])
-                    ->content('New RollCall from ' . $org['name'])
+                    ->content('New check-in from ' . $org['name'])
                     ->attachment(function ($attachment) use ($params) {
                         $attachment
-                            ->title($params['message'], $params['roll_call_url'])
+                            ->title($params['message'], $params['check_in_url'])
                             ->content($params['response_answers'])
                             ->markdown(['text']);
                     });

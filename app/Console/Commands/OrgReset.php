@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
 use Illuminate\Console\Command;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
 use Illuminate\Support\Facades\Password;
 
 class OrgReset extends Command

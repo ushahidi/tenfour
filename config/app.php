@@ -144,13 +144,13 @@ return [
         /*
          * Application Service Providers...
          */
-        RollCall\Providers\AppServiceProvider::class,
-        RollCall\Providers\AuthServiceProvider::class,
-        RollCall\Providers\EventServiceProvider::class,
-        RollCall\Providers\RouteServiceProvider::class,
-        RollCall\Providers\OAuthServiceProvider::class,
-        RollCall\Providers\ApiServiceProvider::class,
-        RollCall\Messaging\SMSServiceProvider::class,
+        TenFour\Providers\AppServiceProvider::class,
+        TenFour\Providers\AuthServiceProvider::class,
+        TenFour\Providers\EventServiceProvider::class,
+        TenFour\Providers\RouteServiceProvider::class,
+        TenFour\Providers\OAuthServiceProvider::class,
+        TenFour\Providers\ApiServiceProvider::class,
+        TenFour\Messaging\SMSServiceProvider::class,
 
         /*
          * 3rd party Service Providers...
@@ -217,7 +217,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
-        'SMS'       => RollCall\Messaging\Facades\SMS::class,
+        'SMS'       => TenFour\Messaging\Facades\SMS::class,
         'Throttle'  => GrahamCampbell\Throttle\Facades\Throttle::class,
         'Sentry'    => Sentry\SentryLaravel\SentryFacade::class,
         'UrlShortener' => Waavi\UrlShortener\Facades\UrlShortener::class,

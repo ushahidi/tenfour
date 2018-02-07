@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
 use Illuminate\Console\Command;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Models\User;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class OrgPassword extends Command

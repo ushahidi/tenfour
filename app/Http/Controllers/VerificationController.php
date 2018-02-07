@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
-use RollCall\Http\Requests\EmailVerificationRequest;
-use RollCall\Contracts\Repositories\UnverifiedAddressRepository;
-use RollCall\Jobs\SendVerificationEmail;
+use TenFour\Http\Requests\EmailVerificationRequest;
+use TenFour\Contracts\Repositories\UnverifiedAddressRepository;
+use TenFour\Jobs\SendVerificationEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 

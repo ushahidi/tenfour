@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use RollCall\Models\User;
-use RollCall\Models\Organization;
-use RollCall\Models\Contact;
+use TenFour\Models\User;
+use TenFour\Models\Organization;
+use TenFour\Models\Contact;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Hash;
 
@@ -44,7 +44,7 @@ class ImportContacts extends Command
      */
     public function handle()
     {
-        $domain = 'rollcall.io';
+        $domain = 'tenfour.org';
 
         $csv = Reader::createFromPath($this->argument('csv_file'));
 

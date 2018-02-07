@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Providers;
+namespace TenFour\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -12,8 +12,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'RollCall\Events\SomeEvent' => [
-            'RollCall\Listeners\EventListener',
+        'TenFour\Events\SomeEvent' => [
+            'TenFour\Listeners\EventListener',
         ],
     ];
 

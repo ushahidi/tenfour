@@ -1,17 +1,17 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\GroupRepository;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Http\Requests\Group\CreateGroupRequest;
-use RollCall\Http\Requests\Group\DeleteGroupRequest;
-use RollCall\Http\Requests\Group\GetGroupsRequest;
-use RollCall\Http\Requests\Group\UpdateGroupRequest;
-use RollCall\Http\Requests\Group\GetGroupRequest;
-use RollCall\Http\Transformers\GroupTransformer;
+use TenFour\Contracts\Repositories\GroupRepository;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Http\Requests\Group\CreateGroupRequest;
+use TenFour\Http\Requests\Group\DeleteGroupRequest;
+use TenFour\Http\Requests\Group\GetGroupsRequest;
+use TenFour\Http\Requests\Group\UpdateGroupRequest;
+use TenFour\Http\Requests\Group\GetGroupRequest;
+use TenFour\Http\Transformers\GroupTransformer;
 use Dingo\Api\Auth\Auth;
-use RollCall\Http\Response;
+use TenFour\Http\Response;
 
 /**
  * @Resource("Groups", uri="/api/v1/organizations")

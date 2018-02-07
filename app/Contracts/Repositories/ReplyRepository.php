@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Contracts\Repositories;
+namespace TenFour\Contracts\Repositories;
 
 interface ReplyRepository extends CrudRepository
 {
@@ -29,7 +29,7 @@ interface ReplyRepository extends CrudRepository
     public function addReply(array $input, $id);
 
     /**
-     * Get roll call replies
+     * Get check-in replies
      *
      * @param int $id
      * @parom int $reply_id
@@ -57,5 +57,5 @@ interface ReplyRepository extends CrudRepository
     /**
      * Save a reply
      */
-    public function save($from, $message, $message_id = 0, $roll_call_id = null, $provider = null, $outgoing_number = null);
+    public function save($from, $message, $message_id = 0, $check_in_id = null, $provider = null, $outgoing_number = null);
 }

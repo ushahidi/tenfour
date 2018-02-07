@@ -1,16 +1,16 @@
 <?php
 
-namespace RollCall\Jobs;
+namespace TenFour\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use RollCall\Models\Organization;
-use RollCall\Models\User;
-use RollCall\Contracts\Messaging\MessageServiceFactory;
-use RollCall\Http\Transformers\UserTransformer;
-use RollCall\Services\URLShortenerService;
+use TenFour\Models\Organization;
+use TenFour\Models\User;
+use TenFour\Contracts\Messaging\MessageServiceFactory;
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLShortenerService;
 use Log;
 
 class SendInvite implements ShouldQueue
@@ -23,7 +23,7 @@ class SendInvite implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Array $roll_call
+     * @param Array $check_in
      * @param Array $contact
      *
      * @return void
@@ -59,21 +59,21 @@ class SendInvite implements ShouldQueue
             .'&orgId=' . $this->organization['id']
             .'&token=' . $this->member['invite_token']
           );
-          $msg = 'You have been invited to join '.$this->organization['name'].'\'s Rollcall, please click the link below to complete registration';
-          $subject = $this->organization['name'] . ' invited you to join Rollcall';
+          $msg = 'You have been invited to join '.$this->organization['name'].'\'s TenFour, please click the link below to complete registration';
+          $subject = $this->organization['name'] . ' invited you to join TenFour';
 
           $message_service = $message_service_factory->make('email');
           $message_service->setView('emails.general');
           $message_service->send($email, $msg, [
             'action_url' => $shortener->shorten($url),
-            'action_text' => 'Join ' . $org['name'] . '\'s RollCall',
+            'action_text' => 'Join ' . $org['name'] . '\'s TenFour',
             'subject' => $subject,
             'org_name' => $org['name'],
             'org_subdomain' => $org['subdomain'],
             'profile_picture' => $org['profile_picture'],
             'initials' => UserTransformer::generateInitials($org['name']),
             'type' => 'invite',
-            'body' => $org['name'] . ' uses RollCall to reach people like you on any device and get quick answers to urgent questions. By joining ' . $org['name'] . ' on RollCall, you\'ll be able to easily see and respond to questions, and configure notifications.'
+            'body' => $org['name'] . ' uses TenFour to reach people like you on any device and get quick answers to urgent questions. By joining ' . $org['name'] . ' on TenFour, you\'ll be able to easily see and respond to questions, and configure notifications.'
           ], $subject);
         } else {
           Log::info('Cannot invite a member with no email address');

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Jobs;
+namespace TenFour\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -9,14 +9,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 
-use RollCall\Models\User;
-use RollCall\Models\Organization;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\ContactFilesRepository;
-use RollCall\Notifications\ImportSucceeded;
-use RollCall\Notifications\ImportFailed;
-use RollCall\Jobs\SendInvite;
+use TenFour\Models\User;
+use TenFour\Models\Organization;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\ContactFilesRepository;
+use TenFour\Notifications\ImportSucceeded;
+use TenFour\Notifications\ImportFailed;
+use TenFour\Jobs\SendInvite;
 
 use App;
 use Exception;
@@ -54,10 +54,10 @@ class ImportCSV implements ShouldQueue
         $path = $file_details['filename'];
         $map = $file_details['maps_to'];
 
-        $transformer = App::make('RollCall\Contracts\Contacts\CsvTransformer', [$map]);
-        $reader = App::make('RollCall\Contracts\Contacts\CsvReader', [$path]);
+        $transformer = App::make('TenFour\Contracts\Contacts\CsvTransformer', [$map]);
+        $reader = App::make('TenFour\Contracts\Contacts\CsvReader', [$path]);
 
-        $importer = App::make('RollCall\Contracts\Contacts\CsvImporter',
+        $importer = App::make('TenFour\Contracts\Contacts\CsvImporter',
             [$reader, $transformer, $contacts, $people, $this->organization_id]);
 
         $members = $importer->import();

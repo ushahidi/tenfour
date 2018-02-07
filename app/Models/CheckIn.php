@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class RollCall extends Model
+class CheckIn extends Model
 {
     use Notifiable;
 
@@ -23,14 +23,14 @@ class RollCall extends Model
      *
      * @var string
      */
-    protected $table = 'roll_calls';
+    protected $table = 'check_ins';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_roll_call'];
+    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in'];
 
     /**
      * The relations to eager load on every query.
@@ -48,46 +48,46 @@ class RollCall extends Model
 
     /**
      *
-     * Roll calls belong to an organization
+     * Check-ins belong to an organization
      */
     public function organization()
     {
-        return $this->belongsTo('RollCall\Models\Organization');
+        return $this->belongsTo('TenFour\Models\Organization');
     }
 
     /**
-     * Roll calls belong to a user
+     * Check-ins belong to a user
      *
      */
     public function user()
     {
-        return $this->belongsTo('RollCall\Models\User');
+        return $this->belongsTo('TenFour\Models\User');
     }
 
     /**
      *
-     * Roll calls belong to user
+     * Check-ins belong to user
      */
     public function recipients()
     {
-        return $this->belongsToMany('RollCall\Models\User', 'roll_call_recipients')->withPivot('response_status', 'reply_token');
+        return $this->belongsToMany('TenFour\Models\User', 'check_in_recipients')->withPivot('response_status', 'reply_token');
     }
 
     /**
      *
-     * Roll calls sent to contacts
+     * Check-ins sent to contacts
      */
     public function messages()
     {
-        return $this->belongsToMany('RollCall\Models\Contact', 'roll_call_messages')->withTimestamps()->withPivot('from');
+        return $this->belongsToMany('TenFour\Models\Contact', 'check_in_messages')->withTimestamps()->withPivot('from');
     }
 
     /**
-     * Replies received to rollcall
+     * Replies received to check-in
      */
     public function replies()
     {
-        return $this->hasMany('RollCall\Models\Reply');
+        return $this->hasMany('TenFour\Models\Reply');
     }
 
     public function routeNotificationForSlack()

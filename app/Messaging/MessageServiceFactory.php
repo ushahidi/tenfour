@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
-use RollCall\Contracts\Messaging\MessageServiceFactory as MessageServiceFactoryInterface;
+use TenFour\Contracts\Messaging\MessageServiceFactory as MessageServiceFactoryInterface;
 
 class MessageServiceFactory implements messageServiceFactoryInterface
 {

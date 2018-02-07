@@ -1,31 +1,31 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\Organization;
-use RollCall\Models\User;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Contracts\Repositories\GroupRepository;
-use RollCall\Http\Transformers\OrganizationTransformer;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\Organization;
+use TenFour\Models\User;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Contracts\Repositories\GroupRepository;
+use TenFour\Http\Transformers\OrganizationTransformer;
+use TenFour\Http\Transformers\UserTransformer;
 use DB;
 use Validator;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
-use RollCall\Notifications\PersonJoinedOrganization;
-use RollCall\Notifications\PersonLeftOrganization;
+use TenFour\Notifications\PersonJoinedOrganization;
+use TenFour\Notifications\PersonLeftOrganization;
 use Illuminate\Support\Facades\Hash;
-use RollCall\Services\StorageService;
-use RollCall\Services\CreditService;
-use RollCall\Services\AnalyticsService;
+use TenFour\Services\StorageService;
+use TenFour\Services\CreditService;
+use TenFour\Services\AnalyticsService;
 
 class EloquentPersonRepository implements PersonRepository
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts, GroupRepository $groups, StorageService $storageService, CreditService $creditService)
+    public function __construct(CheckInRepository $check_ins, ContactRepository $contacts, GroupRepository $groups, StorageService $storageService, CreditService $creditService)
     {
-        $this->roll_calls = $roll_calls;
+        $this->check_ins = $check_ins;
         $this->contacts = $contacts;
         $this->groups = $groups;
         $this->storageService = $storageService;
@@ -174,13 +174,13 @@ class EloquentPersonRepository implements PersonRepository
     {
         // This should probably be passed in as param but there
         // might not be any benefit of showing a user's full
-        // roll call activity here.
+        // check-in activity here.
         $history_limit = 1;
 
         $userModel = User::where('id', $user_id)
             ->where('organization_id', $organization_id)
             ->with([
-                'rollcalls' => function ($query) use ($history_limit) {
+                'checkins' => function ($query) use ($history_limit) {
                     $query->latest()->limit($history_limit);
                 },
                 'contacts.replies' => function ($query) use ($history_limit) {
@@ -203,14 +203,14 @@ class EloquentPersonRepository implements PersonRepository
         $user['organization'] = (new OrganizationTransformer)->transform($user['organization']);
 
         // @todo can we remove this?
-        foreach ($user['rollcalls'] as &$roll_call)
+        foreach ($user['checkins'] as &$check_in)
         {
-            $roll_call += $this->roll_calls->getCounts($roll_call['id']);
+            $check_in += $this->check_ins->getCounts($check_in['id']);
         }
 
-        foreach ($user['rollcalls'] as &$rollcall)
+        foreach ($user['checkins'] as &$check_in)
         {
-            foreach ($rollcall['recipients'] as &$recipient)
+            foreach ($check_in['recipients'] as &$recipient)
             {
                   $recipient = (new UserTransformer)->transform($recipient);
             }

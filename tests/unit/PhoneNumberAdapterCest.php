@@ -1,6 +1,6 @@
 <?php
 
-use RollCall\Messaging\PhoneNumberAdapter;
+use TenFour\Messaging\PhoneNumberAdapter;
 use Codeception\Util\Stub;
 
 class PhoneNumberAdapterCest

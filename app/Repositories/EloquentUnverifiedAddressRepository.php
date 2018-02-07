@@ -1,8 +1,8 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\UnverifiedAddress;
-use RollCall\Contracts\Repositories\UnverifiedAddressRepository;
+use TenFour\Models\UnverifiedAddress;
+use TenFour\Contracts\Repositories\UnverifiedAddressRepository;
 
 class EloquentUnverifiedAddressRepository implements UnverifiedAddressRepository
 {

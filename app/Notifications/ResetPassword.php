@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 
 use App;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Http\Transformers\UserTransformer;
 
 class ResetPassword extends Notification
 {
@@ -64,7 +64,7 @@ class ResetPassword extends Notification
             'org_name'        => $this->organization['name'],
             'profile_picture' => $this->organization['profile_picture'],
             'initials'        => UserTransformer::generateInitials($this->organization['name']),
-            'body'            => 'You\'re receiving this email because we received a request to reset the password for your ' . $this->organization['name'] . ' RollCall account.'
+            'body'            => 'You\'re receiving this email because we received a request to reset the password for your ' . $this->organization['name'] . ' TenFour account.'
         ];
 
         return (new MailMessage)

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

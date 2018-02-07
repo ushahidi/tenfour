@@ -1,13 +1,13 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
-use RollCall\Models\User;
-use RollCall\Models\Contact;
-use RollCall\Jobs\SendInvite;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
+use TenFour\Models\User;
+use TenFour\Models\Contact;
+use TenFour\Jobs\SendInvite;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Console\Command;

@@ -1,77 +1,77 @@
 <?php
-namespace RollCall\Seeders;
+namespace TenFour\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Notification;
 
-use RollCall\Models\Organization;
-use RollCall\Models\User;
-use RollCall\Models\Contact;
-use RollCall\Models\RollCall;
-use RollCall\Models\Reply;
-use RollCall\Notifications\RollCallReceived;
-use RollCall\Notifications\ReplyReceived;
+use TenFour\Models\Organization;
+use TenFour\Models\User;
+use TenFour\Models\Contact;
+use TenFour\Models\CheckIn;
+use TenFour\Models\Reply;
+use TenFour\Notifications\CheckInReceived;
+use TenFour\Notifications\ReplyReceived;
 use DB;
 
-class RollCallTableSeeder extends Seeder
+class CheckInTableSeeder extends Seeder
 {
-    protected function addUsersToRollCall($users, $rollCall) {
+    protected function addUsersToRollCall($users, $check_in) {
         $recipients = [];
 
         foreach ($users as $user) {
             array_push($recipients, $user->id);
         }
 
-        $rollCall->recipients()->sync($recipients, false);
+        $check_in->recipients()->sync($recipients, false);
     }
 
-    protected function addReply($rollCall, $user, $message, $answer) {
+    protected function addReply($check_in, $user, $message, $answer) {
         $reply = Reply::create([
             'message'      => $message,
             'answer'       => $answer,
             'user_id'      => $user->id,
-            'roll_call_id' => $rollCall->id,
+            'check_in_id'   => $check_in->id,
         ]);
 
-        DB::table('roll_call_recipients')
-            ->where('roll_call_id', '=', $rollCall->id)
+        DB::table('check_in_recipients')
+            ->where('check_in_id', '=', $check_in->id)
             ->where('user_id', '=', $user->id)
             ->update(['response_status' => 'replied']);
 
-        Notification::send($rollCall->recipients, new ReplyReceived($reply));
+        Notification::send($check_in->recipients, new ReplyReceived($reply));
     }
 
     protected function addRollCalls($organization, $users, $answers) {
         foreach ($users as $user) {
-            $rollCall = RollCall::create([
+            $check_in = CheckIn::create([
                 'organization_id' => $organization->id,
                 'user_id' => $user->id
             ]);
 
-            $rollCall->update([
-                'message' => 'Test rollcall',
+            $check_in->update([
+                'message' => 'Test check-in',
                 'answers' => $answers,
                 'send_via' => ['preferred'],
             ]);
 
-            $this->addUsersToRollCall($users, $rollCall);
+            $this->addUsersToRollCall($users, $check_in);
 
-            Notification::send($rollCall->recipients, new RollCallReceived($rollCall));
+            Notification::send($check_in->recipients, new CheckInReceived($check_in));
 
             if (count($answers) > 0) {
-                $this->addReply($rollCall, $users[1], 'I am not ok', $answers[0]['answer']);
-                $this->addReply($rollCall, $users[1], 'I am not ok (duplicate reply)', $answers[0]['answer']);
+                $this->addReply($check_in, $users[1], 'I am not ok', $answers[0]['answer']);
+                $this->addReply($check_in, $users[1], 'I am not ok (duplicate reply)', $answers[0]['answer']);
             }
 
             if (count($answers) > 1) {
-                $this->addReply($rollCall, $users[2], 'I am ok', $answers[1]['answer']);
+                $this->addReply($check_in, $users[2], 'I am ok', $answers[1]['answer']);
             }
 
-            $this->addReply($rollCall, $users[3], 'I am not sure', 'other answer');
-            $this->addReply($rollCall, $users[3], 'I am not sure (deplicate reply)', 'other answer');
+            $this->addReply($check_in, $users[3], 'I am not sure', 'other answer');
+            $this->addReply($check_in, $users[3], 'I am not sure (deplicate reply)', 'other answer');
         }
 
-        return $rollCall;
+        return $check_in;
     }
 
     /**

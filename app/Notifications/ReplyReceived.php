@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\Reply;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\Reply;
+use TenFour\Http\Transformers\UserTransformer;
 
 
 class ReplyReceived extends Notification
@@ -44,7 +44,7 @@ class ReplyReceived extends Notification
     {
         return [
             'reply_from' => $this->reply->user->name,
-            'rollcall_id' => $this->reply->roll_call_id,
+            'check_in_id' => $this->reply->check_in_id,
             'profile_picture' => $this->reply->user->profile_picture,
             'initials' => UserTransformer::generateInitials($this->reply->user->name),
         ];

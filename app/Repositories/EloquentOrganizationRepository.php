@@ -1,20 +1,20 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\Organization;
-use RollCall\Models\Setting;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Services\AnalyticsService;
+use TenFour\Models\Organization;
+use TenFour\Models\Setting;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Services\AnalyticsService;
 use DB;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
-use RollCall\Notifications\PersonJoinedOrganization;
-use RollCall\Notifications\PersonLeftOrganization;
-use RollCall\Services\StorageService;
-use RollCall\Services\CreditService;
+use TenFour\Notifications\PersonJoinedOrganization;
+use TenFour\Notifications\PersonLeftOrganization;
+use TenFour\Services\StorageService;
+use TenFour\Services\CreditService;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {

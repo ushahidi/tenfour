@@ -1,11 +1,11 @@
 <?php
 
-namespace Rollcall\Providers;
+namespace TenFour\Providers;
 
 use Dingo\Api\Auth\Auth;
 use Dingo\Api\Auth\Provider\OAuth2;
 use Illuminate\Support\ServiceProvider;
-use RollCall\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
 use DB;
 
 class OAuthServiceProvider extends ServiceProvider

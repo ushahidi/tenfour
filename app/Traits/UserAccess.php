@@ -1,6 +1,6 @@
 <?php
 
-namespace Rollcall\Traits;
+namespace TenFour\Traits;
 
 use Dingo\Api\Auth\Auth;
 

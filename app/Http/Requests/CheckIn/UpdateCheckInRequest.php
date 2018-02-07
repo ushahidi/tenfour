@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Http\Requests\RollCall;
+namespace TenFour\Http\Requests\CheckIn;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 use App;
 
-class UpdateRollCallRequest extends FormRequest
+class UpdateCheckInRequest extends FormRequest
 {
     use UserAccess;
 
@@ -17,12 +17,12 @@ class UpdateRollCallRequest extends FormRequest
      */
     public function authorize()
     {
-        // @todo should anyone really be able to update a rollcall?
+        // @todo should anyone really be able to update a check-in?
 
-        $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
-                 ->find($this->route('rollcall'));
+        $check_in = App::make('TenFour\Contracts\Repositories\CheckInRepository')
+                 ->find($this->route('checkin'));
 
-        if ($this->user()->isAdmin($rollCall['organization_id'])) {
+        if ($this->user()->isAdmin($check_in['organization_id'])) {
             return true;
         }
 

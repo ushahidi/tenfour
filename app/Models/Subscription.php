@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
-use RollCall\Models\Organization;
+use TenFour\Models\Organization;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,7 +25,7 @@ class Subscription extends Model
      */
     public function organization()
     {
-        return $this->belongsTo('RollCall\Models\Organization');
+        return $this->belongsTo('TenFour\Models\Organization');
     }
 
     /**
@@ -33,7 +33,7 @@ class Subscription extends Model
      */
     public function addons()
     {
-        return $this->hasMany('RollCall\Models\Addon');
+        return $this->hasMany('TenFour\Models\Addon');
     }
 
     /**

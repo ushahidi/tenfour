@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Person;
+namespace TenFour\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 use App;
 
 class UpdatePersonRequest extends FormRequest
@@ -12,7 +12,7 @@ class UpdatePersonRequest extends FormRequest
 
     public function authorize()
     {
-        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
+        $role = App::make('TenFour\Contracts\Repositories\PersonRepository')
                  ->getMemberRole($this->route('organization'), $this->route('person'));
 
         // A non-admin cannot update a role

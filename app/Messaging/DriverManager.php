@@ -1,7 +1,7 @@
 <?php
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
-use RollCall\Messaging\Drivers\AfricasTalking;
+use TenFour\Messaging\Drivers\AfricasTalking;
 use GuzzleHttp\Client;
 
 use SimpleSoftwareIO\SMS\DriverManager as BaseDriverManager;

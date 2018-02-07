@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
 use SimpleSoftwareIO\SMS\SMS as BaseSMS;
 

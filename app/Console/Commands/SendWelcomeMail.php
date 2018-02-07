@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
-use RollCall\Notifications\Welcome;
-use RollCall\Notifications\WelcomeAbandoned;
-use RollCall\Services\AnalyticsService;
-use RollCall\Models\Organization;
+use TenFour\Notifications\Welcome;
+use TenFour\Notifications\WelcomeAbandoned;
+use TenFour\Services\AnalyticsService;
+use TenFour\Models\Organization;
 
 use Illuminate\Console\Command;
 use Carbon\Carbon;

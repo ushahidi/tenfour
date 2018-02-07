@@ -1,11 +1,11 @@
 <?php
 
 use Codeception\Util\Stub;
-use RollCall\Contracts\Contacts\CsvReader;
-use RollCall\Contracts\Contacts\CsvTransformer;
-use RollCall\Contacts\CsvImporter;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Contacts\CsvReader;
+use TenFour\Contracts\Contacts\CsvTransformer;
+use TenFour\Contacts\CsvImporter;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
 
 class CsvImporterCest
 {

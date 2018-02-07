@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Contracts\Repositories;
+namespace TenFour\Contracts\Repositories;
 
 interface GroupRepository extends OrgCrudRepository
 {

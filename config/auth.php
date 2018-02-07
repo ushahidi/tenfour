@@ -66,8 +66,8 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'rollcall',
-            'model' => RollCall\Models\User::class,
+            'driver' => 'tenfour',
+            'model' => TenFour\Models\User::class,
         ],
 
         // 'users' => [

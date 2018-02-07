@@ -1,8 +1,8 @@
 <?php
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Jobs\SendInvite;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Jobs\SendInvite;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class InviteDispatcher

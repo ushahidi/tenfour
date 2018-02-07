@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
 use Log;
 use App;
-use RollCall\Contracts\Repositories\ReplyRepository;
-use RollCall\Messaging\SMSService;
-use RollCall\Messaging\Validators\NexmoMessageValidator;
+use TenFour\Contracts\Repositories\ReplyRepository;
+use TenFour\Messaging\SMSService;
+use TenFour\Messaging\Validators\NexmoMessageValidator;
 use Illuminate\Http\Request;
 use SMS;
 use libphonenumber\NumberParseException;
@@ -14,7 +14,7 @@ use libphonenumber\NumberParseException;
 class SMSController extends Controller
 {
     /**
-     * @var RollCall\Messaging\Storage\Replies
+     * @var TenFour\Messaging\Storage\Replies
      */
     protected $reply_storage;
 
@@ -57,11 +57,11 @@ class SMSController extends Controller
 
         if ($reply_obj) {
             $response_from = $reply_obj['from'];
-            $roll_call_id = $reply_obj['roll_call_id'];
+            $check_in_id = $reply_obj['check_in_id'];
 
             try {
-                $response_to = App::make('RollCall\Messaging\PhoneNumberAdapter', [$from]);
-                $this->message_service->sendResponseReceivedSMS($response_to, $response_from, $roll_call_id);
+                $response_to = App::make('TenFour\Messaging\PhoneNumberAdapter', [$from]);
+                $this->message_service->sendResponseReceivedSMS($response_to, $response_from, $check_in_id);
             } catch (NumberParseException $exception) {
                 // Somehow the number format could not be parsed
                 Log::info("[SMSController] Could not parse MSISDN: " . $from);

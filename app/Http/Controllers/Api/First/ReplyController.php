@@ -1,15 +1,15 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\ReplyRepository;
-use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Http\Requests\Reply\GetReplyRequest;
-use RollCall\Http\Requests\Reply\AddReplyRequest;
-use RollCall\Http\Requests\Reply\CreateReplyRequest;
-use RollCall\Http\Requests\Reply\UpdateReplyRequest;
-use RollCall\Http\Transformers\ReplyTransformer;
-use RollCall\Http\Response;
+use TenFour\Contracts\Repositories\ReplyRepository;
+use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Http\Requests\Reply\GetReplyRequest;
+use TenFour\Http\Requests\Reply\AddReplyRequest;
+use TenFour\Http\Requests\Reply\CreateReplyRequest;
+use TenFour\Http\Requests\Reply\UpdateReplyRequest;
+use TenFour\Http\Transformers\ReplyTransformer;
+use TenFour\Http\Response;
 use Dingo\Api\Auth\Auth;
 
 /**
@@ -17,10 +17,10 @@ use Dingo\Api\Auth\Auth;
  */
 class ReplyController extends ApiController
 {
-    public function __construct(replyRepository $reply, RollCallRepository $roll_calls, Auth $auth, Response $response)
+    public function __construct(replyRepository $reply, CheckInRepository $check_ins, Auth $auth, Response $response)
     {
         $this->reply = $reply;
-        $this->roll_calls = $roll_calls;
+        $this->check_ins = $check_ins;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -66,7 +66,7 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function find(GetReplyRequest $request, $roll_call_id, $reply_id)
+    public function find(GetReplyRequest $request, $check_in_id, $reply_id)
     {
         $reply = $this->reply->find($reply_id);
         return $this->response->item($reply, new ReplyTransformer, 'reply');
@@ -135,11 +135,11 @@ class ReplyController extends ApiController
         $reply = $this->reply->addReply(
           $request->input() + [
             'user_id' => $user_id,
-            'roll_call_id' => $id
+            'check_in_id' => $id
           ], $id);
 
         // Update response status
-        $this->roll_calls->updateRecipientStatus($id, $user_id, 'replied');
+        $this->check_ins->updateRecipientStatus($id, $user_id, 'replied');
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
@@ -147,16 +147,16 @@ class ReplyController extends ApiController
     {
         $user_id = $this->auth->user()['id'];
 
-        $user_id = $this->roll_calls->getUserFromReplyToken($request->get('token'));
+        $user_id = $this->check_ins->getUserFromReplyToken($request->get('token'));
 
         $reply = $this->reply->addReply(
           $request->input() + [
             'user_id' => $user_id,
-            'roll_call_id' => $id
+            'check_in_id' => $id
           ], $id);
 
         // Update response status
-        $this->roll_calls->updateRecipientStatus($id, $user_id, 'replied');
+        $this->check_ins->updateRecipientStatus($id, $user_id, 'replied');
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
@@ -263,7 +263,7 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function update(UpdateReplyRequest $request, $roll_call_id, $reply_id)
+    public function update(UpdateReplyRequest $request, $check_in_id, $reply_id)
     {
         $reply = $this->reply->update($request->all(), $reply_id);
 
