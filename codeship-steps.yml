@@ -37,9 +37,9 @@
       command: aglio -i /vols/src/docs/api/_meta.apib -o /vols/src/docs/api/index.html
     - name: "Deploy Docs (develop)"
       service: awscli
-      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/rollcall/develop --acl public-read
+      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/tenfour/develop --acl public-read
       tag: develop
     - name: "Deploy Docs (master)"
       service: awscli
-      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/rollcall/master --acl public-read
+      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/tenfour/master --acl public-read
       tag: master
