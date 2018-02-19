@@ -9,10 +9,9 @@
     service: deploy
     command: >
       ANSIBLE_GITHUB_REPO=rollcall-infra
-      ANSIBLE_GITHUB_REPO_VERSION=master
-      ENV=staging
-      TF_FOLDER=tf/staging
-      ush-ansible-playbook.sh -vv -i ./hosts -l staging
+      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ENV=dev
+      ush-ansible-playbook.sh -vv -i ./hosts -l dev
         -e API_VERSION_SRC=/vols/src
         api-deploy-version.yml
     tag: develop
