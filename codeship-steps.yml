@@ -16,6 +16,17 @@
         api-deploy-version.yml
     tag: develop
 
+  - name: "Deploy (staging)"
+    service: deploy
+    command: >
+      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ENV=dev
+      ush-ansible-playbook.sh -vv -i ./hosts -l staging
+        -e API_VERSION_SRC=/vols/src
+        api-deploy-version.yml
+    tag: staging
+
   - name: "Deploy (master)"
     service: deploy
     command: >
@@ -29,7 +40,7 @@
     tag: master
 
   - type: serial
-    tag: ^(develop|master)$
+    tag: ^(develop|staging|master)$
     steps:
     - name: "Docs"
       service: aglio
@@ -38,6 +49,10 @@
       service: awscli
       command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/tenfour/develop --acl public-read
       tag: develop
+    - name: "Deploy Docs (staging)"
+      service: awscli
+      command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/tenfour/staging --acl public-read
+      tag: staging
     - name: "Deploy Docs (master)"
       service: awscli
       command: aws s3 sync /vols/src/docs/ s3://preview.ushahidi.com/tenfour/master --acl public-read
