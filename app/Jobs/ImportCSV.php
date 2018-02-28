@@ -54,11 +54,18 @@ class ImportCSV implements ShouldQueue
         $path = $file_details['filename'];
         $map = $file_details['maps_to'];
 
-        $transformer = App::make('TenFour\Contracts\Contacts\CsvTransformer', [$map]);
-        $reader = App::make('TenFour\Contracts\Contacts\CsvReader', [$path]);
+        $transformer = App::make('TenFour\Contracts\Contacts\CsvTransformer');
+        $transformer->setMap($map);
 
-        $importer = App::make('TenFour\Contracts\Contacts\CsvImporter',
-            [$reader, $transformer, $contacts, $people, $this->organization_id]);
+        $reader = App::make('TenFour\Contracts\Contacts\CsvReader');
+        $reader->setPath($path);
+
+        $importer = App::make('TenFour\Contracts\Contacts\CsvImporter');
+        $importer->setReader($reader);
+        $importer->setTransformer($transformer);
+        $importer->setContacts($contacts);
+        $importer->setPeople($people);
+        $importer->setOrganizationId($this->organization_id);
 
         $members = $importer->import();
         $count = count($members);
@@ -68,7 +75,7 @@ class ImportCSV implements ShouldQueue
             $invitee['invite_token'] = Hash::Make(config('app.key'));
             $invitee['invite_sent'] = true;
             $people->update($this->organization_id, $invitee, $member_id);
-            
+
             dispatch((new SendInvite($invitee, $organization->toArray())));
         }
 

@@ -4,6 +4,7 @@ namespace TenFour\Providers;
 
 use Auth;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
 
 use TenFour\Auth\EloquentUserProvider;
 
@@ -30,5 +31,12 @@ class AuthServiceProvider extends ServiceProvider
         Auth::provider('tenfour', function ($app, array $config) {
             return new EloquentUserProvider($this->app['hash'], $config['model']);
         });
+
+        Passport::tokensCan([
+            'user' => 'User level access',
+        ]);
+
+        Passport::routes();
+
     }
 }

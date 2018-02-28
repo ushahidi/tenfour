@@ -1,3 +1,4 @@
+
 -- Add test organizations
 INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'TenFourTest', 'tenfourtest');
 INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
@@ -23,56 +24,19 @@ VALUES
 ('11', 'Author','Author role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'author', 2),
 ('12', 'Viewer','Viewer role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'viewer', 2);
 
--- Add OAuth tokens and scopes
--- Clients
-INSERT INTO oauth_clients (id, secret, name) VALUES ('webapp', 'secret', 'webapp');
--- Scopes
-INSERT INTO oauth_scopes (id, description) VALUES ('user', 'user'),('organization', 'organization'),('contact', 'contact');
+-- Add OAuth clients and tokens
+INSERT INTO oauth_personal_access_clients VALUES (1, 2, '2016-10-30 12:05:01','2016-10-30 12:05:01');
+INSERT INTO oauth_clients VALUES (1, NULL, 'webapp', 'secret', 'http://localhost', 0, 1, 0,'2016-10-30 12:05:01','2016-10-30 12:05:01');
+INSERT INTO oauth_clients VALUES (2, NULL, 'tests', 'secret', 'http://localhost', 1, 0, 0,'2016-10-30 12:05:01','2016-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('anonusertoken',NULL,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('472a9b2658b27e52a22facfd788b37736e6ab3e5a7298a35be01465167338fd84febe56954dda1e3',1,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('eb35a7a46ff6f8317ee0f70fa6eb8ba8f4883ee6aedf21ccb93eac6b7ce3bfe1afd06612be234ee9',2,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('4fca98fc7ae0313a78055cc55b3c1a675ef9357d04498d76acf4ca07e1fba910cd6a5f31390a5011',4,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('6964a0d60c3e45aeb64fc4af7071da05f024e25ab2d32e86343e75b07d965da04781747fe9342160',5,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('a17ea51f5251fb5e07de177d38a91e47272499214cded5ae6c67f9ce8082fc399bd8687617e006c8',11,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
+INSERT INTO oauth_access_tokens VALUES ('009632df63015cad8b00c225612523ac83dd11f36e1d88deaac302206439c1c2cf20d2d6bf237b8a',12,1,NULL,'["user"]',0,'2016-10-30 12:05:01','2016-10-30 12:05:01','2019-10-30 12:05:01');
 
--- Client credentials
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('anonusertoken', 'user');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp', 'client', 'webapp');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('1', 'user');
-INSERT INTO oauth_access_tokens VALUES ('anonusertoken',1,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
--- Password grants
--- User
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('usertoken', 'user'), ('usertoken','contact');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','1');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('2','user'),('6', 'contact');
-INSERT INTO oauth_access_tokens VALUES ('usertoken',2,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
--- Admin
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('admintoken', 'user');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','2');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('3','user');
-INSERT INTO oauth_access_tokens VALUES ('admintoken',3,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
--- Organization Owner
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgownertoken', 'organization');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','4');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('4', 'organization');
-INSERT INTO oauth_access_tokens VALUES ('orgownertoken',4,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
--- Organization Admin
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('orgadmintoken', 'organization');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','5');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('5', 'organization');
-INSERT INTO oauth_access_tokens VALUES ('orgadmintoken',5,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
---  Author
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('authortoken', 'organization');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','11');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('6', 'organization');
-INSERT INTO oauth_access_tokens VALUES ('authortoken',6,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
---  Viewer
-INSERT INTO oauth_access_token_scopes (access_token_id, scope_id) VALUES ('viewertoken', 'organization');
-INSERT INTO oauth_sessions (client_id, owner_type, owner_id) VALUES ('webapp','user','12');
-INSERT INTO oauth_session_scopes (session_id, scope_id) VALUES ('7', 'organization');
-INSERT INTO oauth_access_tokens VALUES ('viewertoken',7,1856429714,'2016-10-30 12:05:01','2016-10-30 12:05:01');
-
---Add test contacts
+-- Add test contacts
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('1', '1', '2', '1', 'phone', '+254721674180');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact, unsubscribe_token) VALUES ('2', '1', '2', '1', 'email', 'test@ushahidi.com', 'testunsubscribetoken');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('3', '2', '2', '0', 'email', 'linda@ushahidi.com');
@@ -90,7 +54,7 @@ INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VA
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('15', '5', '2', '1', 'phone', '+254721674200');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('16', '11', '2', '1', 'email', 'test+author@organization2.com');
 
---Add test check-ins
+-- Add test check-ins
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id) VALUES ('2', 'Another test check-in', '3', 'pending', '0', '1');
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id) VALUES ('3', 'yet another test check-in', '2', 'pending', '0', '1');
@@ -138,9 +102,9 @@ VALUES
 INSERT INTO unverified_addresses (id, address, verification_token) VALUES ('1', 'mary@ushahidi.com', 'token');
 
 -- Add test organization groups
-INSERT INTO groups (id, name, organization_id) VALUES ('1', 'Test Group 1', '1');
+INSERT INTO groups (id, name, organization_id) VALUES ('1', 'Test Group 1', '2');
 INSERT INTO groups (id, name, organization_id) VALUES ('2', 'Test Group 2', '2');
-INSERT INTO groups (id, name, organization_id) VALUES ('3', 'Test Group 3', '1');
+INSERT INTO groups (id, name, organization_id) VALUES ('3', 'Test Group 3', '2');
 
 -- Add test group members
 INSERT INTO group_users (group_id, user_id) VALUES ('1', '2');

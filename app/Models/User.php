@@ -14,12 +14,13 @@ use Illuminate\Notifications\Notifiable;
 use TenFour\Notifications\ResetPassword;
 use Illuminate\Support\Str;
 use TenFour\Models\Mail as OutgoingMail;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Authenticatable, Authorizable, CanResetPassword, HasApiTokens;
 
     use Notifiable {
       notify as protected notifiableNotify;
@@ -202,4 +203,17 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->belongsToMany('TenFour\Models\Group', 'group_users');
     }
+
+    public function findForPassport($username) {
+        list($organization_id, $email) = explode(":", $username);
+
+        return $this
+            ->where('organization_id', '=', $organization_id)
+            ->whereHas('contacts', function ($query) use ($email) {
+                $query
+                ->where('contact', '=', $email)
+                ->where('type', '=', 'email');
+            })->first();
+    }
+
 }

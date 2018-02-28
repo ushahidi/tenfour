@@ -2,7 +2,7 @@
 
 class AuthCest
 {
-    protected $endpoint = '/oauth/access_token';
+    protected $endpoint = '/oauth/token';
 
     /*
      * Get an auth token
@@ -12,19 +12,19 @@ class AuthCest
         $I->wantTo('Get an oauth token with password grant');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'client_id' => 'webapp',
+            'client_id' => '1',
             'client_secret' => 'secret',
             'scope' => 'user',
-            'username' => 'admin@ushahidi.com',
+            'username' => '2:admin@ushahidi.com',
             'password' => 'westgate',
-            'subdomain' => 'tenfourtest',
+            // 'subdomain' => 'tenfourtest',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             "token_type" => "Bearer",
-            "expires_in" => 3600
+            "expires_in" => 31536000
         ]);
         $I->seeResponseMatchesJsonType([
             'access_token' => 'string',
@@ -38,26 +38,26 @@ class AuthCest
      */
     public function getAuthTokenWithInvalidCredentials(ApiTester $I)
     {
-        $I->wantTo('Get an oauth token with password grant');
+        $I->wantTo('Get an oauth token with invalid credentials');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'client_id' => 'webapp',
+            'client_id' => '1',
             'client_secret' => 'secret',
             'scope' => 'user',
-            'username' => 'admin@ushahidi.com',
+            'username' => '2:admin@ushahidi.com',
             'password' => 'invalid',
-            'subdomain' => 'tenfourtest',
+            // 'subdomain' => 'tenfourtest',
             'grant_type' => 'password'
         ]);
         $I->seeResponseCodeIs(401);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             "message" => 'The user credentials were incorrect.',
-            "status_code" => 401
+            "error" => 'invalid_credentials'
         ]);
         $I->seeResponseMatchesJsonType([
             'message' => 'string',
-            'status_code' => 'integer',
+            'error' => 'string',
         ]);
     }
 
@@ -69,7 +69,7 @@ class AuthCest
         $I->wantTo('Get an oauth token with client creds');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'client_id' => 'webapp',
+            'client_id' => '1',
             'client_secret' => 'secret',
             'scope' => 'user',
             'grant_type' => 'client_credentials'
@@ -78,7 +78,7 @@ class AuthCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             "token_type" => "Bearer",
-            "expires_in" => 3600
+            "expires_in" => 31536000
         ]);
         $I->seeResponseMatchesJsonType([
             'access_token' => 'string',

@@ -8,9 +8,7 @@ class SMSServiceProvider extends BaseSMSServiceProvider
 {
     public function registerSender()
     {
-        $this->app['sms.sender'] = $this->app->share(function ($app) {
-            return (new DriverManager($app))->driver();
-        });
+        $this->app['sms.sender'] = (new DriverManager($this->app))->driver();
     }
 
     /**

@@ -3,13 +3,17 @@ modules:
     enabled: [ApiHelper, DbHelper, Laravel5, REST]
     config:
       REST:
-           depends: PhpBrowser
+           depends: [PhpBrowser, Laravel5]
            url: 'http://api.tenfour.local/'
       DbHelper:
            dsn: 'mysql:host=localhost;dbname=rollcall'
            user: 'root'
+           host: 'localhost'
+           dbname: 'rollcall'
            password: 'secret'
            dump: 'tests/_data/dump.sql'
+           cleanup: true
+           populate: true
 env:
   testing:
     modules:
@@ -18,5 +22,10 @@ env:
              url: 'http://api.tenfour.local/'
         DbHelper:
           dsn: 'mysql:host=mysql;dbname=rollcall'
-          user: rollcall
-          password: rollcall
+          user: 'rollcall'
+          host: 'mysql'
+          dbname: 'rollcall'
+          password: 'rollcall'
+          dump: 'tests/_data/dump.sql'
+          cleanup: true
+          populate: true

@@ -19,7 +19,7 @@ class SendMail implements ShouldQueue
     use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $to;
-    protected $msg;
+    protected $mailable;
     protected $view;
     protected $additional_params;
     protected $subject;
@@ -29,13 +29,12 @@ class SendMail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($to, $msg, $view, $additional_params = [], $subject = null)
+    public function __construct($to, $mailable, $view, $additional_params = [])
     {
         $this->to = $to;
-        $this->msg = $msg;
+        $this->mailable = $mailable;
         $this->view = $view;
         $this->additional_params = $additional_params;
-        $this->subject = $subject;
     }
 
     /**
@@ -45,34 +44,22 @@ class SendMail implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->msg instanceof Mailable) {
-            Mail::to($this->to)->send($this->msg);
+        if ($this->mailable instanceof Mailable) {
+            Mail::to($this->to)->send($this->mailable);
+
+            $from = ($this->mailable->from && count($this->mailable->from))
+                ? $this->mailable->from[0]['address']
+                : config('mail.from')['address'];
 
             $this->logMail(
                 $this->to,
-                $this->msg->from[0]['address'],
-                $this->msg->subject,
+                $from,
+                $this->mailable->subject,
                 isset($this->additional_params['type'])?$this->additional_params['type']:'other',
                 isset($this->additional_params['check_in_id'])?$this->additional_params['check_in_id']:0
             );
         } else {
-            $params = ['msg' => $this->msg] + $this->additional_params;
-            $subject = $this->subject ? $this->subject : str_limit($this->msg, $limit = 50, $end = '...');
-            $to = $this->to;
-            $subject = $this->subject;
-
-            Mail::queue($this->view, $params, function($message) use ($to, $subject) {
-                $message->to($to);
-                $message->subject($subject);
-            });
-
-            $this->logMail(
-                $this->to,
-                isset($this->additional_params['from'])?$this->additional_params['from']:config('mail.from.address'),
-                $this->subject,
-                isset($this->additional_params['type'])?$this->additional_params['type']:'other',
-                isset($this->additional_params['check_in_id'])?$this->additional_params['check_in_id']:0
-            );
+            throw new Exception('Refusing to queue a non-mailable mail');
         }
     }
 

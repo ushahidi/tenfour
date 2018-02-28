@@ -14,11 +14,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * This is the create oauth sessions table migration class.
+ * This is the create oauth client endpoints table migration class.
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class CreateOauthSessionsTable extends Migration
+class LegacyCreateOauthClientEndpointsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,15 +27,14 @@ class CreateOauthSessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_sessions', function (Blueprint $table) {
+        Schema::create('oauth_client_endpoints', function (Blueprint $table) {
             $table->increments('id');
             $table->string('client_id', 40);
-            $table->enum('owner_type', ['client', 'user'])->default('user');
-            $table->string('owner_id');
-            $table->string('client_redirect_uri')->nullable();
+            $table->string('redirect_uri');
+
             $table->timestamps();
 
-            $table->index(['client_id', 'owner_type', 'owner_id']);
+            $table->unique(['client_id', 'redirect_uri']);
 
             $table->foreign('client_id')
                 ->references('id')->on('oauth_clients')
@@ -51,9 +50,10 @@ class CreateOauthSessionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_sessions', function (Blueprint $table) {
-            $table->dropForeign('oauth_sessions_client_id_foreign');
+        Schema::table('oauth_client_endpoints', function (Blueprint $table) {
+            $table->dropForeign('oauth_client_endpoints_client_id_foreign');
         });
-        Schema::drop('oauth_sessions');
+
+        Schema::drop('oauth_client_endpoints');
     }
 }

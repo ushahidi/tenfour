@@ -1,6 +1,7 @@
 <?php
 
 use Codeception\Util\Stub;
+use Codeception\Stub\Expected;
 use TenFour\Contracts\Contacts\CsvReader;
 use TenFour\Contracts\Contacts\CsvTransformer;
 use TenFour\Contacts\CsvImporter;
@@ -49,15 +50,19 @@ class CsvImporterCest
 
         // Contact repository
         $contacts = Stub::makeEmpty(ContactRepository::class, [
-            'create' => Stub::exactly(4, function() {})
+            'create' => Expected::exactly(4, function() {})
         ]);
 
         // Person repository;
         $people = Stub::makeEmpty(PersonRepository::class, [
-            'create' => Stub::exactly(2, function() {})
+            'create' => Expected::exactly(2, function() {})
         ]);
 
-        $this->csv_importer = new CsvImporter($csv_reader, $transformer, $contacts, $people, null);
+        $this->csv_importer = new CsvImporter();
+        $this->csv_importer->setReader($csv_reader);
+        $this->csv_importer->setTransformer($transformer);
+        $this->csv_importer->setContacts($contacts);
+        $this->csv_importer->setPeople($people);
     }
 
     public function testImport(UnitTester $t)

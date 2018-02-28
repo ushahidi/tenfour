@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class CreateOauthClientsTable extends Migration
+class LegacyCreateOauthClientsTable extends Migration
 {
     /**
      * Run the migrations.

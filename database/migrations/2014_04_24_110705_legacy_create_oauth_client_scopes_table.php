@@ -14,11 +14,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * This is the create oauth client endpoints table migration class.
+ * This is the create oauth client scopes table migration class.
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class CreateOauthClientEndpointsTable extends Migration
+class LegacyCreateOauthClientScopesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,19 +27,23 @@ class CreateOauthClientEndpointsTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_client_endpoints', function (Blueprint $table) {
+        Schema::create('oauth_client_scopes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('client_id', 40);
-            $table->string('redirect_uri');
+            $table->string('scope_id', 40);
 
             $table->timestamps();
 
-            $table->unique(['client_id', 'redirect_uri']);
+            $table->index('client_id');
+            $table->index('scope_id');
 
             $table->foreign('client_id')
-                ->references('id')->on('oauth_clients')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                  ->references('id')->on('oauth_clients')
+                  ->onDelete('cascade');
+
+            $table->foreign('scope_id')
+                  ->references('id')->on('oauth_scopes')
+                  ->onDelete('cascade');
         });
     }
 
@@ -50,10 +54,10 @@ class CreateOauthClientEndpointsTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_client_endpoints', function (Blueprint $table) {
-            $table->dropForeign('oauth_client_endpoints_client_id_foreign');
+        Schema::table('oauth_client_scopes', function (Blueprint $table) {
+            $table->dropForeign('oauth_client_scopes_client_id_foreign');
+            $table->dropForeign('oauth_client_scopes_scope_id_foreign');
         });
-
-        Schema::drop('oauth_client_endpoints');
+        Schema::drop('oauth_client_scopes');
     }
 }

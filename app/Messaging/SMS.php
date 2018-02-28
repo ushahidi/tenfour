@@ -13,9 +13,7 @@ class SMS extends BaseSMS
      */
     public function driver($driver)
     {
-        $this->container['sms.sender'] = $this->container->share(function ($app) use ($driver) {
-            return (new DriverManager($app))->driver($driver);
-        });
+        $this->container['sms.sender'] = (new DriverManager($this->container))->driver($driver);
 
         $this->driver = $this->container['sms.sender'];
     }

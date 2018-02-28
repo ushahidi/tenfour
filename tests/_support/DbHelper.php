@@ -8,26 +8,19 @@ class DbHelper extends \Codeception\Module\Db
      *
      * See http://matthewturland.com/2014/05/09/customizing-codeception-database-cleanup/
      **/
-    protected function cleanup()
+    public function _cleanup()
     {
         $dbh = $this->driver->getDbh();
 
         $dbh->exec('SET FOREIGN_KEY_CHECKS=0');
 
-        // Clear OAuth tokens and scopes
-        $dbh->exec('TRUNCATE TABLE oauth_access_token_scopes');
-        $dbh->exec('TRUNCATE TABLE oauth_sessions');
-        $dbh->exec('TRUNCATE TABLE oauth_session_scopes');
         $dbh->exec('TRUNCATE TABLE oauth_access_tokens');
-        $dbh->exec('TRUNCATE TABLE oauth_scopes');
+        $dbh->exec('TRUNCATE TABLE oauth_refresh_tokens');
         $dbh->exec('TRUNCATE TABLE oauth_clients');
+        $dbh->exec('TRUNCATE TABLE oauth_personal_access_clients');
 
         // Delete test users
         $dbh->exec('TRUNCATE TABLE users');
-
-        // Delete roles;
-        // $dbh->exec('TRUNCATE TABLE roles');
-
 
         $dbh->exec('TRUNCATE TABLE credit_adjustments');
         $dbh->exec('TRUNCATE TABLE subscriptions');

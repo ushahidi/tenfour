@@ -15,20 +15,14 @@ class OauthTableSeeder extends Seeder
                 [
                     'id'         => $this->container->config->get('tenfour.app_client.client_id'),
                     'secret'     => $this->container->config->get('tenfour.app_client.client_secret'),
+                    'password_client' => true,
+                    'revoked'    => false,
                     'name'       => 'TenFour',
-                    'created_at' => time(),
-                    'updated_at' => time()
+                    // 'created_at' => datetime(),
+                    // 'updated_at' => time()
                 ]
             ]);
         }
 
-        $scopes = $this->container->db->table('oauth_scopes');
-        if ($scopes->whereIn('id', ['basic', 'user', 'organization'])->count() < 3) {
-            $scopes->insert([
-                ['id' => 'basic', 'description' => 'The base API scope', 'created_at' => time(), 'updated_at' => time()],
-                ['id' => 'user', 'description' => 'user', 'created_at' => time(), 'updated_at' => time()],
-                ['id' => 'organization', 'description' => 'organization', 'created_at' => time(), 'updated_at' => time()],
-            ]);
-        }
     }
 }

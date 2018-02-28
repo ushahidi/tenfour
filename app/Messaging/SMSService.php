@@ -13,7 +13,6 @@ class SMSService implements MessageService
 
     private $view;
     private $iterator;
-    private $throttle;
 
     public function __construct()
     {

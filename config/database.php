@@ -115,15 +115,20 @@ return [
 
         'client' => 'predis',
 
-        'cluster' => false,
-
-        'default' => [
-            'host' => env('REDIS_HOST', 'localhost'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
+        'options' => [
+            'cluster' => 'redis',
         ],
 
+        'clusters' => [
+            'default' => [
+                [
+                    'host' => env('REDIS_HOST', 'localhost'),
+                    'password' => env('REDIS_PASSWORD', null),
+                    'port' => env('REDIS_PORT', 6379),
+                    'database' => 0,
+                ],
+            ],
+        ]
     ],
 
 ];

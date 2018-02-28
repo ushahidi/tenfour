@@ -19,7 +19,8 @@ use TenFour\Services\URLShortenerService;
 use TenFour\Services\AnalyticsService;
 
 use libphonenumber\NumberParseException;
-use Swift_Validate;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Log;
 use App;
 use Exception;
@@ -119,11 +120,12 @@ class SendCheckIn implements ShouldQueue
                 }
 
                 $message_service = $message_service_factory->make($contact['type']);
-                $to = $contact['contact'];
                 $from = null;
 
                 if ($contact['type'] === 'email' && isset($send_via['email'])) {
-                    if (Swift_Validate::email($to)) {
+                    $to = $contact['contact'];
+
+                    if ((new EmailValidator())->isValid($to, new RFCValidation())) {
                         $this->dispatchCheckInViaEmail($message_service, $contact, $to, $creator, $recipient);
                     } else {
                         Log::warning("Can't send a check-in to an invalid email address: '" . $to . "'");
@@ -133,7 +135,8 @@ class SendCheckIn implements ShouldQueue
                 } else if ($contact['type'] === 'phone' && isset($send_via['sms'])) {
 
                     try {
-                        $to = App::make('TenFour\Messaging\PhoneNumberAdapter', [$to]);
+                        $to = App::make('TenFour\Messaging\PhoneNumberAdapter');
+                        $to->setRawNumber($contact['contact']);
                     } catch (NumberParseException $exception) {
                         Log::warning("Can't send a check-in to an invalid phone number: " . $exception);
                         continue;
