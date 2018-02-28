@@ -728,7 +728,7 @@ class PersonCest
             'client_id' => '1',
             'client_secret' => 'secret',
             'scope' => 'user',
-            'username' => '2:test@ushahidi.com',
+            'username' => 'tenfourtest:test@ushahidi.com',
             // 'subdomain' => 'tenfourtest',
             'password' => 'another_password',
             'grant_type' => 'password'

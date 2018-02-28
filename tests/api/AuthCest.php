@@ -15,7 +15,7 @@ class AuthCest
             'client_id' => '1',
             'client_secret' => 'secret',
             'scope' => 'user',
-            'username' => '2:admin@ushahidi.com',
+            'username' => 'tenfourtest:admin@ushahidi.com',
             'password' => 'westgate',
             // 'subdomain' => 'tenfourtest',
             'grant_type' => 'password'
@@ -44,7 +44,7 @@ class AuthCest
             'client_id' => '1',
             'client_secret' => 'secret',
             'scope' => 'user',
-            'username' => '2:admin@ushahidi.com',
+            'username' => 'tenfourtest:admin@ushahidi.com',
             'password' => 'invalid',
             // 'subdomain' => 'tenfourtest',
             'grant_type' => 'password'
