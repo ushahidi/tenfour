@@ -14,11 +14,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * This is the create oauth access token scopes table migration class.
+ * This is the create oauth refresh tokens table migration class.
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class LegacyCreateOauthAccessTokenScopesTable extends Migration
+class CreateOauthRefreshTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,22 +27,15 @@ class LegacyCreateOauthAccessTokenScopesTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_access_token_scopes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('access_token_id', 40);
-            $table->string('scope_id', 40);
+        Schema::create('oauth_refresh_tokens', function (Blueprint $table) {
+            $table->string('id', 40)->unique();
+            $table->string('access_token_id', 40)->primary();
+            $table->integer('expire_time');
 
             $table->timestamps();
 
-            $table->index('access_token_id');
-            $table->index('scope_id');
-
             $table->foreign('access_token_id')
                   ->references('id')->on('oauth_access_tokens')
-                  ->onDelete('cascade');
-
-            $table->foreign('scope_id')
-                  ->references('id')->on('oauth_scopes')
                   ->onDelete('cascade');
         });
     }
@@ -54,10 +47,10 @@ class LegacyCreateOauthAccessTokenScopesTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_access_token_scopes', function (Blueprint $table) {
-            $table->dropForeign('oauth_access_token_scopes_scope_id_foreign');
-            $table->dropForeign('oauth_access_token_scopes_access_token_id_foreign');
+        Schema::table('oauth_refresh_tokens', function (Blueprint $table) {
+            $table->dropForeign('oauth_refresh_tokens_access_token_id_foreign');
         });
-        Schema::drop('oauth_access_token_scopes');
+
+        Schema::drop('oauth_refresh_tokens');
     }
 }

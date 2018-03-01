@@ -14,11 +14,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * This is the create oauth refresh tokens table migration class.
+ * This is the create oauth access tokens table migration class.
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class LegacyCreateOauthRefreshTokensTable extends Migration
+class CreateOauthAccessTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,15 +27,18 @@ class LegacyCreateOauthRefreshTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->string('id', 40)->unique();
-            $table->string('access_token_id', 40)->primary();
+        Schema::create('oauth_access_tokens', function (Blueprint $table) {
+            $table->string('id', 40)->primary();
+            $table->integer('session_id')->unsigned();
             $table->integer('expire_time');
 
             $table->timestamps();
 
-            $table->foreign('access_token_id')
-                  ->references('id')->on('oauth_access_tokens')
+            $table->unique(['id', 'session_id']);
+            $table->index('session_id');
+
+            $table->foreign('session_id')
+                  ->references('id')->on('oauth_sessions')
                   ->onDelete('cascade');
         });
     }
@@ -47,10 +50,9 @@ class LegacyCreateOauthRefreshTokensTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->dropForeign('oauth_refresh_tokens_access_token_id_foreign');
+        Schema::table('oauth_access_tokens', function (Blueprint $table) {
+            $table->dropForeign('oauth_access_tokens_session_id_foreign');
         });
-
-        Schema::drop('oauth_refresh_tokens');
+        Schema::drop('oauth_access_tokens');
     }
 }

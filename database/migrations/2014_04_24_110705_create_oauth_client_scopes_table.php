@@ -14,11 +14,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * This is the create oauth code scopes table migration class.
+ * This is the create oauth client scopes table migration class.
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class LegacyCreateOauthAuthCodeScopesTable extends Migration
+class CreateOauthClientScopesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,18 +27,18 @@ class LegacyCreateOauthAuthCodeScopesTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_auth_code_scopes', function (Blueprint $table) {
+        Schema::create('oauth_client_scopes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('auth_code_id', 40);
+            $table->string('client_id', 40);
             $table->string('scope_id', 40);
 
             $table->timestamps();
 
-            $table->index('auth_code_id');
+            $table->index('client_id');
             $table->index('scope_id');
 
-            $table->foreign('auth_code_id')
-                  ->references('id')->on('oauth_auth_codes')
+            $table->foreign('client_id')
+                  ->references('id')->on('oauth_clients')
                   ->onDelete('cascade');
 
             $table->foreign('scope_id')
@@ -54,10 +54,10 @@ class LegacyCreateOauthAuthCodeScopesTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_auth_code_scopes', function (Blueprint $table) {
-            $table->dropForeign('oauth_auth_code_scopes_auth_code_id_foreign');
-            $table->dropForeign('oauth_auth_code_scopes_scope_id_foreign');
+        Schema::table('oauth_client_scopes', function (Blueprint $table) {
+            $table->dropForeign('oauth_client_scopes_client_id_foreign');
+            $table->dropForeign('oauth_client_scopes_scope_id_foreign');
         });
-        Schema::drop('oauth_auth_code_scopes');
+        Schema::drop('oauth_client_scopes');
     }
 }

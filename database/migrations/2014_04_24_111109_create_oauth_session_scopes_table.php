@@ -14,11 +14,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * This is the create oauth auth codes table migration class.
+ * This is the create oauth session scopes table migration class.
  *
  * @author Luca Degasperi <packages@lucadegasperi.com>
  */
-class LegacyCreateOauthAuthCodesTable extends Migration
+class CreateOauthSessionScopesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -27,18 +27,22 @@ class LegacyCreateOauthAuthCodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('oauth_auth_codes', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
+        Schema::create('oauth_session_scopes', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('session_id')->unsigned();
-            $table->string('redirect_uri');
-            $table->integer('expire_time');
+            $table->string('scope_id', 40);
 
             $table->timestamps();
 
             $table->index('session_id');
+            $table->index('scope_id');
 
             $table->foreign('session_id')
                   ->references('id')->on('oauth_sessions')
+                  ->onDelete('cascade');
+
+            $table->foreign('scope_id')
+                  ->references('id')->on('oauth_scopes')
                   ->onDelete('cascade');
         });
     }
@@ -50,9 +54,10 @@ class LegacyCreateOauthAuthCodesTable extends Migration
      */
     public function down()
     {
-        Schema::table('oauth_auth_codes', function (Blueprint $table) {
-            $table->dropForeign('oauth_auth_codes_session_id_foreign');
+        Schema::table('oauth_session_scopes', function (Blueprint $table) {
+            $table->dropForeign('oauth_session_scopes_session_id_foreign');
+            $table->dropForeign('oauth_session_scopes_scope_id_foreign');
         });
-        Schema::drop('oauth_auth_codes');
+        Schema::drop('oauth_session_scopes');
     }
 }
