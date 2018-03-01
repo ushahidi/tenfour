@@ -207,14 +207,16 @@ class User extends Model implements AuthenticatableContract,
     public function findForPassport($username) {
         list($subdomain, $email) = explode(":", $username);
 
-        return $this
+        $user_id = $this
             ->leftJoin('organizations', 'organizations.id', '=', 'users.organization_id')
             ->where('organizations.subdomain', '=', $subdomain)
             ->whereHas('contacts', function ($query) use ($email) {
                 $query
                 ->where('contact', '=', $email)
                 ->where('type', '=', 'email');
-            })->first();
+            })->pluck('users.id');
+
+        return $this->where('id', $user_id)->first();
     }
 
 }

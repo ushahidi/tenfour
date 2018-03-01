@@ -38,11 +38,12 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \TenFour\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.basic.chargebee-webhook' => \TenFour\Http\Middleware\ChargeBeeWebhookAuthentication::class,
-        'csrf' => App\Http\Middleware\VerifyCsrfToken::class,
-        'guest' => \TenFour\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'auth'                          => \TenFour\Http\Middleware\Authenticate::class,
+        'auth.basic'                    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.basic.chargebee-webhook'  => \TenFour\Http\Middleware\ChargeBeeWebhookAuthentication::class,
+        'client_credentials'            => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        'csrf'                          => \TenFour\Http\Middleware\VerifyCsrfToken::class,
+        'guest'                         => \TenFour\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'                      => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

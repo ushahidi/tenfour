@@ -765,7 +765,7 @@ class PersonCest
         // $I->seeResponseCodeIs(200);
         //
         // $I->sendPOST('/oauth/access_token', [
-        //     'client_id' => 'webapp',
+        //     'client_id' => '1',
         //     'client_secret' => 'secret',
         //     'scope' => 'user',
         //     'username' => 'test@ushahidi.com',
