@@ -3,7 +3,8 @@ services:
   api:
     build:
       context: .
-      dockerfile: docker/run.Dockerfile
+      dockerfile: Dockerfile
+    command: start
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
@@ -13,16 +14,18 @@ services:
       - APP_ENV=testing
       - APP_API_DOMAIN=localhost
       - REDIS_HOST=redis
+      - DOCKERIZE_WAIT_FOR_mysql=tcp://mysql:3306
+      - DOCKERIZE_WAIT_FOR_redis=tcp://redis:6379
     extra_hosts:  # TODO: how things break if we take these out?
-      - "rollcall.dev:127.0.0.1"
-      - "api.rollcall.dev:127.0.0.1"
+      - "tenfour.dev:127.0.0.1"
+      - "api.tenfour.dev:127.0.0.1"
       - "tenfour.local:127.0.0.1"
       - "api.tenfour.local:127.0.0.1"
     depends_on:
       - mysql
       - redis
     ports:
-      - "8000:8000"
+      - "8080:8080"
   mysql:
     image: mysql:5.7
     environment:
