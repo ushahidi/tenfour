@@ -12,7 +12,7 @@ To authenticate with the API and do requests to it, you must first request a tok
 
     {
     	"grant_type": "client_credentials",
-    	"client_id": "webapp",
+    	"client_id": "1",
     	"client_secret": "T7913s89oGgJ478J73MRHoO2gcRRLQ"
     }
 Once this is done you'll receive a token than you can then use for your requests via the `Authorization` header:
