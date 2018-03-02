@@ -168,11 +168,13 @@ class OrganizationCest
                 ]
             ],
             'user'      => [
-                'name'    => 'Mary Mata',
-                'role'    => 'owner',
-                'contact' => [
-                    'contact' => 'mary@ushahidi.org',
-                    'type'    => 'email',
+                'name'          => 'Mary Mata',
+                'role'          => 'owner',
+                'person_type'   => 'user',
+                'contact'       => [
+                    'contact'   => 'mary@ushahidi.org',
+                    'type'      => 'email',
+                    'preferred' => 1
                 ]
             ]
         ]);
