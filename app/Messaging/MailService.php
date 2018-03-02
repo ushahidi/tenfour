@@ -9,9 +9,9 @@ class MailService implements MessageService
 {
     protected $view;
 
-    public function send($to, $msg, $additional_params = [], $subject = null)
+    public function send($to, $mailable, $additional_params = [], $subject = null)
     {
-        dispatch((new SendMail($to, $msg, $this->view, $additional_params, $subject))/*->onQueue('mails')*/);
+        dispatch((new SendMail($to, $mailable, $this->view, $additional_params))/*->onQueue('mails')*/);
     }
 
     protected function logMail($to, $from, $subject, $type, $check_in_id)

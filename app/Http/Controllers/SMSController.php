@@ -60,7 +60,8 @@ class SMSController extends Controller
             $check_in_id = $reply_obj['check_in_id'];
 
             try {
-                $response_to = App::make('TenFour\Messaging\PhoneNumberAdapter', [$from]);
+                $response_to = App::make('TenFour\Messaging\PhoneNumberAdapter');
+                $response_to->setRawNumber($from);
                 $this->message_service->sendResponseReceivedSMS($response_to, $response_from, $check_in_id);
             } catch (NumberParseException $exception) {
                 // Somehow the number format could not be parsed

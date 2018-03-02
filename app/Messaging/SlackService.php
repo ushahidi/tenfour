@@ -14,13 +14,7 @@ class SlackService implements MessageService
         if ($msg instanceof CheckInSlack) {
             Mail::to($to)->send($msg);
         } else {
-            $params = ['msg' => $msg] + $additional_params;
-            $subject = $subject ? $subject : str_limit($msg, $limit = 50, $end = '...');
-
-            Mail::send($this->view, $params, function($message) use ($to, $subject) {
-                $message->to($to);
-                $message->subject($subject);
-            });
+            \Log::error('Refusing to queue a non-mailable mail');
         }
     }
 

@@ -165,11 +165,8 @@ class PersonContactController extends ApiController
     protected function formatPhoneInput(array &$input)
     {
 
-        $phone_number_adapter = App::make('TenFour\Messaging\PhoneNumberAdapter',
-                                          [
-                                              $input['contact']
-                                          ]);
-
+        $phone_number_adapter = App::make('TenFour\Messaging\PhoneNumberAdapter');
+        $phone_number_adapter->setRawNumber($input['contact']);
         $input['contact'] = $phone_number_adapter->getNormalizedNumber();
 
         $input['meta'] = [

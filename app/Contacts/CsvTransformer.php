@@ -14,7 +14,7 @@ class CsvTransformer implements CsvTransformerInterface
      */
     private $map;
 
-    public function __construct($map)
+    public function setMap($map)
     {
         $this->map = $map;
     }

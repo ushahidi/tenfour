@@ -15,7 +15,7 @@ class CsvReader implements CsvReaderInterface
      */
     private $reader;
 
-    public function __construct($file_path)
+    public function setPath($file_path)
     {
         // Create reader from path.
         // The assumption here is that we either store

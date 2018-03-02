@@ -27,7 +27,7 @@ use Codeception\Module\REST;
 */
 class ApiTester extends \Codeception\Actor
 {
-   
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -38,7 +38,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amAuthenticatedAsClient', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -49,7 +49,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amAuthenticatedAsUser', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -60,7 +60,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amAuthenticatedAsAdmin', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -71,7 +71,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amAuthenticatedAsOrgAdmin', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -82,7 +82,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amAuthenticatedAsOrgOwner', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -104,7 +104,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('haveInDatabase', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -161,7 +161,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeInDatabase', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -222,7 +222,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeInDatabase', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -250,7 +250,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabFromDatabase', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -263,7 +263,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('getApplication', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -283,7 +283,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amOnRoute', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -303,7 +303,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amOnAction', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -340,7 +340,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeCurrentRouteIs', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -379,7 +379,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeCurrentActionIs', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -408,7 +408,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeInSession', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -435,7 +435,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeSessionHasValues', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -460,7 +460,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeFormHasErrors', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -507,7 +507,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeFormErrorMessages', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -556,7 +556,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeFormErrorMessage', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -573,7 +573,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amLoggedAs', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -584,7 +584,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('logout', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -605,7 +605,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeAuthentication', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -626,7 +626,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeAuthentication', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -657,7 +657,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabService', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -678,7 +678,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('haveRecord', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -713,7 +713,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeRecord', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -752,7 +752,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeRecord', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -773,7 +773,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabRecord', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -787,7 +787,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amHttpAuthenticated', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -809,7 +809,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amOnPage', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -848,7 +848,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('click', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -893,7 +893,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('see', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -938,7 +938,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSee', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -981,7 +981,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeLink', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1024,7 +1024,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeLink', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1067,7 +1067,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeInCurrentUrl', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1104,7 +1104,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeInCurrentUrl', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1145,7 +1145,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeCurrentUrlEquals', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1186,7 +1186,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeCurrentUrlEquals', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1225,7 +1225,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeCurrentUrlMatches', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1264,7 +1264,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeCurrentUrlMatches', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1288,7 +1288,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabFromCurrentUrl', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1329,7 +1329,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeCheckboxIsChecked', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1368,11 +1368,11 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeCheckboxIsChecked', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
-     * Checks that the given input field or textarea contains the given value. 
+     * Checks that the given input field or textarea contains the given value.
      * For fuzzy locators, fields are matched by label text, the "name" attribute, CSS, and XPath.
      *
      * ``` php
@@ -1397,7 +1397,7 @@ class ApiTester extends \Codeception\Actor
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
-     * Checks that the given input field or textarea contains the given value. 
+     * Checks that the given input field or textarea contains the given value.
      * For fuzzy locators, fields are matched by label text, the "name" attribute, CSS, and XPath.
      *
      * ``` php
@@ -1419,7 +1419,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeInField', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1470,13 +1470,13 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeInField', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
      * Checks if the array of form parameters (name => value) are set on the form matched with the
      * passed selector.
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeInFormFields('form[name=myform]', [
@@ -1485,10 +1485,10 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * For multi-select elements, or to check values of multiple elements with the same name, an
      * array may be passed:
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeInFormFields('.form-class', [
@@ -1505,7 +1505,7 @@ class ApiTester extends \Codeception\Actor
      * ```
      *
      * Additionally, checkbox values can be checked with a boolean.
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeInFormFields('#form-id', [
@@ -1514,9 +1514,9 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * Pair this with submitForm for quick testing magic.
-     * 
+     *
      * ``` php
      * <?php
      * $form = [
@@ -1530,7 +1530,7 @@ class ApiTester extends \Codeception\Actor
      * $I->seeInFormFields('//form[@id=my-form]', $form);
      * ?>
      * ```
-     * 
+     *
      * @param $formSelector
      * @param $params
      * Conditional Assertion: Test won't be stopped on fail
@@ -1544,7 +1544,7 @@ class ApiTester extends \Codeception\Actor
      *
      * Checks if the array of form parameters (name => value) are set on the form matched with the
      * passed selector.
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeInFormFields('form[name=myform]', [
@@ -1553,10 +1553,10 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * For multi-select elements, or to check values of multiple elements with the same name, an
      * array may be passed:
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeInFormFields('.form-class', [
@@ -1573,7 +1573,7 @@ class ApiTester extends \Codeception\Actor
      * ```
      *
      * Additionally, checkbox values can be checked with a boolean.
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeInFormFields('#form-id', [
@@ -1582,9 +1582,9 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * Pair this with submitForm for quick testing magic.
-     * 
+     *
      * ``` php
      * <?php
      * $form = [
@@ -1598,7 +1598,7 @@ class ApiTester extends \Codeception\Actor
      * $I->seeInFormFields('//form[@id=my-form]', $form);
      * ?>
      * ```
-     * 
+     *
      * @param $formSelector
      * @param $params
      * @see \Codeception\Lib\InnerBrowser::seeInFormFields()
@@ -1607,13 +1607,13 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeInFormFields', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
      * Checks if the array of form parameters (name => value) are not set on the form matched with
      * the passed selector.
-     * 
+     *
      * ``` php
      * <?php
      * $I->dontSeeInFormFields('form[name=myform]', [
@@ -1622,10 +1622,10 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * To check that an element hasn't been assigned any one of many values, an array can be passed
      * as the value:
-     * 
+     *
      * ``` php
      * <?php
      * $I->dontSeeInFormFields('.form-class', [
@@ -1638,7 +1638,7 @@ class ApiTester extends \Codeception\Actor
      * ```
      *
      * Additionally, checkbox values can be checked with a boolean.
-     * 
+     *
      * ``` php
      * <?php
      * $I->dontSeeInFormFields('#form-id', [
@@ -1647,7 +1647,7 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * @param $formSelector
      * @param $params
      * Conditional Assertion: Test won't be stopped on fail
@@ -1661,7 +1661,7 @@ class ApiTester extends \Codeception\Actor
      *
      * Checks if the array of form parameters (name => value) are not set on the form matched with
      * the passed selector.
-     * 
+     *
      * ``` php
      * <?php
      * $I->dontSeeInFormFields('form[name=myform]', [
@@ -1670,10 +1670,10 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * To check that an element hasn't been assigned any one of many values, an array can be passed
      * as the value:
-     * 
+     *
      * ``` php
      * <?php
      * $I->dontSeeInFormFields('.form-class', [
@@ -1686,7 +1686,7 @@ class ApiTester extends \Codeception\Actor
      * ```
      *
      * Additionally, checkbox values can be checked with a boolean.
-     * 
+     *
      * ``` php
      * <?php
      * $I->dontSeeInFormFields('#form-id', [
@@ -1695,7 +1695,7 @@ class ApiTester extends \Codeception\Actor
      * ]);
      * ?>
      * ```
-     * 
+     *
      * @param $formSelector
      * @param $params
      * @see \Codeception\Lib\InnerBrowser::dontSeeInFormFields()
@@ -1704,7 +1704,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeInFormFields', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1719,7 +1719,7 @@ class ApiTester extends \Codeception\Actor
      * in the request with the last parameter as an alternative to
      * explicitly setting its value in the second parameter, as
      * button values are not otherwise included in the request.
-     * 
+     *
      * Examples:
      *
      * ``` php
@@ -1750,17 +1750,17 @@ class ApiTester extends \Codeception\Actor
      *
      * ```
      * Note that "2" will be the submitted value for the "plan" field, as it is the selected option.
-     * 
+     *
      * You can also emulate a JavaScript submission by not specifying any buttons in the third parameter to submitForm.
-     * 
+     *
      * ```php
      * <?php
      * $I->submitForm('#userForm', array('user' => array('login' => 'Davert', 'password' => '123456', 'agree' => true)));
-     * 
+     *
      * ```
-     * 
+     *
      * Pair this with seeInFormFields for quick testing magic.
-     * 
+     *
      * ``` php
      * <?php
      * $form = [
@@ -1803,7 +1803,7 @@ class ApiTester extends \Codeception\Actor
      *
      * Mixing string and boolean values for a checkbox's value is not
      * supported and may produce unexpected results.
-     * 
+     *
      * @param $selector
      * @param $params
      * @param $button
@@ -1813,7 +1813,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('submitForm', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1834,7 +1834,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('fillField', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1864,7 +1864,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('selectOption', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1883,7 +1883,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('checkOption', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1902,7 +1902,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('uncheckOption', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1923,7 +1923,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('attachFile', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1940,7 +1940,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendAjaxGetRequest', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1968,7 +1968,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendAjaxPostRequest', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -1994,7 +1994,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendAjaxRequest', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2018,7 +2018,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabTextFrom', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2042,7 +2042,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabAttributeFrom', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2055,7 +2055,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabValueFrom', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2081,7 +2081,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('setCookie', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2098,7 +2098,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabCookie', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2141,7 +2141,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeCookie', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2174,7 +2174,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeCookie', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2191,7 +2191,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('resetCookie', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2246,7 +2246,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeElement', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2293,12 +2293,12 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeElement', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
      * Checks that there are a certain number of elements matched by the given locator on the page.
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeNumberOfElements('tr', 10);
@@ -2319,7 +2319,7 @@ class ApiTester extends \Codeception\Actor
      * [!] Method is generated. Documentation taken from corresponding module.
      *
      * Checks that there are a certain number of elements matched by the given locator on the page.
-     * 
+     *
      * ``` php
      * <?php
      * $I->seeNumberOfElements('tr', 10);
@@ -2336,7 +2336,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeNumberOfElements', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2379,7 +2379,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeOptionIsSelected', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2422,7 +2422,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeOptionIsSelected', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2443,7 +2443,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seePageNotFound', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2468,7 +2468,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseCodeIs', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2509,7 +2509,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeInTitle', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2538,7 +2538,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeInTitle', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2552,7 +2552,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('haveHttpHeader', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2581,7 +2581,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeHttpHeader', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2610,7 +2610,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeHttpHeader', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2651,7 +2651,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeHttpHeaderOnce', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2667,7 +2667,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabHttpHeader', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2681,7 +2681,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amDigestAuthenticated', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2694,7 +2694,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Condition('amBearerAuthenticated', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2711,7 +2711,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendPOST', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2725,7 +2725,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendHEAD', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2739,7 +2739,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendOPTIONS', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2753,7 +2753,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendGET', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2768,7 +2768,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendPUT', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2783,7 +2783,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendPATCH', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2798,7 +2798,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendDELETE', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2816,7 +2816,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendLINK', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2832,7 +2832,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('sendUNLINK', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2857,7 +2857,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseIsJson', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2882,7 +2882,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseIsXml', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2907,7 +2907,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseContains', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2932,7 +2932,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeResponseContains', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -2993,7 +2993,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseContainsJson', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3016,7 +3016,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabResponse', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3043,7 +3043,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabDataFromJsonResponse', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3073,7 +3073,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Action('grabDataFromResponseByJsonPath', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3168,7 +3168,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseJsonMatchesXpath', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3267,7 +3267,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseJsonMatchesJsonPath', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3292,7 +3292,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeResponseJsonMatchesJsonPath', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3317,7 +3317,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('dontSeeResponseContainsJson', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *
@@ -3342,7 +3342,7 @@ class ApiTester extends \Codeception\Actor
         return $this->scenario->runStep(new \Codeception\Step\Assertion('seeResponseEquals', func_get_args()));
     }
 
- 
+
     /**
      * [!] Method is generated. Documentation taken from corresponding module.
      *

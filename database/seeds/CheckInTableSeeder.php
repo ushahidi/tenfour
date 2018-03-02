@@ -41,7 +41,7 @@ class CheckInTableSeeder extends Seeder
         Notification::send($check_in->recipients, new ReplyReceived($reply));
     }
 
-    protected function addRollCalls($organization, $users, $answers) {
+    protected function addCheckIns($organization, $users, $answers) {
         foreach ($users as $user) {
             $check_in = CheckIn::create([
                 'organization_id' => $organization->id,
@@ -89,21 +89,21 @@ class CheckInTableSeeder extends Seeder
 
         // default answers
 
-        $this->addRollCalls($organization, $users, [
+        $this->addCheckIns($organization, $users, [
             ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
             ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
         ]);
 
         // custom answers
 
-        $this->addRollCalls($organization, $users, [
+        $this->addCheckIns($organization, $users, [
           ['answer'=>'Custom answer blue','color'=>'#2274B4','icon'=>'icon-exclaim','type'=>'custom'],
           ['answer'=>'Custom answer teal','color'=>'#4CBFCE','icon'=>'icon-check','type'=>'custom']
         ]);
 
         // no answers
 
-        $this->addRollCalls($organization, $users, []);
+        $this->addCheckIns($organization, $users, []);
 
     }
 }

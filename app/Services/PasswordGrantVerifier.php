@@ -32,7 +32,7 @@ class PasswordGrantVerifier
         $credentials = [
             'username'     => $username,
             'password'     => $password,
-            'subdomain'    => $this->request->subdomain,
+            // 'subdomain'    => $this->request->subdomain,
         ];
 
         if (Auth::once($credentials)) {

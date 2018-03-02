@@ -1,5 +1,8 @@
 <?php
 
+use \TenFour\Models\User;
+use DB;
+
 class CheckInCest
 {
     protected $endpoint = '/api/v1/checkins';
@@ -8,7 +11,7 @@ class CheckInCest
      * Get all check-ins as an admin
      *
      */
-    public function getAllRollCalls(ApiTester $I)
+    public function getAllCheckIns(ApiTester $I)
     {
         $I->wantTo('Get a list of all check-ins as an admin');
         $I->amAuthenticatedAsAdmin();
@@ -93,9 +96,10 @@ class CheckInCest
      * Get all check-ins as an admin excluding self tests
      *
      */
-    public function getAllRollCallsExcludingSelfTests(ApiTester $I)
+    public function getAllCheckInsExcludingSelfTests(ApiTester $I)
     {
         $I->wantTo('Get a list of all check-ins as an admin excluding self tests');
+
         $I->amAuthenticatedAsAdmin();
         $I->sendGET($this->endpoint);
         $I->seeResponseCodeIs(200);
@@ -132,7 +136,7 @@ class CheckInCest
      * Filter check-ins by organization
      *
      */
-    public function filterRollCallsbyOrg(ApiTester $I)
+    public function filterCheckInsbyOrg(ApiTester $I)
     {
         $endpoint = $this->endpoint.'/?organization=2';
         $I->wantTo('Get a list of all check-ins for an organization as an organization admin');
@@ -159,7 +163,7 @@ class CheckInCest
      * Filter check-ins by user.
      *
      */
-    public function filterRollCallsbyUser(ApiTester $I)
+    public function filterCheckInsbyUser(ApiTester $I)
     {
         $endpoint = $this->endpoint.'/?organization=2&user=me';
         $I->wantTo('Get a list of all check-ins sent out by a user');
@@ -258,7 +262,7 @@ class CheckInCest
      * Get all check-ins in an organization as an authenticated user
      *
      */
-    public function getAllRollCallsAsUser(ApiTester $I)
+    public function getAllCheckInsAsUser(ApiTester $I)
     {
         $I->wantTo('Get a list of all check-ins for an organization as an authenticated user');
         $I->amAuthenticatedAsUser();
@@ -822,7 +826,7 @@ class CheckInCest
         $I->wantTo('Get a check-in using a reply token');
         $I->sendGet('/checkins/' . $check_in_id . '?token=' . $token);
         $I->seeResponseCodeIs(200);
-        $I->seeResponseContainsJson(
+        $I->seeResponseContainsJson([ 'checkin' =>
             [
                 'message' => 'Westgate under siege',
                 'status'  => 'pending',
@@ -833,7 +837,7 @@ class CheckInCest
                     'id' => 4
                 ]
             ]
-         );
+         ]);
     }
 
     /*
@@ -851,7 +855,7 @@ class CheckInCest
     /*
      * Send check-ins with rotating numbers
     */
-    public function sendRollCallsWithRotatingNumbers(ApiTester $I)
+    public function sendCheckInsWithRotatingNumbers(ApiTester $I)
     {
         $I->wantTo('Send check-ins with rotating numbers');
         $I->amAuthenticatedAsOrgAdmin();

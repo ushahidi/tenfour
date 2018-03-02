@@ -58,12 +58,28 @@ class CsvImporter implements CsvImporterInterface
      */
     private $contact_fields = ['email', 'twitter', 'phone', 'address', 'slack'];
 
-    public function __construct(CsvReaderInterface $reader, CsvTransformerInterface $transformer, ContactRepository $contacts, PersonRepository $people, $organization_id)
+    public function setReader(CsvReaderInterface $reader)
     {
         $this->reader = $reader;
-        $this->contacts = $contacts;
-        $this->people = $people;
+    }
+
+    public function setTransformer(CsvTransformerInterface $transformer)
+    {
         $this->transformer = $transformer;
+    }
+
+    public function setContacts(ContactRepository $contacts)
+    {
+        $this->contacts = $contacts;
+    }
+
+    public function setPeople(PersonRepository $people)
+    {
+        $this->people = $people;
+    }
+
+    public function setOrganizationId($organization_id)
+    {
         $this->organization_id = $organization_id;
     }
 

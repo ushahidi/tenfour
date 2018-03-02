@@ -34,10 +34,6 @@ class ApiServiceProvider extends ServiceProvider
             throw new NotFoundHttpException($e->getMessage(), $e);
         });
 
-        $exception->register(function(\League\OAuth2\Server\Exception\InvalidCredentialsException $e) {
-            throw new UnauthorizedHttpException('Bearer', $e->getMessage(), $e);
-        });
-
         $exception->register(function(\Illuminate\Validation\ValidationException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         });

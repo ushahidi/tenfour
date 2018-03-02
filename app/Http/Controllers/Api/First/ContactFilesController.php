@@ -63,7 +63,9 @@ class ContactFilesController extends ApiController
         $file = $request->file('file');
         $path = $file->store('contacts');
 
-        $header = App::make('TenFour\Contracts\Contacts\CsvReader', [$path])->fetchHeader();
+        $reader = App::make('TenFour\Contracts\Contacts\CsvReader');
+        $reader->setPath($path);
+        $header = $reader->fetchHeader();
 
         $input = [
             'organization_id' => $organization_id,

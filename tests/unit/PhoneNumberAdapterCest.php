@@ -2,6 +2,7 @@
 
 use TenFour\Messaging\PhoneNumberAdapter;
 use Codeception\Util\Stub;
+use Codeception\Stub\Expected;
 
 class PhoneNumberAdapterCest
 {
@@ -14,18 +15,18 @@ class PhoneNumberAdapterCest
                 'parse' => Stub::make(
                     libphonenumber\PhoneNumber::class,
                     [
-                        'getCountryCode' => Stub::once(function () {
+                        'getCountryCode' => Expected::once(function () {
                             return '254';
                         }),
-                        'getNationalNumber' => Stub::once(function () {
+                        'getNationalNumber' => Expected::once(function () {
                             return '722123456';
                         })
                     ]
                 ),
-                'format' => Stub::once(function () {
+                'format' => Expected::once(function () {
                     return '+254722123456';
                 }),
-                'getRegionCodeForNumber' => Stub::once(function () {
+                'getRegionCodeForNumber' => Expected::once(function () {
                     return 'KE';
                 })
             ]
@@ -34,13 +35,14 @@ class PhoneNumberAdapterCest
         $carrier_mapper = Stub::make(
             libphonenumber\PhoneNumberToCarrierMapper::class,
             [
-                'getNameForNumber' => Stub::once(function () {
+                'getNameForNumber' => Expected::once(function () {
                     return 'Safaricom';
                 })
             ]
         );
 
-        $this->phone_number_adapter = new PhoneNumberAdapter('254722123456', $phone_number_util, $carrier_mapper);
+        $this->phone_number_adapter = new PhoneNumberAdapter($phone_number_util, $carrier_mapper);
+        $this->phone_number_adapter->setRawNumber('254722123456');
     }
 
     public function getCountryCode(UnitTester $t)
