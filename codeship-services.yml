@@ -11,9 +11,9 @@ test:
   environment:
     - DB_HOST=mysql
     - DB_PORT=3306
-    - DB_DATABASE=rollcall
-    - DB_USERNAME=rollcall
-    - DB_PASSWORD=rollcall
+    - DB_DATABASE=tenfour
+    - DB_USERNAME=tenfour
+    - DB_PASSWORD=tenfour
     - APP_ENV=testing
     - REDIS_HOST=redis
     - REDIS_PORT=6379
@@ -28,9 +28,9 @@ test:
 mysql:
   image: mysql:5.7
   environment:
-    - MYSQL_DATABASE=rollcall
-    - MYSQL_USER=rollcall
-    - MYSQL_PASSWORD=rollcall
+    - MYSQL_DATABASE=tenfour
+    - MYSQL_USER=tenfour
+    - MYSQL_PASSWORD=tenfour
     - MYSQL_ROOT_PASSWORD=root
 
 deploy:
