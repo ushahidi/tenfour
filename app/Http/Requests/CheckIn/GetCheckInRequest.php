@@ -17,9 +17,11 @@ class GetCheckInRequest extends FormRequest
      */
     public function authorize()
     {
+        
         $check_in = App::make('TenFour\Contracts\Repositories\CheckInRepository')
                  ->find($this->route('checkin'));
-
+    
+        
         $token = $this->request->get('token');
 
         if ($token && !empty($token)) {

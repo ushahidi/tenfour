@@ -114,7 +114,7 @@ class MailCest
         $I->wantTo('Receive a check-in mail');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/api/v1/checkins', [
+        $I->sendPOST('/api/v1/organizations/2/checkins', [
             'message' => 'Sinkhole has opened. Are you ok?',
             'organization_id' => 2,
             'send_via' => ['email'],

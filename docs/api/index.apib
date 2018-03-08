@@ -638,7 +638,7 @@ FORMAT: 1A
 
             []
 
-# Groups [/api/v1/organizations]
+# Groups [/api/v1/organizations/{org_id}/groups]
 
 ## Create a group in an organization [POST /api/v1/organizations/{org_id}/groups]
 
@@ -712,7 +712,7 @@ FORMAT: 1A
                 }
             }
 
-## Get all groups for an organization [GET /api/v1/organizations{?offset,limit}]
+## Get all groups for an organization [GET /api/v1/organizations/{org_id}/groups{?offset,limit}]
 
 
 + Parameters
@@ -785,7 +785,7 @@ FORMAT: 1A
                 ]
             }
 
-## Get a single group [GET /api/v1/organizations/{group_id}]
+## Get a single group [GET /api/v1/organizations/{org_id}/groups/{group_id}]
 
 
 + Parameters
@@ -822,7 +822,7 @@ FORMAT: 1A
                 }
             }
 
-## Update a group [PUT /api/v1/organizations/{group_id}]
+## Update a group [PUT /api/v1/organizations/{org_id}/groups/{group_id}]
 
 
 + Parameters
@@ -874,12 +874,14 @@ FORMAT: 1A
                 }
             }
 
-# Checkins [/api/v1/checkins]
+# Checkins [/api/v1/organizations/{org_id}/checkins]
+* @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
 
-## Get all check-ins for an organization [GET /api/v1/checkins{?offset,limit}]
+## Get all check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins{?offset,limit}]
 
 
 + Parameters
+    + org_id: (number, required) - Organization id
     + offset: (string, optional) - 
         + Default: 0
     + limit: (string, optional) - 
@@ -925,10 +927,10 @@ FORMAT: 1A
                                 "message_id": null,
                                 "check_in": {
                                     "id": 1,
-                                    "uri": "/checkins/1"
+                                    "uri": "/organizations/2/checkins/1"
                                 },
                                 "updated_at": null,
-                                "uri": "/checkins/1/reply/1",
+                                "uri": "/organizations/2/checkins/1/reply/1",
                                 "user": {
                                     "id": 1,
                                     "uri": "/users/1"
@@ -941,7 +943,7 @@ FORMAT: 1A
                         "sent_count": 4,
                         "status": "pending",
                         "updated_at": null,
-                        "uri": "/checkins/1",
+                        "uri": "/organizations/2/checkins/1",
                         "user": {
                             "id": 4,
                             "uri": "/users/4"
@@ -977,10 +979,10 @@ FORMAT: 1A
                                 "message_id": null,
                                 "checkin": {
                                     "id": 3,
-                                    "uri": "/checkins/3"
+                                    "uri": "/organizations/2/checkins/3"
                                 },
                                 "updated_at": null,
-                                "uri": "/checkins/3/reply/5",
+                                "uri": "/organizations/2/checkins/3/reply/5",
                                 "user": {
                                     "id": 4,
                                     "uri": "/users/4"
@@ -993,7 +995,7 @@ FORMAT: 1A
                         "sent_count": 0,
                         "status": "pending",
                         "updated_at": null,
-                        "uri": "/checkins/3",
+                        "uri": "/organizations/2/checkins/3",
                         "user": {
                             "id": 1,
                             "uri": "/users/1"
@@ -1020,7 +1022,7 @@ FORMAT: 1A
                         "sent_count": 1,
                         "status": "pending",
                         "updated_at": null,
-                        "uri": "/checkins/4",
+                        "uri": "/organizations/2/checkins/4",
                         "user": {
                             "id": 1,
                             "uri": "/users/1"
@@ -1029,7 +1031,7 @@ FORMAT: 1A
                 ]
             }
 
-## Get a single check in [GET /api/v1/checkins/{check_in_id}]
+## Get a single check in [GET /api/v1/organizations/{org_id}/checkins/{check_in_id}]
 
 
 + Parameters
@@ -1078,10 +1080,10 @@ FORMAT: 1A
                             "message_id": null,
                             "checkin": {
                                 "id": 1,
-                                "uri": "/checkins/1"
+                                "uri": "/organizations/2/checkins/1"
                             },
                             "updated_at": null,
-                            "uri": "/checkins/1/reply/1",
+                            "uri": "/organizations/2/checkins/1/reply/1",
                             "user": {
                                 "id": 1,
                                 "role": "member",
@@ -1095,7 +1097,7 @@ FORMAT: 1A
                     "sent_count": 4,
                     "status": "pending",
                     "updated_at": null,
-                    "uri": "/checkins/1",
+                    "uri": "/organizations/2/checkins/1",
                     "user": {
                         "id": 4,
                         "uri": "/users/4"
@@ -1103,7 +1105,7 @@ FORMAT: 1A
                 }
             }
 
-## Create a check in [POST /api/v1/checkins]
+## Create a check in [POST /api/v1/organizations/{org_id}/checkins]
 
 
 + Request (application/json)
@@ -1165,7 +1167,7 @@ FORMAT: 1A
                     "sent": 0,
                     "status": "pending",
                     "updated_at": "2017-03-18 19:19:27",
-                    "uri": "/checkins/6",
+                    "uri": "/organizations/2/checkins/6",
                     "user": {
                         "id": 5,
                         "uri": "/users/5"
@@ -1173,7 +1175,7 @@ FORMAT: 1A
                 }
             }
 
-## Update/resend a check-in [PUT /api/v1/checkins/{check_in_id}]
+## Update/resend a check-in [PUT /api/v1/organizations/{org_id}/checkins/{check_in_id}]
 
 
 + Parameters
@@ -1263,7 +1265,7 @@ FORMAT: 1A
                     "sent": 1,
                     "status": "received",
                     "updated_at": "2017-03-18 19:32:34",
-                    "uri": "/checkins/1",
+                    "uri": "/organizations/2/checkins/1",
                     "user": {
                         "id": 4,
                         "uri": "/users/4"
@@ -1271,7 +1273,7 @@ FORMAT: 1A
                 }
             }
 
-## Resend a check-in request to a single recipient. [POST /api/v1/checkins/{check_in_id}/recipients/{recipient_id}/messages]
+## Resend a check-in request to a single recipient. [POST /api/v1/organizations/{org_id}/checkins/{check_in_id}/recipients/{recipient_id}/messages]
 
 
 + Parameters
@@ -1283,7 +1285,7 @@ FORMAT: 1A
 
             Authorization: Bearer token
 
-## List check-in recipients [GET /api/v1/checkins/{check_in_id}/recipients]
+## List check-in recipients [GET /api/v1/organizations/{org_id}/checkins/{check_in_id}/recipients]
 
 
 + Parameters
@@ -1314,7 +1316,7 @@ FORMAT: 1A
                 ]
             }
 
-## List check-in messages [GET /api/v1/checkins/{check_in_id}/messages]
+## List check-in messages [GET /api/v1/organizations/{org_id}/checkins/{check_in_id}/messages]
 
 
 + Parameters
@@ -1351,7 +1353,7 @@ FORMAT: 1A
                 ]
             }
 
-## Delete a check-in [DELETE /api/v1/checkins]
+## Delete a check-in [DELETE /api/v1/organizations/{org_id}/checkins]
 
 
 + Request (application/json)
@@ -1367,9 +1369,9 @@ FORMAT: 1A
                 "status_code": 405
             }
 
-# Replies [/api/v1/checkins]
+# Replies [/api/v1/organizations/{org_id}/checkins/{check_in_id}/replies]
 
-## Get a single reply [GET /api/v1/checkins/{check_in_id}/replies/{reply_id}]
+## Get a single reply [GET /api/v1/organizations/{org_id}/checkins/{check_in_id}/replies/{reply_id}]
 
 
 + Parameters
@@ -1398,10 +1400,10 @@ FORMAT: 1A
                     "message_id": null,
                     "checkin": {
                         "id": 4,
-                        "uri": "/checkins/4"
+                        "uri": "/organizations/2/checkins/4"
                     },
                     "updated_at": null,
-                    "uri": "/checkins/4/reply/1",
+                    "uri": "/organizations/2/checkins/4/reply/1",
                     "user": {
                         "id": 1,
                         "uri": "/users/1"
@@ -1409,7 +1411,7 @@ FORMAT: 1A
                 }
             }
 
-## Add reply [POST /api/v1/checkins/{check_in_id}/replies]
+## Add reply [POST /api/v1/organizations/{org_id}/checkins/{check_in_id}/replies]
 
 
 + Parameters
@@ -1437,10 +1439,10 @@ FORMAT: 1A
                     "message": "I am OK",
                     "checkin": {
                         "id": 1,
-                        "uri": "/checkins/1"
+                        "uri": "/organizations/2/checkins/1"
                     },
                     "updated_at": "2016-03-15 20:27:54",
-                    "uri": "/checkins/1/reply/6",
+                    "uri": "/organizations/2/checkins/1/reply/6",
                     "user": {
                         "id": 5,
                         "uri": "/users/5"
@@ -1449,7 +1451,7 @@ FORMAT: 1A
                 }
             }
 
-## List check-in replies [GET /api/v1/checkins/{check_in_id}/replies]
+## List check-in replies [GET /api/v1/organizations/{org_id}/checkins/{check_in_id}/replies]
 
 
 + Parameters
@@ -1478,10 +1480,10 @@ FORMAT: 1A
                         "message_id": null,
                         "checkin": {
                             "id": 1,
-                            "uri": "/checkins/1"
+                            "uri": "/organizations/2/checkins/1"
                         },
                         "updated_at": null,
-                        "uri": "/checkins/1/reply/1",
+                        "uri": "/organizations/2/checkins/1/reply/1",
                         "user": {
                             "config_profile_reviewed": 0,
                             "config_self_test_sent": 0,
@@ -1513,10 +1515,10 @@ FORMAT: 1A
                         "message_id": null,
                         "checkin": {
                             "id": 1,
-                            "uri": "/checkins/1"
+                            "uri": "/organizations/2/checkins/1"
                         },
                         "updated_at": null,
-                        "uri": "/checkins/1/reply/3",
+                        "uri": "/organizations/2/checkins/1/reply/3",
                         "user": {
                             "config_profile_reviewed": 0,
                             "config_self_test_sent": 0,

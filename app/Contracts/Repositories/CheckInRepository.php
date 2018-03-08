@@ -18,7 +18,6 @@ interface CheckInRepository extends CrudRepository
      * Get check-in recipients
      *
      * @param int $id
-
      * @return array
      */
     public function getRecipients($id, $unresponsive=null);
@@ -27,7 +26,6 @@ interface CheckInRepository extends CrudRepository
      * Get check-in sent messages and optionally filter by user
      *
      * @param int $id
-
      * @return array
      */
     public function getMessages($id, $user_id = null);
@@ -61,7 +59,6 @@ interface CheckInRepository extends CrudRepository
      *
      * @param int $id
      * @param int $contact_id
-
      * @return array
      */
     public function addMessage($id, $contact_id, $from);
