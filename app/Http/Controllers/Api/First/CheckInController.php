@@ -23,7 +23,7 @@ use Dingo\Api\Auth\Auth;
 use App;
 
 /**
- * * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
+ * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
  */
 class CheckInController extends ApiController
 {
