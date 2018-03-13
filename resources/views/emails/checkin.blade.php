@@ -219,8 +219,6 @@
                             @if (count($answers) > 0)
                             <tr>
                                 <td align="center">
-                                  @if ($has_custom_answers)
-
                                     <table width="100%" border="0" cellspacing="0" cellpadding="10" bgcolor="#EFEFEB" class="mobile-button-container" style="border-top: 1px solid #E6E6DD;">
                                         <tbody><tr>
                                             <td align="center" class="padding-copy" style="padding: 20px;">
@@ -244,22 +242,6 @@
                                             </td>
                                         </tr>
                                     </tbody></table>
-
-                                  @else
-                                    <!-- BULLETPROOF BUTTON -->
-                                    <table width="100%" border="0" cellspacing="0" cellpadding="10" bgcolor="#EFEFEB" class="mobile-button-container" style="border-top: 1px solid #E6E6DD;">
-                                        <tr>
-                                            <td align="center" class="padding-copy" style="padding: 20px;">
-                                                <table border="0" cellspacing="0" cellpadding="0" class="responsive-table">
-                                                    <tr>
-                                                        <td align="center"><a href="{{ $answer_url_no }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #e8bb4a; border-top: 35px solid #e8bb4a; border-bottom: 35px solid #e8bb4a; border-left: 10px solid #e8bb4a; border-right: 10px solid #e8bb4a; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">No</a></td>
-                                                        <td align="center"><a href="{{ $answer_url_yes }}" target="_blank" style="width: 70px; height: 20px; font-size: 16px; font-family: Lato, Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; background-color: #64b269; border-top: 35px solid #64b269; border-bottom: 35px solid #64b269; border-left: 10px solid #64b269; border-right: 10px solid #64b269; border-radius: 90px; -webkit-border-radius: 90px; -moz-border-radius: 90px; display: inline-block; margin: 0 10px;" class="mobile-button">Yes</a></td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                  @endif
                                 </td>
                             </tr>
                             @endif

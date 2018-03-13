@@ -87,6 +87,10 @@ class CheckInTableSeeder extends Seeder
 
         $users = User::select('id')->where('organization_id', $organization->id)->limit(10)->get();
 
+        // no answers
+
+        $this->addCheckIns($organization, $users, []);
+
         // default answers
 
         $this->addCheckIns($organization, $users, [
@@ -101,9 +105,6 @@ class CheckInTableSeeder extends Seeder
           ['answer'=>'Custom answer teal','color'=>'#4CBFCE','icon'=>'icon-check','type'=>'custom']
         ]);
 
-        // no answers
-
-        $this->addCheckIns($organization, $users, []);
 
     }
 }
