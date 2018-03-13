@@ -13,7 +13,7 @@ return [
         'api_key' => env('AFRICASTALKING_API_KEY', 'Your Africastalking API Key'),
         'username' => env('AFRICASTALKING_USERNAME', 'Your Africastalking username'),
         // Extra params for TenFour
-        'keyword' => env('AFRICASTALKING_KEYWORD', 'rollcall'), // FIXME
+        'keyword' => env('AFRICASTALKING_KEYWORD', 'tenfour'),
         'messages_per_second' => env('AFRICASTALKING_MESSAGES_PER_SECOND', 5)
     ],
 

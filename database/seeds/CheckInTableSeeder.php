@@ -15,7 +15,7 @@ use DB;
 
 class CheckInTableSeeder extends Seeder
 {
-    protected function addUsersToRollCall($users, $check_in) {
+    protected function addUsersToCheckIn($users, $check_in) {
         $recipients = [];
 
         foreach ($users as $user) {
@@ -54,7 +54,7 @@ class CheckInTableSeeder extends Seeder
                 'send_via' => ['preferred'],
             ]);
 
-            $this->addUsersToRollCall($users, $check_in);
+            $this->addUsersToCheckIn($users, $check_in);
 
             Notification::send($check_in->recipients, new CheckInReceived($check_in));
 

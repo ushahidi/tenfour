@@ -4,7 +4,7 @@ use Codeception\Util\Fixtures;
 
 class MailCest
 {
-    public function handleReceiveSelfTestRollCall(ApiTester $I)
+    public function handleReceiveSelfTestCheckIn(ApiTester $I)
     {
         $user_id = 1;
         $contact_id = 2;
@@ -109,7 +109,7 @@ class MailCest
         ]);
     }
 
-    public function receiveRollCallMail(ApiTester $I)
+    public function receiveCheckInMail(ApiTester $I)
     {
         $I->wantTo('Receive a check-in mail');
         $I->amAuthenticatedAsOrgAdmin();
