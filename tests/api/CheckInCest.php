@@ -1095,7 +1095,7 @@ class CheckInCest
             'type'        => 'check_in'
         ]);
 
-        $I->seeNumRecords(1, 'outgoing_sms_log', [
+        $I->seeNumRecords(0, 'outgoing_sms_log', [
             'check_in_id' => '8',
             'type'        => 'reminder'
         ]); // from a previous test
