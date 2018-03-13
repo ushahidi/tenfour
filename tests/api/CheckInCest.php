@@ -884,7 +884,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -899,7 +902,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -910,7 +916,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '8',
             'type'        => 'check_in',
-            'message'     => "Alien Attack! are you ok?\nReply with \"OK\" in your response"
+            'message'     => "Alien Attack! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -923,7 +929,7 @@ class CheckInCest
             'from'        => '20881',
             'check_in_id' => '9',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part II! are you ok?\nReply with \"OK\" in your response"
+            'message'     => "Alien Attack Part II! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -951,7 +957,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ];
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -976,7 +985,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '10',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part 3!\nReply with \"OK\" in your response"
+            'message'     => "Alien Attack Part 3!\nReply with \"No\" or \"Yes\" in your response"
         ]);
     }
 
@@ -1000,7 +1009,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -1023,7 +1035,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -1160,7 +1175,7 @@ class CheckInCest
         $I->amAuthenticatedAsAuthor();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
-            'message' => 'Westgate under siege, are you ok?',
+            'message' => 'Westgate under siege!',
             'organization_id' => 2,
             'send_via' => ['apponly'],
             'recipients' => [
@@ -1172,4 +1187,82 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
     }
+
+    /*
+     * Don't send reminder when no response asked for
+     */
+    public function dontReceiveARollCallReminder(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Not receive a check-in reminder when no response was asked for');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $attack = [
+            'message' => 'Message incoming...',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+        $attack = [
+            'message' => 'We are under attack. Stay tuned for next message.',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+        $attack = [
+            'message' => 'Are you ok?',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'check_in_id' => '9',
+            'type'        => 'check_in',
+            'message'     => "We are under attack. Stay tuned for next message.\n"
+        ]);
+
+        $I->dontSeeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'check_in_id' => '9',
+            'type'        => 'reminder'
+        ]);
+    }
+
 }

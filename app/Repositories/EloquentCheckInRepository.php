@@ -237,8 +237,12 @@ class EloquentCheckInRepository implements CheckInRepository
             ->leftJoin('replies', function ($join) {
                 $join->on('check_in_messages.check_in_id', '=', 'replies.check_in_id');
             })
+            ->leftJoin('check_ins', function ($join) {
+                $join->on('check_in_messages.check_in_id', '=', 'check_ins.id');
+            })
             ->where('check_in_messages.contact_id', '=', $contact_id)
             ->where('check_in_messages.from', '=', $from)
+            ->where('check_ins.answers', '!=', '[]')
             ->whereNull('replies.id')
             ->orderBy('check_in_messages.check_in_id', 'desc')
             ->take(1)

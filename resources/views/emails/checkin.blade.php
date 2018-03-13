@@ -208,10 +208,6 @@
                                                   or write more if you'd like to provide more detail.
                                                   </td>
                                             </tr>
-                                        @else
-                                            <tr>
-                                                <td align="center" style="padding: 0 20px 20px; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy">Please reply <a href="{{ $reply_url }}">on TenFour</a> or respond directly to this email.</td>
-                                            </tr>
                                         @endif
                                     </table>
                                 </td>
