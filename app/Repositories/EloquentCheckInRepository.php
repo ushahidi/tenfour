@@ -18,6 +18,7 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0)
     {
+
         $query = CheckIn::query()
           ->orderBy('created_at', 'desc')
           ->with(['replies' => function ($query) {
@@ -48,6 +49,7 @@ class EloquentCheckInRepository implements CheckInRepository
         }
 
         $check_ins = $query->get()->toArray();
+
 
         foreach($check_ins as $key => &$check_in)
         {
@@ -134,7 +136,8 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function getMessages($id, $user_id = null, $contact_id = null)
     {
-        $query = CheckIn::findOrFail($id)->messages()->with('user');
+        $query = CheckIn::findOrFail($id)->messages()
+            ->with('user');
 
         if ($user_id) {
             $query->where('user_id', $user_id);

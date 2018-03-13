@@ -23,7 +23,7 @@ use Dingo\Api\Auth\Auth;
 use App;
 
 /**
- * @Resource("Checkins", uri="/api/v1/checkins")
+ * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
  */
 class CheckInController extends ApiController
 {
@@ -41,6 +41,7 @@ class CheckInController extends ApiController
      * @Get("/{?offset,limit}")
      * @Versions({"v1"})
      * @Parameters({
+     *     @Parameter("org_id", type="number", required=true, description="Organization id"),
      *     @Parameter("offset", default=0),
      *     @Parameter("limit", default=0)
      * })
@@ -77,10 +78,10 @@ class CheckInController extends ApiController
      *                     "message_id": null,
      *                     "check_in": {
      *                         "id": 1,
-     *                         "uri": "/checkins/1"
+     *                         "uri": "/organizations/2/checkins/1"
      *                     },
      *                     "updated_at": null,
-     *                     "uri": "/checkins/1/reply/1",
+     *                     "uri": "/organizations/2/checkins/1/reply/1",
      *                     "user": {
      *                         "id": 1,
      *                         "uri": "/users/1"
@@ -93,7 +94,7 @@ class CheckInController extends ApiController
      *             "sent_count": 4,
      *             "status": "pending",
      *             "updated_at": null,
-     *             "uri": "/checkins/1",
+     *             "uri": "/organizations/2/checkins/1",
      *             "user": {
      *                 "id": 4,
      *                 "uri": "/users/4"
@@ -129,10 +130,10 @@ class CheckInController extends ApiController
      *                     "message_id": null,
      *                     "checkin": {
      *                         "id": 3,
-     *                         "uri": "/checkins/3"
+     *                         "uri": "/organizations/2/checkins/3"
      *                     },
      *                     "updated_at": null,
-     *                     "uri": "/checkins/3/reply/5",
+     *                     "uri": "/organizations/2/checkins/3/reply/5",
      *                     "user": {
      *                         "id": 4,
      *                         "uri": "/users/4"
@@ -145,7 +146,7 @@ class CheckInController extends ApiController
      *             "sent_count": 0,
      *             "status": "pending",
      *             "updated_at": null,
-     *             "uri": "/checkins/3",
+     *             "uri": "/organizations/2/checkins/3",
      *             "user": {
      *                 "id": 1,
      *                 "uri": "/users/1"
@@ -172,7 +173,7 @@ class CheckInController extends ApiController
      *             "sent_count": 1,
      *             "status": "pending",
      *             "updated_at": null,
-     *             "uri": "/checkins/4",
+     *             "uri": "/organizations/2/checkins/4",
      *             "user": {
      *                 "id": 1,
      *                 "uri": "/users/1"
@@ -185,8 +186,9 @@ class CheckInController extends ApiController
      * @param org_id
      * @return Response
      */
-    public function all(GetCheckInsRequest $request)
+    public function all(GetCheckInsRequest $request, $organization_id)
     {
+
         $user_id = null;
 
         $offset = $request->input('offset', 0);
@@ -199,7 +201,7 @@ class CheckInController extends ApiController
         }
 
         $check_ins = $this->check_ins->all(
-            $request->query('organization'),
+            $request->route('organization'),
             $user_id,
             $request->input('recipient_id'),
             $this->auth->user()['id'],
@@ -207,6 +209,8 @@ class CheckInController extends ApiController
             $limit);
 
         return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
+
+
     }
 
     /**
@@ -253,10 +257,10 @@ class CheckInController extends ApiController
      *                 "message_id": null,
      *                 "checkin": {
      *                     "id": 1,
-     *                     "uri": "/checkins/1"
+     *                     "uri": "/organizations/2/checkins/1"
      *                 },
      *                 "updated_at": null,
-     *                 "uri": "/checkins/1/reply/1",
+     *                 "uri": "/organizations/2/checkins/1/reply/1",
      *                 "user": {
      *                     "id": 1,
      *                     "role": "member",
@@ -270,7 +274,7 @@ class CheckInController extends ApiController
      *         "sent_count": 4,
      *         "status": "pending",
      *         "updated_at": null,
-     *         "uri": "/checkins/1",
+     *         "uri": "/organizations/2/checkins/1",
      *         "user": {
      *             "id": 4,
      *             "uri": "/users/4"
@@ -283,10 +287,15 @@ class CheckInController extends ApiController
      *
      * @return Response
      */
-    public function find(GetCheckInRequest $request, $id)
+    public function find(GetCheckInRequest $request, $organization_id, $check_in_id)
     {
-        $check_in = $this->check_ins->find($id);
+        $check_in = $this->check_ins->find($check_in_id);
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
+    }
+
+    public function findById(GetCheckInRequest $request, $check_in_id)
+    {
+        return $this->find($request, null, $check_in_id);
     }
 
     /**
@@ -343,7 +352,7 @@ class CheckInController extends ApiController
      *         "sent": 0,
      *         "status": "pending",
      *         "updated_at": "2017-03-18 19:19:27",
-     *         "uri": "/checkins/6",
+     *         "uri": "/organizations/2/checkins/6",
      *         "user": {
      *             "id": 5,
      *             "uri": "/users/5"
@@ -355,7 +364,7 @@ class CheckInController extends ApiController
      * @return Response
      *
      */
-    public function create(CreateCheckInRequest $request)
+    public function create(CreateCheckInRequest $request, $organization_id)
     {
         $check_in = $this->check_ins->create($request->input() + [
             'user_id' => $this->auth->user()['id'],
@@ -453,7 +462,7 @@ class CheckInController extends ApiController
      *         "sent": 1,
      *         "status": "received",
      *         "updated_at": "2017-03-18 19:32:34",
-     *         "uri": "/checkins/1",
+     *         "uri": "/organizations/2/checkins/1",
      *         "user": {
      *             "id": 4,
      *             "uri": "/users/4"
@@ -466,9 +475,9 @@ class CheckInController extends ApiController
      *
      * @return Response
      */
-    public function update(UpdateCheckInRequest $request, $id)
+    public function update(UpdateCheckInRequest $request, $organization_id, $check_in_id)
     {
-        $check_in = $this->check_ins->update($request->all(), $id);
+        $check_in = $this->check_ins->update($request->all(), $check_in_id);
 
         // Send check-in to new recipients
         if ($request->input('recipients')) {
@@ -509,16 +518,16 @@ class CheckInController extends ApiController
      * })
      *
      * @param Request $request
-     * @param int $id
+     * @param int $check_in_id
      *
      * @return Response
      */
-    public function addMessage(SendCheckInRequest $request, $id, $recipient_id)
+    public function addMessage(SendCheckInRequest $request, $organization_id, $check_in_id, $recipient_id)
     {
-        $this->check_ins->updateRecipientStatus($id, $recipient_id, 'waiting');
+        $this->check_ins->updateRecipientStatus($check_in_id, $recipient_id, 'waiting');
 
         // Get check-in and send to recipient
-        $check_in = $this->check_ins->find($id);
+        $check_in = $this->check_ins->find($check_in_id);
 
         $check_in['recipients'] = [];
 
@@ -528,7 +537,7 @@ class CheckInController extends ApiController
 
       dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
 
-        $recipient = $this->check_ins->getRecipient($id, $recipient_id);
+        $recipient = $this->check_ins->getRecipient($check_in_id, $recipient_id);
         return $this->response->item($recipient, new UserTransformer, 'recipient');
     }
 
@@ -562,9 +571,9 @@ class CheckInController extends ApiController
      *
      * @return Response
      */
-    public function listRecipients(GetCheckInRequest $request, $id)
+    public function listRecipients(GetCheckInRequest $request, $organization_id, $check_in_id)
     {
-        return $this->response->collection($this->check_ins->getRecipients($id, $request->query('unresponsive')),
+        return $this->response->collection($this->check_ins->getRecipients($check_in_id, $request->query('unresponsive')),
                                      new UserTransformer, 'recipients');
     }
 
@@ -604,9 +613,9 @@ class CheckInController extends ApiController
      *
      * @return Response
      */
-    public function listMessages(GetCheckInRequest $request, $id)
+    public function listMessages(GetCheckInRequest $request, $organization_id, $check_in_id)
     {
-        return $this->response->collection($this->check_ins->getMessages($id),
+        return $this->response->collection($this->check_ins->getMessages($check_in_id),
                                      new ContactTransformer, 'messages');
     }
 

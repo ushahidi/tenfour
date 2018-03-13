@@ -26,17 +26,13 @@ class CheckInTransformer extends TransformerAbstract
             }
         }
 
-        $check_in['organization'] = [
-            'id'  => (int) $check_in['organization_id'],
-            'uri' => '/organizations/' . $check_in['organization_id'],
-        ];
+        $check_in['id'] =  (int) $check_in['id'];
+        $check_in['uri'] = '/organizations/' . $check_in['organization_id'] . '/checkins/' . $check_in['id'];
 
         unset($check_in['organization_id']);
 
-        $check_in['id'] = (int) $check_in['id'];
-        $check_in['uri'] = '/checkins/' . $check_in['id'];
-
         return $check_in;
+
     }
 
     /**

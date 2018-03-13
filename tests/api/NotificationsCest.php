@@ -4,7 +4,7 @@ class NotificationsCest
 {
     protected $organizationsEndpoint = '/api/v1/organizations';
     protected $peopleEndpoint = '/api/v1/organizations/2/people/me';
-    protected $checkInsEndpoint = '/api/v1/checkins';
+    protected $checkInsEndpoint = '/api/v1/organizations/2/checkins';
 
     /*
      * Ensure that admins receive a notification when a person is added to the organization

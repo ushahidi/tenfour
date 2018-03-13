@@ -8,7 +8,7 @@
   - name: "Deploy (develop)"
     service: deploy
     command: >
-      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO=tenfour-infra
       ANSIBLE_GITHUB_REPO_VERSION=tenfour
       ENV=dev
       ush-ansible-playbook.sh -vv -i ./hosts -l dev
@@ -19,7 +19,7 @@
   - name: "Deploy (staging)"
     service: deploy
     command: >
-      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO=tenfour-infra
       ANSIBLE_GITHUB_REPO_VERSION=tenfour
       ENV=dev
       ush-ansible-playbook.sh -vv -i ./hosts -l staging
@@ -30,7 +30,7 @@
   - name: "Deploy (master)"
     service: deploy
     command: >
-      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO=tenfour-infra
       ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=production
       TF_FOLDER=tf/production

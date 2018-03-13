@@ -1,6 +1,6 @@
 {
   "name": "tenfour",
-  "repository": "http://github.com/ushahidi/rollcall-api",
+  "repository": "http://github.com/ushahidi/tenfour",
   "private": "true",
   "scripts": {
     "docs:api": "aglio -i resources/docs/api/_index.apib -o docs/api/index.html",

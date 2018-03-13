@@ -42,7 +42,7 @@ Route::post('ses/bounces', 'SESBounceController@handleBounce');
 Route::post('ses/complaints', 'SESBounceController@handleComplaint');
 
 // Get/update checkin with a token when I am not logged in
-Route::get('checkins/{checkin}', ['uses' => 'Api\First\CheckInController@find']);
+Route::get('checkins/{checkin}', ['uses' => 'Api\First\CheckInController@findById']);
 Route::post('checkins/{checkin}/replies', ['uses' => 'Api\First\ReplyController@addReplyFromToken']);
 
 // Address verification

@@ -14,7 +14,7 @@ use Dingo\Api\Auth\Auth;
 use TenFour\Http\Response;
 
 /**
- * @Resource("Groups", uri="/api/v1/organizations")
+ * @Resource("Groups", uri="/api/v1/organizations/{org_id}/groups")
  */
 
 class GroupController extends ApiController
@@ -30,7 +30,7 @@ class GroupController extends ApiController
     /**
      * Create a group in an organization
      *
-     * @Post("/{org_id}/groups")
+     * @Post("/")
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id")
      * })
@@ -82,7 +82,7 @@ class GroupController extends ApiController
     /**
      * Delete a group from an organization
      *
-     * @Delete("{org_id}/groups/{group_id}")
+     * @Delete("/{group_id}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),

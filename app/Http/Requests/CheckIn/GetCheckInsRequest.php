@@ -21,6 +21,7 @@ class GetCheckInsRequest extends FormRequest
         }
 
         // If filtering by organization check whether user is org owner/ org admin
+        
         if (!$this->query('organization')) {
             $this->merge([
                 'organization' => $this->user()->organization_id

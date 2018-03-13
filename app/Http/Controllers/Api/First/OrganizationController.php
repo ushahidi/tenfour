@@ -110,14 +110,16 @@ class OrganizationController extends ApiController
 
         // Get owner details
         $owner_input = [
-            'name'     => $input['owner'],
-            'role'     => 'owner',
-            'password' => $input['password'],
+            'name'        => $input['owner'],
+            'role'        => 'owner',
+            'password'    => $input['password'],
+            'person_type' => 'user'
         ];
 
         $contact_input = [
-            'contact' => $input['email'],
-            'type'    => 'email'
+            'contact'     => $input['email'],
+            'type'        => 'email',
+            'preferred'   => 1
         ];
 
         DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
