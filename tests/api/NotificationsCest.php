@@ -125,7 +125,7 @@ class NotificationsCest
      * Ensure I get a notification if I am a recipient of a new check-in
      *
      */
-    public function receiveRollCallReceivedNotification(ApiTester $I)
+    public function receiveCheckInReceivedNotification(ApiTester $I)
     {
         $org_id = 2;
         $message = 'Westgate under siege, are you ok?';

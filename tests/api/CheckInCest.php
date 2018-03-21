@@ -342,7 +342,7 @@ class CheckInCest
      * Get check-in details as admin
      *
      */
-    public function getRollCall(ApiTester $I)
+    public function getCheckIn(ApiTester $I)
     {
         $id = 1;
         $check_in_id = 1;
@@ -369,7 +369,7 @@ class CheckInCest
      * Get check-in details as admin
      *
      */
-    public function getOtherRollCallAsMember(ApiTester $I)
+    public function getOtherCheckInAsMember(ApiTester $I)
     {
         $id = 2;
         $check_in_id = 5;
@@ -384,7 +384,7 @@ class CheckInCest
      * Create a check-in as org admin
      *
      */
-    public function createRollCall(ApiTester $I)
+    public function createCheckIn(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create a check-in as admin');
@@ -446,7 +446,7 @@ class CheckInCest
      * Send check-in to self
      *
      */
-    public function sendRollCallToSelf(ApiTester $I)
+    public function sendCheckInToSelf(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Send check-in to self');
@@ -485,7 +485,7 @@ class CheckInCest
      * Create a check-in as org admin
      *
      */
-    public function createRollCallWithoutAnswers(ApiTester $I)
+    public function createCheckInWithoutAnswers(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create a check-in as admin');
@@ -531,7 +531,7 @@ class CheckInCest
      * Create a check-in with credits
      *
      */
-    public function createRollCallWithCredits(ApiTester $I)
+    public function createCheckInWithCredits(ApiTester $I)
     {
         $id = 2;
         $credits_before = 3;
@@ -585,7 +585,7 @@ class CheckInCest
      * Create a check-in without enough credits
      *
      */
-    public function createRollCallWithoutCredits(ApiTester $I)
+    public function createCheckInWithoutCredits(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create a check-in without enough credits');
@@ -618,7 +618,7 @@ class CheckInCest
      * Create an app only check-in without enough credits
      *
      */
-    public function createAppOnlyRollCallWithoutCredits(ApiTester $I)
+    public function createAppOnlyCheckInWithoutCredits(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create an "app only" check-in without enough credits');
@@ -645,7 +645,7 @@ class CheckInCest
      * Create a check-in with errors
      *
      */
-    public function createRollCallWithErrors(ApiTester $I)
+    public function createCheckInWithErrors(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create an invalid check-in as admin and get errors');
@@ -736,7 +736,7 @@ class CheckInCest
      * Update a check-in as admin
      *
      */
-    public function updateRollCall(ApiTester $I)
+    public function updateCheckIn(ApiTester $I)
     {
         $id = 2;
         $check_in_id = 1;
@@ -788,7 +788,7 @@ class CheckInCest
      * Send check-in to single recipient
      *
      */
-    public function sendRollCallToRecipient(ApiTester $I)
+    public function sendCheckInToRecipient(ApiTester $I)
     {
         $id = 1;
         $check_in_id = 1;
@@ -818,7 +818,7 @@ class CheckInCest
     /*
      * Delete check-in
      */
-    public function deleteRollCall(ApiTester $I)
+    public function deleteCheckIn(ApiTester $I)
     {
         $id = 2;
         $check_in_id = 1;
@@ -832,7 +832,7 @@ class CheckInCest
     /*
      * As the user, I want to get a check-in using a reply token
      */
-    public function getRollCallWithReplyToken(ApiTester $I)
+    public function getCheckInWithReplyToken(ApiTester $I)
     {
         $check_in_id = 1;
         $token = 'testtoken1';
@@ -854,9 +854,9 @@ class CheckInCest
     }
 
     /*
-     * As another user, I don't want to get a RollCall using invalid reply token
+     * As another user, I don't want to get a CheckIn using invalid reply token
      */
-    public function getRollCallWithInvalidReplyToken(ApiTester $I)
+    public function getCheckInWithInvalidReplyToken(ApiTester $I)
     {
         $check_in_id = 1;
         $token = 'testtoken3';
@@ -884,7 +884,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -899,7 +902,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -910,7 +916,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '8',
             'type'        => 'check_in',
-            'message'     => "Alien Attack! are you ok?\nReply with \"OK\" in your response"
+            'message'     => "Alien Attack! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -923,7 +929,7 @@ class CheckInCest
             'from'        => '20881',
             'check_in_id' => '9',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part II! are you ok?\nReply with \"OK\" in your response"
+            'message'     => "Alien Attack Part II! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -937,7 +943,7 @@ class CheckInCest
      * Send check-in reminder to a contact when all outgoing numbers
      * are active.
      */
-    public function receiveARollCallReminder(ApiTester $I)
+    public function receiveACheckInReminder(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Receive a check-in reminder');
@@ -951,7 +957,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ];
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -976,7 +985,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '10',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part 3!\nReply with \"OK\" in your response"
+            'message'     => "Alien Attack Part 3!\nReply with \"No\" or \"Yes\" in your response"
         ]);
     }
 
@@ -984,7 +993,7 @@ class CheckInCest
      * Resend a check-in should resend to unreplied users
      *
      */
-    public function resendRollCallToUnreplied(ApiTester $I)
+    public function resendCheckInToUnreplied(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Resend a check-in to unreplied');
@@ -1000,7 +1009,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -1023,7 +1035,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -1080,7 +1095,7 @@ class CheckInCest
             'type'        => 'check_in'
         ]);
 
-        $I->seeNumRecords(1, 'outgoing_sms_log', [
+        $I->seeNumRecords(0, 'outgoing_sms_log', [
             'check_in_id' => '8',
             'type'        => 'reminder'
         ]); // from a previous test
@@ -1090,7 +1105,7 @@ class CheckInCest
      * Resend a check-in should not resend to replied users
      *
      */
-    public function resendRollCallNotToReplied(ApiTester $I)
+    public function resendCheckInNotToReplied(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Resend a check-in to replied');
@@ -1153,14 +1168,14 @@ class CheckInCest
      * Create a check-in as author
      *
      */
-    public function createRollCallAsAuthor(ApiTester $I)
+    public function createCheckInAsAuthor(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create a check-in as author');
         $I->amAuthenticatedAsAuthor();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
-            'message' => 'Westgate under siege, are you ok?',
+            'message' => 'Westgate under siege!',
             'organization_id' => 2,
             'send_via' => ['apponly'],
             'recipients' => [
@@ -1172,4 +1187,82 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
     }
+
+    /*
+     * Don't send reminder when no response asked for
+     */
+    public function dontReceiveACheckInReminder(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Not receive a check-in reminder when no response was asked for');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $attack = [
+            'message' => 'Message incoming...',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+        $attack = [
+            'message' => 'We are under attack. Stay tuned for next message.',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+        $attack = [
+            'message' => 'Are you ok?',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'check_in_id' => '9',
+            'type'        => 'check_in',
+            'message'     => "We are under attack. Stay tuned for next message.\n"
+        ]);
+
+        $I->dontSeeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'check_in_id' => '9',
+            'type'        => 'reminder'
+        ]);
+    }
+
 }

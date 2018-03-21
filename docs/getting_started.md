@@ -10,8 +10,8 @@ Before setting up the project, make sure you have the following installed:
 ### Setup
 
 ```bash
-git clone git@github.com:ushahidi/rollcall-api.git
-cd rollcall-api
+git clone git@github.com:ushahidi/tenfour-api.git
+cd tenfour-api
 composer install
 ```
 
@@ -28,7 +28,7 @@ cp .env.example .env
 ```bash
 vagrant up
 vagrant ssh
-cd rollcall
+cd tenfour
 ./artisan migrate
 ./artisan db:seed
 ```

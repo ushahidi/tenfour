@@ -57,6 +57,9 @@ class DbHelper extends \Codeception\Module\Db
         //Delete group_users
         $dbh->exec('TRUNCATE TABLE group_users');
 
+        $dbh->exec('TRUNCATE TABLE outgoing_sms_log');
+        $dbh->exec('TRUNCATE TABLE outgoing_mail_log');
+
         $dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
 
     }

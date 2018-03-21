@@ -9,8 +9,6 @@ Alternatively, you can...
 @for ($i = 0; $i < count($answers); $i++)
 * Answer {{ $answers[$i]['answer'] }} by visiting the following URL: {{ $answer_url }}/{{ $i }}
 @endfor
-@else
-Please reply on TenFour: {{ $reply_url }} or by replying directly to this email
 @endif
 
 Unsubscribe by visiting the following URL: {{ $unsubscribe_url }}
