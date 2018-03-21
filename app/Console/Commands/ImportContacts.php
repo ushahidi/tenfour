@@ -44,6 +44,9 @@ class ImportContacts extends Command
      */
     public function handle()
     {
+        Log::warning('Disabled contacts:import command as it is broken and needs maintenance.');
+        return;
+
         $domain = 'tenfour.org';
 
         $csv = Reader::createFromPath($this->argument('csv_file'));
