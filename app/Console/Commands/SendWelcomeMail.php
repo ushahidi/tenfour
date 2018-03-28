@@ -44,12 +44,13 @@ class SendWelcomeMail extends Command
      */
     public function handle()
     {
-        // - get orgs that have joined in the last 24 hours
+        // - get orgs that have joined in the last hour
+        // - TODO edge case if someone signs up at the top of the hour they might erronously get the abandoned mail 
 
-        $yesterday = Carbon::now()->subDay();
+        $lastHour = Carbon::now()->subHour();
 
         $organizations = DB::table('organizations')
-            ->where('created_at', '>=', $yesterday)
+            ->where('created_at', '>=', $lastHour)
             ->get()
             ->toArray();
 
