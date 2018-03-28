@@ -1,6 +1,6 @@
 <?php
 
-use RollCall\Services\CreditService;
+use TenFour\Services\CreditService;
 use Codeception\Util\Stub;
 
 class CreditServiceCest

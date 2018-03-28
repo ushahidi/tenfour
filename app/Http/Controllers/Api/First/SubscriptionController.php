@@ -1,22 +1,22 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Http\Requests\Subscription\CreateSubscriptionRequest;
-use RollCall\Http\Requests\Subscription\UpdateSubscriptionRequest;
-use RollCall\Http\Requests\Subscription\GetSubscriptionRequest;
-use RollCall\Http\Requests\Subscription\DeleteSubscriptionRequest;
-use RollCall\Http\Requests\Subscription\CreateHostedPageRequest;
-use RollCall\Models\Organization;
-use RollCall\Models\Subscription;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\SubscriptionRepository;
-use RollCall\Contracts\Services\PaymentService;
-use RollCall\Services\CreditService;
+use TenFour\Http\Requests\Subscription\CreateSubscriptionRequest;
+use TenFour\Http\Requests\Subscription\UpdateSubscriptionRequest;
+use TenFour\Http\Requests\Subscription\GetSubscriptionRequest;
+use TenFour\Http\Requests\Subscription\DeleteSubscriptionRequest;
+use TenFour\Http\Requests\Subscription\CreateHostedPageRequest;
+use TenFour\Models\Organization;
+use TenFour\Models\Subscription;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\SubscriptionRepository;
+use TenFour\Contracts\Services\PaymentService;
+use TenFour\Services\CreditService;
 use Dingo\Api\Auth\Auth;
-use RollCall\Http\Transformers\OrganizationTransformer;
-use RollCall\Http\Transformers\SubscriptionTransformer;
-use RollCall\Http\Response;
+use TenFour\Http\Transformers\OrganizationTransformer;
+use TenFour\Http\Transformers\SubscriptionTransformer;
+use TenFour\Http\Response;
 use Illuminate\Http\Request;
 use DB;
 
@@ -143,7 +143,7 @@ class SubscriptionController extends ApiController
      *   @Parameter("org_id", type="number", required=true, description="Organization id")
      * })
      * @Request({
-     *     "callback": "http://subdomain.rollcall.io/callback",
+     *     "callback": "http://subdomain.tenfour.org/callback",
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "url": "http://api.chargebee.com/hostedpage?xxx"
@@ -183,7 +183,7 @@ class SubscriptionController extends ApiController
      *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
      * })
      * @Request({
-     *     "callback": "http://subdomain.rollcall.io/callback",
+     *     "callback": "http://subdomain.tenfour.org/callback",
      * })
      * @Response(200, body={
      *     "url": "http://api.chargebee.com/hostedpage?xxx"

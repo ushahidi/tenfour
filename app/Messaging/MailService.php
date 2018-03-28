@@ -1,26 +1,26 @@
 <?php
 
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
-use RollCall\Jobs\SendMail;
-use RollCall\Contracts\Messaging\MessageService;
+use TenFour\Jobs\SendMail;
+use TenFour\Contracts\Messaging\MessageService;
 
 class MailService implements MessageService
 {
     protected $view;
 
-    public function send($to, $msg, $additional_params = [], $subject = null)
+    public function send($to, $mailable, $additional_params = [], $subject = null)
     {
-        dispatch((new SendMail($to, $msg, $this->view, $additional_params, $subject))/*->onQueue('mails')*/);
+        dispatch((new SendMail($to, $mailable, $this->view, $additional_params))/*->onQueue('mails')*/);
     }
 
-    protected function logMail($to, $from, $subject, $type, $rollcall_id)
+    protected function logMail($to, $from, $subject, $type, $check_in_id)
     {
         $mail = new OutgoingMail;
         $mail->to = $to;
         $mail->from = $from;
         $mail->subject = $subject;
-        $mail->rollcall_id = $rollcall_id;
+        $mail->check_in_id = $check_in_id;
         $mail->type = $type;
         $mail->save();
     }

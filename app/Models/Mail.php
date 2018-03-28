@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class Mail extends Model
      *
      * @var array
      */
-    protected $fillable = ['to', 'from', 'subject', 'rollcall_id', 'type'];
+    protected $fillable = ['to', 'from', 'subject', 'check_in_id', 'type'];
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Reply;
+namespace TenFour\Http\Requests\Reply;
 
 class UpdateReplyRequest extends CreateReplyRequest
 {

@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Http\Transformers;
+namespace TenFour\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -60,20 +60,20 @@ class UserTransformer extends TransformerAbstract
         if (isset($user['notifications'])) {
             foreach($user['notifications'] as &$notification) {
 
-                $notification['type'] = str_replace('RollCall\\Notifications\\', '', $notification['type']);
+                $notification['type'] = str_replace('TenFour\\Notifications\\', '', $notification['type']);
             }
         }
 
-        // Format roll calls
-        if (isset($user['rollcalls'])) {
-            $roll_call_transformer = new RollCallTransformer;
+        // Format check-ins
+        if (isset($user['checkins'])) {
+            $check_in_transformer = new CheckInTransformer;
 
-            foreach($user['rollcalls'] as &$roll_call)
+            foreach($user['checkins'] as &$check_in)
             {
-                $roll_call = $roll_call_transformer->transform($roll_call);
+                $check_in = $check_in_transformer->transform($check_in);
 
                 // Remove user information
-                unset($roll_call['user']);
+                unset($check_in['user']);
             }
         }
 

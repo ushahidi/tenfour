@@ -1,10 +1,10 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\Organization;
-use RollCall\Models\Group;
-use RollCall\Contracts\Repositories\GroupRepository;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\Organization;
+use TenFour\Models\Group;
+use TenFour\Contracts\Repositories\GroupRepository;
+use TenFour\Http\Transformers\UserTransformer;
 
 use DB;
 use Validator;

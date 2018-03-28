@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Messaging;
+namespace TenFour\Messaging;
 
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberFormat;
@@ -30,16 +30,20 @@ class PhoneNumberAdapter
      *
      * @throws \libphonenumber\NumberParseException if number cannot be parsed
      */
-    public function __construct($number, PhoneNumberUtil $util, PhoneNumberToCarrierMapper $carrier_mapper)
+    public function __construct(PhoneNumberUtil $util, PhoneNumberToCarrierMapper $carrier_mapper)
+    {
+        $this->util = $util;
+        $this->carrier_mapper = $carrier_mapper;
+    }
+
+    public function setRawNumber($number)
     {
         // The assumption is that all phone numbers are passed as international numbers
         if (! starts_with($number, '+')) {
             $number = '+'.$number;
         }
 
-        $this->number = $util->parse($number, null);
-        $this->util = $util;
-        $this->carrier_mapper = $carrier_mapper;
+        $this->number = $this->util->parse($number, null);
     }
 
     public function getCountryCode()

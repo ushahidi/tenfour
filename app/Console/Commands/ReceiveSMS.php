@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
 use Illuminate\Console\Command;
 
 use Log;
-use RollCall\Messaging\SMSService;
-use RollCall\Contracts\Repositories\ReplyRepository;
+use TenFour\Messaging\SMSService;
+use TenFour\Contracts\Repositories\ReplyRepository;
 
 class ReceiveSMS extends Command
 {
@@ -27,13 +27,13 @@ class ReceiveSMS extends Command
     /**
      * Service used to get messages using configured provider
      *
-     * @var RollCall\Contracts\Messaging\MessageService
+     * @var TenFour\Contracts\Messaging\MessageService
      */
     protected $message_service;
 
     /**
      * The storage instance.
-     * @var RollCall\Contracts\Repositories\ReplyRepository
+     * @var TenFour\Contracts\Repositories\ReplyRepository
      */
     protected $replies;
 
@@ -79,7 +79,7 @@ class ReceiveSMS extends Command
 
             // TODO:
             // send "Response received" from same number it was received on
-            // log sms with relevant rollcall_id
+            // log sms with relevant check_in_id
 
             if ($saved) {
                 $this->message_service->sendResponseReceivedSMS($message['from']);

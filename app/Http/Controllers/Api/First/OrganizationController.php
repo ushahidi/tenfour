@@ -1,22 +1,22 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Http\Requests\Organization\GetOrganizationsRequest;
-use RollCall\Http\Requests\Organization\CreateOrganizationRequest;
-use RollCall\Http\Requests\Organization\GetOrganizationRequest;
-use RollCall\Http\Requests\Organization\UpdateOrganizationRequest;
-use RollCall\Http\Requests\Organization\DeleteOrganizationRequest;
-use RollCall\Http\Requests\Organization\UpdateMemberRequest;
-use RollCall\Http\Requests\Person\AcceptInviteRequest;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Http\Requests\Organization\GetOrganizationsRequest;
+use TenFour\Http\Requests\Organization\CreateOrganizationRequest;
+use TenFour\Http\Requests\Organization\GetOrganizationRequest;
+use TenFour\Http\Requests\Organization\UpdateOrganizationRequest;
+use TenFour\Http\Requests\Organization\DeleteOrganizationRequest;
+use TenFour\Http\Requests\Organization\UpdateMemberRequest;
+use TenFour\Http\Requests\Person\AcceptInviteRequest;
 use Dingo\Api\Auth\Auth;
-use RollCall\Http\Transformers\OrganizationTransformer;
-use RollCall\Http\Transformers\UserTransformer;
-use RollCall\Http\Response;
-use RollCall\Services\CreditService;
+use TenFour\Http\Transformers\OrganizationTransformer;
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Http\Response;
+use TenFour\Services\CreditService;
 use DB;
 
 /**
@@ -44,7 +44,7 @@ class OrganizationController extends ApiController
      * @Response(200, body={
      *     "organizations": {{
      *         "name": "Ushahidi",
-     *         "subdomain": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi@tenfour.org"
      *     }}
      * })
      *
@@ -65,12 +65,12 @@ class OrganizationController extends ApiController
      * @Versions({"v1"})
      * @Request({
      *     "name": "Ushahidi",
-     *     "subdomain": "ushahidi@rollcall.io"
+     *     "subdomain": "ushahidi@tenfour.org"
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "organization": {
      *         "name": "Ushahidi",
-     *         "subdomain": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi@tenfour.org"
      *     }
      * })
      *
@@ -110,14 +110,16 @@ class OrganizationController extends ApiController
 
         // Get owner details
         $owner_input = [
-            'name'     => $input['owner'],
-            'role'     => 'owner',
-            'password' => $input['password'],
+            'name'        => $input['owner'],
+            'role'        => 'owner',
+            'password'    => $input['password'],
+            'person_type' => 'user'
         ];
 
         $contact_input = [
-            'contact' => $input['email'],
-            'type'    => 'email'
+            'contact'     => $input['email'],
+            'type'        => 'email',
+            'preferred'   => 1
         ];
 
         DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
@@ -155,7 +157,7 @@ class OrganizationController extends ApiController
      *     "organization": {
      *         "id": 3,
      *         "name": "Ushahidi",
-     *         "subdomain": "ushahidi@rollcall.io"
+     *         "subdomain": "ushahidi@tenfour.org"
      *     }
      * })
      *
@@ -259,15 +261,21 @@ class OrganizationController extends ApiController
     public function acceptInvite(AcceptInviteRequest $request, $organization_id, $person_id)
     {
         $member = $this->people->find($organization_id, $person_id);
+
         if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
             $member['person_type'] = 'user';
-            $member['role'] = 'member';
+
+            if ($member['role'] !== 'admin') {
+                $member['role'] = 'responder';
+            }
+
             $member['invite_token'] = null;
             $member = $this->people->update($organization_id, $member, $person_id);
 
             return $this->response->item($member, new UserTransformer, 'person');
         }
+
         abort(401, 'Not authenticated');
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Validators;
+namespace TenFour\Validators;
 
 class ReservedWordValidator
 {
     public function validateName($attr, $value, $params)
     {
-        if (in_array($value, config('rollcall.reserved_words'))) {
+        if (in_array($value, config('tenfour.reserved_words'))) {
             return false;
         }
 

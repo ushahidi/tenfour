@@ -1,13 +1,13 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\Subscription;
-use RollCall\Models\CreditAdjustment;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\Subscription;
+use TenFour\Models\CreditAdjustment;
+use TenFour\Http\Transformers\UserTransformer;
 
 class PaymentSucceeded extends Notification
 {
@@ -43,7 +43,7 @@ class PaymentSucceeded extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = 'You just successfully authorized a payment for RollCall on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '. <br><br>' .
+        $body = 'You just successfully authorized a payment for TenFour on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '. <br><br>' .
             'We have applied ' . $this->creditAdjustment->adjustment . ' credits to your account. <br><br>' .
             'Your account now has ' . $this->creditAdjustment->balance . ' credits.';
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class Reply extends Model
      * @var array
      */
 
-    protected $fillable = ['answer', 'location_text', 'location_geo', 'message', 'contact_id', 'roll_call_id', 'user_id', 'message_id'];
+    protected $fillable = ['answer', 'location_text', 'location_geo', 'message', 'contact_id', 'check_in_id', 'user_id', 'message_id', 'response_time'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -39,11 +39,11 @@ class Reply extends Model
 
     /**
      *
-     * Replies belong to a roll call
+     * Replies belong to a check-in
      */
-    public function rollcall()
+    public function checkin()
     {
-        return $this->belongsTo('RollCall\Models\RollCall');
+        return $this->belongsTo('TenFour\Models\CheckIn');
     }
 
     /**
@@ -52,7 +52,7 @@ class Reply extends Model
      */
     public function contact()
     {
-        return $this->belongsTo('RollCall\Models\Contact');
+        return $this->belongsTo('TenFour\Models\Contact');
     }
 
     /**
@@ -61,6 +61,6 @@ class Reply extends Model
      */
     public function user()
     {
-        return $this->belongsTo('RollCall\Models\User');
+        return $this->belongsTo('TenFour\Models\User');
     }
 }

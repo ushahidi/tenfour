@@ -20,7 +20,7 @@ class PrepRolesTableForOrgs extends Migration
         DB::table('roles')->insert([
             ['name' => 'owner', 'description' => 'Administrative user, has access to everything, cannot be deleted'],
             ['name' => 'admin', 'description' => 'Administrative user, has access to everything'],
-            ['name' => 'member', 'description' => 'Administrative user, has limited access'],
+            ['name' => 'member', 'description' => 'Respond Only, only receive and reply to messages, edit your own info'],
         ]);
     }
 

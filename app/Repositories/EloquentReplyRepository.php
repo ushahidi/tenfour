@@ -1,15 +1,15 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\Reply;
-use RollCall\Models\RollCall;
-use RollCall\Models\User;
-use RollCall\Messaging\AnswerParser;
-use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Contracts\Repositories\ReplyRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Services\AnalyticsService;
-use RollCall\Notifications\ReplyReceived;
+use TenFour\Models\Reply;
+use TenFour\Models\CheckIn;
+use TenFour\Models\User;
+use TenFour\Messaging\AnswerParser;
+use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Contracts\Repositories\ReplyRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Services\AnalyticsService;
+use TenFour\Notifications\ReplyReceived;
 
 use DB;
 use Illuminate\Support\Facades\Notification;
@@ -17,9 +17,9 @@ use Carbon\Carbon;
 
 class EloquentReplyRepository implements ReplyRepository
 {
-    public function __construct(RollCallRepository $roll_calls, ContactRepository $contacts)
+    public function __construct(CheckInRepository $check_ins, ContactRepository $contacts)
     {
-        $this->roll_calls = $roll_calls;
+        $this->check_ins = $check_ins;
         $this->contacts = $contacts;
     }
 
@@ -31,18 +31,20 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function addReply(array $input, $id)
     {
+        $check_in = CheckIn::findOrFail($id);
+
+        $input['response_time'] = Carbon::now()->diffInSeconds($check_in['created_at']);
+
         $reply = Reply::create($input)->toArray();
 
-        $rollcall = RollCall::findOrFail($id);
-
-        Notification::send($rollcall->recipients,
+        Notification::send($check_in->recipients,
             new ReplyReceived(new Reply($reply)));
 
-        (new AnalyticsService())->track('RollCall Responded', [
-            'org_id'            => $rollcall['organization_id'],
-            'roll_call_id'      => $rollcall['id'],
-            'user_id'           => $rollcall['user_id'],
-            'response_time'     => Carbon::now()->diffInSeconds($rollcall['created_at']),
+        (new AnalyticsService())->track('CheckIn Responded', [
+            'org_id'            => $check_in['organization_id'],
+            'check_in_id'        => $check_in['id'],
+            'user_id'           => $check_in['user_id'],
+            'response_time'     => $input['response_time'],
         ]);
 
         return $reply;
@@ -64,11 +66,11 @@ class EloquentReplyRepository implements ReplyRepository
 
     public function getReplies($id, $users = null, $contacts = null)
     {
-        $query = RollCall::findOrFail($id)
+        $query = CheckIn::findOrFail($id)
             ->replies()
             ->with('user')
             // Just get the most recent replies for each user
-            ->where('created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`roll_call_id` = `replies`.`roll_call_id`)"));
+            ->where('created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`check_in_id` = `replies`.`check_in_id`)"));
 
         if ($users) {
             $users = explode(',', $users);
@@ -107,58 +109,58 @@ class EloquentReplyRepository implements ReplyRepository
         //
     }
 
-    public function save($from, $message, $message_id = 0, $roll_call_id = null, $provider = null, $outgoing_number = null)
+    public function save($from, $message, $message_id = 0, $check_in_id = null, $provider = null, $outgoing_number = null)
     {
         $contact = $this->contacts->getByMostRecentlyUsedContact($from);
 
         if ($contact) {
 
-            if ($roll_call_id) {
-                // Just check the rollcall was actually sent to this user
-                $roll_call_id = $this->roll_calls->getSentRollCallId($contact['id'], $roll_call_id);
+            if ($check_in_id) {
+                // Just check the check-in was actually sent to this user
+                $check_in_id = $this->check_ins->getSentCheckInId($contact['id'], $check_in_id);
             } else {
-                // Get last roll call id that was sent to the the the contact
-                $roll_call_id = $this->roll_calls->getLastSentMessageId($contact['id'], $outgoing_number);
+                // Get last check-in id that was sent to the the the contact
+                $check_in_id = $this->check_ins->getLastSentMessageId($contact['id'], $outgoing_number);
             }
 
-            // Add reply if roll call exists
-            if ($roll_call_id) {
+            // Add reply if check-in exists
+            if ($check_in_id) {
 
-                $roll_call = $this->roll_calls->find($roll_call_id);
+                $check_in = $this->check_ins->find($check_in_id);
 
-                $answer = AnswerParser::parse($message, $roll_call['answers']);
+                $answer = AnswerParser::parse($message, $check_in['answers']);
 
                 $input = [
                     'message'      => $message,
                     'user_id'      => $contact['user']['id'],
-                    'roll_call_id' => $roll_call_id,
+                    'check_in_id'  => $check_in_id,
                     'contact_id'   => $contact['id'],
                     'answer'       => $answer,
                     'message_id'   => $message_id,
                 ];
 
-                $this->addReply($input, $roll_call_id);
+                $this->addReply($input, $check_in_id);
 
                 // Update response status
-                $this->roll_calls->updateRecipientStatus($roll_call_id, $contact['user']['id'], 'replied');
+                $this->check_ins->updateRecipientStatus($check_in_id, $contact['user']['id'], 'replied');
 
                 // Update user checklist self test status
-                if ($roll_call['self_test_roll_call']) {
+                if ($check_in['self_test_check_in']) {
                     $this->updateUserSelfTest($contact['user']['id']);
                 }
 
                 if (!$outgoing_number) {
-                    $outgoing_number = $this->roll_calls->getOutgoingNumberForRollCallToContact($roll_call_id, $contact['id']);
+                    $outgoing_number = $this->check_ins->getOutgoingNumberForCheckInToContact($check_in_id, $contact['id']);
                 }
 
                 return [
-                  "roll_call_id"  => $roll_call_id,
+                  "check_in_id"   => $check_in_id,
                   "contact_id"    => $contact['id'],
                   "from"          => $outgoing_number
                 ];
             } else {
-                \Log::warning('Could not find the RollCall for incoming message from ' . $from);
-                app('sentry')->captureMessage('Could not find the RollCall for incoming message from ' . $from);
+                \Log::warning('Could not find the check-in for incoming message from ' . $from);
+                app('sentry')->captureMessage('Could not find the check-in for incoming message from ' . $from);
             }
         } else {
             \Log::warning('Could not find the contact details for incoming message from ' . $from);

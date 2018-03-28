@@ -4,7 +4,7 @@
  * https://simplesoftware.io/docs/simple-sms#docs-configuration for more information.
  */
 return [
-    // global override rollcall.messaging.sms_providers.XX.driver for testing, debugging, etc
+    // global override tenfour.messaging.sms_providers.XX.driver for testing, debugging, etc
     'driver' => env('SMS_DRIVER', null),
 
     'from' => env('SMS_FROM', 'Your Number or Email'),
@@ -12,8 +12,8 @@ return [
     'africastalking' => [
         'api_key' => env('AFRICASTALKING_API_KEY', 'Your Africastalking API Key'),
         'username' => env('AFRICASTALKING_USERNAME', 'Your Africastalking username'),
-        // Extra params for Rollcall
-        'keyword' => env('AFRICASTALKING_KEYWORD', 'rollcall'),
+        // Extra params for TenFour
+        'keyword' => env('AFRICASTALKING_KEYWORD', 'tenfour'),
         'messages_per_second' => env('AFRICASTALKING_MESSAGES_PER_SECOND', 5)
     ],
 

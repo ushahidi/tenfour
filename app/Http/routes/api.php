@@ -8,17 +8,17 @@ $api = app(Router::class);
 
 // Add routes with anonymous access
 $api->version($version, [
-    'namespace' => 'RollCall\Http\Controllers\Api\First'
+    'namespace' => 'TenFour\Http\Controllers\Api\First'
 ], function ($api) use ($base) {
     $api->get($base.'organizations', 'OrganizationController@index');
 });
 
 // Add authenticated routes
 $api->version($version, [
-    'namespace' => 'RollCall\Http\Controllers\Api\First',
+    'namespace' => 'TenFour\Http\Controllers\Api\First',
     'protected' => true,
     'middleware' => 'api.auth',
-    'scopes' => ['user','organization', 'contact', 'rollcall']
+    'scopes' => ['user', 'organization', 'contact', 'checkin']
 ], function ($api) use ($base) {
     //Organizations
     ////////////////////////////////////////////////////////////////////
@@ -27,6 +27,8 @@ $api->version($version, [
     // Org members
     $api->resource($base.'organizations/{organization}/people', 'PersonController');
     $api->post($base.'organizations/{organization}/people/{member}/invite', ['uses' => 'PersonController@invitePerson']);
+    $api->post($base.'organizations/{organization}/people/owner/notify', ['uses' => 'PersonController@notifyOwner']);
+    // $api->post($base.'organizations/{organization}/people/{member}/notify', ['uses' => 'PersonController@notifyPerson']);
 
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
@@ -42,22 +44,23 @@ $api->version($version, [
     // Supported regions for an org
     $api->get($base.'organizations/{organization}/regions', ['uses' => 'RegionController@all']);
 
-    //Rollcalls
+    //checkins
     ////////////////////////////////////////////////////////////////////
-    $api->get($base. 'rollcalls', ['as' => 'rollcalls.index', 'uses' => 'RollCallController@all']);
-    $api->post($base.'rollcalls', ['as' => 'rollcalls.create', 'uses' => 'RollCallController@create']);
-    $api->get($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.show', 'uses' => 'RollCallController@find']);
-    $api->put($base. 'rollcalls/{rollcall}', ['as' => 'rollcalls.update', 'uses' => 'RollCallController@update']);
+    
+    $api->get($base. 'organizations/{organization}/checkins', ['as' => 'checkins.index','uses' => 'CheckInController@all']);
+    $api->post($base.'organizations/{organization}/checkins', ['as' => 'checkins.create', 'uses' => 'CheckInController@create']);
+    $api->get($base. 'organizations/{organization}/checkins/{checkin}', ['as' => 'checkins.show', 'uses' => 'CheckInController@find']);
+    $api->put($base. 'organizations/{organization}/checkins/{checkin}', ['as' => 'checkins.update', 'uses' => 'CheckInController@update']);
 
-    $api->get($base.'rollcalls/{rollcall}/messages', ['uses' => 'RollCallController@listMessages']);
-    $api->get($base.'rollcalls/{rollcall}/recipients', ['uses' => 'RollCallController@listRecipients']);
-    $api->post($base.'rollcalls/{rollcall}/recipients/{recipient}/messages', ['uses' => 'RollCallController@addMessage']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/messages', ['uses' => 'CheckInController@listMessages']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/recipients', ['uses' => 'CheckInController@listRecipients']);
+    $api->post($base.'organizations/{organization}/checkins/{checkin}/recipients/{recipient}/messages', ['uses' => 'CheckInController@addMessage']);
 
-    // Rollcall Replies
-    $api->put($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@update']);
-    $api->get($base.'rollcalls/{rollcall}/replies/{reply}', ['uses' => 'ReplyController@find']);
-    $api->get($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@listReplies']);
-    $api->post($base.'rollcalls/{rollcall}/replies', ['uses' => 'ReplyController@addReply']);
+    // check-in Replies
+    $api->put($base.'organizations/{organization}/checkins/{checkin}/replies/{reply}', ['uses' => 'ReplyController@update']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/replies/{reply}', ['uses' => 'ReplyController@find']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/replies', ['uses' => 'ReplyController@listReplies']);
+    $api->post($base.'organizations/{organization}/checkins/{checkin}/replies', ['uses' => 'ReplyController@addReply']);
 
     // Subscriptions
     $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');

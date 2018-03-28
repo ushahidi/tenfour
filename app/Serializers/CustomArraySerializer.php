@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Serializers;
+namespace TenFour\Serializers;
 
 use League\Fractal\Serializer\ArraySerializer;
 

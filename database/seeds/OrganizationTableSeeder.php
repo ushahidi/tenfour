@@ -1,12 +1,12 @@
 <?php
-namespace RollCall\Seeders;
+namespace TenFour\Seeders;
 
 use Illuminate\Database\Seeder;
-use RollCall\Models\User;
-use RollCall\Models\Organization;
-use RollCall\Models\Contact;
-use RollCall\Models\CreditAdjustment;
-use RollCall\Models\Subscription;
+use TenFour\Models\User;
+use TenFour\Models\Organization;
+use TenFour\Models\Contact;
+use TenFour\Models\CreditAdjustment;
+use TenFour\Models\Subscription;
 
 class OrganizationTableSeeder extends Seeder
 {
@@ -38,7 +38,7 @@ class OrganizationTableSeeder extends Seeder
 
         $organization->update([
             'subdomain' => 'ushahidi',
-            'profile_picture' => 'http://github.ushahidi.org/rollcall-pattern-library/assets/img/avatar-org.png',
+            'profile_picture' => 'http://github.ushahidi.org/tenfour-pattern-library/assets/img/avatar-org.png',
         ]);
 
         $user = User::firstOrCreate(
@@ -55,7 +55,7 @@ class OrganizationTableSeeder extends Seeder
 
         Contact::firstOrCreate([
             'type'        => 'email',
-            'contact'     => 'rollcall@ushahidi.com',
+            'contact'     => 'tenfour@ushahidi.com',
             'preferred'   => 1,
             'user_id'     => $user->id,
             'organization_id' => $organization->id,

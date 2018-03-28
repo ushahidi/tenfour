@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Contacts;
+namespace TenFour\Contacts;
 
-use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
+use TenFour\Contracts\Contacts\CsvReader as CsvReaderInterface;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,7 +15,7 @@ class CsvReader implements CsvReaderInterface
      */
     private $reader;
 
-    public function __construct($file_path)
+    public function setPath($file_path)
     {
         // Create reader from path.
         // The assumption here is that we either store

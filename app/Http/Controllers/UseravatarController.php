@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;

@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
-use RollCall\Contracts\Repositories\OrganizationRepository;
+use TenFour\Contracts\Repositories\OrganizationRepository;
 use Illuminate\Console\Command;
 use App;
 
@@ -31,7 +31,7 @@ class ExpireCredits extends Command
     {
         parent::__construct();
 
-        $this->creditService = App::make('RollCall\Services\CreditService');
+        $this->creditService = App::make('TenFour\Services\CreditService');
     }
 
     /**

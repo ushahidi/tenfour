@@ -1,7 +1,7 @@
 <?php
 
-namespace RollCall\Services\Payments;
-use RollCall\Contracts\Services\PaymentService;
+namespace TenFour\Services\Payments;
+use TenFour\Contracts\Services\PaymentService;
 
 use ChargeBee_Environment;
 use ChargeBee_HostedPage;

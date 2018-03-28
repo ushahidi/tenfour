@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Http\Requests\Person;
+namespace TenFour\Http\Requests\Person;
 
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
 class AddPersonRequest extends UpdatePersonRequest
 {

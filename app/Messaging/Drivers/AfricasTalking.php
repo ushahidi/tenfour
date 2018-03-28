@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Messaging\Drivers;
+namespace TenFour\Messaging\Drivers;
 
 use GuzzleHttp\Client;
 use SimpleSoftwareIO\SMS\Drivers\DriverInterface;

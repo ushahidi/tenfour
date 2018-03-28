@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Providers;
+namespace TenFour\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Validator;
-use RollCall\Http\Requests\Organization\GetOrganizationRequest;
+use TenFour\Http\Requests\Organization\GetOrganizationRequest;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -17,13 +17,13 @@ class ApiServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        Validator::extend('org_contact', 'RollCall\Validators\OrgMemberValidator@validateContact');
-        Validator::extend('input_image', 'RollCall\Validators\ImageValidator@validateProfilePictureUpload');
-        Validator::extend('phone_number', 'RollCall\Validators\PhoneNumberValidator@validatePhoneNumber');
-        Validator::extend('reserved_word', 'RollCall\Validators\ReservedWordValidator@validateName');
+        Validator::extend('org_contact', 'TenFour\Validators\OrgMemberValidator@validateContact');
+        Validator::extend('input_image', 'TenFour\Validators\ImageValidator@validateProfilePictureUpload');
+        Validator::extend('phone_number', 'TenFour\Validators\PhoneNumberValidator@validatePhoneNumber');
+        Validator::extend('reserved_word', 'TenFour\Validators\ReservedWordValidator@validateName');
 
         $this->app->resolving(function ($object, $app) {
-            if (is_object($object) && in_array('Rollcall\Traits\UserAccess', $this->getTraits(get_class($object)))) {
+            if (is_object($object) && in_array('TenFour\Traits\UserAccess', $this->getTraits(get_class($object)))) {
                 $object->setAuth($app['Dingo\Api\Auth\Auth']);
             }
         });
@@ -32,10 +32,6 @@ class ApiServiceProvider extends ServiceProvider
 
         $exception->register(function(\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
-        });
-
-        $exception->register(function(\League\OAuth2\Server\Exception\InvalidCredentialsException $e) {
-            throw new UnauthorizedHttpException('Bearer', $e->getMessage(), $e);
         });
 
         $exception->register(function(\Illuminate\Validation\ValidationException $e) {
@@ -49,59 +45,59 @@ class ApiServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind('RollCall\Contracts\Repositories\OrganizationRepository',
-                         'RollCall\Repositories\EloquentOrganizationRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\OrganizationRepository',
+                         'TenFour\Repositories\EloquentOrganizationRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\ContactRepository',
-                         'RollCall\Repositories\EloquentContactRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\ContactRepository',
+                         'TenFour\Repositories\EloquentContactRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\RollCallRepository',
-                         'RollCall\Repositories\EloquentRollCallRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\CheckInRepository',
+                         'TenFour\Repositories\EloquentCheckInRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\ReplyRepository',
-                         'RollCall\Repositories\EloquentReplyRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\ReplyRepository',
+                         'TenFour\Repositories\EloquentReplyRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\PersonRepository',
-                         'RollCall\Repositories\EloquentPersonRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\PersonRepository',
+                         'TenFour\Repositories\EloquentPersonRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\ContactFilesRepository',
-                         'RollCall\Repositories\EloquentContactFilesRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\ContactFilesRepository',
+                         'TenFour\Repositories\EloquentContactFilesRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\UnverifiedAddressRepository',
-                         'RollCall\Repositories\EloquentUnverifiedAddressRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\UnverifiedAddressRepository',
+                         'TenFour\Repositories\EloquentUnverifiedAddressRepository');
 
-        $this->app->bind('RollCall\Contracts\Repositories\GroupRepository',
-                         'RollCall\Repositories\EloquentGroupRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\GroupRepository',
+                         'TenFour\Repositories\EloquentGroupRepository');
 
-        $this->app->bind('RollCall\Contracts\Messaging\MessageServiceFactory',
-                         'RollCall\Messaging\MessageServiceFactory');
+        $this->app->bind('TenFour\Contracts\Messaging\MessageServiceFactory',
+                         'TenFour\Messaging\MessageServiceFactory');
 
-        $this->app->when('RollCall\Messaging\Validators\NexmoMessageValidator')
+        $this->app->when('TenFour\Messaging\Validators\NexmoMessageValidator')
             ->needs('$secret')
-            ->give(config('rollcall.messaging.nexmo_security_secret'));
+            ->give(config('tenfour.messaging.nexmo_security_secret'));
 
-        $this->app->bind('RollCall\Contracts\Contacts\CsvImporter',
-                         'RollCall\Contacts\CsvImporter');
+        $this->app->bind('TenFour\Contracts\Contacts\CsvImporter',
+                         'TenFour\Contacts\CsvImporter');
 
-        $this->app->bind('RollCall\Contracts\Contacts\CsvReader',
-                         'RollCall\Contacts\CsvReader');
+        $this->app->bind('TenFour\Contracts\Contacts\CsvReader',
+                         'TenFour\Contacts\CsvReader');
 
-        $this->app->bind('RollCall\Contracts\Contacts\CsvTransformer',
-                         'RollCall\Contacts\CsvTransformer');
+        $this->app->bind('TenFour\Contracts\Contacts\CsvTransformer',
+                         'TenFour\Contacts\CsvTransformer');
 
-        $this->app->bind('RollCall\Contracts\Repositories\SubscriptionRepository',
-                         'RollCall\Repositories\EloquentSubscriptionRepository');
+        $this->app->bind('TenFour\Contracts\Repositories\SubscriptionRepository',
+                         'TenFour\Repositories\EloquentSubscriptionRepository');
 
-        $this->app->bind('RollCall\Contracts\Services\PaymentService',
-                         'RollCall\Services\Payments\ChargeBeePaymentService');
+        $this->app->bind('TenFour\Contracts\Services\PaymentService',
+                         'TenFour\Services\Payments\ChargeBeePaymentService');
 
-        $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
+        $this->app->when('TenFour\Messaging\PhoneNumberAdapter')
             ->needs('libphonenumber\PhoneNumberUtil')
             ->give(function () {
                 return PhoneNumberUtil::getInstance();
             });
 
-        $this->app->when('RollCall\Messaging\PhoneNumberAdapter')
+        $this->app->when('TenFour\Messaging\PhoneNumberAdapter')
             ->needs('libphonenumber\PhoneNumberToCarrierMapper')
             ->give(function () {
                 return PhoneNumberToCarrierMapper::getInstance();

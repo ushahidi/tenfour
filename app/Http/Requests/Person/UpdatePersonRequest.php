@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\Person;
+namespace TenFour\Http\Requests\Person;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 use App;
 
 class UpdatePersonRequest extends FormRequest
@@ -12,12 +12,14 @@ class UpdatePersonRequest extends FormRequest
 
     public function authorize()
     {
-        $role = App::make('RollCall\Contracts\Repositories\PersonRepository')
+        $role = App::make('TenFour\Contracts\Repositories\PersonRepository')
                  ->getMemberRole($this->route('organization'), $this->route('person'));
 
-        // A member cannot update a role
-        if ($this->user()->role === 'member' && $this->get('role') && $this->get('role') !== 'member') {
-          return false;
+        // A non-admin cannot update a role
+        if (!$this->user()->isAdmin($this->route('organization')) &&
+            $this->get('role') &&
+            $this->get('role') !== $this->user()->role) {
+            return false;
         }
 
         // Users can update themselves
@@ -41,7 +43,7 @@ class UpdatePersonRequest extends FormRequest
     public function rules()
     {
         return [
-            'role' => 'in:member,admin,owner',
+            'role' => 'in:responder,admin,owner,author,viewer',
             'password' => 'min:8',
             'person_type' => 'in:member,user,external',
             'name' => 'required',

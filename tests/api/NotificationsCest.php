@@ -4,7 +4,7 @@ class NotificationsCest
 {
     protected $organizationsEndpoint = '/api/v1/organizations';
     protected $peopleEndpoint = '/api/v1/organizations/2/people/me';
-    protected $rollcallsEndpoint = '/api/v1/rollcalls';
+    protected $checkInsEndpoint = '/api/v1/organizations/2/checkins';
 
     /*
      * Ensure that admins receive a notification when a person is added to the organization
@@ -18,7 +18,7 @@ class NotificationsCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
             'name' => 'Mary',
-            'email' => 'mary@rollcall.io',
+            'email' => 'mary@tenfour.org',
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -47,7 +47,7 @@ class NotificationsCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
             'name' => 'Mary',
-            'email' => 'mary@rollcall.io',
+            'email' => 'mary@tenfour.org',
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -122,17 +122,17 @@ class NotificationsCest
     }
 
     /*
-     * Ensure I get a notification if I am a recipient of a new rollcall
+     * Ensure I get a notification if I am a recipient of a new check-in
      *
      */
-    public function receiveRollCallReceivedNotification(ApiTester $I)
+    public function receiveCheckInReceivedNotification(ApiTester $I)
     {
         $org_id = 2;
         $message = 'Westgate under siege, are you ok?';
-        $I->wantTo('When a rollcall is received, I get a notification as a recipient');
+        $I->wantTo('When a check-in is received, I get a notification as a recipient');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPost($this->rollcallsEndpoint, [
+        $I->sendPost($this->checkInsEndpoint, [
             'message' => $message,
             'organization_id' => $org_id,
             'send_via' => ['apponly'],
@@ -157,26 +157,26 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'RollCallReceived',
+                'type' => 'CheckInReceived',
                 'data' => [
-                  'rollcall_message' => $message
+                  'check_in_message' => $message
                 ]
             ]
         ]);
     }
 
     /*
-     * Ensure I get a notification if I am a recipient of a rollcall and someone replies
+     * Ensure I get a notification if I am a recipient of a check-in and someone replies
      *
      */
     public function receiveReplyReceivedNotification(ApiTester $I)
     {
         $org_id = 2;
-        $rollcall_id = 1;
-        $I->wantTo('When a reply to a rollcall is received, I get a notification as a recipient');
+        $check_in_id = 1;
+        $I->wantTo('When a reply to a check-in is received, I get a notification as a recipient');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPost($this->rollcallsEndpoint.'/'.$rollcall_id.'/replies', [
+        $I->sendPost($this->checkInsEndpoint.'/'.$check_in_id.'/replies', [
             'message'  => 'Test response',
             'answer'   => 'yes'
         ]);
@@ -191,7 +191,7 @@ class NotificationsCest
             'notifications' => [
                 'type' => 'ReplyReceived',
                 'data' => [
-                  'rollcall_id' => $rollcall_id,
+                  'check_in_id' => $check_in_id,
                   'reply_from' => 'Org admin',
                 ]
             ]

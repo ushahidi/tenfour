@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Seeders;
+namespace TenFour\Seeders;
 
 use Illuminate\Database\Seeder;
-use RollCall\Models\User;
-use RollCall\Models\Group;
-use RollCall\Models\Organization;
+use TenFour\Models\User;
+use TenFour\Models\Group;
+use TenFour\Models\Organization;
 
 class GroupTableSeeder extends Seeder
 {

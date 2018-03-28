@@ -1,9 +1,10 @@
 <?php
 
-namespace RollCall\Http\Controllers\Auth;
+namespace TenFour\Http\Controllers\Auth;
 
-use RollCall\Http\Controllers\Controller;
-use RollCall\Models\User;
+use TenFour\Http\Controllers\Controller;
+use TenFour\Models\User;
+use TenFour\Contracts\Repositories\PersonRepository;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -28,8 +29,10 @@ class PasswordController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(PersonRepository $people)
     {
+        $this->people = $people;
+
         $this->middleware('guest');
     }
 
@@ -43,13 +46,9 @@ class PasswordController extends Controller
     {
         $this->validate($request, ['username' => 'required|email']);
 
-        $user = User::leftJoin('organizations', 'users.organization_id', '=', 'organizations.id')
-            ->leftJoin('contacts', 'contacts.user_id', '=', 'users.id')
-            ->where('organizations.subdomain', '=', $request->input('subdomain'))
-            ->where('contacts.contact', '=', $request->input('username'))
-            ->first();
+        $user = $this->people->findByEmailAndSubdomain($request->input('username'), $request->input('subdomain'));
 
-        if (!$user || !isset($user['person_type']) || $user['person_type'] !== 'user') {
+        if (!$user || !isset($user['person_type']) || $user['person_type'] == 'external') {
             return response('', 403);
         }
 
@@ -90,13 +89,17 @@ class PasswordController extends Controller
             ])->save();
         });
 
-        switch ($response) {
-            case Password::PASSWORD_RESET:
-                return response('ok', 200);
-
-            default:
-                return response('', 403);
+        if ($response != Password::PASSWORD_RESET) {
+            return response('', 403);
         }
+
+        // this logic allows a user to accept invite by resetting password (#984)
+        $member = $this->people->findByEmailAndSubdomain($request->input('username'), $request->input('subdomain'))->toArray();
+        $member['person_type'] = 'user';
+        $member['invite_token'] = null;
+        $member = $this->people->update($member['organization_id'], $member, $member['id']);
+
+        return response('ok', 200);
     }
 
 }

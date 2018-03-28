@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Contracts\Repositories;
+namespace TenFour\Contracts\Repositories;
 
 interface SubscriptionRepository extends OrgCrudRepository
 {

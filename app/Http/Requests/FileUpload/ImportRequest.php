@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\FileUpload;
+namespace TenFour\Http\Requests\FileUpload;
 
 class ImportRequest extends UpdateFileUploadRequest
 {

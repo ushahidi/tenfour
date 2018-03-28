@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Organization;
+namespace TenFour\Http\Requests\Organization;
 
 use Dingo\Api\Http\FormRequest;
 

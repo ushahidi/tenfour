@@ -1,5 +1,7 @@
 ## Getting Started
 
+## TODO review this document after TenFour rebrand
+
 Before setting up the project, make sure you have the following installed:
 
 - [Composer](https://getcomposer.org/)
@@ -8,8 +10,8 @@ Before setting up the project, make sure you have the following installed:
 ### Setup
 
 ```bash
-git clone git@github.com:ushahidi/rollcall-api.git
-cd rollcall-api
+git clone git@github.com:ushahidi/tenfour-api.git
+cd tenfour-api
 composer install
 ```
 
@@ -26,7 +28,7 @@ cp .env.example .env
 ```bash
 vagrant up
 vagrant ssh
-cd rollcall
+cd tenfour
 ./artisan migrate
 ./artisan db:seed
 ```
@@ -34,10 +36,11 @@ cd rollcall
 And finally, add the following to your `/etc/hosts` file:
 
 ```
-192.168.10.10 rollcall.dev
+192.168.10.10 tenfour.local
 ```
 
-Go to http://rollcall.dev/ in your browser to verify that everything worked.
+Go to http://tenfour.local/ in your browser to verify that everything worked.
 
 ### Log in as an organization owner
-Use the email `rollcall@ushahidi.com` with password `westgate`
+Use organization `tenfourtest`
+Use the email `tenfour@ushahidi.com` with password `westgate`

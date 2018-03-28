@@ -16,7 +16,7 @@ class GroupCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint."/$id/groups", [
             'name'  => 'Test group',
-            'description' => 'First Rollcall group',
+            'description' => 'First tenfour group',
             'members' => [
                 [
                     'id' => 3
@@ -31,7 +31,7 @@ class GroupCest
         $I->seeResponseContainsJson([
             'group' => [
                 'name' => 'Test group',
-                'description' => 'First Rollcall group',
+                'description' => 'First tenfour group',
                 'members' => [
                     [
                         'id' => 3
@@ -151,4 +151,42 @@ class GroupCest
             ]
         ]);
     }
+
+    /*
+     * List groups as an author
+     */
+    public function listOrgGroupsAsAuthor(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Get a list of groups for an organization as an author');
+        $I->amAuthenticatedAsAuthor();
+        $I->sendGET($this->endpoint."/$id/groups");
+        $I->seeResponseCodeIs(200);
+    }
+
+    /*
+     * List groups as an viewer
+     */
+    public function listOrgGroupsAsViewer(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Get a list of groups for an organization as an viewer');
+        $I->amAuthenticatedAsViewer();
+        $I->sendGET($this->endpoint."/$id/groups");
+        $I->seeResponseCodeIs(200);
+    }
+
+    /*
+     * View single group as an viewer
+     */
+    public function viewGroupAsViewer(ApiTester $I)
+    {
+        $id = 2;
+        $group_id = 1;
+        $I->wantTo('View a group n as an viewer');
+        $I->amAuthenticatedAsViewer();
+        $I->sendGET($this->endpoint."/$id/groups/$group_id");
+        $I->seeResponseCodeIs(200);
+    }
+
 }

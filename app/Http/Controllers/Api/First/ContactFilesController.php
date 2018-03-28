@@ -1,16 +1,16 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\ContactFilesRepository;
-use RollCall\Http\Requests\FileUpload\CreateFileUploadRequest;
-use RollCall\Http\Requests\FileUpload\UpdateFileUploadRequest;
-use RollCall\Http\Requests\FileUpload\ImportRequest;
-use RollCall\Http\Transformers\FileUploadTransformer;
-use RollCall\Http\Response;
+use TenFour\Contracts\Repositories\ContactFilesRepository;
+use TenFour\Http\Requests\FileUpload\CreateFileUploadRequest;
+use TenFour\Http\Requests\FileUpload\UpdateFileUploadRequest;
+use TenFour\Http\Requests\FileUpload\ImportRequest;
+use TenFour\Http\Transformers\FileUploadTransformer;
+use TenFour\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use App;
-use RollCall\Jobs\ImportCSV;
+use TenFour\Jobs\ImportCSV;
 use Dingo\Api\Auth\Auth;
 use Exception;
 
@@ -63,7 +63,9 @@ class ContactFilesController extends ApiController
         $file = $request->file('file');
         $path = $file->store('contacts');
 
-        $header = App::make('RollCall\Contracts\Contacts\CsvReader', [$path])->fetchHeader();
+        $reader = App::make('TenFour\Contracts\Contacts\CsvReader');
+        $reader->setPath($path);
+        $header = $reader->fetchHeader();
 
         $input = [
             'organization_id' => $organization_id,

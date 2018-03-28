@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Messaging\Facades;
+namespace TenFour\Messaging\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

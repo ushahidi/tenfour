@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\Subscription;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\Subscription;
+use TenFour\Http\Transformers\UserTransformer;
 
 class PaymentFailed extends Notification
 {
@@ -41,9 +41,9 @@ class PaymentFailed extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = 'We failed to make your payment for RollCall on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '.<br><br>' .
+        $body = 'We failed to make your payment for TenFour on the ' . $this->subscription->card_type . ' card ending in ' . $this->subscription->last_four . '.<br><br>' .
             'We will try to make payment on your card again.<br><br>' .
-            'In the meantime, please check your card information in RollCall settings.';
+            'In the meantime, please check your card information in TenFour settings.';
 
         return (new MailMessage)
             ->view('emails.general', [

@@ -1,15 +1,15 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 
-use RollCall\Models\Subscription;
+use TenFour\Models\Subscription;
 
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Http\Transformers\UserTransformer;
 
 /**
  * Notify beta users when their 100% discount promo code is about to expire.
@@ -50,7 +50,7 @@ class FreePromoEnding extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = 'Your RollCall free promotion is ending in ' . $this->days() . ' days. Hope you enjoyed using it!<br><br>' .
+        $body = 'Your TenFour free promotion is ending in ' . $this->days() . ' days. Hope you enjoyed using it!<br><br>' .
             'After this time we will automatically charge your account.';
 
         return (new MailMessage)

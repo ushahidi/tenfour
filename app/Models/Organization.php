@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,12 +35,12 @@ class Organization extends Model
      */
     public function members()
     {
-        return $this->hasMany('RollCall\Models\User');
+        return $this->hasMany('TenFour\Models\User');
     }
 
     public function subscriptions()
     {
-        return $this->hasMany('RollCall\Models\Subscription');
+        return $this->hasMany('TenFour\Models\Subscription');
     }
 
     public function currentSubscription()
@@ -59,11 +59,11 @@ class Organization extends Model
 
     /**
      *
-     * An organization has rollcalls
+     * An organization has check-ins
      */
-    public function rollcalls()
+    public function checkIns()
     {
-        return $this->hasMany('RollCall\Models\RollCall');
+        return $this->hasMany('TenFour\Models\CheckIn');
     }
 
     /**
@@ -72,7 +72,7 @@ class Organization extends Model
      */
     public function settings()
     {
-        return $this->hasMany('RollCall\Models\Setting');
+        return $this->hasMany('TenFour\Models\Setting');
     }
 
     public function url($path = '')
@@ -84,7 +84,7 @@ class Organization extends Model
         return 'https://' .
             $this->subdomain .
             '.' .
-            config('rollcall.domain') .
+            config('tenfour.domain') .
             $path;
     }
 
@@ -94,7 +94,7 @@ class Organization extends Model
      */
     public function groups()
     {
-        return $this->hasMany('RollCall\Models\Group');
+        return $this->hasMany('TenFour\Models\Group');
     }
 
 }

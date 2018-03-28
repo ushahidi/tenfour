@@ -1,9 +1,9 @@
 <?php
-namespace RollCall\Seeders;
+namespace TenFour\Seeders;
 
 use Illuminate\Database\Seeder;
-use RollCall\Models\Setting;
-use RollCall\Models\Organization;
+use TenFour\Models\Setting;
+use TenFour\Models\Organization;
 
 class SettingsTableSeeder extends Seeder
 {

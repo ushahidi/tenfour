@@ -2,7 +2,7 @@
 
 return [
     // You can set the entity who gets subscribed here.
-    'model' => RollCall\Models\Organization::class,
+    'model' => TenFour\Models\Organization::class,
 
     'plan' => env('CHARGEBEE_PLAN'),
     'site' => env('CHARGEBEE_SITE'),

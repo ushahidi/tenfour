@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Contracts;
+namespace TenFour\Contracts;
 
 interface Response
 {

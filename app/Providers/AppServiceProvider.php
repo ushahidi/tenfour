@@ -1,9 +1,10 @@
 <?php
 
-namespace RollCall\Providers;
+namespace TenFour\Providers;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 use Clockwork\Support\Laravel\ClockworkMiddleware;
 use Clockwork\Support\Laravel\ClockworkServiceProvider;
 
@@ -34,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         if ($clockwork) {
              $this->app->register(ClockworkServiceProvider::class);
         }
+
+        Passport::ignoreMigrations();
     }
 }

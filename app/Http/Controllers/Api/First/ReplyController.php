@@ -1,26 +1,26 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\ReplyRepository;
-use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Http\Requests\Reply\GetReplyRequest;
-use RollCall\Http\Requests\Reply\AddReplyRequest;
-use RollCall\Http\Requests\Reply\CreateReplyRequest;
-use RollCall\Http\Requests\Reply\UpdateReplyRequest;
-use RollCall\Http\Transformers\ReplyTransformer;
-use RollCall\Http\Response;
+use TenFour\Contracts\Repositories\ReplyRepository;
+use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Http\Requests\Reply\GetReplyRequest;
+use TenFour\Http\Requests\Reply\AddReplyRequest;
+use TenFour\Http\Requests\Reply\CreateReplyRequest;
+use TenFour\Http\Requests\Reply\UpdateReplyRequest;
+use TenFour\Http\Transformers\ReplyTransformer;
+use TenFour\Http\Response;
 use Dingo\Api\Auth\Auth;
 
 /**
- * @Resource("Replies", uri="/api/v1/rollcalls")
+ * @Resource("Replies", uri="/api/v1/organizations/{org_id}/checkins/{check_in_id}/replies")
  */
 class ReplyController extends ApiController
 {
-    public function __construct(replyRepository $reply, RollCallRepository $roll_calls, Auth $auth, Response $response)
+    public function __construct(replyRepository $reply, CheckInRepository $check_ins, Auth $auth, Response $response)
     {
         $this->reply = $reply;
-        $this->roll_calls = $roll_calls;
+        $this->check_ins = $check_ins;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -28,10 +28,10 @@ class ReplyController extends ApiController
     /**
      * Get a single reply
      *
-     * @Get("/{roll_call_id}/replies/{reply_id}")
+     * @Get("/{reply_id}")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id"),
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id"),
      *   @Parameter("reply_id", type="number", required=true, description="Reply id")
      * })
      *
@@ -48,12 +48,12 @@ class ReplyController extends ApiController
      *           "location_text": null,
      *           "message": "I am OK",
      *           "message_id": null,
-     *           "rollcall": {
+     *           "checkin": {
      *               "id": 4,
-     *               "uri": "/rollcalls/4"
+     *               "uri": "/organizations/2/checkins/4"
      *           },
      *           "updated_at": null,
-     *           "uri": "/rollcalls/4/reply/1",
+     *           "uri": "/organizations/2/checkins/4/reply/1",
      *           "user": {
      *               "id": 1,
      *               "uri": "/users/1"
@@ -66,7 +66,7 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function find(GetReplyRequest $request, $roll_call_id, $reply_id)
+    public function find(GetReplyRequest $request, $organization_id, $check_in_id, $reply_id)
     {
         $reply = $this->reply->find($reply_id);
         return $this->response->item($reply, new ReplyTransformer, 'reply');
@@ -81,7 +81,7 @@ class ReplyController extends ApiController
      * @return Response
      *
      */
-    public function create(CreateReplyRequest $request)
+    public function create(CreateReplyRequest $request, $organization_id)
     {
         $reply = $this->reply->create(
           $request->input() + [
@@ -95,10 +95,10 @@ class ReplyController extends ApiController
     /**
      * Add reply
      *
-     * @Post("/{roll_call_id}/replies/")
+     * @Post("/")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      *
      * @Request({
@@ -111,12 +111,12 @@ class ReplyController extends ApiController
      *         "created_at": "2016-03-15 20:27:54",
      *         "id": 6,
      *         "message": "I am OK",
-     *         "rollcall": {
+     *         "checkin": {
      *             "id": 1,
-     *             "uri": "/rollcalls/1"
+     *             "uri": "/organizations/2/checkins/1"
      *         },
      *         "updated_at": "2016-03-15 20:27:54",
-     *         "uri": "/rollcalls/1/reply/6",
+     *         "uri": "/organizations/2/checkins/1/reply/6",
      *         "user": {
      *             "id": 5,
      *             "uri": "/users/5"
@@ -129,17 +129,17 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function addReply(AddReplyRequest $request, $id)
+    public function addReply(AddReplyRequest $request, $organization_id, $check_in_id)
     {
         $user_id = $this->auth->user()['id'];
         $reply = $this->reply->addReply(
           $request->input() + [
             'user_id' => $user_id,
-            'roll_call_id' => $id
-          ], $id);
+            'check_in_id' => $check_in_id
+          ], $check_in_id);
 
         // Update response status
-        $this->roll_calls->updateRecipientStatus($id, $user_id, 'replied');
+        $this->check_ins->updateRecipientStatus($check_in_id, $user_id, 'replied');
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
@@ -147,26 +147,26 @@ class ReplyController extends ApiController
     {
         $user_id = $this->auth->user()['id'];
 
-        $user_id = $this->roll_calls->getUserFromReplyToken($request->get('token'));
+        $user_id = $this->check_ins->getUserFromReplyToken($request->get('token'));
 
         $reply = $this->reply->addReply(
           $request->input() + [
             'user_id' => $user_id,
-            'roll_call_id' => $id
+            'check_in_id' => $id
           ], $id);
 
         // Update response status
-        $this->roll_calls->updateRecipientStatus($id, $user_id, 'replied');
+        $this->check_ins->updateRecipientStatus($id, $user_id, 'replied');
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
     /**
-     * List roll call replies
+     * List check-in replies
      *
-     * @Get("/{roll_call_id}/replies/")
+     * @Get("/")
      * @Versions({"v1"})
      * @Parameters({
-     *   @Parameter("roll_call_id", type="number", required=true, description="RollCall id")
+     *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
      * })
      *
      * @Request(headers={"Authorization": "Bearer token"})
@@ -183,12 +183,12 @@ class ReplyController extends ApiController
      *             "location_text": null,
      *             "message": "I am OK",
      *             "message_id": null,
-     *             "rollcall": {
+     *             "checkin": {
      *                 "id": 1,
-     *                 "uri": "/rollcalls/1"
+     *                 "uri": "/organizations/2/checkins/1"
      *             },
      *             "updated_at": null,
-     *             "uri": "/rollcalls/1/reply/1",
+     *             "uri": "/organizations/2/checkins/1/reply/1",
      *             "user": {
      *                 "config_profile_reviewed": 0,
      *                 "config_self_test_sent": 0,
@@ -218,12 +218,12 @@ class ReplyController extends ApiController
      *             "location_text": null,
      *             "message": "Latest answer",
      *             "message_id": null,
-     *             "rollcall": {
+     *             "checkin": {
      *                 "id": 1,
-     *                 "uri": "/rollcalls/1"
+     *                 "uri": "/organizations/2/checkins/1"
      *             },
      *             "updated_at": null,
-     *             "uri": "/rollcalls/1/reply/3",
+     *             "uri": "/organizations/2/checkins/1/reply/3",
      *             "user": {
      *                 "config_profile_reviewed": 0,
      *                 "config_self_test_sent": 0,
@@ -249,9 +249,9 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function listReplies(GetReplyRequest $request, $id)
+    public function listReplies(GetReplyRequest $request, $organization_id, $check_in_id)
     {
-        return $this->response->collection($this->reply->getReplies($id, $request->query('users'), $request->query('contacts')),
+        return $this->response->collection($this->reply->getReplies($check_in_id, $request->query('users'), $request->query('contacts')),
                                      new ReplyTransformer, 'replies');
     }
 
@@ -263,7 +263,7 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function update(UpdateReplyRequest $request, $roll_call_id, $reply_id)
+    public function update(UpdateReplyRequest $request, $organization_id, $check_in_id, $reply_id)
     {
         $reply = $this->reply->update($request->all(), $reply_id);
 

@@ -1,6 +1,6 @@
 <?php
 
-use RollCall\Messaging\AnswerParser;
+use TenFour\Messaging\AnswerParser;
 use Codeception\Util\Stub;
 
 class AnswerParserCest

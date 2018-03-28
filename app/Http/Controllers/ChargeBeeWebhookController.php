@@ -1,20 +1,20 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
-use RollCall\Models\Subscription;
-use RollCall\Models\Addon;
-use RollCall\Http\Controllers\Controller;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Services\CreditService;
+use TenFour\Models\Subscription;
+use TenFour\Models\Addon;
+use TenFour\Http\Controllers\Controller;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Services\CreditService;
 use Illuminate\Http\Request;
 use ChargeBee_Environment;
 use ChargeBee_Subscription;
 use ChargeBee_Coupon;
 use ChargeBee_InvalidRequestException;
-use RollCall\Notifications\PaymentFailed;
-use RollCall\Notifications\PaymentSucceeded;
-use RollCall\Notifications\TrialEnding;
+use TenFour\Notifications\PaymentFailed;
+use TenFour\Notifications\PaymentSucceeded;
+use TenFour\Notifications\TrialEnding;
 
 use Log;
 

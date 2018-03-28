@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class SMS extends Model
      *
      * @var array
      */
-    protected $fillable = ['to', 'from', 'driver', 'rollcall_id', 'type', 'message'];
+    protected $fillable = ['to', 'from', 'driver', 'check_in_id', 'type', 'message'];
 
     /**
      * The attributes excluded from the model's JSON form.

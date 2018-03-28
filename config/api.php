@@ -137,9 +137,7 @@ return [
     */
 
 	'auth' => [
-        'oauth' => function ($app) {
-            return new Dingo\Api\Auth\Provider\OAuth2($app['League\OAuth2\Server\ResourceServer']);
-        },
+        'Guard' => \TenFour\Providers\GuardServiceProvider::class
     ],
 
     /*

@@ -4,7 +4,7 @@ use Codeception\Util\Fixtures;
 
 class MailCest
 {
-    public function handleReceiveSelfTestRollCall(ApiTester $I)
+    public function handleReceiveSelfTestCheckIn(ApiTester $I)
     {
         $user_id = 1;
         $contact_id = 2;
@@ -12,7 +12,7 @@ class MailCest
         $reply = Fixtures::get('self_test_reply');
         $endpoint = 'mail/receive';
 
-        $I->wantTo('Test a reply to a self test RollCall');
+        $I->wantTo('Test a reply to a self test check-in');
         $I->haveHttpHeader('x-amz-sns-message-type', 'Notification');
         $I->sendPost($endpoint, $reply);
         $I->seeResponseCodeIs(200);
@@ -33,7 +33,7 @@ class MailCest
     {
         $bounce = Fixtures::get('permanent_bounce');
 
-        $bounce_threshold = config('rollcall.messaging.bounce_threshold');
+        $bounce_threshold = config('tenfour.messaging.bounce_threshold');
 
         $endpoint = 'ses/bounces';
         $I->wantTo('Handle permanent SES bounces');
@@ -95,7 +95,7 @@ class MailCest
         $I->sendPost($endpoint, $complaint);
         $I->seeResponseCodeIs(200);
 
-        $I->seeRecord('roll_calls', [
+        $I->seeRecord('check_ins', [
             'id' => '1',
             'complaint_count' => $count,
         ]);
@@ -103,18 +103,18 @@ class MailCest
         // check a notification has been sent
         $I->seeRecord('notifications', [
             'notifiable_id'           => '4',
-            'notifiable_type'         => 'RollCall\Models\User',
-            'type'                    => 'RollCall\Notifications\Complaint',
-            'data'                    => '{"person_name":"Admin user","person_id":2,"profile_picture":false,"initials":"AU","rollcall_message":"Westgate under siege","rollcall_id":1}'
+            'notifiable_type'         => 'TenFour\Models\User',
+            'type'                    => 'TenFour\Notifications\Complaint',
+            'data'                    => '{"person_name":"Admin user","person_id":2,"profile_picture":false,"initials":"AU","check_in_message":"Westgate under siege","check_in_id":1}'
         ]);
     }
 
-    public function receiveRollCallMail(ApiTester $I)
+    public function receiveCheckInMail(ApiTester $I)
     {
-        $I->wantTo('Receive a RollCall mail');
+        $I->wantTo('Receive a check-in mail');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/api/v1/rollcalls', [
+        $I->sendPOST('/api/v1/organizations/2/checkins', [
             'message' => 'Sinkhole has opened. Are you ok?',
             'organization_id' => 2,
             'send_via' => ['email'],
@@ -131,10 +131,10 @@ class MailCest
 
         $I->seeRecord('outgoing_mail_log', [
             'subject'     => "Sinkhole has opened. Are you ok?",
-            'type'        => 'rollcall',
+            'type'        => 'check_in',
             'to'          => 'org_member@ushahidi.com',
-            'rollcall_id' => 8,
-            'from'        => 'rollcall-8@qa.rollcall.io'
+            'check_in_id' => 8,
+            'from'        => 'checkin-8@qa.tenfour.org'
         ]);
     }
 }

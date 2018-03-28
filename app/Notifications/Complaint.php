@@ -1,14 +1,14 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\User;
-use RollCall\Models\RollCall;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Models\User;
+use TenFour\Models\CheckIn;
+use TenFour\Http\Transformers\UserTransformer;
 
 class Complaint extends Notification
 {
@@ -19,10 +19,10 @@ class Complaint extends Notification
      *
      * @return void
      */
-    public function __construct(User $person, RollCall $roll_call)
+    public function __construct(User $person, CheckIn $check_in)
     {
         $this->person = $person;
-        $this->roll_call = $roll_call;
+        $this->check_in = $check_in;
     }
 
     /**
@@ -49,8 +49,8 @@ class Complaint extends Notification
             'person_id' => $this->person->id,
             'profile_picture' => $this->person->profile_picture || null,
             'initials' => UserTransformer::generateInitials($this->person->name),
-            'rollcall_message' => isset($this->roll_call)?$this->roll_call->message:null,
-            'rollcall_id' => isset($this->roll_call)?$this->roll_call->id:null
+            'check_in_message' => isset($this->check_in)?$this->check_in->message:null,
+            'check_in_id' => isset($this->check_in)?$this->check_in->id:null
         ];
     }
 }

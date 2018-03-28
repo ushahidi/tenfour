@@ -1,19 +1,19 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Http\Requests\Person\Contact\AddContactRequest;
-use RollCall\Http\Requests\Person\Contact\DeleteContactRequest;
-use RollCall\Http\Requests\Person\Contact\UpdateContactRequest;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Http\Requests\Person\Contact\AddContactRequest;
+use TenFour\Http\Requests\Person\Contact\DeleteContactRequest;
+use TenFour\Http\Requests\Person\Contact\UpdateContactRequest;
 use Dingo\Api\Auth\Auth;
-use RollCall\Http\Transformers\ContactTransformer;
-use RollCall\Http\Response;
+use TenFour\Http\Transformers\ContactTransformer;
+use TenFour\Http\Response;
 use Illuminate\Http\Request;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
-use RollCall\Messaging\PhoneNumberAdapter;
+use TenFour\Messaging\PhoneNumberAdapter;
 use App;
 
 /**
@@ -136,7 +136,7 @@ class PersonContactController extends ApiController
     }
 
     /**
-     * Unsubscribe an email address from RollCalls
+     * Unsubscribe an email address from check-ins
      *
      * @Post("/unsubscribe")
      * @Versions({"v1"})
@@ -165,11 +165,8 @@ class PersonContactController extends ApiController
     protected function formatPhoneInput(array &$input)
     {
 
-        $phone_number_adapter = App::make('RollCall\Messaging\PhoneNumberAdapter',
-                                          [
-                                              $input['contact']
-                                          ]);
-
+        $phone_number_adapter = App::make('TenFour\Messaging\PhoneNumberAdapter');
+        $phone_number_adapter->setRawNumber($input['contact']);
         $input['contact'] = $phone_number_adapter->getNormalizedNumber();
 
         $input['meta'] = [

@@ -1,27 +1,27 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
 use Aws\Sns\Message;
 use markdunphy\SesSnsTypes\Notification\BounceMessage;
 use markdunphy\SesSnsTypes\Notification\ComplaintMessage;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\RollCallRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
 use Log;
 use Illuminate\Support\Facades\Notification;
-use RollCall\Notifications\Complaint;
-use RollCall\Models\Contact;
-use RollCall\Models\RollCall;
+use TenFour\Notifications\Complaint;
+use TenFour\Models\Contact;
+use TenFour\Models\CheckIn;
 
 class SESBounceController extends Controller
 {
     use ValidatesMessages;
 
-    public function __construct(ContactRepository $contacts, RollCallRepository $roll_calls, PersonRepository $people)
+    public function __construct(ContactRepository $contacts, CheckInRepository $check_ins, PersonRepository $people)
     {
         $this->contacts = $contacts;
-        $this->roll_calls = $roll_calls;
+        $this->check_ins = $check_ins;
         $this->people = $people;
     }
 
@@ -37,7 +37,7 @@ class SESBounceController extends Controller
 
         // Log::debug((array) $message);
 
-        if (config('rollcall.messaging.validate_sns_message')) {
+        if (config('tenfour.messaging.validate_sns_message')) {
             $this->validateSnsMessageOrAbort($message);
         }
 
@@ -56,7 +56,7 @@ class SESBounceController extends Controller
 
         $bounce = new BounceMessage(json_decode($message['Message'], true));
 
-        $bounce_threshold = config('rollcall.messaging.bounce_threshold');
+        $bounce_threshold = config('tenfour.messaging.bounce_threshold');
 
         $recipients = $bounce->getBouncedRecipients();
 
@@ -98,7 +98,7 @@ class SESBounceController extends Controller
 
         Log::debug((array) $message);
 
-        if (config('rollcall.messaging.validate_sns_message')) {
+        if (config('tenfour.messaging.validate_sns_message')) {
             $this->validateSnsMessageOrAbort($message);
         }
 
@@ -119,7 +119,7 @@ class SESBounceController extends Controller
 
         $recipients = $complaint->getComplainedRecipients();
 
-        $complaint_threshold = config('rollcall.messaging.complaint_threshold');
+        $complaint_threshold = config('tenfour.messaging.complaint_threshold');
 
         foreach ($recipients as $recipient)
         {
@@ -130,22 +130,22 @@ class SESBounceController extends Controller
             // Get contact id
             $contact = $this->contacts->getByContact($recipient->getEmailAddress());
 
-            $roll_call_id = $this->roll_calls->getLastSentMessageId($contact['id']);
+            $check_in_id = $this->check_ins->getLastSentMessageId($contact['id']);
 
-            if ($roll_call_id) {
-                $roll_call = $this->roll_calls->find($roll_call_id);
+            if ($check_in_id) {
+                $check_in = $this->check_ins->find($check_in_id);
 
-                if ($roll_call['complaint_count'] < $complaint_threshold) {
-                    $new_count = $roll_call['complaint_count'] + 1;
-                    $this->roll_calls->setComplaintCount($new_count, $roll_call_id);
+                if ($check_in['complaint_count'] < $complaint_threshold) {
+                    $new_count = $check_in['complaint_count'] + 1;
+                    $this->check_ins->setComplaintCount($new_count, $check_in_id);
                 }
 
-                $roll_call_obj = RollCall::where('id', $roll_call_id)->first();
+                $check_in_obj = CheckIn::where('id', $check_in_id)->first();
             }
 
             $contact_obj = Contact::where('id', $contact['id'])->first();
 
-            Notification::send($this->people->getAdmins($contact_obj->user->organization->id), new Complaint($contact_obj->user, $roll_call_obj));
+            Notification::send($this->people->getAdmins($contact_obj->user->organization->id), new Complaint($contact_obj->user, $check_in_obj));
         }
     }
 }

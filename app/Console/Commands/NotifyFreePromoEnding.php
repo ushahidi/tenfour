@@ -1,11 +1,11 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
-use RollCall\Models\Subscription;
-use RollCall\Contracts\Repositories\SubscriptionRepository;
-use RollCall\Contracts\Services\PaymentService;
-use RollCall\Notifications\FreePromoEnding;
+use TenFour\Models\Subscription;
+use TenFour\Contracts\Repositories\SubscriptionRepository;
+use TenFour\Contracts\Services\PaymentService;
+use TenFour\Notifications\FreePromoEnding;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;

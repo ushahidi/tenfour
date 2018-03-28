@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Contracts\Messaging;
+namespace TenFour\Contracts\Messaging;
 
 interface MessageService
 {

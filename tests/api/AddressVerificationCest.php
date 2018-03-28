@@ -24,7 +24,7 @@ class AddressVerificationCest
         ]);
 
         $I->seeRecord('outgoing_mail_log', [
-            'subject'     => "Verify your RollCall email address",
+            'subject'     => "Verify your TenFour email address",
             'type'        => 'verification',
             'to'          => 'john@ushahidi.com',
         ]);

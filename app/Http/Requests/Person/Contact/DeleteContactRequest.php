@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Http\Requests\Person\Contact;
+namespace TenFour\Http\Requests\Person\Contact;
 
-use RollCall\Http\Requests\Person\UpdatePersonRequest;
+use TenFour\Http\Requests\Person\UpdatePersonRequest;
 
 class DeleteContactRequest extends UpdatePersonRequest
 {

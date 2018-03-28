@@ -1,10 +1,10 @@
 <?php
-namespace RollCall\Repositories;
+namespace TenFour\Repositories;
 
-use RollCall\Models\Contact;
-use RollCall\Notifications\Unsubscribe;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Services\AnalyticsService;
+use TenFour\Models\Contact;
+use TenFour\Notifications\Unsubscribe;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Services\AnalyticsService;
 
 use Illuminate\Support\Facades\Notification;
 use libphonenumber\PhoneNumberUtil;
@@ -143,9 +143,9 @@ class EloquentContactRepository implements ContactRepository
             'user' => function ($query) {
                 $query->select('users.id', 'users.name');
             }])
-            ->leftJoin('roll_call_messages', 'roll_call_messages.contact_id', '=', 'contacts.id')
+            ->leftJoin('check_in_messages', 'check_in_messages.contact_id', '=', 'contacts.id')
             ->where('contact', $contact)
-            ->orderBy('roll_call_messages.created_at', 'desc')
+            ->orderBy('check_in_messages.created_at', 'desc')
             ->first();
     }
 
@@ -156,7 +156,7 @@ class EloquentContactRepository implements ContactRepository
       $contact['blocked'] = true;
       $contact->save();
 
-      $people = resolve('RollCall\Contracts\Repositories\PersonRepository');
+      $people = resolve('TenFour\Contracts\Repositories\PersonRepository');
 
       Notification::send($people->getAdmins($contact->user->organization->id),
           new Unsubscribe($contact->user, $contact));

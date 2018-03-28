@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,9 +39,9 @@ class Contact extends Model
     /**
      * Messages sent to contact
      */
-    public function rollcalls()
+    public function checkIns()
     {
-        return $this->belongsToMany('RollCall\Models\RollCall', 'roll_call_messages');
+        return $this->belongsToMany('TenFour\Models\CheckIn', 'check_in_messages');
     }
 
     /**
@@ -49,12 +49,12 @@ class Contact extends Model
      */
     public function user()
     {
-        return $this->belongsTo('RollCall\Models\User');
+        return $this->belongsTo('TenFour\Models\User');
     }
 
 
     public function replies()
     {
-        return $this->hasMany('RollCall\Models\Reply');
+        return $this->hasMany('TenFour\Models\Reply');
     }
 }

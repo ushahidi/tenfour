@@ -8,26 +8,19 @@ class DbHelper extends \Codeception\Module\Db
      *
      * See http://matthewturland.com/2014/05/09/customizing-codeception-database-cleanup/
      **/
-    protected function cleanup()
+    public function _cleanup()
     {
         $dbh = $this->driver->getDbh();
 
         $dbh->exec('SET FOREIGN_KEY_CHECKS=0');
 
-        // Clear OAuth tokens and scopes
-        $dbh->exec('TRUNCATE TABLE oauth_access_token_scopes');
-        $dbh->exec('TRUNCATE TABLE oauth_sessions');
-        $dbh->exec('TRUNCATE TABLE oauth_session_scopes');
         $dbh->exec('TRUNCATE TABLE oauth_access_tokens');
-        $dbh->exec('TRUNCATE TABLE oauth_scopes');
+        $dbh->exec('TRUNCATE TABLE oauth_refresh_tokens');
         $dbh->exec('TRUNCATE TABLE oauth_clients');
+        $dbh->exec('TRUNCATE TABLE oauth_personal_access_clients');
 
         // Delete test users
         $dbh->exec('TRUNCATE TABLE users');
-
-        // Delete roles;
-        // $dbh->exec('TRUNCATE TABLE roles');
-
 
         $dbh->exec('TRUNCATE TABLE credit_adjustments');
         $dbh->exec('TRUNCATE TABLE subscriptions');
@@ -39,14 +32,14 @@ class DbHelper extends \Codeception\Module\Db
         // Delete test contacts
         $dbh->exec('TRUNCATE TABLE contacts');
 
-        // Delete test roll calls
-        $dbh->exec('TRUNCATE TABLE roll_calls');
+        // Delete test check-ins
+        $dbh->exec('TRUNCATE TABLE check_ins');
 
-        // Delete roll_call_messages, roll_call_recipients pivot data
-        $dbh->exec('TRUNCATE TABLE roll_call_messages');
-        $dbh->exec('TRUNCATE TABLE roll_call_recipients');
+        // Delete check_in_messages, check_in_recipients pivot data
+        $dbh->exec('TRUNCATE TABLE check_in_messages');
+        $dbh->exec('TRUNCATE TABLE check_in_recipients');
 
-        // Delete roll call replies
+        // Delete check-in replies
         $dbh->exec('TRUNCATE TABLE replies');
 
         // Delete settings
@@ -63,6 +56,9 @@ class DbHelper extends \Codeception\Module\Db
 
         //Delete group_users
         $dbh->exec('TRUNCATE TABLE group_users');
+
+        $dbh->exec('TRUNCATE TABLE outgoing_sms_log');
+        $dbh->exec('TRUNCATE TABLE outgoing_mail_log');
 
         $dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
 

@@ -1,6 +1,6 @@
 <?php
 
-use RollCall\Contacts\CsvTransformer;
+use TenFour\Contacts\CsvTransformer;
 
 class CsvTransformerCest
 {
@@ -15,7 +15,8 @@ class CsvTransformerCest
 
         $fields = ['Linda', 'software developer', '254923333300', 'linda@ushahidi.com', 'P.O. Box 42, Nairobi', '@lk'];
 
-        $transformer = new CsvTransformer($map);
+        $transformer = new CsvTransformer();
+        $transformer->setMap($map);
 
         $transformed_fields = $transformer->transform($fields);
 

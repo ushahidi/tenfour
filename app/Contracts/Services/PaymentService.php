@@ -1,5 +1,5 @@
 <?php
-namespace RollCall\Contracts\Services;
+namespace TenFour\Contracts\Services;
 
 interface PaymentService
 {

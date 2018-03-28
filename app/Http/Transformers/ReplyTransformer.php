@@ -1,18 +1,18 @@
 <?php
-namespace RollCall\Http\Transformers;
+namespace TenFour\Http\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use RollCall\Http\Transformers\UserTransformer;
+use TenFour\Http\Transformers\UserTransformer;
 
 class ReplyTransformer extends TransformerAbstract
 {
     public function transform(array $reply)
     {
-        $reply['uri'] = '/rollcalls/' . $reply['roll_call_id'] . '/reply/' . $reply['id'];
+        $reply['uri'] = '/checkins/' . $reply['check_in_id'] . '/reply/' . $reply['id'];
 
-        $reply['rollcall']['id'] = (int) $reply['roll_call_id'];
-        $reply['rollcall']['uri'] = '/rollcalls/' . $reply['roll_call_id'];
-        unset($reply['roll_call_id']);
+        $reply['check_in']['id'] = (int) $reply['check_in_id'];
+        $reply['check_in']['uri'] = '/checkins/' . $reply['check_in_id'];
+        unset($reply['check_in_id']);
 
         if (!empty($reply['contact_id'])) {
             $reply['contact']['id'] = (int) $reply['contact_id'];

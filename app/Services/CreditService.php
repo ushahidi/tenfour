@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Services;
+namespace TenFour\Services;
 
-use RollCall\Models\Organization;
-use RollCall\Models\Subscription;
-use RollCall\Models\CreditAdjustment;
+use TenFour\Models\Organization;
+use TenFour\Models\Subscription;
+use TenFour\Models\CreditAdjustment;
 use DB;
 use App;
 use Log;
@@ -91,22 +91,22 @@ class CreditService
         }
     }
 
-    public function hasSufficientCredits($rollcall) {
-        $contact_repo = \App::make('RollCall\Contracts\Repositories\ContactRepository');
-        $org_repo = \App::make('RollCall\Contracts\Repositories\OrganizationRepository');
+    public function hasSufficientCredits($check_in) {
+        $contact_repo = \App::make('TenFour\Contracts\Repositories\ContactRepository');
+        $org_repo = \App::make('TenFour\Contracts\Repositories\OrganizationRepository');
 
-        $organization = $org_repo->find($rollcall['organization_id']);
+        $organization = $org_repo->find($check_in['organization_id']);
         $available_credits = $organization['credits'];
 
-        if ($rollcall['send_via'] == ['apponly']) {
+        if ($check_in['send_via'] == ['apponly']) {
             return true;
         }
 
         $recipient_ids = array_map(function ($recipient) {
             return $recipient['id'];
-        }, $rollcall['recipients']);
+        }, $check_in['recipients']);
 
-        $contacts = $contact_repo->getByUserId($recipient_ids, $rollcall['send_via']);
+        $contacts = $contact_repo->getByUserId($recipient_ids, $check_in['send_via']);
 
         foreach ($contacts as $contact) {
             if ($contact['type'] === 'phone') {

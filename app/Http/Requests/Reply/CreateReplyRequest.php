@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Requests\Reply;
+namespace TenFour\Http\Requests\Reply;
 
 use Dingo\Api\Http\FormRequest;
 use App;
@@ -10,13 +10,13 @@ class CreateReplyRequest extends GetReplyRequest
 
     public function authorize()
     {
-        $rollCall = App::make('RollCall\Contracts\Repositories\RollCallRepository')
-                 ->find($this->route('rollcall'));
-
+        $check_in = App::make('TenFour\Contracts\Repositories\CheckInRepository')
+                 ->find($this->route('checkin'));
+                 
         $token = $this->request->get('token');
 
         if ($token && !empty($token)) {
-            return count(array_filter($rollCall['recipients'], function ($recipient) use ($token) {
+            return count(array_filter($check_in['recipients'], function ($recipient) use ($token) {
                 return $recipient['pivot']['reply_token'] === $token;
             })) > 0;
         }

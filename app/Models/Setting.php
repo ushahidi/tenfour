@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,11 +39,11 @@ class Setting extends Model
 
     /**
      *
-     * Roll calls belong to an organization
+     * Check-ins belong to an organization
      */
     public function organization()
     {
-        return $this->belongsTo('RollCall\Models\Organization');
+        return $this->belongsTo('TenFour\Models\Organization');
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http\Middleware;
+namespace TenFour\Http\Middleware;
 
 use Closure;
 

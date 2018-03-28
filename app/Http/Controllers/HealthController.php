@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Controllers;
+namespace TenFour\Http\Controllers;
 
-use RollCall\Models\Organization;
-use RollCall\Http\Controllers\Controller;
+use TenFour\Models\Organization;
+use TenFour\Http\Controllers\Controller;
 
 class HealthController extends Controller
 {

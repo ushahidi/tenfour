@@ -1,8 +1,8 @@
 <?php
 
-namespace RollCall\Contacts;
+namespace TenFour\Contacts;
 
-use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
+use TenFour\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 
 
 class CsvTransformer implements CsvTransformerInterface
@@ -14,7 +14,7 @@ class CsvTransformer implements CsvTransformerInterface
      */
     private $map;
 
-    public function __construct($map)
+    public function setMap($map)
     {
         $this->map = $map;
     }

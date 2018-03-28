@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Services;
+namespace TenFour\Services;
 
 use Segment;
 use Exception;

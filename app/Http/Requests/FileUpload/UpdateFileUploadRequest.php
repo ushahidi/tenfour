@@ -1,9 +1,9 @@
 <?php
 
-namespace RollCall\Http\Requests\FileUpload;
+namespace TenFour\Http\Requests\FileUpload;
 
 use Dingo\Api\Http\FormRequest;
-use RollCall\Traits\UserAccess;
+use TenFour\Traits\UserAccess;
 
 class UpdateFileUploadRequest extends FormRequest
 {

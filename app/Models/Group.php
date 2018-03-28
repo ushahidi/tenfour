@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Models;
+namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,7 +48,7 @@ class Group extends Model
      */
     public function organization()
     {
-        return $this->belongsTo('RollCall\Models\Organization');
+        return $this->belongsTo('TenFour\Models\Organization');
     }
 
     /**
@@ -57,7 +57,7 @@ class Group extends Model
      */
     public function members()
     {
-        return $this->belongsToMany('RollCall\Models\User', 'group_users');
+        return $this->belongsToMany('TenFour\Models\User', 'group_users');
     }
 
 }

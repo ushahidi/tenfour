@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Validators;
+namespace TenFour\Validators;
 
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;

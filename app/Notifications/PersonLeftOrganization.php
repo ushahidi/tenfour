@@ -1,13 +1,12 @@
 <?php
 
-namespace RollCall\Notifications;
+namespace TenFour\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use RollCall\Models\User;
-use RollCall\Http\Transformers\UserTransformer;
-
+use TenFour\Models\User;
+use TenFour\Http\Transformers\UserTransformer;
 
 class PersonLeftOrganization extends Notification
 {

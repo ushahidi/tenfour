@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Console\Commands;
+namespace TenFour\Console\Commands;
 
 use Illuminate\Console\Command;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Models\Organization;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Models\Organization;
 use Illuminate\Support\Facades\Password;
 
 class OrgDelete extends Command
@@ -21,7 +21,7 @@ class OrgDelete extends Command
      *
      * @var string
      */
-    protected $description = 'Delete an organization, including users and rollcalls.';
+    protected $description = 'Delete an organization, including users and check-ins.';
 
     /**
      * Execute the console command.

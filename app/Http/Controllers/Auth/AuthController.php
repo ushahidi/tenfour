@@ -1,10 +1,10 @@
 <?php
 
-namespace RollCall\Http\Controllers\Auth;
+namespace TenFour\Http\Controllers\Auth;
 
-use RollCall\Models\User;
+use TenFour\Models\User;
 use Validator;
-use RollCall\Http\Controllers\Controller;
+use TenFour\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 

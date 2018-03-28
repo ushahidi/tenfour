@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Contacts;
+namespace TenFour\Contacts;
 
 class CsvImportException extends \RuntimeException
 {

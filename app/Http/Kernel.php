@@ -1,6 +1,6 @@
 <?php
 
-namespace RollCall\Http;
+namespace TenFour\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -13,28 +13,37 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        \RollCall\Http\Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \LucaDegasperi\OAuth2Server\Middleware\OAuthExceptionHandlerMiddleware::class,
         'Barryvdh\Cors\HandleCors',
     ];
 
     /**
+     * The application's route middleware groups.
+     *
+     * @var array
+     */
+    protected $middlewareGroups = [
+        'web' => [
+            \TenFour\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        ],
+        'api' => [
+            'throttle:60,1',
+        ],
+    ];
+        /**
      * The application's route middleware.
      *
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \RollCall\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.basic.chargebee-webhook' => \RollCall\Http\Middleware\ChargeBeeWebhookAuthentication::class,
-        'csrf' => App\Http\Middleware\VerifyCsrfToken::class,
-        'guest' => \RollCall\Http\Middleware\RedirectIfAuthenticated::class,
-        'oauth' => \LucaDegasperi\OAuth2Server\Middleware\OAuthMiddleware::class,
-        'oauth-user' => \LucaDegasperi\OAuth2Server\Middleware\OAuthUserOwnerMiddleware::class,
-        'oauth-client' => \LucaDegasperi\OAuth2Server\Middleware\OAuthClientOwnerMiddleware::class,
-        'check-authorization-params' => \LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware::class,
+        'auth'                          => \TenFour\Http\Middleware\Authenticate::class,
+        'auth.basic'                    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.basic.chargebee-webhook'  => \TenFour\Http\Middleware\ChargeBeeWebhookAuthentication::class,
+        'client_credentials'            => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        'csrf'                          => \TenFour\Http\Middleware\VerifyCsrfToken::class,
+        'guest'                         => \TenFour\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'                      => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

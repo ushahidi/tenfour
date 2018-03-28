@@ -1,12 +1,12 @@
 <?php
 
-namespace RollCall\Contacts;
+namespace TenFour\Contacts;
 
-use RollCall\Contracts\Contacts\CsvImporter as CsvImporterInterface;
-use RollCall\Contracts\Repositories\ContactRepository;
-use RollCall\Contracts\Repositories\PersonRepository;
-use RollCall\Contracts\Contacts\CsvReader as CsvReaderInterface;
-use RollCall\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
+use TenFour\Contracts\Contacts\CsvImporter as CsvImporterInterface;
+use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\PersonRepository;
+use TenFour\Contracts\Contacts\CsvReader as CsvReaderInterface;
+use TenFour\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 use DB;
 use Validator;
 use Exception;
@@ -58,12 +58,28 @@ class CsvImporter implements CsvImporterInterface
      */
     private $contact_fields = ['email', 'twitter', 'phone', 'address', 'slack'];
 
-    public function __construct(CsvReaderInterface $reader, CsvTransformerInterface $transformer, ContactRepository $contacts, PersonRepository $people, $organization_id)
+    public function setReader(CsvReaderInterface $reader)
     {
         $this->reader = $reader;
-        $this->contacts = $contacts;
-        $this->people = $people;
+    }
+
+    public function setTransformer(CsvTransformerInterface $transformer)
+    {
         $this->transformer = $transformer;
+    }
+
+    public function setContacts(ContactRepository $contacts)
+    {
+        $this->contacts = $contacts;
+    }
+
+    public function setPeople(PersonRepository $people)
+    {
+        $this->people = $people;
+    }
+
+    public function setOrganizationId($organization_id)
+    {
         $this->organization_id = $organization_id;
     }
 
@@ -116,7 +132,7 @@ class CsvImporter implements CsvImporterInterface
                     if ($existing_contact) {
                         throw new CsvImportException(
                             'A contact already exists with ' . $type . ' data "' . $contact . '" ' .
-                            'RollCall will not import duplicate contacts. Please include only ' .
+                            'TenFour will not import duplicate contacts. Please include only ' .
                             'new contacts in the CSV file.'
                         );
                     }

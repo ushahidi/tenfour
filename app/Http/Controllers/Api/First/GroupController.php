@@ -1,20 +1,20 @@
 <?php
 
-namespace RollCall\Http\Controllers\Api\First;
+namespace TenFour\Http\Controllers\Api\First;
 
-use RollCall\Contracts\Repositories\GroupRepository;
-use RollCall\Contracts\Repositories\OrganizationRepository;
-use RollCall\Http\Requests\Group\CreateGroupRequest;
-use RollCall\Http\Requests\Group\DeleteGroupRequest;
-use RollCall\Http\Requests\Group\GetGroupsRequest;
-use RollCall\Http\Requests\Group\UpdateGroupRequest;
-use RollCall\Http\Requests\Group\GetGroupRequest;
-use RollCall\Http\Transformers\GroupTransformer;
+use TenFour\Contracts\Repositories\GroupRepository;
+use TenFour\Contracts\Repositories\OrganizationRepository;
+use TenFour\Http\Requests\Group\CreateGroupRequest;
+use TenFour\Http\Requests\Group\DeleteGroupRequest;
+use TenFour\Http\Requests\Group\GetGroupsRequest;
+use TenFour\Http\Requests\Group\UpdateGroupRequest;
+use TenFour\Http\Requests\Group\GetGroupRequest;
+use TenFour\Http\Transformers\GroupTransformer;
 use Dingo\Api\Auth\Auth;
-use RollCall\Http\Response;
+use TenFour\Http\Response;
 
 /**
- * @Resource("Groups", uri="/api/v1/organizations")
+ * @Resource("Groups", uri="/api/v1/organizations/{org_id}/groups")
  */
 
 class GroupController extends ApiController
@@ -30,14 +30,14 @@ class GroupController extends ApiController
     /**
      * Create a group in an organization
      *
-     * @Post("/{org_id}/groups")
+     * @Post("/")
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id")
      * })
      *
      * @Versions({"v1"})
      * @Request({
-     *       "name": "Testing Group"
+     *       "name": "Testing Group",
      *       "members": {
      *         {
      *             "id": 3
@@ -45,12 +45,13 @@ class GroupController extends ApiController
      *         {
      *             "id": 1
      *         }
+     *       }
      *  }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "group": {
-     *         "id" : 4
+     *         "id" : 4,
      *         "created_at": "2017-03-18 19:19:27",
-     *         "name": "Testing Group"
+     *         "name": "Testing Group",
      *         "organization": {
      *             "id": 2,
      *             "uri": "/organizations/2"
@@ -81,7 +82,7 @@ class GroupController extends ApiController
     /**
      * Delete a group from an organization
      *
-     * @Delete("{org_id}/groups/{group_id}")
+     * @Delete("/{group_id}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
@@ -119,7 +120,7 @@ class GroupController extends ApiController
      * @Response(200, body={
      *     "groups": {
      *         {
-     *             "name": Test Group 1,
+     *             "name": "Test Group 1",
      *             "created_at": null,
      *             "id": 1,
      *             "organization": {
@@ -134,10 +135,9 @@ class GroupController extends ApiController
      *             },
      *             "updated_at": null,
      *             "uri": "/organizations/2/groups/1",
-     *             }
      *         },
      *         {
-     *             "name": Test Group 2,
+     *             "name": "Test Group 2",
      *             "created_at": null,
      *             "id": 2,
      *             "organization": {
@@ -152,10 +152,9 @@ class GroupController extends ApiController
      *             },
      *             "updated_at": null,
      *             "uri": "/organizations/2/groups/2",
-     *             }
      *         },
      *         {
-     *             "name": Test Group 3,
+     *             "name": "Test Group 3",
      *             "created_at": null,
      *             "id": 3,
      *             "organization": {
@@ -170,7 +169,6 @@ class GroupController extends ApiController
      *             },
      *             "updated_at": null,
      *             "uri": "/organizations/2/groups/3",
-     *             }
      *         },
      *     }
      * })

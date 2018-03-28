@@ -2,7 +2,7 @@
 
 class ReplyCest
 {
-    protected $endpoint = '/api/v1/rollcalls';
+    protected $endpoint = '/api/v1/organizations/2/checkins';
 
     public function getRepliesFilteredByUsers(ApiTester $I)
     {
@@ -57,7 +57,7 @@ class ReplyCest
     public function getReplies(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Get a list of replies for a roll call as an organization admin');
+        $I->wantTo('Get a list of replies for a check-in as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($this->endpoint.'/'.$id.'/replies');
         $I->seeResponseCodeIs(200);
@@ -97,7 +97,7 @@ class ReplyCest
     public function addReply(ApiTester $I)
     {
         $id = 1;
-        $I->wantTo('Add reply to roll call');
+        $I->wantTo('Add reply to check-in');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint.'/'.$id.'/replies', [
@@ -112,7 +112,7 @@ class ReplyCest
                     'id' => 5
                 ],
                 'message'  => 'Test response',
-                'rollcall' => [
+                'check_in' => [
                     'id' => 1,
                 ]
             ]
@@ -123,7 +123,7 @@ class ReplyCest
     {
         $id = 1;
         $replyId = 1;
-        $I->wantTo('Get a reply for a roll call as an organization admin');
+        $I->wantTo('Get a reply for a check-in as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendGET($this->endpoint.'/'.$id.'/replies/'.$replyId);
         $I->seeResponseCodeIs(200);
@@ -134,10 +134,10 @@ class ReplyCest
                 'message'  => 'I am OK',
                 'location_text' => NULL,
                 'answer' => NULL,
-                'uri' => '/rollcalls/1/reply/1',
-                'rollcall' => [
+                'uri' => '/checkins/1/reply/1',
+                'check_in' => [
                     'id' => 1,
-                    'uri' => '/rollcalls/1',
+                    'uri' => '/checkins/1',
                 ],
                 'contact'  => [
                     'id'   => 1,
@@ -148,18 +148,18 @@ class ReplyCest
     }
 
     /*
-     * As the user, I want to send a RollCall reply using a reply token
+     * As the user, I want to send a check-in reply using a reply token
      */
     public function addReplyWithReplyToken(ApiTester $I)
     {
-        $roll_call_id = 1;
+        $check_in_id = 1;
         $token = 'testtoken1';
         $I->wantTo('Add a reply with a reply token');
         // $I->sendGet();
-        $I->sendPOST('/rollcalls/' . $roll_call_id . '/replies', [
+        $I->sendPOST('/checkins/' . $check_in_id . '/replies', [
             'message'     => 'Test response',
             'answer'      => 'yes',
-            'rollCallId'  => $roll_call_id,
+            'check_in_id' => $check_in_id,
             'token'       => $token
         ]);
         $I->seeResponseCodeIs(200);
@@ -169,7 +169,7 @@ class ReplyCest
                     'id' => 2
                 ],
                 'message'  => 'Test response',
-                'rollcall' => [
+                'check_in' => [
                     'id' => 1,
                 ]
             ]
@@ -177,18 +177,18 @@ class ReplyCest
     }
 
     /*
-     * As another user, I don't want to send a RollCall reply using another user's token
+     * As another user, I don't want to send a check-in reply using another user's token
      */
     public function addReplyWithInvalidReplyToken(ApiTester $I)
     {
-        $roll_call_id = 1;
+        $check_in_id = 1;
         $token = 'testtoken3';
         $I->wantTo('Not add a reply with an invalid reply token');
         // $I->sendGet();
-        $I->sendPOST('/rollcalls/' . $roll_call_id . '/replies', [
+        $I->sendPOST('/checkins/' . $check_in_id . '/replies', [
             'message'     => 'Test response',
             'answer'      => 'yes',
-            'rollCallId'  => $roll_call_id,
+            'check_in_id' => $check_in_id,
             'token'       => $token
         ]);
         $I->seeResponseCodeIs(403);
