@@ -31,9 +31,8 @@
     service: deploy
     command: >
       ANSIBLE_GITHUB_REPO=tenfour-infra
-      ANSIBLE_GITHUB_REPO_VERSION=master
+      ANSIBLE_GITHUB_REPO_VERSION=tenfour
       ENV=production
-      TF_FOLDER=tf/production
       ush-ansible-playbook.sh -vv -i ./hosts -l production
         -e API_VERSION_SRC=/vols/src
         api-deploy-version.yml
