@@ -169,6 +169,15 @@ class EloquentPersonRepository implements PersonRepository
         return $user->toArray();
     }
 
+    public function findByEmailAndSubdomain($email, $subdomain)
+    {
+        return User::leftJoin('organizations', 'users.organization_id', '=', 'organizations.id')
+            ->leftJoin('contacts', 'contacts.user_id', '=', 'users.id')
+            ->where('organizations.subdomain', '=', $subdomain)
+            ->where('contacts.contact', '=', $email)
+            ->first();
+    }
+
     // OrgCrudRepository
     public function find($organization_id, $user_id)
     {

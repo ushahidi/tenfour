@@ -68,4 +68,15 @@ interface PersonRepository extends OrgCrudRepository
      * @return array
      */
     public function getAdmins($organization_id);
+
+    /**
+     * Find a user using her email address and her org's subdomain
+     *
+     * @param string $email
+     * @param string $subdomain
+     *
+     * @return object
+     */
+    public function findByEmailAndSubdomain($email, $subdomain);
+
 }

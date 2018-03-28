@@ -26,6 +26,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(\TenFour\Console\Commands\ExpireCredits::class)->daily();
         $schedule->command(\TenFour\Console\Commands\NotifyFreePromoEnding::class)->daily();
-        $schedule->command(\TenFour\Console\Commands\SendWelcomeMail::class)->daily();
+        $schedule->command(\TenFour\Console\Commands\SendWelcomeMail::class)->hourly();
     }
 }

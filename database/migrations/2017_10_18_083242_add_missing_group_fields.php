@@ -26,7 +26,7 @@ class AddMissingGroupFields extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('groups', function (Blueprint $table) {
             $table->dropColumn('profile_picture');
             $table->dropColumn('description');
         });
