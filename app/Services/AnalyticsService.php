@@ -14,7 +14,7 @@ class AnalyticsService
 
             try {
                 $this->user = app('Dingo\Api\Auth\Auth')->user();
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 \Log::warning($e);
             }
 
