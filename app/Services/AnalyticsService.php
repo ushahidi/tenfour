@@ -18,7 +18,7 @@ class AnalyticsService
                 \Log::warning($e);
             }
 
-            if ($this->user) {
+            if (isset($this->user)) {
                 $this->identify($this->user);
             }
         }
