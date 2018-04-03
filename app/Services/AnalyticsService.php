@@ -11,7 +11,12 @@ class AnalyticsService
     {
         if (config('segment.key')) {
             Segment::init(config('segment.key'));
-            $this->user = app('Dingo\Api\Auth\Auth')->user();
+
+            try {
+                $this->user = app('Dingo\Api\Auth\Auth')->user();
+            } catch (Exception $e) {
+                \Log::warning($e);
+            }
 
             if ($this->user) {
                 $this->identify($this->user);
