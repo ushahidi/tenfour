@@ -12,6 +12,7 @@ use Validator;
 use Exception;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use libphonenumber\PhoneNumberFormat;
 use Illuminate\Validation\ValidationException;
 
 class CsvImporter implements CsvImporterInterface
@@ -83,6 +84,31 @@ class CsvImporter implements CsvImporterInterface
         $this->organization_id = $organization_id;
     }
 
+    public function makeNormalizedContact($type, $contact)
+    {
+        $contact = trim($contact);
+
+        if ($type == 'phone') {
+            if (!starts_with($contact, '+')) {
+                $contact = '+'.$contact;
+            }
+
+            $phoneNumberUtil = PhoneNumberUtil::getInstance();
+
+            try {
+                $phoneNumberObject = $phoneNumberUtil->parse($contact, null);
+            } catch (NumberParseException $exception) {
+                // phone number should already be validated at this point
+                \Log::warning($exception);
+                return $contact;
+            }
+
+            return $phoneNumberUtil->format($phoneNumberObject, PhoneNumberFormat::E164);
+        }
+
+        return $contact;
+    }
+
     public function import()
     {
         $rows = $this->reader->read();
@@ -107,6 +133,8 @@ class CsvImporter implements CsvImporterInterface
                         continue;
                     }
 
+                    $contact = trim($contact);
+
                     $validator = Validator::make([$type => $contact], [
                         'phone' => 'phone_number',
                         'email' => 'email'
@@ -123,9 +151,7 @@ class CsvImporter implements CsvImporterInterface
                         );
                     }
 
-                    if ($type == 'phone' && ! starts_with($contact, '+')) {
-                        $contact = '+'.$contact;
-                    }
+                    $contact = $this->makeNormalizedContact($type, $contact);
 
                     $existing_contact = $this->contacts->getByContact($contact, $this->organization_id);
 

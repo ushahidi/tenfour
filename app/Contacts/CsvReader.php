@@ -25,7 +25,7 @@ class CsvReader implements CsvReaderInterface
             $this->reader = Reader::createFromPath($file_path, 'r');
         } else {
             // Create a reader from file contents retrieved from cloud storage
-            $contents = Storage::get($file_path);
+            $contents = Storage::disk('s3private')->get($file_path);
             $this->reader = Reader::createFromString($contents);
         }
     }
