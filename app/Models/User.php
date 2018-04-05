@@ -216,7 +216,7 @@ class User extends Model implements AuthenticatableContract,
                 ->where('type', '=', 'email');
             })->pluck('users.id');
 
-        if (!$user_id) {
+        if (!count($user_id)) {
             return null;
         }
 
