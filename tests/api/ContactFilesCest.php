@@ -71,7 +71,7 @@ class ContactFilesCest
                   ."\n"
                   . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"';
 
-        Storage::put('contacts/sample.csv', $header . $contents);
+        Storage::disk('s3private')->put('contacts/sample.csv', $header . $contents);
 
         $organization_id = 2;
         $file_id = 1;
@@ -98,7 +98,7 @@ class ContactFilesCest
                   ."\n"
                   . '"David", "software developer", "254923333300", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"';
 
-        Storage::put('contacts/sample.csv', $header . $contents);
+        Storage::disk('s3private')->put('contacts/sample.csv', $header . $contents);
 
         $organization_id = 2;
         $file_id = 1;
