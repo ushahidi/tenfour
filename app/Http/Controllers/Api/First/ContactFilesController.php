@@ -61,7 +61,12 @@ class ContactFilesController extends ApiController
     public function create(CreateFileUploadRequest $request, $organization_id)
     {
         $file = $request->file('file');
-        $path = $file->store('contacts', 's3private');
+
+        if (config('filesystems.default') == 's3') {
+            $path = $file->store('contacts', 's3private');
+        } else {
+            $path = $file->store('contacts');
+        }
 
         $reader = App::make('TenFour\Contracts\Contacts\CsvReader');
         $reader->setPath($path);
