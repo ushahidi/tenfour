@@ -216,6 +216,10 @@ class User extends Model implements AuthenticatableContract,
                 ->where('type', '=', 'email');
             })->pluck('users.id');
 
+        if (!count($user_id)) {
+            return null;
+        }
+
         return $this->where('id', $user_id)->first();
     }
 

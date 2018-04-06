@@ -8,6 +8,10 @@ class AddContactRequest extends UpdateContactRequest
     {
         $rules = parent::rules();
 
+        if (!isset($rules['contact'])) {
+            $rules['contact'] = '';
+        }
+
         $rules['contact'] .= '|required';
         $rules['type'] .= '|required';
 
