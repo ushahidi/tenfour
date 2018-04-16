@@ -9,7 +9,7 @@
     service: deploy
     command: >
       ANSIBLE_GITHUB_REPO=tenfour-infra
-      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=dev
       ush-ansible-playbook.sh -vv -i ./hosts -l dev
         -e API_VERSION_SRC=/vols/src
@@ -20,7 +20,7 @@
     service: deploy
     command: >
       ANSIBLE_GITHUB_REPO=tenfour-infra
-      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=dev
       ush-ansible-playbook.sh -vv -i ./hosts -l staging
         -e API_VERSION_SRC=/vols/src
@@ -31,7 +31,7 @@
     service: deploy
     command: >
       ANSIBLE_GITHUB_REPO=tenfour-infra
-      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=production
       ush-ansible-playbook.sh -vv -i ./hosts -l production
         -e API_VERSION_SRC=/vols/src
