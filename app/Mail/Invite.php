@@ -55,6 +55,7 @@ class Invite extends Mailable
           .'?email=' . urlencode($this->email)
           .'&personId=' . $this->member['id']
           .'&orgId=' . $this->organization['id']
+          .'&orgSubdomain=' . $this->organization['subdomain']
           .'&token=' . $this->member['invite_token']
         );
         $msg = 'You have been invited to join '.$this->organization['name'].'\'s TenFour, please click the link below to complete registration';

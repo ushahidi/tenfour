@@ -17,10 +17,11 @@ class ImportSucceeded extends Notification
      *
      * @return void
      */
-    public function __construct($organization, $count)
+    public function __construct($organization, $count, $dupe_count)
     {
         $this->organization = $organization;
         $this->count = $count;
+        $this->dupe_count = $dupe_count;
     }
 
     /**
@@ -42,7 +43,17 @@ class ImportSucceeded extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = 'You successfully imported ' . $this->count . ' members into your organization.';
+        $body = '';
+        
+        if ($this->dupe_count > 0) {
+            $body .= 'You successfully imported ' . $this->count . ' members into your organization. ';
+        } else {
+            $body .= 'Nobody was imported into your organization. ';
+        }
+
+        if ($this->dupe_count > 0) {
+            $body .= $this->dupe_count . ' duplicates were found. ';
+        }
 
         return (new MailMessage)
             ->view('emails.general', [
@@ -73,6 +84,7 @@ class ImportSucceeded extends Notification
     {
         return [
             'count' => $this->count,
+            'dupe_count' => $this->dupe_count,
             'url' => $this->url(),
         ];
     }

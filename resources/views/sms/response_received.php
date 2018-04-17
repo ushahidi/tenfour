@@ -1,1 +1,1 @@
-TenFour has received your response.
+We received your response.
