@@ -67,8 +67,11 @@ class ImportCSV implements ShouldQueue
         $importer->setPeople($people);
         $importer->setOrganizationId($this->organization_id);
 
-        $members = $importer->import();
+        $import_results = $importer->import();
+        $members = $import_results['members'];
+        $duplicates = $import_results['duplicates'];
         $count = count($members);
+        $dupe_count = count($duplicates);
 
         foreach ($members as $member_id) {
             $invitee = $people->find($this->organization_id, $member_id);
@@ -81,7 +84,7 @@ class ImportCSV implements ShouldQueue
 
         Storage::delete($path);
 
-        $user->notify(new ImportSucceeded($organization, $count));
+        $user->notify(new ImportSucceeded($organization, $count, $dupe_count));
     }
 
     /**

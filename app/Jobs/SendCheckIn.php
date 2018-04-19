@@ -14,6 +14,7 @@ use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Models\Organization;
+use TenFour\Models\User;
 use TenFour\Messaging\SMSService;
 use TenFour\Services\URLShortenerService;
 use TenFour\Services\AnalyticsService;
@@ -76,7 +77,10 @@ class SendCheckIn implements ShouldQueue
 
         $creator = $person_repo->find($this->check_in['organization_id'], $this->check_in['user_id']);
 
-        $org_url = Organization::findOrFail($this->check_in['organization_id'])->url();
+        $organization = Organization::findOrFail($this->check_in['organization_id']);
+        $org_name = $organization->name;
+        $org_url = $organization->url();
+        $sender_name = User::findOrFail($this->check_in['user_id'])->name;
 
         // Get creator's contact
         $creator_contacts = $contact_repo->getByUserId($this->check_in['user_id']);
@@ -149,7 +153,7 @@ class SendCheckIn implements ShouldQueue
                         $this->dispatchCheckInReminderViaSMS($check_in_repo, $message_service, $contact, $recipient, $to, $org_url, $from);
                     }
 
-                    $this->dispatchCheckInViaSMS($message_service, $from, $to, $recipient, $org_url);
+                    $this->dispatchCheckInViaSMS($message_service, $from, $to, $recipient, $org_url, $sender_name, $org_name);
 
                     $creditAdjustmentMeta['credits']++;
                     $creditAdjustmentMeta['contacts']++;
@@ -225,13 +229,15 @@ class SendCheckIn implements ShouldQueue
         );
     }
 
-    protected function dispatchCheckInViaSMS($message_service, $from, $to, $recipient, $org_url) {
+    protected function dispatchCheckInViaSMS($message_service, $from, $to, $recipient, $org_url, $sender_name, $org_name) {
 
         $params = [];
         $check_in_url = $org_url .'/r/'. $this->check_in['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
         $check_in_url = $params['check_in_url'] = $this->shortener->shorten($check_in_url);
         $params['answers'] = $this->check_in['answers'];
         $params['keyword'] = $message_service->getKeyword($to);
+        $params['sender_name'] = $sender_name;
+        $params['org_name'] = $org_name;
         $msg = $this->check_in['message'];
 
         if ($this->isURLOnSMSBoundary('sms.checkin', ['msg' => $msg] + $params)) {

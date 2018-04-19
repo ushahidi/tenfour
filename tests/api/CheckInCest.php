@@ -916,7 +916,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '8',
             'type'        => 'check_in',
-            'message'     => "Alien Attack! are you ok?\nReply with \"No\" or \"Yes\" in your response"
+            'message'     => "Org admin from TenFourTest says: Alien Attack! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -929,7 +929,7 @@ class CheckInCest
             'from'        => '20881',
             'check_in_id' => '9',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part II! are you ok?\nReply with \"No\" or \"Yes\" in your response"
+            'message'     => "Org admin from TenFourTest says: Alien Attack Part II! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -985,7 +985,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '10',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part 3!\nReply with \"No\" or \"Yes\" in your response"
+            'message'     => "Org admin from TenFourTest says: Alien Attack Part 3!\nReply with \"No\" or \"Yes\" in your response"
         ]);
     }
 
@@ -1254,7 +1254,7 @@ class CheckInCest
             'from'        => '20881',
             'check_in_id' => '9',
             'type'        => 'check_in',
-            'message'     => "We are under attack. Stay tuned for next message.\n"
+            'message'     => "Org admin from TenFourTest says: We are under attack. Stay tuned for next message.\n"
         ]);
 
         $I->dontSeeRecord('outgoing_sms_log', [

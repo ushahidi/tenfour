@@ -113,4 +113,35 @@ class ContactFilesCest
         $I->dontSeeInDatabase('contacts', ['contact' => '254923333300']);
         $I->seeResponseCodeIs(422);
     }
+
+
+    /*
+     * Skip duplicates
+     *
+     */
+    public function skipDuplicates(ApiTester $I)
+    {
+        $header = "name, role, phone, email, address, twitter\n";
+        $contents = '"Mary Duplicate", "designer", "254722111111", "admin@ushahidi.com", "MV Building, Waiyaki Way", "@md"'
+                  ."\n"
+                  . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"'
+                  ."\n";
+
+        Storage::put('contacts/sample.csv', $header . $contents);
+
+        $organization_id = 2;
+        $file_id = 1;
+        $I->wantTo('skip duplicates');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendPOST($this->endpoint. "/$organization_id/files/$file_id/contacts");
+
+        $I->seeInDatabase('users', ['name' => 'David']);
+        $I->seeInDatabase('contacts', ['contact' => 'david@ushahidi.com']);
+        $I->seeInDatabase('contacts', ['contact' => '+254722111222']);
+
+        $I->dontSeeInDatabase('users', ['name' => 'Mary Duplicate']);
+        $I->dontSeeInDatabase('contacts', ['contact' => '+254722111111']);
+
+        $I->seeResponseCodeIs(200);
+    }
 }
