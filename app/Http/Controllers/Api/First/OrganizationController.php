@@ -265,11 +265,6 @@ class OrganizationController extends ApiController
         if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
             $member['person_type'] = 'user';
-
-            if ($member['role'] !== 'admin') {
-                $member['role'] = 'responder';
-            }
-
             $member['invite_token'] = null;
             $member = $this->people->update($organization_id, $member, $person_id);
 
