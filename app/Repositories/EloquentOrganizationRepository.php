@@ -18,6 +18,8 @@ use TenFour\Services\CreditService;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
+    const RESTRICTED_SETTINGS = ['plan_and_credits'];
+
     public function __construct(StorageService $storageService, CreditService $creditService)
     {
         $this->storageService = $storageService;
@@ -82,7 +84,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $this->find($organization->id);
     }
 
-    public function find($id)
+    public function find($id, $user_role = 'responder')
     {
         $orgModel = Organization::with('settings')
             ->with('subscriptions')
@@ -95,6 +97,12 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->findOrFail($id);
 
         $org = $orgModel->toArray();
+
+        if (!($user_role === 'admin' || $user_role === 'owner')) {
+            $org['settings'] = array_filter($org['settings'], function ($setting) {
+                return !$setting['restricted'];
+            });
+        }
 
         $org['credits'] = $this->creditService->getBalance($id);
         $org['current_subscription'] = $orgModel->currentSubscription();
@@ -135,11 +143,14 @@ class EloquentOrganizationRepository implements OrganizationRepository
     {
         foreach ($settings as $key => $setting)
         {
+            $restricted = in_array($key, self::RESTRICTED_SETTINGS);
+
             Setting::updateOrCreate([
                 'organization_id' => $id,
                 'key' => $key
             ], [
-                'values' => $setting
+                'values' => $setting,
+                'restricted' => $restricted
             ]);
         };
 

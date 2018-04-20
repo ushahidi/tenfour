@@ -92,6 +92,7 @@ INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'channels', '{ "sms": { "enabled": true } , "email": { "enabled": true } }');
+-- INSERT INTO settings (organization_id, `key`, `values`, `restricted`) VALUES ('2', 'plan_and_credits', '{}', true);
 
 -- Add contact file fields
 INSERT INTO contact_files (id, organization_id, columns, maps_to, filename)

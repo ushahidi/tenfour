@@ -168,7 +168,7 @@ class OrganizationController extends ApiController
      */
     public function show(GetOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->find($organization_id);
+        $organization = $this->organizations->find($organization_id, $this->auth->user()['role']);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 

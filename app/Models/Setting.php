@@ -19,7 +19,7 @@ class Setting extends Model
      *
      * @var array
      */
-    protected $fillable = ['organization_id', 'key', 'values'];
+    protected $fillable = ['organization_id', 'key', 'values', 'restricted'];
 
     /**
      * The attributes excluded from the model's JSON form.
