@@ -49,7 +49,8 @@ class PasswordController extends Controller
         $user = $this->people->findByEmailAndSubdomain($request->input('username'), $request->input('subdomain'));
 
         if (!$user || !isset($user['person_type']) || $user['person_type'] == 'external') {
-            return response('', 403);
+            // don't leak if email address has been registered or not
+            return response('ok', 200);
         }
 
         $response = Password::sendResetLink($request->only('username', 'subdomain'), function (Message $message) {
