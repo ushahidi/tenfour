@@ -133,11 +133,11 @@ class MailController extends Controller
                     $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 else {
-                    $parts = preg_split("/\n\n/", $original_content);
+                    $parts = preg_split("/\n\r?\n/", $original_content);
 
                     Log::debug(json_encode($parts));
 
-                    if (count($parts)>0) {
+                    if (count($parts)>1) {
                         Log::info("Received message (regex): ". $message['MessageId']);
 
                         $text = strip_tags($parts[1]);
