@@ -95,10 +95,10 @@ class PasswordController extends Controller
         }
 
         // this logic allows a user to accept invite by resetting password (#984)
-        $member = $this->people->findByEmailAndSubdomain($request->input('username'), $request->input('subdomain'))->toArray();
+        $member = $this->people->findByEmailAndSubdomain($request->input('username'), $request->input('subdomain'));
         $member['person_type'] = 'user';
         $member['invite_token'] = null;
-        $member = $this->people->update($member['organization_id'], $member, $member['id']);
+        $member = $this->people->update($member['organization_id'], $member, $member['user_id']);
 
         return response('ok', 200);
     }
