@@ -42,7 +42,7 @@ class AnalyticsService
         if (config('segment.key')) {
             try {
                 Segment::track(array(
-                    'userId'      => (is_object($this->user)?$this->user->id:'anonymous'.session_id()),
+                    'userId'      => (isset($this->user)&&is_object($this->user)?$this->user->id:'anonymous'.session_id()),
                     'event'       => $event,
                     'properties'  => $properties
                 ));
