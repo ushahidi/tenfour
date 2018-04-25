@@ -175,7 +175,8 @@ class EloquentPersonRepository implements PersonRepository
             ->leftJoin('contacts', 'contacts.user_id', '=', 'users.id')
             ->where('organizations.subdomain', '=', $subdomain)
             ->where('contacts.contact', '=', $email)
-            ->first();
+            ->first()
+            ->toArray();
     }
 
     // OrgCrudRepository
