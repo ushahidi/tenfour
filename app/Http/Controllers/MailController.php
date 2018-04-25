@@ -116,7 +116,7 @@ class MailController extends Controller
                             $html = $part;
                         }
                     } catch (\Zend\Mail\Exception $e) {
-                        // ignore
+                        Log::warning($e);
                     }
                 }
 
@@ -124,16 +124,28 @@ class MailController extends Controller
                 $to   = $emailMessage->getHeader('To')->getAddressList()->current()->getEmail();
 
                 if ($plainText) {
-                    Log::info("Received message: ". $message['MessageId']);
+                    Log::info("Received message (plain text): ". $message['MessageId']);
                     $this->saveEmail($from, $plainText->getContent(), $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 elseif ($html) {
-                    Log::info("Received message: ". $message['MessageId']);
+                    Log::info("Received message (html): ". $message['MessageId']);
                     $text = strip_tags($html->getContent());
                     $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 else {
-                    Log::info("No plain text or html found for " . $message['MessageId'], ['original_content' => $original_content]);
+                    $parts = preg_split("/\n\n/", $original_content);
+
+                    Log::debug(json_encode($parts));
+
+                    if (count($parts)>0) {
+                        Log::info("Received message (regex): ". $message['MessageId']);
+
+                        $text = strip_tags($parts[1]);
+
+                        $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
+                    } else {
+                        Log::info("No plain text or html found for " . $message['MessageId'], ['original_content' => $original_content]);
+                    }
                 }
             }
     }
