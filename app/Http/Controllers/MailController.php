@@ -4,6 +4,7 @@ namespace TenFour\Http\Controllers;
 
 use Log;
 use Route;
+use App;
 use TenFour\Contracts\Repositories\ReplyRepository;
 use Illuminate\Http\Request;
 
@@ -135,8 +136,6 @@ class MailController extends Controller
                 else {
                     $parts = preg_split("/\n\r?\n/", $original_content);
 
-                    Log::debug(json_encode($parts));
-
                     if (count($parts)>1) {
                         Log::info("Received message (regex): ". $message['MessageId']);
 
@@ -144,6 +143,8 @@ class MailController extends Controller
 
                         $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
                     } else {
+                        app('sentry')->captureMessage("Could not parse weird email: %s", $message);
+
                         Log::info("No plain text or html found for " . $message['MessageId'], ['original_content' => $original_content]);
                     }
                 }
