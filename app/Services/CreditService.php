@@ -83,7 +83,7 @@ class CreditService
                 $balance = $this->getBalance($subscription->organization->id);
                 $meta = ['previousBalance' => $balance];
 
-                if ($balance !== 0) {
+                if ($balance > 0) {
                     Log::info('Expiring credits for organization ' . $subscription->organization->id);
                     $this->addCreditAdjustment($subscription->organization->id, 0 - $balance, 'expire', $meta);
                 }
