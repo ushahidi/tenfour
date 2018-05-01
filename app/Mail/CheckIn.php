@@ -80,17 +80,17 @@ class CheckIn extends Mailable
                     ->text('emails.checkin_plain')
                     ->with([
                         'msg'               => $this->check_in['message'],
-                        'check_in_url'      => $check_in_url,
+                        // 'check_in_url'      => $check_in_url,
                         'profile_picture'   => $profile_picture,
                         'initials'          => $initials,
                         'answers'           => $this->check_in['answers'],
                         'org_subdomain'     => $this->organization['subdomain'],
                         'org_name'          => $this->organization['name'],
                         'author'            => $this->creator['name'],
-                        'answer_url_no'     => $answer_url_no,
-                        'answer_url_yes'    => $answer_url_yes,
-                        'answer_url'        => $answer_url,
-                        'reply_url'         => $reply_url,
+                        // 'answer_url_no'     => $answer_url_no,
+                        // 'answer_url_yes'    => $answer_url_yes,
+                        // 'answer_url'        => $answer_url,
+                        // 'reply_url'         => $reply_url,
                         'has_custom_answers'=> $has_custom_answers,
                         'unsubscribe_url'   => $unsubscribe_url,
                     ])
