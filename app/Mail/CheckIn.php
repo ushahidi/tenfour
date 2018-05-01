@@ -80,7 +80,7 @@ class CheckIn extends Mailable
                     ->text('emails.checkin_plain')
                     ->with([
                         'msg'               => $this->check_in['message'],
-                        // 'check_in_url'      => $check_in_url,
+                        'check_in_url'      => $check_in_url,
                         'profile_picture'   => $profile_picture,
                         'initials'          => $initials,
                         'answers'           => $this->check_in['answers'],

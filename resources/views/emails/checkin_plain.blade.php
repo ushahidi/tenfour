@@ -7,7 +7,7 @@ Please reply by writing @foreach ($answers as $answer)"{{$answer['answer']}}," @
 
 Alternatively, you can...
 @for ($i = 0; $i < count($answers); $i++)
-* Answer {{ $answers[$i]['answer'] }} by visiting the following URL: {{ $answer_url }}/{{ $i }}
+* Answer {{ $answers[$i]['answer'] }} by visiting the following URL: {{ $answers[$i]['url'] }}/{{ $i }}
 @endfor
 @endif
 
