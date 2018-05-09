@@ -34,7 +34,7 @@ mysql:
     - MYSQL_ROOT_PASSWORD=root
 
 deploy:
-  image: ushahidi/engineering-deployer:terragrunt
+  image: ushahidi/engineering-deployer:master
   encrypted_env_file: deployment.env.encrypted
   environment:
     AWS_DEFAULT_REGION: us-east-1
