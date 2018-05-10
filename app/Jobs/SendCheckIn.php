@@ -283,7 +283,7 @@ class SendCheckIn implements ShouldQueue
             return [];
         }
 
-        if (!$subscription || $subscription['status'] !== 'active') {
+        if (!$subscription) {
             return [];
         }
 

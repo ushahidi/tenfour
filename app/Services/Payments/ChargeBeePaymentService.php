@@ -8,9 +8,12 @@ use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use ChargeBee_Coupon;
 use ChargeBee_InvalidRequestException;
+use Carbon\Carbon;
 
 class ChargeBeePaymentService implements PaymentService
 {
+    const TRIAL_PERIOD_DAYS = 30;
+
     public function __construct()
     {
         ChargeBee_Environment::configure(config("chargebee.site"),config("chargebee.key"));
@@ -25,7 +28,7 @@ class ChargeBeePaymentService implements PaymentService
 
         return [
             'subscription' => $subscription->getValues(),
-            'card' => $card->getValues(),
+            'card' => $card ? $card->getValues() : null,
             'customer' => $customer->getValues(),
         ];
     }
@@ -33,6 +36,11 @@ class ChargeBeePaymentService implements PaymentService
     public function getPlanId()
     {
         return config("chargebee.plan");
+    }
+
+    private function getTrialEnd()
+    {
+        return Carbon::now()->addDays(self::TRIAL_PERIOD_DAYS)->timestamp;
     }
 
     public function getAddonId()
@@ -103,6 +111,23 @@ class ChargeBeePaymentService implements PaymentService
         $hostedPage->organization_id = $passThruContent->organization_id;
 
         return $hostedPage;
+    }
+
+    public function createSubscription($organization)
+    {
+        // create a free trial subscription for new organizations
+
+        $result = ChargeBee_Subscription::create([
+            "planId" => $this->getPlanId(),
+            "trial_end" => $this->getTrialEnd(),
+            "customer" => array(
+              "email" => $organization->owner()->email(),
+              "company" => $organization->name,
+              "phone" => $organization->owner()->phone()
+            ),
+        ]);
+
+        return $this->toArray($result);
     }
 
     public function retrieveSubscription($subscription_id)

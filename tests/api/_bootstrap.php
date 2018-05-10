@@ -11,13 +11,7 @@ Content-Type: multipart/alternative;boundary=\'Apple-Mail=_853679B4-70FE-4F54-9E
 Mime-Version: 1.0
 To: TenFour <checkin-' . $check_in_id . '@tenfour.org>
 
---Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;charset=utf-8
-
 ' . $message . '
-
---Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C--
 
 ',
     'mail' => [

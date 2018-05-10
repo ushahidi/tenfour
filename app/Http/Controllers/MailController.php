@@ -4,6 +4,7 @@ namespace TenFour\Http\Controllers;
 
 use Log;
 use Route;
+use App;
 use TenFour\Contracts\Repositories\ReplyRepository;
 use Illuminate\Http\Request;
 
@@ -116,7 +117,7 @@ class MailController extends Controller
                             $html = $part;
                         }
                     } catch (\Zend\Mail\Exception $e) {
-                        // ignore
+                        Log::warning($e);
                     }
                 }
 
@@ -124,16 +125,28 @@ class MailController extends Controller
                 $to   = $emailMessage->getHeader('To')->getAddressList()->current()->getEmail();
 
                 if ($plainText) {
-                    Log::info("Received message: ". $message['MessageId']);
+                    Log::info("Received message (plain text): ". $message['MessageId']);
                     $this->saveEmail($from, $plainText->getContent(), $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 elseif ($html) {
-                    Log::info("Received message: ". $message['MessageId']);
+                    Log::info("Received message (html): ". $message['MessageId']);
                     $text = strip_tags($html->getContent());
                     $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
                 }
                 else {
-                    Log::info("No plain text or html found for " . $message['MessageId'], ['original_content' => $original_content]);
+                    $parts = preg_split("/\n\r?\n/", $original_content);
+
+                    if (count($parts)>1) {
+                        Log::info("Received message (regex): ". $message['MessageId']);
+
+                        $text = strip_tags($parts[1]);
+
+                        $this->saveEmail($from, $text, $to, $message['MessageId'], 'aws-ses-sns');
+                    } else {
+                        app('sentry')->captureMessage("Could not parse weird email: %s", $message);
+
+                        Log::info("No plain text or html found for " . $message['MessageId'], ['original_content' => $original_content]);
+                    }
                 }
             }
     }

@@ -12,6 +12,7 @@ use Log;
 class CreditService
 {
     const CREDITS_PER_USER_PER_MONTH = 5;
+    const CREDITS_NEW_ORGANIZATION = 10;
 
     public function __construct()
     {
@@ -32,8 +33,8 @@ class CreditService
     public function createStartingBalance($organization_id) {
         $creditAdjustment = new CreditAdjustment;
         $creditAdjustment->organization_id = $organization_id;
-        $creditAdjustment->adjustment = 0;
-        $creditAdjustment->balance = 0;
+        $creditAdjustment->adjustment = self::CREDITS_NEW_ORGANIZATION;
+        $creditAdjustment->balance = self::CREDITS_NEW_ORGANIZATION;
         $creditAdjustment->type = 'init';
         $creditAdjustment->save();
     }
@@ -83,7 +84,7 @@ class CreditService
                 $balance = $this->getBalance($subscription->organization->id);
                 $meta = ['previousBalance' => $balance];
 
-                if ($balance !== 0) {
+                if ($balance > 0) {
                     Log::info('Expiring credits for organization ' . $subscription->organization->id);
                     $this->addCreditAdjustment($subscription->organization->id, 0 - $balance, 'expire', $meta);
                 }

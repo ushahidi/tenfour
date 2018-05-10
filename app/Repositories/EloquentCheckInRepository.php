@@ -112,7 +112,7 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent', 'recipients']);
+        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via']);
 
         $check_in = CheckIn::findorFail($id);
 
@@ -122,6 +122,10 @@ class EloquentCheckInRepository implements CheckInRepository
 
         if (isset($input['status'])) {
             $check_in->status = $input['status'];
+        }
+
+        if (isset($input['send_via'])) {
+            $check_in->send_via = $input['send_via'];
         }
 
         $check_in->save();

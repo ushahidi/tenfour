@@ -1265,4 +1265,39 @@ class CheckInCest
         ]);
     }
 
+
+    /*
+     * Don't allow duplicate answers #1096
+     *
+     */
+    public function createCheckInWithDuplicateAnswers(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create check-in with duplicate answers');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'check-in with duplicate answers',
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 3
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'Yes','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
+            ]
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                "message" => "422 Unprocessable Entity",
+                "errors" =>  ["answers.0.answer"=>["validation.distinct"],"answers.1.answer"=>["validation.distinct"]],
+                "status_code" => 422
+            ]
+        );
+    }
+
 }
