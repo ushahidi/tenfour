@@ -6,7 +6,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-interaction --no-autoloader --no-scripts
 
 COPY ./ /var/www/
-RUN chown -R www-data:www-data storage
+RUN chown -R www-data:www-data storage/{apps,clockwork,framework,logs}
 
 COPY docker/run.run.sh /run.run.sh
 RUN $DOCKERCES_MANAGE_UTIL add /run.run.sh
