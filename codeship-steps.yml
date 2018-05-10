@@ -1,6 +1,6 @@
 - name: "Test"
   service: test
-  command: composer test -- --env=testing
+  command: test_reporter composer test -- --env=testing
 
 
 - type: parallel

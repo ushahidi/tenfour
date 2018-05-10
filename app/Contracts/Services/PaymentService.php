@@ -10,6 +10,7 @@ interface PaymentService
     public function checkoutUpdateHostedPage($organization, $redirectUrl);
     public function retrieveHostedPage($subscription_id);
 
+    public function createSubscription($organization);
     public function retrieveSubscription($subscription_id);
     public function cancelSubscription($subscription_id);
     public function reactivateSubscription($subscription_id);

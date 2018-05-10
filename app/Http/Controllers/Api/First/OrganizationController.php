@@ -5,6 +5,7 @@ namespace TenFour\Http\Controllers\Api\First;
 use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\SubscriptionRepository;
 use TenFour\Http\Requests\Organization\GetOrganizationsRequest;
 use TenFour\Http\Requests\Organization\CreateOrganizationRequest;
 use TenFour\Http\Requests\Organization\GetOrganizationRequest;
@@ -17,7 +18,10 @@ use TenFour\Http\Transformers\OrganizationTransformer;
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Http\Response;
 use TenFour\Services\CreditService;
+use TenFour\Contracts\Services\PaymentService;
+use TenFour\Models\Organization;
 use DB;
+use ChargeBee_APIError;
 
 /**
  * @Resource("Organizations", uri="/api/v1/organizations")
@@ -25,7 +29,7 @@ use DB;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService)
+    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService, PaymentService $payments, SubscriptionRepository $subscriptions)
     {
         $this->organizations = $organizations;
         $this->people = $people;
@@ -33,6 +37,8 @@ class OrganizationController extends ApiController
         $this->auth = $auth;
         $this->response = $response;
         $this->creditService = $creditService;
+        $this->payments = $payments;
+        $this->subscriptions = $subscriptions;
     }
 
     /**
@@ -140,6 +146,14 @@ class OrganizationController extends ApiController
                 'contact' => $contact
             ]
         ];
+
+        try {
+            $subscription = $this->payments->createSubscription(Organization::findOrFail($organization['id']));
+            $this->subscriptions->create($organization['id'], $subscription);
+        }
+        catch (ChargeBee_APIError $e) {
+            app('sentry')->captureException($e);
+        }
 
         return $this->response->item($result, new OrganizationTransformer, 'organization');
     }
