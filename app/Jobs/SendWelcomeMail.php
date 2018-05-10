@@ -1,51 +1,33 @@
 <?php
 
-namespace TenFour\Console\Commands;
+namespace TenFour\Jobs;
 
 use TenFour\Notifications\Welcome;
 use TenFour\Notifications\WelcomeAbandoned;
 use TenFour\Services\AnalyticsService;
 use TenFour\Models\Organization;
 
-use Illuminate\Console\Command;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Carbon\Carbon;
 use DB;
 
-class SendWelcomeMail extends Command
+class SendWelcomeMail implements ShouldQueue
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'mail:welcome';
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send welcome mail';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
+     * Execute the job.
      *
      * @return mixed
      */
     public function handle()
     {
         // - get orgs that have joined in the last hour
-        // - TODO edge case if someone signs up at the top of the hour they might erronously get the abandoned mail 
+        // - TODO edge case if someone signs up at the top of the hour they might erronously get the abandoned mail
 
         $lastHour = Carbon::now()->subHour();
 
