@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->job(new \TenFour\Jobs\ExpireCredits)->daily();
         $schedule->job(new \TenFour\Jobs\NotifyFreePromoEnding)->daily();
-        $schedule->job(new \TenFour\Jobs\SendWelcomeMail)->daily();
+        $schedule->job(new \TenFour\Jobs\SendWelcomeMail)->hourly();
 
     }
 }
