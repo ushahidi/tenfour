@@ -1,52 +1,35 @@
 <?php
 
-namespace TenFour\Console\Commands;
+namespace TenFour\Jobs;
 
 use TenFour\Models\Subscription;
 use TenFour\Contracts\Repositories\SubscriptionRepository;
 use TenFour\Contracts\Services\PaymentService;
 use TenFour\Notifications\FreePromoEnding;
 
+use App;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 
-class NotifyFreePromoEnding extends Command
+class NotifyFreePromoEnding implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     const NOTIFY_DAYS_BEFORE_FREE_PROMO_ENDING = 7;
 
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'notify:freepromoending';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Notify the owner when their "Free Promo" is ending #696';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct(PaymentService $payments)
-    {
-        parent::__construct();
-
-        $this->payments = $payments;
-    }
-
-    /**
-     * Execute the console command.
+     * Execute the job.
      *
      * @return mixed
      */
     public function handle(SubscriptionRepository $subscriptions)
     {
+        $this->payments = App::make('TenFour\Contracts\Services\PaymentService');
+
         foreach ($subscriptions->all() as $sub) {
             if ($sub['promo_code'] && $sub['promo_ends_at']) {
                 $promo_ends_at = Carbon::createFromTimestamp(strtotime($sub['promo_ends_at']));

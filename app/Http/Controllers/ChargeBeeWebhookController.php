@@ -269,7 +269,7 @@ class ChargeBeeWebhookController extends Controller
 
         ]);
 
-        if ($payload->card) {
+        if (isset($payload->card)) {
             $subscription->update([
                 'last_four'         => $payload->card->last4,
                 'card_type'         => ucfirst($payload->card->card_type),

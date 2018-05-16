@@ -5,6 +5,7 @@ namespace TenFour\Http\Controllers;
 use TenFour\Http\Requests\EmailVerificationRequest;
 use TenFour\Contracts\Repositories\UnverifiedAddressRepository;
 use TenFour\Jobs\SendVerificationEmail;
+use TenFour\Models\UnverifiedAddress;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
@@ -17,12 +18,18 @@ class VerificationController extends Controller
 
     public function sendEmailVerification(EmailVerificationRequest $request)
     {
-        $token = Hash::Make(config('app.key'));
+        $address = $this->addresses->getByAddress($request['address']);
 
-        $payload = array_only($request->all(), ['address']) + [
-            'verification_token' => $token
-        ];
-        $address = $this->addresses->create($payload);
+        if (!$address) {
+          $token = Hash::Make(config('app.key'));
+
+          $payload = array_only($request->all(), ['address']) + [
+              'verification_token' => $token
+          ];
+          $address = $this->addresses->create($payload);
+        } else {
+          abort(409);
+        }
 
         dispatch((new SendVerificationEmail($payload))/*->onQueue('mails')*/);
 
