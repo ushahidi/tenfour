@@ -875,7 +875,6 @@ FORMAT: 1A
             }
 
 # Checkins [/api/v1/organizations/{org_id}/checkins]
-* @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
 
 ## Get all check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins{?offset,limit}]
 
@@ -1619,7 +1618,7 @@ FORMAT: 1A
                 }
             }
 
-## Create an ChargeBee Hosted Page subscription url [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+## Create a new subscription URL [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage]
 
 
 + Parameters
@@ -1642,7 +1641,7 @@ FORMAT: 1A
                 "url": "http://api.chargebee.com/hostedpage?xxx"
             }
 
-## Create a ChargeBee hosted page url for updating the subscription [PUT /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+## Create an updated subscription URL [PUT /api/v1/organizations/{org_id}/subscriptions/hostedpage]
 
 
 + Parameters
@@ -1663,8 +1662,8 @@ FORMAT: 1A
                 "url": "http://api.chargebee.com/hostedpage?xxx"
             }
 
-## API endpoint called by client after successful ChargeBee subscription creation [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage/confirm]
-
+## Confirm a subscription [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage/confirm]
+API endpoint called by client after successful ChargeBee subscription creation
 
 + Parameters
     + org_id: (number, required) - Organization id

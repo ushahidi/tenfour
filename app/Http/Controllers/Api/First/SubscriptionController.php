@@ -135,7 +135,7 @@ class SubscriptionController extends ApiController
     }
 
     /**
-     * Create an ChargeBee Hosted Page subscription url
+     * Create a new subscription URL
      *
      * @Post("{org_id}/subscriptions/hostedpage")
      * @Versions({"v1"})
@@ -158,6 +158,7 @@ class SubscriptionController extends ApiController
         $organization = Organization::findOrFail($organization_id);
 
         if (count($organization->subscriptions) >= 1) {
+            \Log::error('Refusing to create a hosted page - Organization already has a subscription.');
             return abort(403);
         }
 
@@ -174,7 +175,7 @@ class SubscriptionController extends ApiController
     }
 
     /**
-     * Create a ChargeBee hosted page url for updating the subscription
+     * Create an updated subscription URL 
      *
      * @Put("{org_id}/subscriptions/hostedpage")
      * @Versions({"v1"})
@@ -199,6 +200,7 @@ class SubscriptionController extends ApiController
         $organization = Organization::findOrFail($organization_id);
 
         if (count($organization->subscriptions) !== 1) {
+            \Log::error('Refusing to update a hosted page - Organization must have exactly one subscription.');
             return abort(403);
         }
 
@@ -211,6 +213,8 @@ class SubscriptionController extends ApiController
     }
 
     /**
+     * Confirm a subscription
+     *
      * API endpoint called by client after successful ChargeBee subscription creation
      *
      * @Post("{org_id}/subscriptions/hostedpage/confirm")
