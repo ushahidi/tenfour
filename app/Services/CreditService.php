@@ -99,7 +99,7 @@ class CreditService
         $organization = $org_repo->find($check_in['organization_id']);
         $available_credits = $organization['credits'];
 
-        if ($check_in['send_via'] == ['apponly']) {
+        if ($check_in['send_via'] == ['app']) {
             return true;
         }
 
