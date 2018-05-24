@@ -200,9 +200,9 @@ FORMAT: 1A
 
 + Parameters
     + org_id: (number, required) - Organization id
-    + offset: (string, optional) - 
+    + offset: (number, optional) - 
         + Default: 0
-    + limit: (string, optional) - 
+    + limit: (number, optional) - 
         + Default: 0
 
 + Request (application/json)
@@ -269,12 +269,16 @@ FORMAT: 1A
                 ]
             }
 
-## Find a member [GET /api/v1/organizations/{org_id}/people/{person_id}]
+## Find a member [GET /api/v1/organizations/{org_id}/people/{person_id}/{?history_offset,history_limit}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
     + person_id: (number, required) - Person id
+    + history_offset: (number, optional) - 
+        + Default: 0
+    + history_limit: (number, optional) - 
+        + Default: 1
 
 + Request (application/json)
     + Headers
@@ -286,6 +290,8 @@ FORMAT: 1A
 
             {
                 "person": {
+                    "checkins": [],
+                    "replies": [],
                     "contacts": [
                         {
                             "contact": "+254721674180",

@@ -401,6 +401,11 @@ class PersonCest
                         'message' => 'Another test check-in'
                     ]
                 ],
+                'replies' => [
+                    [
+                        'message' => 'I am OK'
+                    ]
+                ],
                 'role' => 'responder'
             ]
         ]);

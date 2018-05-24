@@ -82,8 +82,8 @@ class PersonController extends ApiController
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
-     *   @Parameter("offset", default=0),
-     *   @Parameter("limit", default=0)
+     *   @Parameter("offset", type="number", default=0),
+     *   @Parameter("limit", type="number", default=0)
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -157,16 +157,20 @@ class PersonController extends ApiController
     /**
      * Find a member
      *
-     * @Get("{org_id}/people/{person_id}")
+     * @Get("{org_id}/people/{person_id}/{?history_offset,history_limit}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
-     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     *   @Parameter("history_offset", type="number", default=0),
+     *   @Parameter("history_limit", type="number", default=1)
      * })
      *
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "person": {
+     *         "checkins": {},
+     *         "replies": {},
      *         "contacts": {
      *             {
      *                 "contact": "+254721674180",
@@ -204,7 +208,11 @@ class PersonController extends ApiController
         if ($person_id === 'me') {
             $person_id = $this->auth->user()['id'];
         }
-        return $this->response->item($this->people->find($organization_id, $person_id),
+
+        $history_offset = $request->input('history_offset', 0);
+        $history_limit = $request->input('history_limit', 1);
+
+        return $this->response->item($this->people->find($organization_id, $person_id, $history_offset, $history_limit),
                                      new UserTransformer, 'person');
     }
 
