@@ -101,7 +101,7 @@ VALUES
 ('1', '2', '["name", "role", "phone", "email", "address", "twitter"]', '{"0":"name","2":"phone","3":"email"}', '/contacts/sample.csv');
 
 -- Add test unverified address
-INSERT INTO unverified_addresses (id, address, verification_token) VALUES ('1', 'mary@ushahidi.com', 'token');
+INSERT INTO unverified_addresses (id, address, verification_token, code) VALUES ('1', 'mary@ushahidi.com', 'token', '123456');
 
 -- Add test organization groups
 INSERT INTO groups (id, name, organization_id) VALUES ('1', 'Test Group 1', '2');
