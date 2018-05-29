@@ -100,10 +100,17 @@ class OrganizationController extends ApiController
                     'enabled' => true
                 ],
                 'sms' => [
-                    'enabled' => true,
-                    'default_region' => $location->iso_code,
-                    'regions' => []
+                    'enabled' => true
+                ],
+                'app' => [
+                    'enabled' => true
+                ],
+                'slack' => [
+                    'enabled' => false
                 ]
+            ],
+            'regions' => [
+                'default' => $location->iso_code
             ]
         ];
 
