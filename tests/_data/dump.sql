@@ -88,6 +88,7 @@ INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) 
 INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('3', 'Latest answer', '4', '1', '4', NOW());
 INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('4', 'Not OK again', '6', '3', '4', NOW() - INTERVAL 2 MINUTE);
 INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('5', 'Latest answer again', '6', '3', '4', NOW() - INTERVAL 1 MINUTE);
+INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('6', 'Another latest answer', '4', '1', '4', NOW());
 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';
