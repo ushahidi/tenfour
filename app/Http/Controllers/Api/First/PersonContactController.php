@@ -159,7 +159,7 @@ class PersonContactController extends ApiController
 
         // public API method, don't expose anything in the response
 
-        return response('OK', 200);
+        return response('{}', 200);
     }
 
     protected function formatPhoneInput(array &$input)
