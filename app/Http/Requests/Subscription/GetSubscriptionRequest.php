@@ -22,10 +22,12 @@ class GetSubscriptionRequest extends FormRequest
             return false;
         }
 
-        $subscription = Subscription::findOrFail($this->route('subscription'));
+        if ($this->route('subscription')) {
+            $subscription = Subscription::findOrFail($this->route('subscription'));
 
-        if ($subscription->organization_id !== (int)$this->route('organization')) {
-            return false;
+            if ($subscription->organization_id !== (int)$this->route('organization')) {
+                return false;
+            }  
         }
 
         return true;
