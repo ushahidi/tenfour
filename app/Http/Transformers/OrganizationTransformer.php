@@ -33,8 +33,10 @@ class OrganizationTransformer extends TransformerAbstract
         if (isset($organization['subscriptions'])) {
             if (isset($organization['current_subscription'])) {
                 $organization['subscription_status'] = $organization['current_subscription']['status'];
+                $organization['subscription_plan'] = $organization['current_subscription']['plan_id'];
             } else {
                 $organization['subscription_status'] = 'none';
+                $organization['subscription_plan'] = 'none';
             }
         }
 

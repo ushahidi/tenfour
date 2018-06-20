@@ -12,7 +12,7 @@ use Log;
 class CreditService
 {
     const CREDITS_PER_USER_PER_MONTH = 5;
-    const CREDITS_NEW_ORGANIZATION = 10;
+    const CREDITS_NEW_ORGANIZATION = 0;
 
     public function __construct()
     {
@@ -117,5 +117,10 @@ class CreditService
         }
 
         return $available_credits >= 0;
+    }
+
+    public function clearCredits($organization_id) {
+        $balance = $this->getBalance($organization_id);
+        return $this->addCreditAdjustment($organization_id, -$balance, 'clear');
     }
 }

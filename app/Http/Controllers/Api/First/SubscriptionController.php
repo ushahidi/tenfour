@@ -100,7 +100,9 @@ class SubscriptionController extends ApiController
     }
 
     /**
-     * Cancel a subscription
+     * Cancel a subscription.
+     *
+     * Effectively changes a subscription to a free plan.
      *
      * @Delete("{org_id}/subscriptions/{subscription_id}")
      * @Versions({"v1"})
@@ -125,66 +127,31 @@ class SubscriptionController extends ApiController
     {
         $subscription = Subscription::findOrFail($subscription_id);
 
-        $result = $this->payments->cancelSubscription($subscription->subscription_id);
+        // $result = $this->payments->cancelSubscription($subscription->subscription_id);
+
+        $result = $this->payments->changeToFreePlan($subscription->subscription_id);
 
         $subscription->update([
             'status'   => $result['subscription']['status'],
+            'plan_id'  => $result['subscription']['plan_id']
         ]);
+
+        $this->organizations->setSetting($organization_id, 'plan_and_credits', ['monthlyCreditsExtra' => 0]);
+
+        $this->credits->clearCredits($organization_id);
 
         return $this->response->item($subscription->toArray(), new SubscriptionTransformer, 'subscription');
     }
 
     /**
-     * Create a new subscription URL
+     * Create a billing iframe URL for upgrading a subscription to pro.
      *
-     * @Post("{org_id}/subscriptions/hostedpage")
-     * @Versions({"v1"})
-     * @Parameters({
-     *   @Parameter("org_id", type="number", required=true, description="Organization id")
-     * })
-     * @Request({
-     *     "callback": "http://subdomain.tenfour.org/callback",
-     * }, headers={"Authorization": "Bearer token"})
-     * @Response(200, body={
-     *     "url": "http://api.chargebee.com/hostedpage?xxx"
-     * })
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function createHostedPage(CreateHostedPageRequest $request, $organization_id)
-    {
-        $organization = Organization::findOrFail($organization_id);
-
-        if (count($organization->subscriptions) >= 1) {
-            \Log::error('Refusing to create a hosted page - Organization already has a subscription.');
-            return abort(403);
-        }
-
-        $planAndCreditsSettings = $this->organizations->getSetting($organization_id, 'plan_and_credits');
-
-        $url = $this->payments->checkoutHostedPage(
-            $organization,
-            $request->input('callback'),
-            $planAndCreditsSettings->monthlyCreditsExtra,
-            $request->input('is_free_trial')
-        );
-
-        return response()->json(['url' => $url]);
-    }
-
-    /**
-     * Create an updated subscription URL 
-     *
-     * @Put("{org_id}/subscriptions/hostedpage")
+     * @Get("{org_id}/subscriptions/{subscription_id}/hostedpage/switchtopro?callback={callback}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
-     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
-     * })
-     * @Request({
-     *     "callback": "http://subdomain.tenfour.org/callback",
+     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id"),
+     *   @Parameter("callback", type="url", required=true, description="Callback URL",
      * })
      * @Response(200, body={
      *     "url": "http://api.chargebee.com/hostedpage?xxx"
@@ -195,16 +162,16 @@ class SubscriptionController extends ApiController
      *
      * @return Response
      */
-    public function updateHostedPage(CreateHostedPageRequest $request, $organization_id)
+    public function getProUpgradeHostedPageUrl(CreateHostedPageRequest $request, $organization_id)
     {
         $organization = Organization::findOrFail($organization_id);
 
         if (count($organization->subscriptions) !== 1) {
-            \Log::error('Refusing to update a hosted page - Organization must have exactly one subscription.');
+            \Log::error('Refusing to get a hosted page url - Organization must have exactly one subscription.');
             return abort(403);
         }
 
-        $url = $this->payments->checkoutUpdateHostedPage(
+        $url = $this->payments->getProUpgradeHostedPageUrl(
             $organization,
             $request->input('callback')
         );
@@ -213,24 +180,17 @@ class SubscriptionController extends ApiController
     }
 
     /**
-     * Confirm a subscription
+     * Create a billing iframe URL for updating payment information.
      *
-     * API endpoint called by client after successful ChargeBee subscription creation
-     *
-     * @Post("{org_id}/subscriptions/hostedpage/confirm")
+     * @Get("{org_id}/subscriptions/{subscription_id}/hostedpage/update?callback={callback}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
-     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id")
-     * })
-     * @Request({
-     *     "subscription_id": "cb123uijh12iu3h87",
+     *   @Parameter("subscription_id", type="number", required=true, description="Subscription id"),
+     *   @Parameter("callback", type="url", required=true, description="Callback URL",
      * })
      * @Response(200, body={
-     *   "subscription": {
-     *        "id": 1,
-     *        "status": "active",
-     *    }
+     *     "url": "http://api.chargebee.com/hostedpage?xxx"
      * })
      *
      * @param Request $request
@@ -238,34 +198,20 @@ class SubscriptionController extends ApiController
      *
      * @return Response
      */
-    public function confirmHostedPage(GetSubscriptionRequest $request, $organization_id)
+    public function getUpdatePaymentInfoHostedPageUrl(CreateHostedPageRequest $request, $organization_id)
     {
-        $hostedPage = $this->payments->retrieveHostedPage($request->subscription_id);
+        $organization = Organization::findOrFail($organization_id);
 
-        if ((int) $hostedPage->organization_id !== (int) $organization_id) {
+        if (count($organization->subscriptions) !== 1) {
+            \Log::error('Refusing to get a hosted page url - Organization must have exactly one subscription.');
             return abort(403);
         }
 
-        $subscription_id = $hostedPage->content['customer']['id'];
+        $url = $this->payments->getUpdatePaymentInfoHostedPageUrl(
+            $organization,
+            $request->input('callback')
+        );
 
-        $result = $this->payments->retrieveSubscription($subscription_id);
-
-        $subscription = $this->subscriptions->create($organization_id, $result);
-
-        if ($subscription['promo_code']) {
-            // https://github.com/ushahidi/RollCall/issues/735
-            $coupon = $this->payments->retrieveCoupon($subscription['promo_code']);
-
-            if ($coupon && $coupon['discount_percentage'] == 100) {
-                $this->credits->addCreditAdjustment($organization_id, config('credits.freepromo'), 'topup', ['rc_freepromo' => true]);
-            }
-        }
-
-        if ($subscription['status'] === 'cancelled') {
-            $this->payments->reactivateSubscription($subscription_id);
-        }
-
-        return $this->response->item($subscription, new SubscriptionTransformer, 'subscription');
+        return response()->json(['url' => $url]);
     }
-
 }

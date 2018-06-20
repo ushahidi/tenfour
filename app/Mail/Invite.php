@@ -51,7 +51,7 @@ class Invite extends Mailable
 
         $url = secure_url(
           $client_url
-          . '#/signin/invite/'
+          . '/#/signin/invite/'
           . urlencode($this->organization['subdomain']) . '/'
           . urlencode($this->member['id']) . '/'
           . urlencode($this->email) . '/'
