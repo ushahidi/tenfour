@@ -40,7 +40,7 @@ class SMSController extends Controller
         $from = $incoming->from();
         $to = $incoming->to();
 
-        Log::info("[SMSController:".$driver."] Received SMS message to=" . $to . " from=" . $from . " with id=" . $incoming->id());
+        Log::info("[SMSController:".$driver."] Received SMS message to=" . $to . " from=" . $from . " with id=" . $incoming->id() . " and message= '" . $incoming->message() . "'");
 
         if (!starts_with($from, '+')) {
             $from = '+' . $from;

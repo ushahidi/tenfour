@@ -15,7 +15,7 @@ use DB;
 
 class CheckInTableSeeder extends Seeder
 {
-    protected function addUsersToRollCall($users, $check_in) {
+    protected function addUsersToCheckIn($users, $check_in) {
         $recipients = [];
 
         foreach ($users as $user) {
@@ -54,7 +54,7 @@ class CheckInTableSeeder extends Seeder
                 'send_via' => ['preferred'],
             ]);
 
-            $this->addUsersToRollCall($users, $check_in);
+            $this->addUsersToCheckIn($users, $check_in);
 
             Notification::send($check_in->recipients, new CheckInReceived($check_in));
 
@@ -87,6 +87,10 @@ class CheckInTableSeeder extends Seeder
 
         $users = User::select('id')->where('organization_id', $organization->id)->limit(10)->get();
 
+        // no answers
+
+        $this->addCheckIns($organization, $users, []);
+
         // default answers
 
         $this->addCheckIns($organization, $users, [
@@ -101,9 +105,6 @@ class CheckInTableSeeder extends Seeder
           ['answer'=>'Custom answer teal','color'=>'#4CBFCE','icon'=>'icon-check','type'=>'custom']
         ]);
 
-        // no answers
-
-        $this->addCheckIns($organization, $users, []);
 
     }
 }

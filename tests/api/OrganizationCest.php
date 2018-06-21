@@ -314,4 +314,49 @@ class OrganizationCest
         ]);
         $I->seeResponseCodeIs(422);
     }
+
+
+    /*
+     * Non-admins can't see restricted settings
+     *
+     */
+    public function viewOrganizationSettingsAsNonAdmin(ApiTester $I)
+    {
+        $id = 2;
+
+        $I->wantTo('View organization settings as non-admin');
+        $I->haveHttpHeader('Content-Type', 'application/json');
+
+        $I->amAuthenticatedAsOrgOwner();
+        $I->sendPUT($this->endpoint."/$id", [
+            'name' => 'TenFourTest',
+            'subdomain'  => 'testing',
+            'settings'  => ['plan_and_credits' => []],
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendGET($this->endpoint."/$id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseContainsJson([
+            'settings'      => [
+                'key' => 'plan_and_credits'
+            ]
+        ]);
+
+        $I->amAuthenticatedAsViewer();
+        $I->sendGET($this->endpoint."/$id");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'settings'      => [
+                'key' => 'channels'
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'settings'      => [
+                'key' => 'plan_and_credits'
+            ]
+        ]);
+
+    }
 }

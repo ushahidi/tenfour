@@ -28,6 +28,22 @@ function wait_for_redis {
   done
 }
 
+test_reporter() {
+  local _ret=0;
+  "$@" || _ret=$?
+  if [ $_ret -ne 0 ]; then
+    echo -e "\n\n* Test run failed, output of logs in storage/logs follows:"
+    ls -la storage/logs/*.log
+    echo -e "-------------------- BEGIN LOG OUTPUT --------------------"
+    cat storage/logs/*.log
+    echo -e "--------------------- END LOG OUTPUT ---------------------"
+    return 1
+  else
+    echo -e "\n* Successful test run"
+    return 0
+  fi
+}
+
 sync
 php -S api.tenfour.local:80 -t public public/index.php &
 wait_for_mysql
@@ -35,4 +51,13 @@ composer install --no-interaction
 cp .env.testing .env
 ./artisan migrate
 
-exec "$@"
+
+case "$1" in
+  test_reporter)
+    shift
+    test_reporter "$@"
+    ;;
+  *)
+    exec "$@"
+    ;;
+esac

@@ -5,6 +5,7 @@ namespace TenFour\Http\Controllers\Api\First;
 use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
+use TenFour\Contracts\Repositories\SubscriptionRepository;
 use TenFour\Http\Requests\Organization\GetOrganizationsRequest;
 use TenFour\Http\Requests\Organization\CreateOrganizationRequest;
 use TenFour\Http\Requests\Organization\GetOrganizationRequest;
@@ -17,7 +18,10 @@ use TenFour\Http\Transformers\OrganizationTransformer;
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Http\Response;
 use TenFour\Services\CreditService;
+use TenFour\Contracts\Services\PaymentService;
+use TenFour\Models\Organization;
 use DB;
+use ChargeBee_APIError;
 
 /**
  * @Resource("Organizations", uri="/api/v1/organizations")
@@ -25,7 +29,7 @@ use DB;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService)
+    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService, PaymentService $payments, SubscriptionRepository $subscriptions)
     {
         $this->organizations = $organizations;
         $this->people = $people;
@@ -33,6 +37,8 @@ class OrganizationController extends ApiController
         $this->auth = $auth;
         $this->response = $response;
         $this->creditService = $creditService;
+        $this->payments = $payments;
+        $this->subscriptions = $subscriptions;
     }
 
     /**
@@ -94,10 +100,20 @@ class OrganizationController extends ApiController
                     'enabled' => true
                 ],
                 'sms' => [
-                    'enabled' => true,
-                    'default_region' => $location->iso_code,
-                    'regions' => []
+                    'enabled' => true
+                ],
+                'app' => [
+                    'enabled' => true
+                ],
+                'slack' => [
+                    'enabled' => false
                 ]
+            ],
+            'regions' => [
+                'default' => $location->iso_code
+            ],
+            'plan_and_credits' => [
+                'monthlyCreditsExtra' => 0
             ]
         ];
 
@@ -141,6 +157,15 @@ class OrganizationController extends ApiController
             ]
         ];
 
+        try {
+            $subscription = $this->payments->createSubscription(Organization::findOrFail($organization['id']));
+            $this->subscriptions->create($organization['id'], $subscription);
+        }
+        catch (ChargeBee_APIError $e) {
+            app('sentry')->captureException($e);
+            \Log::error($e);
+        }
+
         return $this->response->item($result, new OrganizationTransformer, 'organization');
     }
 
@@ -168,7 +193,7 @@ class OrganizationController extends ApiController
      */
     public function show(GetOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->find($organization_id);
+        $organization = $this->organizations->find($organization_id, $this->auth->user()['role']);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 
@@ -198,7 +223,7 @@ class OrganizationController extends ApiController
      */
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->update($request->except('subdomain'), $organization_id);
+        $organization = $this->organizations->update($request->except('subdomain'), $organization_id, $this->auth->user()['role']);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 
@@ -265,11 +290,6 @@ class OrganizationController extends ApiController
         if ($this->people->testMemberInviteToken($member['id'], $request['invite_token'])) {
             $member['password'] = $request['password'];
             $member['person_type'] = 'user';
-
-            if ($member['role'] !== 'admin') {
-                $member['role'] = 'responder';
-            }
-
             $member['invite_token'] = null;
             $member = $this->people->update($organization_id, $member, $person_id);
 

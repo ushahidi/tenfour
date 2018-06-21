@@ -8,9 +8,12 @@ use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use ChargeBee_Coupon;
 use ChargeBee_InvalidRequestException;
+use Carbon\Carbon;
 
 class ChargeBeePaymentService implements PaymentService
 {
+    const TRIAL_PERIOD_DAYS = 30;
+
     public function __construct()
     {
         ChargeBee_Environment::configure(config("chargebee.site"),config("chargebee.key"));
@@ -25,69 +28,76 @@ class ChargeBeePaymentService implements PaymentService
 
         return [
             'subscription' => $subscription->getValues(),
-            'card' => $card->getValues(),
+            'card' => $card ? $card->getValues() : null,
             'customer' => $customer->getValues(),
         ];
     }
 
-    public function getPlanId()
+    private function getFreePlanId()
     {
-        return config("chargebee.plan");
+        return config("chargebee.plans.free");
     }
 
-    public function getAddonId()
+    private function getProPlanId()
     {
-        return config("chargebee.addon");
+        return config("chargebee.plans.pro");
     }
 
-    public function checkoutHostedPage($organization, $redirectUrl, $addonQuantity = 0, $isFreeTrial = false)
+    private function getTrialEnd()
     {
-        $numUsers = count($organization->members);
+        return Carbon::now()->addDays(self::TRIAL_PERIOD_DAYS)->timestamp;
+    }
+
+    private function getCreditsAddonId()
+    {
+        return config("chargebee.addons.credits");
+    }
+
+    public function getProUpgradeHostedPageUrl($organization, $redirectUrl)
+    {
+        // $numUsers = count($organization->members);
 
         $checkout = array(
-          "subscription" => array(
-            "planId" => $this->getPlanId(),
-            "planQuantity" => $numUsers,
-            "autoCollection" => "on",
-            "trialEnd" => 0,
-            "customer" => array(
-              "email" => $organization->owner()->email(),
-              "company" => $organization->name,
-              "phone" => $organization->owner()->phone()
+            "subscription" => array(
+                "id" => $organization->currentSubscription()->subscription_id,
+                "planId" => $this->getProPlanId(),
+                "planQuantity" => 1,
+                "autoCollection" => "on",
+                "trialEnd" => 0,
             ),
-          ),
-          "embed" => true,
-          "redirectUrl" => $redirectUrl,
-          "cancelledUrl" => $redirectUrl,
-          "passThruContent" => json_encode(["organization_id" => $organization->id]),
+            "embed" => true,
+            "forceTermReset" => true,
+            "redirectUrl" => $redirectUrl,
+            "cancelledUrl" => $redirectUrl,
+            "passThruContent" => json_encode(["organization_id" => $organization->id]),
         );
 
-        if ($isFreeTrial) {
-            unset($checkout['subscription']['trialEnd']);
-        }
+        // if ($isFreeTrial) {
+        //     unset($checkout['subscription']['trialEnd']);
+        // }
+        //
+        // if ($addonQuantity) {
+        //     $checkout["addons"] = array(array(
+        //         "id" => $this->getCreditsAddonId(),
+        //         "quantity" => $addonQuantity
+        //     ));
+        // }
 
-        if ($addonQuantity) {
-            $checkout["addons"] = array(array(
-                "id" => $this->getAddonId(),
-                "quantity" => $addonQuantity
-            ));
-        }
-
-        $hostedPage = ChargeBee_HostedPage::checkoutNew($checkout)->hostedPage();
+        $hostedPage = ChargeBee_HostedPage::checkoutExisting($checkout)->hostedPage();
 
         return $hostedPage->url;
     }
 
-    public function checkoutUpdateHostedPage($organization, $redirectUrl)
+    public function getUpdatePaymentInfoHostedPageUrl($organization, $redirectUrl)
     {
         $checkout = array(
-          "customer" => array(
-            "id" => $organization->currentSubscription()->customer_id
-          ),
-          "embed" => true,
-          "redirectUrl" => $redirectUrl,
-          "cancelledUrl" => $redirectUrl,
-          "passThruContent" => json_encode(["organization_id" => $organization->id]),
+            "customer" => array(
+                "id" => $organization->currentSubscription()->customer_id
+            ),
+            "embed" => true,
+            "redirectUrl" => $redirectUrl,
+            "cancelledUrl" => $redirectUrl,
+            "passThruContent" => json_encode(["organization_id" => $organization->id]),
         );
 
         $hostedPage = ChargeBee_HostedPage::updatePaymentMethod($checkout)->hostedPage();
@@ -95,14 +105,31 @@ class ChargeBeePaymentService implements PaymentService
         return $hostedPage->url;
     }
 
-    public function retrieveHostedPage($subscription_id)
-    {
-        $result = ChargeBee_HostedPage::retrieve($subscription_id);
-        $hostedPage = $result->hostedPage();
-        $passThruContent = json_decode($hostedPage->passThruContent);
-        $hostedPage->organization_id = $passThruContent->organization_id;
+    // public function retrieveHostedPage($subscription_id)
+    // {
+    //     $result = ChargeBee_HostedPage::retrieve($subscription_id);
+    //     $hostedPage = $result->hostedPage();
+    //     $passThruContent = json_decode($hostedPage->passThruContent);
+    //     $hostedPage->organization_id = $passThruContent->organization_id;
+    //
+    //     return $hostedPage;
+    // }
 
-        return $hostedPage;
+    public function createSubscription($organization)
+    {
+        // create a freemium subscription for new organizations
+
+        $result = ChargeBee_Subscription::create([
+            "planId" => $this->getFreePlanId(),
+            // "trial_end" => $this->getTrialEnd(),
+            "customer" => array(
+                "email" => $organization->owner()->email(),
+                "company" => $organization->name,
+                "phone" => $organization->owner()->phone()
+            ),
+        ]);
+
+        return $this->toArray($result);
     }
 
     public function retrieveSubscription($subscription_id)
@@ -138,5 +165,16 @@ class ChargeBeePaymentService implements PaymentService
         }
 
         return $coupon->getValues();
+    }
+
+    public function changeToFreePlan($subscription_id)
+    {
+        $result = ChargeBee_Subscription::update($subscription_id, [
+            "planId"            => $this->getFreePlanId(),
+            "status"            => "active",
+            "replaceAddonList"  => true,
+        ]);
+
+        return $this->toArray($result);
     }
 }

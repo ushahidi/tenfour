@@ -4,7 +4,7 @@ class NotificationsCest
 {
     protected $organizationsEndpoint = '/api/v1/organizations';
     protected $peopleEndpoint = '/api/v1/organizations/2/people/me';
-    protected $checkInsEndpoint = '/api/v1/checkins';
+    protected $checkInsEndpoint = '/api/v1/organizations/2/checkins';
 
     /*
      * Ensure that admins receive a notification when a person is added to the organization
@@ -125,7 +125,7 @@ class NotificationsCest
      * Ensure I get a notification if I am a recipient of a new check-in
      *
      */
-    public function receiveRollCallReceivedNotification(ApiTester $I)
+    public function receiveCheckInReceivedNotification(ApiTester $I)
     {
         $org_id = 2;
         $message = 'Westgate under siege, are you ok?';
@@ -135,7 +135,7 @@ class NotificationsCest
         $I->sendPost($this->checkInsEndpoint, [
             'message' => $message,
             'organization_id' => $org_id,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 3

@@ -12,6 +12,7 @@ use Validator;
 use Exception;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use libphonenumber\PhoneNumberFormat;
 use Illuminate\Validation\ValidationException;
 
 class CsvImporter implements CsvImporterInterface
@@ -83,29 +84,55 @@ class CsvImporter implements CsvImporterInterface
         $this->organization_id = $organization_id;
     }
 
+    public function makeNormalizedContact($type, $contact)
+    {
+        $contact = trim($contact);
+
+        if ($type == 'phone') {
+            if (!starts_with($contact, '+')) {
+                $contact = '+'.$contact;
+            }
+
+            $phoneNumberUtil = PhoneNumberUtil::getInstance();
+
+            try {
+                $phoneNumberObject = $phoneNumberUtil->parse($contact, null);
+            } catch (NumberParseException $exception) {
+                // phone number should already be validated at this point
+                \Log::warning($exception);
+                return $contact;
+            }
+
+            return $phoneNumberUtil->format($phoneNumberObject, PhoneNumberFormat::E164);
+        }
+
+        return $contact;
+    }
+
     public function import()
     {
         $rows = $this->reader->read();
         $members = [];
+        $duplicates = [];
 
         // Transform data for input and save it
-        DB::transaction(function () use ($rows, &$members) {
+        DB::transaction(function () use ($rows, &$members, &$duplicates) {
             foreach($rows as $row)
             {
                 $row = $this->transformer->transform($row);
 
                 $contacts = array_except($row, $this->user_fields);
                 $user_input = array_except($row, $this->contact_fields);
+                $normalized_contacts = [];
 
-                // Save user details
-                $person = $this->people->create($this->organization_id, $user_input);
-
-                // Save contacts
+                // normalize contacts
                 foreach ($contacts as $type => $contact)
                 {
                     if (!$contact || empty($contact)) {
                         continue;
                     }
+
+                    $contact = trim($contact);
 
                     $validator = Validator::make([$type => $contact], [
                         'phone' => 'phone_number',
@@ -123,25 +150,30 @@ class CsvImporter implements CsvImporterInterface
                         );
                     }
 
-                    if ($type == 'phone' && ! starts_with($contact, '+')) {
-                        $contact = '+'.$contact;
-                    }
+                    $contact = $this->makeNormalizedContact($type, $contact);
+
+                    $normalized_contacts[$type] = $contact;
 
                     $existing_contact = $this->contacts->getByContact($contact, $this->organization_id);
 
                     if ($existing_contact) {
-                        throw new CsvImportException(
-                            'A contact already exists with ' . $type . ' data "' . $contact . '" ' .
-                            'TenFour will not import duplicate contacts. Please include only ' .
-                            'new contacts in the CSV file.'
-                        );
+                        array_push($duplicates, $existing_contact);
+                        continue 2; // outer loop
                     }
+                }
 
+                // Save new user
+                $person = $this->people->create($this->organization_id, $user_input);
+
+                // Save contacts for user
+                foreach ($normalized_contacts as $type => $contact)
+                {
                     $contact_input = [
                         'contact' => $contact,
                         'type'    => $type,
                         'user_id' => $person['id'],
                         'organization_id' => $this->organization_id,
+                        'preferred' => 1
                     ];
 
                     // Store country code and national number
@@ -169,7 +201,9 @@ class CsvImporter implements CsvImporterInterface
             }
         });
 
-        //return $count;
-        return $members;
+        return [
+          'members' => $members,
+          'duplicates' => $duplicates
+        ];
     }
 }

@@ -42,7 +42,6 @@ interface ReplyRepository extends CrudRepository
      *
      * @param array $input
      * @param int $id
-
      * @return array
      */
     public function update(array $input, $id);

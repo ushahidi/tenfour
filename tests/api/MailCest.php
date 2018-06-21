@@ -4,7 +4,7 @@ use Codeception\Util\Fixtures;
 
 class MailCest
 {
-    public function handleReceiveSelfTestRollCall(ApiTester $I)
+    public function handleReceiveSelfTestCheckIn(ApiTester $I)
     {
         $user_id = 1;
         $contact_id = 2;
@@ -109,12 +109,12 @@ class MailCest
         ]);
     }
 
-    public function receiveRollCallMail(ApiTester $I)
+    public function receiveCheckInMail(ApiTester $I)
     {
         $I->wantTo('Receive a check-in mail');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST('/api/v1/checkins', [
+        $I->sendPOST('/api/v1/organizations/2/checkins', [
             'message' => 'Sinkhole has opened. Are you ok?',
             'organization_id' => 2,
             'send_via' => ['email'],

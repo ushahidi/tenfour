@@ -16,8 +16,7 @@ class GetSupportedRegionsRequest extends FormRequest
      */
     public function authorize()
     {
-        // An org owner/ admin can view regions supported for their organization
-        if ($this->user()->isAdmin($this->route('organization'))) {
+        if ($this->user()->isMember($this->route('organization'))) {
             return true;
         }
     }

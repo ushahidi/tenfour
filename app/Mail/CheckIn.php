@@ -71,10 +71,10 @@ class CheckIn extends Mailable
           }
         }
 
-        $unsubscribe_url = $client_url . '/unsubscribe/' .
-          '?token=' . urlencode($this->contact['unsubscribe_token']) .
-          '&email=' . urlencode($this->contact['contact']) .
-          '&org_name=' . urlencode($org->name);
+        $unsubscribe_url = $client_url . '/#/unsubscribe/' .
+          urlencode($org->name) . '/' .
+          urlencode($this->contact['contact']) . '/' .
+          urlencode($this->contact['unsubscribe_token']);
 
         return $this->view('emails.checkin')
                     ->text('emails.checkin_plain')
@@ -87,10 +87,10 @@ class CheckIn extends Mailable
                         'org_subdomain'     => $this->organization['subdomain'],
                         'org_name'          => $this->organization['name'],
                         'author'            => $this->creator['name'],
-                        'answer_url_no'     => $answer_url_no,
-                        'answer_url_yes'    => $answer_url_yes,
-                        'answer_url'        => $answer_url,
-                        'reply_url'         => $reply_url,
+                        // 'answer_url_no'     => $answer_url_no,
+                        // 'answer_url_yes'    => $answer_url_yes,
+                        // 'answer_url'        => $answer_url,
+                        // 'reply_url'         => $reply_url,
                         'has_custom_answers'=> $has_custom_answers,
                         'unsubscribe_url'   => $unsubscribe_url,
                     ])

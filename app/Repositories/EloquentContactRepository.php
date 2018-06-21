@@ -120,7 +120,7 @@ class EloquentContactRepository implements ContactRepository
                 $query->select('users.id', 'users.name');
             }
         ])
-            ->where('contact', $contact);
+            ->where('contact', 'like', $contact);
 
         if ($org_id) {
             $contact->where('organization_id', '=', $org_id);
@@ -144,7 +144,7 @@ class EloquentContactRepository implements ContactRepository
                 $query->select('users.id', 'users.name');
             }])
             ->leftJoin('check_in_messages', 'check_in_messages.contact_id', '=', 'contacts.id')
-            ->where('contact', $contact)
+            ->where('contact', 'like', $contact)
             ->orderBy('check_in_messages.created_at', 'desc')
             ->first();
     }

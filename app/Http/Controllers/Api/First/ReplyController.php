@@ -13,7 +13,7 @@ use TenFour\Http\Response;
 use Dingo\Api\Auth\Auth;
 
 /**
- * @Resource("Replies", uri="/api/v1/checkins")
+ * @Resource("Replies", uri="/api/v1/organizations/{org_id}/checkins/{check_in_id}/replies")
  */
 class ReplyController extends ApiController
 {
@@ -28,7 +28,7 @@ class ReplyController extends ApiController
     /**
      * Get a single reply
      *
-     * @Get("/{check_in_id}/replies/{reply_id}")
+     * @Get("/{reply_id}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("check_in_id", type="number", required=true, description="Check-in id"),
@@ -50,10 +50,10 @@ class ReplyController extends ApiController
      *           "message_id": null,
      *           "checkin": {
      *               "id": 4,
-     *               "uri": "/checkins/4"
+     *               "uri": "/organizations/2/checkins/4"
      *           },
      *           "updated_at": null,
-     *           "uri": "/checkins/4/reply/1",
+     *           "uri": "/organizations/2/checkins/4/reply/1",
      *           "user": {
      *               "id": 1,
      *               "uri": "/users/1"
@@ -66,7 +66,7 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function find(GetReplyRequest $request, $check_in_id, $reply_id)
+    public function find(GetReplyRequest $request, $organization_id, $check_in_id, $reply_id)
     {
         $reply = $this->reply->find($reply_id);
         return $this->response->item($reply, new ReplyTransformer, 'reply');
@@ -81,7 +81,7 @@ class ReplyController extends ApiController
      * @return Response
      *
      */
-    public function create(CreateReplyRequest $request)
+    public function create(CreateReplyRequest $request, $organization_id)
     {
         $reply = $this->reply->create(
           $request->input() + [
@@ -95,7 +95,7 @@ class ReplyController extends ApiController
     /**
      * Add reply
      *
-     * @Post("/{check_in_id}/replies/")
+     * @Post("/")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
@@ -113,10 +113,10 @@ class ReplyController extends ApiController
      *         "message": "I am OK",
      *         "checkin": {
      *             "id": 1,
-     *             "uri": "/checkins/1"
+     *             "uri": "/organizations/2/checkins/1"
      *         },
      *         "updated_at": "2016-03-15 20:27:54",
-     *         "uri": "/checkins/1/reply/6",
+     *         "uri": "/organizations/2/checkins/1/reply/6",
      *         "user": {
      *             "id": 5,
      *             "uri": "/users/5"
@@ -129,17 +129,17 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function addReply(AddReplyRequest $request, $id)
+    public function addReply(AddReplyRequest $request, $organization_id, $check_in_id)
     {
         $user_id = $this->auth->user()['id'];
         $reply = $this->reply->addReply(
           $request->input() + [
             'user_id' => $user_id,
-            'check_in_id' => $id
-          ], $id);
+            'check_in_id' => $check_in_id
+          ], $check_in_id);
 
         // Update response status
-        $this->check_ins->updateRecipientStatus($id, $user_id, 'replied');
+        $this->check_ins->updateRecipientStatus($check_in_id, $user_id, 'replied');
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
@@ -163,7 +163,7 @@ class ReplyController extends ApiController
     /**
      * List check-in replies
      *
-     * @Get("/{check_in_id}/replies/")
+     * @Get("/")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("check_in_id", type="number", required=true, description="Check-in id")
@@ -185,10 +185,10 @@ class ReplyController extends ApiController
      *             "message_id": null,
      *             "checkin": {
      *                 "id": 1,
-     *                 "uri": "/checkins/1"
+     *                 "uri": "/organizations/2/checkins/1"
      *             },
      *             "updated_at": null,
-     *             "uri": "/checkins/1/reply/1",
+     *             "uri": "/organizations/2/checkins/1/reply/1",
      *             "user": {
      *                 "config_profile_reviewed": 0,
      *                 "config_self_test_sent": 0,
@@ -220,10 +220,10 @@ class ReplyController extends ApiController
      *             "message_id": null,
      *             "checkin": {
      *                 "id": 1,
-     *                 "uri": "/checkins/1"
+     *                 "uri": "/organizations/2/checkins/1"
      *             },
      *             "updated_at": null,
-     *             "uri": "/checkins/1/reply/3",
+     *             "uri": "/organizations/2/checkins/1/reply/3",
      *             "user": {
      *                 "config_profile_reviewed": 0,
      *                 "config_self_test_sent": 0,
@@ -249,9 +249,9 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function listReplies(GetReplyRequest $request, $id)
+    public function listReplies(GetReplyRequest $request, $organization_id, $check_in_id)
     {
-        return $this->response->collection($this->reply->getReplies($id, $request->query('users'), $request->query('contacts')),
+        return $this->response->collection($this->reply->getReplies($check_in_id, $request->query('users'), $request->query('contacts')),
                                      new ReplyTransformer, 'replies');
     }
 
@@ -263,7 +263,7 @@ class ReplyController extends ApiController
      *
      * @return Response
      */
-    public function update(UpdateReplyRequest $request, $check_in_id, $reply_id)
+    public function update(UpdateReplyRequest $request, $organization_id, $check_in_id, $reply_id)
     {
         $reply = $this->reply->update($request->all(), $reply_id);
 

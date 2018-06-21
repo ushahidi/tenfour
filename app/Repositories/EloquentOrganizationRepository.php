@@ -3,6 +3,7 @@ namespace TenFour\Repositories;
 
 use TenFour\Models\Organization;
 use TenFour\Models\Setting;
+use TenFour\Models\User;
 use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
@@ -18,6 +19,8 @@ use TenFour\Services\CreditService;
 
 class EloquentOrganizationRepository implements OrganizationRepository
 {
+    const RESTRICTED_SETTINGS = ['plan_and_credits'];
+
     public function __construct(StorageService $storageService, CreditService $creditService)
     {
         $this->storageService = $storageService;
@@ -48,7 +51,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->toArray();
     }
 
-    public function update(array $input, $id)
+    public function update(array $input, $id, $user_role = 'responder')
     {
         $organization = Organization::findorFail($id);
 
@@ -63,7 +66,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         }
 
         $organization->update($input);
-        return $this->find($id);
+        return $this->find($id, $user_role);
     }
 
     public function create(array $input)
@@ -82,7 +85,7 @@ class EloquentOrganizationRepository implements OrganizationRepository
         return $this->find($organization->id);
     }
 
-    public function find($id)
+    public function find($id, $user_role = 'responder')
     {
         $orgModel = Organization::with('settings')
             ->with('subscriptions')
@@ -96,8 +99,15 @@ class EloquentOrganizationRepository implements OrganizationRepository
 
         $org = $orgModel->toArray();
 
+        if (!($user_role === 'admin' || $user_role === 'owner')) {
+            $org['settings'] = array_filter($org['settings'], function ($setting) {
+                return !$setting['restricted'];
+            });
+        }
+
         $org['credits'] = $this->creditService->getBalance($id);
         $org['current_subscription'] = $orgModel->currentSubscription();
+        $org['user_count'] = User::where('organization_id', '=', $id)->count();
 
         return $org;
     }
@@ -128,18 +138,32 @@ class EloquentOrganizationRepository implements OrganizationRepository
         } else {
             return [];
         }
+    }
 
+    public function setSetting($id, $key, $setting) {
+        $restricted = in_array($key, self::RESTRICTED_SETTINGS);
+
+        Setting::updateOrCreate([
+            'organization_id' => $id,
+            'key' => $key
+        ], [
+            'values' => $setting,
+            'restricted' => $restricted
+        ]);
     }
 
     protected function updateSettings(array $settings, $id)
     {
         foreach ($settings as $key => $setting)
         {
+            $restricted = in_array($key, self::RESTRICTED_SETTINGS);
+
             Setting::updateOrCreate([
                 'organization_id' => $id,
                 'key' => $key
             ], [
-                'values' => $setting
+                'values' => $setting,
+                'restricted' => $restricted
             ]);
         };
 

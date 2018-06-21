@@ -11,9 +11,14 @@ class AnalyticsService
     {
         if (config('segment.key')) {
             Segment::init(config('segment.key'));
-            $this->user = app('Dingo\Api\Auth\Auth')->user();
 
-            if ($this->user) {
+            try {
+                $this->user = app('Dingo\Api\Auth\Auth')->user();
+            } catch (\Throwable $e) {
+                \Log::warning($e);
+            }
+
+            if (isset($this->user)) {
                 $this->identify($this->user);
             }
         }
@@ -37,7 +42,7 @@ class AnalyticsService
         if (config('segment.key')) {
             try {
                 Segment::track(array(
-                    'userId'      => (is_object($this->user)?$this->user->id:'anonymous'.session_id()),
+                    'userId'      => (isset($this->user)&&is_object($this->user)?$this->user->id:'anonymous'.session_id()),
                     'event'       => $event,
                     'properties'  => $properties
                 ));

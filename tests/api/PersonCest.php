@@ -222,7 +222,7 @@ class PersonCest
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPUT($this->endpoint."/$org_id/people/$user_id", [
             'name' => 'Updated org member',
-            'password' => 'rollcall',
+            'password' => 'westgate1',
             'person_type' => 'user'
         ]);
         $I->seeResponseCodeIs(200);
@@ -399,6 +399,11 @@ class PersonCest
                 'checkins' => [
                     [
                         'message' => 'Another test check-in'
+                    ]
+                ],
+                'replies' => [
+                    [
+                        'message' => 'I am OK'
                     ]
                 ],
                 'role' => 'responder'

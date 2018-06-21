@@ -13,11 +13,9 @@ class CreateHostedPageRequest extends GetSubscriptionRequest
      *
      * @return array
      */
-    public function rules()
-    {
-        return [
-            'organization_id'   => 'required',
-            'callback'          => 'required',
-        ];
-    }
+    // public function rules()
+    // {
+    //     return [
+    //     ];
+    // }
 }

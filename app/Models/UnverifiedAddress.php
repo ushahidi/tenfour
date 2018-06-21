@@ -18,12 +18,12 @@ class UnverifiedAddress extends Model
      *
      * @var array
      */
-    protected $fillable = ['address', 'verification_token', 'type'];
+    protected $fillable = ['address', 'verification_token', 'type', 'code', 'code_attempts'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['verification_token'];
+    protected $hidden = ['verification_token', 'code'];
 }

@@ -18,8 +18,10 @@ class ConcatinatedSMSCest
             ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
             ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
           ],
-          'keyword'       => 'rollcall',
-          'check_in_url'  => 'http://testingsubdomain.ushahidi.com/checkins/1/answer/2'
+          'keyword'       => 'tenfour',
+          'check_in_url'  => 'http://testingsubdomain.ushahidi.com/checkins/1/answer/2',
+          'org_name'      => '',
+          'sender_name'   => ''
         ];
 
         $t->assertTrue(
@@ -32,8 +34,10 @@ class ConcatinatedSMSCest
         $data = [
           'msg'           => 'short',
           // 'answers'       => [],
-          'keyword'       => 'rollcall',
-          'check_in_url'  => 'http://testingsubdomain.ushahidi.com/checkins/1/answer/2'
+          'keyword'       => 'tenfour',
+          'check_in_url'  => 'http://testingsubdomain.ushahidi.com/checkins/1/answer/2',
+          'org_name'      => '',
+          'sender_name'   => ''
         ];
 
         $t->assertFalse(

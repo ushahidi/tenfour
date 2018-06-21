@@ -5,7 +5,8 @@ use DB;
 
 class CheckInCest
 {
-    protected $endpoint = '/api/v1/checkins';
+    //protected $endpoint = '/api/v1/checkins';
+    protected $endpoint = '/api/v1/organizations';
 
     /*
      * Get all check-ins as an admin
@@ -13,9 +14,10 @@ class CheckInCest
      */
     public function getAllCheckIns(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Get a list of all check-ins as an admin');
         $I->amAuthenticatedAsAdmin();
-        $I->sendGET($this->endpoint);
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -98,10 +100,11 @@ class CheckInCest
      */
     public function getAllCheckInsExcludingSelfTests(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Get a list of all check-ins as an admin excluding self tests');
 
         $I->amAuthenticatedAsAdmin();
-        $I->sendGET($this->endpoint);
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
@@ -138,10 +141,10 @@ class CheckInCest
      */
     public function filterCheckInsbyOrg(ApiTester $I)
     {
-        $endpoint = $this->endpoint.'/?organization=2';
+        $id = 2;
         $I->wantTo('Get a list of all check-ins for an organization as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($endpoint);
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -165,10 +168,10 @@ class CheckInCest
      */
     public function filterCheckInsbyUser(ApiTester $I)
     {
-        $endpoint = $this->endpoint.'/?organization=2&user=me';
+        $id = 2;
         $I->wantTo('Get a list of all check-ins sent out by a user');
         $I->amAuthenticatedAsOrgOwner();
-        $I->sendGET($endpoint);
+        $I->sendGET($this->endpoint.'/'.$id.'&user=me/checkins');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -193,9 +196,10 @@ class CheckInCest
     public function getMessages(ApiTester $I)
     {
         $id = 1;
+        $check_in_id = 1;
         $I->wantTo('Get a list of contacts for a check-in as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id.'/messages');
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins/'.$check_in_id.'/messages');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -209,19 +213,11 @@ class CheckInCest
                     ]
                 ],
                 [
-                    'id'      => 3,
-                    'contact' => 'linda@ushahidi.com',
+                    'id'   => 10,
+                    'contact' => 'test+contact2@ushahidi.com',
                     'type'    => 'email',
-                    'user'    => [
-                        'id' => 2,
-                    ]
-                ],
-                [
-                    'id'   => 4,
-                    'contact' => '+254792999999',
-                    'type'    => 'phone',
                      'user'    => [
-                        'id' => 4,
+                        'id' => 1,
                     ]
                 ]
             ]
@@ -235,9 +231,11 @@ class CheckInCest
     public function getRecipients(ApiTester $I)
     {
         $id = 1;
+        $check_in_id = 1;
         $I->wantTo('Get a list of contacts for a check-in as an organization admin');
         $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id.'/recipients');
+        //$I->sendGET($this->endpoint.'/'.$id.'/recipients');
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins/'.$check_in_id.'/recipients');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
@@ -264,41 +262,39 @@ class CheckInCest
      */
     public function getAllCheckInsAsUser(ApiTester $I)
     {
+        $id = 1;
         $I->wantTo('Get a list of all check-ins for an organization as an authenticated user');
         $I->amAuthenticatedAsUser();
-        $I->sendGET($this->endpoint.'?organization=2');
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
         // user is a recipient
         $I->seeResponseContainsJson([
-            [
-                'id' => 1,
-                'message' => 'Westgate under siege',
-                'organization' => [
-                    'id' => 2
-                ],
-                'sent_count'  => 4,
-                'reply_count' => 2,
-                'user' => [
-                    'id' => 4
-                ],
-                'recipients' => [
-                    [
-                        'id' => 1,
-                        'name' => 'Test user',
-                        'uri' => '/users/1',
+            'checkins' => [
+                [
+                    'id' => 2,
+                    'message' => 'Another test check-in',
+                    'organization' => [
+                         'id' => 3
                     ],
-                    [
-                        'id' => 2,
-                        'name' => 'Admin user',
-                        'uri' => '/users/2',
+                    'sent_count'  => 2,
+                    'reply_count' => 0,
+                    'user' => [
+                         'id' => 1
                     ],
-                    [
-                        'id' => 4,
-                        'name' => 'Org owner',
-                        'uri' => '/users/4',
-                    ]
+                    'recipients' => [
+                        [
+                            'id' => 4,
+                            'name' => 'Org owner',
+                            'uri' => '/users/4',
+                        ],
+                        [
+                            'id' => 3,
+                            'name' => 'Org member',
+                            'uri' => '/users/3',
+                        ]
+                   ]
                 ]
             ]
         ]);
@@ -346,12 +342,13 @@ class CheckInCest
      * Get check-in details as admin
      *
      */
-    public function getRollCall(ApiTester $I)
+    public function getCheckIn(ApiTester $I)
     {
         $id = 1;
+        $check_in_id = 1;
         $I->wantTo('Get check-in details as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
-        $I->sendGET($this->endpoint.'/'.$id);
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins/'.$check_in_id);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
@@ -372,12 +369,13 @@ class CheckInCest
      * Get check-in details as admin
      *
      */
-    public function getOtherRollCallAsMember(ApiTester $I)
+    public function getOtherCheckInAsMember(ApiTester $I)
     {
-        $id = 5;
+        $id = 2;
+        $check_in_id = 5;
         $I->wantTo('Failed to get check-in details as an member');
         $I->amAuthenticatedAsUser();
-        $I->sendGET($this->endpoint.'/'.$id);
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins/'.$check_in_id);
         $I->seeResponseCodeIs(403);
         $I->seeResponseIsJson();
     }
@@ -386,12 +384,13 @@ class CheckInCest
      * Create a check-in as org admin
      *
      */
-    public function createRollCall(ApiTester $I)
+    public function createCheckIn(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Create a check-in as admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
             'send_via' => ['email'],
@@ -416,8 +415,8 @@ class CheckInCest
         ]);
         // This recipient did not respond to previous check-in
         $I->seeRecord('check_in_recipients', [
-            'user_id'         => 3,
-            'check_in_id'    => 2,
+            'user_id'         => 4,
+            'check_in_id'    => 1,
             'response_status' => 'unresponsive',
         ]);
         $I->seeResponseCodeIs(200);
@@ -447,12 +446,13 @@ class CheckInCest
      * Send check-in to self
      *
      */
-    public function sendRollCallToSelf(ApiTester $I)
+    public function sendCheckInToSelf(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Send check-in to self');
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Test message to self',
             'organization_id' => 2,
             'recipients' => [
@@ -485,12 +485,13 @@ class CheckInCest
      * Create a check-in as org admin
      *
      */
-    public function createRollCallWithoutAnswers(ApiTester $I)
+    public function createCheckInWithoutAnswers(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Create a check-in as admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins/', [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
             'recipients' => [
@@ -530,8 +531,9 @@ class CheckInCest
      * Create a check-in with credits
      *
      */
-    public function createRollCallWithCredits(ApiTester $I)
+    public function createCheckInWithCredits(ApiTester $I)
     {
+        $id = 2;
         $credits_before = 3;
         $credits_after = 1;
 
@@ -539,7 +541,8 @@ class CheckInCest
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT('/api/v1/organizations/2', [
+        //$I->sendPUT('/api/v1/organizations/2', [
+        $I->sendPUT($this->endpoint.'/'.$id, [
             'name' => 'TenFourTest Org',
             'subdomain'  => 'tenfourtest',
             'settings'  => ['channels' => ['sms' => ['enabled' => true]]],
@@ -551,7 +554,7 @@ class CheckInCest
         ]);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -568,7 +571,8 @@ class CheckInCest
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
-        $I->sendGET('/api/v1/organizations/2');
+        //$I->sendGET('/api/v1/organizations/2');
+        $I->sendGET($this->endpoint.'/'.$id);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([ 'organization' => [
@@ -581,12 +585,13 @@ class CheckInCest
      * Create a check-in without enough credits
      *
      */
-    public function createRollCallWithoutCredits(ApiTester $I)
+    public function createCheckInWithoutCredits(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Create a check-in without enough credits');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
             'send_via' => ['preferred', 'sms'],
@@ -613,15 +618,16 @@ class CheckInCest
      * Create an app only check-in without enough credits
      *
      */
-    public function createAppOnlyRollCallWithoutCredits(ApiTester $I)
+    public function createAppOnlyCheckInWithoutCredits(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Create an "app only" check-in without enough credits');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 1
@@ -639,12 +645,13 @@ class CheckInCest
      * Create a check-in with errors
      *
      */
-    public function createRollCallWithErrors(ApiTester $I)
+    public function createCheckInWithErrors(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Create an invalid check-in as admin and get errors');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => '',
             'organization_id' => 2,
             'recipients' => [
@@ -729,13 +736,14 @@ class CheckInCest
      * Update a check-in as admin
      *
      */
-    public function updateRollCall(ApiTester $I)
+    public function updateCheckIn(ApiTester $I)
     {
-        $id = 1;
+        $id = 2;
+        $check_in_id = 1;
         $I->wantTo('Update check-in details as the admin');
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint.'/'.$id, [
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/'.$check_in_id, [
             'sent' => 1,
             'organization_id' => 2,
             'status' => 'received',
@@ -780,9 +788,10 @@ class CheckInCest
      * Send check-in to single recipient
      *
      */
-    public function sendRollCallToRecipient(ApiTester $I)
+    public function sendCheckInToRecipient(ApiTester $I)
     {
         $id = 1;
+        $check_in_id = 1;
         $recipient_id = 4;
         $I->wantTo('Send check-in to a single recipient');
         $I->seeRecord('check_in_recipients', [
@@ -792,13 +801,16 @@ class CheckInCest
         ]);
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint.'/'.$id.'/recipients/' .$recipient_id. '/messages');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins/'.$check_in_id.'/recipients/' .$recipient_id. '/messages');
+        //$I->sendPOST($this->endpoint.'/'.$id.'/recipients/' .$recipient_id. '/messages');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'id' => 4,
-                'response_status' => 'waiting'
+                'recipient'=> [
+                    'id' => 4,
+                    'response_status' => 'waiting'
+                ]
             ]
         );
     }
@@ -806,20 +818,21 @@ class CheckInCest
     /*
      * Delete check-in
      */
-    public function deleteRollCall(ApiTester $I)
+    public function deleteCheckIn(ApiTester $I)
     {
-        $id = 1;
+        $id = 2;
+        $check_in_id = 1;
         $I->wantTo('Delete a check-in');
         $I->amAuthenticatedAsAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDelete($this->endpoint."/$id");
+        $I->sendDelete($this->endpoint.'/'.$id.'/checkins/'.$check_in_id);
         $I->seeResponseCodeIs(405);
     }
 
     /*
      * As the user, I want to get a check-in using a reply token
      */
-    public function getRollCallWithReplyToken(ApiTester $I)
+    public function getCheckInWithReplyToken(ApiTester $I)
     {
         $check_in_id = 1;
         $token = 'testtoken1';
@@ -841,9 +854,9 @@ class CheckInCest
     }
 
     /*
-     * As another user, I don't want to get a RollCall using invalid reply token
+     * As another user, I don't want to get a CheckIn using invalid reply token
      */
-    public function getRollCallWithInvalidReplyToken(ApiTester $I)
+    public function getCheckInWithInvalidReplyToken(ApiTester $I)
     {
         $check_in_id = 1;
         $token = 'testtoken3';
@@ -857,11 +870,12 @@ class CheckInCest
     */
     public function sendCheckInsWithRotatingNumbers(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Send check-ins with rotating numbers');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Alien Attack! are you ok?',
             'send_via' => ['sms'],
             'organization_id' => 2,
@@ -870,13 +884,16 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Alien Attack Part II! are you ok?',
             'send_via' => ['sms'],
             'organization_id' => 2,
@@ -885,7 +902,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -896,7 +916,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '8',
             'type'        => 'check_in',
-            'message'     => "Alien Attack! are you ok?\nReply with \"OK\" in your response"
+            'message'     => "Org admin from TenFourTest says: Alien Attack! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -909,7 +929,7 @@ class CheckInCest
             'from'        => '20881',
             'check_in_id' => '9',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part II! are you ok?\nReply with \"OK\" in your response"
+            'message'     => "Org admin from TenFourTest says: Alien Attack Part II! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
@@ -923,8 +943,9 @@ class CheckInCest
      * Send check-in reminder to a contact when all outgoing numbers
      * are active.
      */
-    public function receiveARollCallReminder(ApiTester $I)
+    public function receiveACheckInReminder(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Receive a check-in reminder');
         $I->amAuthenticatedAsOrgAdmin();
 
@@ -936,18 +957,21 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ];
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $attack['message'] = 'Alien Attack Part 1!';
-        $I->sendPOST($this->endpoint, $attack);
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
         $I->seeResponseCodeIs(200);
         $attack['message'] = 'Alien Attack Part 2!';
-        $I->sendPOST($this->endpoint, $attack);
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
         $I->seeResponseCodeIs(200);
         $attack['message'] = 'Alien Attack Part 3!';
-        $I->sendPOST($this->endpoint, $attack);
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
         $I->seeResponseCodeIs(200);
 
         $I->seeRecord('outgoing_sms_log', [
@@ -961,7 +985,7 @@ class CheckInCest
             'from'        => '20880',
             'check_in_id' => '10',
             'type'        => 'check_in',
-            'message'     => "Alien Attack Part 3!\nReply with \"OK\" in your response"
+            'message'     => "Org admin from TenFourTest says: Alien Attack Part 3!\nReply with \"No\" or \"Yes\" in your response"
         ]);
     }
 
@@ -969,13 +993,14 @@ class CheckInCest
      * Resend a check-in should resend to unreplied users
      *
      */
-    public function resendRollCallToUnreplied(ApiTester $I)
+    public function resendCheckInToUnreplied(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Resend a check-in to unreplied');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -984,7 +1009,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
 
@@ -995,7 +1023,7 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPUT($this->endpoint.'/8', [
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/8', [
             'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -1007,7 +1035,10 @@ class CheckInCest
                     'id' => 1
                 ]
             ],
-            'answers' => []
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -1044,7 +1075,7 @@ class CheckInCest
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
-            'to'          => '+254721674180',
+            'to'          => '+254721674181',
             'from'        => '20880',
             'check_in_id' => '8',
             'type'        => 'check_in'
@@ -1064,7 +1095,7 @@ class CheckInCest
             'type'        => 'check_in'
         ]);
 
-        $I->seeNumRecords(1, 'outgoing_sms_log', [
+        $I->seeNumRecords(0, 'outgoing_sms_log', [
             'check_in_id' => '8',
             'type'        => 'reminder'
         ]); // from a previous test
@@ -1074,13 +1105,14 @@ class CheckInCest
      * Resend a check-in should not resend to replied users
      *
      */
-    public function resendRollCallNotToReplied(ApiTester $I)
+    public function resendCheckInNotToReplied(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Resend a check-in to replied');
         $I->amAuthenticatedAsOrgAdmin();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -1093,14 +1125,14 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPOST($this->endpoint.'/8/replies', [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins/8/replies', [
             'message'  => 'Test response',
             'answer'   => 'yes'
         ]);
         $I->seeResponseCodeIs(200);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint.'/8', [
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/8', [
             'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -1116,7 +1148,7 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendGET('/api/v1/organizations'."/2");
+        $I->sendGET($this->endpoint.'/'. $id);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(['organization' => [
@@ -1136,15 +1168,16 @@ class CheckInCest
      * Create a check-in as author
      *
      */
-    public function createRollCallAsAuthor(ApiTester $I)
+    public function createCheckInAsAuthor(ApiTester $I)
     {
+        $id = 2;
         $I->wantTo('Create a check-in as author');
         $I->amAuthenticatedAsAuthor();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPOST($this->endpoint, [
-            'message' => 'Westgate under siege, are you ok?',
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Westgate under siege!',
             'organization_id' => 2,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 1
@@ -1154,4 +1187,117 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
     }
+
+    /*
+     * Don't send reminder when no response asked for
+     */
+    public function dontReceiveACheckInReminder(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Not receive a check-in reminder when no response was asked for');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $attack = [
+            'message' => 'Message incoming...',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+        $attack = [
+            'message' => 'We are under attack. Stay tuned for next message.',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => []
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+        $attack = [
+            'message' => 'Are you ok?',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
+        ];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', $attack);
+        $I->seeResponseCodeIs(200);
+
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'check_in_id' => '9',
+            'type'        => 'check_in',
+            'message'     => "Org admin from TenFourTest says: We are under attack. Stay tuned for next message.\n"
+        ]);
+
+        $I->dontSeeRecord('outgoing_sms_log', [
+            'to'          => '+254721674180',
+            'from'        => '20881',
+            'check_in_id' => '9',
+            'type'        => 'reminder'
+        ]);
+    }
+
+
+    /*
+     * Don't allow duplicate answers #1096
+     *
+     */
+    public function createCheckInWithDuplicateAnswers(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create check-in with duplicate answers');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'check-in with duplicate answers',
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 3
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'Yes','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
+            ]
+        ]);
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                "message" => "422 Unprocessable Entity",
+                "errors" =>  ["answers.0.answer"=>["validation.distinct"],"answers.1.answer"=>["validation.distinct"]],
+                "status_code" => 422
+            ]
+        );
+    }
+
 }

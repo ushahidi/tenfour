@@ -1,6 +1,6 @@
 - name: "Test"
   service: test
-  command: composer test -- --env=testing
+  command: test_reporter composer test -- --env=testing
 
 
 - type: parallel
@@ -8,8 +8,8 @@
   - name: "Deploy (develop)"
     service: deploy
     command: >
-      ANSIBLE_GITHUB_REPO=rollcall-infra
-      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ANSIBLE_GITHUB_REPO=tenfour-infra
+      ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=dev
       ush-ansible-playbook.sh -vv -i ./hosts -l dev
         -e API_VERSION_SRC=/vols/src
@@ -19,8 +19,8 @@
   - name: "Deploy (staging)"
     service: deploy
     command: >
-      ANSIBLE_GITHUB_REPO=rollcall-infra
-      ANSIBLE_GITHUB_REPO_VERSION=tenfour
+      ANSIBLE_GITHUB_REPO=tenfour-infra
+      ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=dev
       ush-ansible-playbook.sh -vv -i ./hosts -l staging
         -e API_VERSION_SRC=/vols/src
@@ -30,10 +30,9 @@
   - name: "Deploy (master)"
     service: deploy
     command: >
-      ANSIBLE_GITHUB_REPO=rollcall-infra
+      ANSIBLE_GITHUB_REPO=tenfour-infra
       ANSIBLE_GITHUB_REPO_VERSION=master
       ENV=production
-      TF_FOLDER=tf/production
       ush-ansible-playbook.sh -vv -i ./hosts -l production
         -e API_VERSION_SRC=/vols/src
         api-deploy-version.yml

@@ -40,12 +40,13 @@ class Verification extends Mailable
             config('tenfour.domain') .
             '/organization/email/confirmation/?email=' .
             urlencode($this->address['address']) .
-            '&token=' .
-            urlencode($this->address['verification_token']);
+            '&code=' .
+            urlencode($this->address['code']);
 
         return $this->view('emails.verification')
             ->with([
                 'action_url'        => $shortener->shorten($url),
+                'code'              => $this->address['code']
             ])
             ->subject('Verify your TenFour email address');
     }

@@ -46,25 +46,25 @@ $api->version($version, [
 
     //checkins
     ////////////////////////////////////////////////////////////////////
-    $api->get($base. 'checkins', ['as' => 'checkins.index', 'uses' => 'CheckInController@all']);
-    $api->post($base.'checkins', ['as' => 'checkins.create', 'uses' => 'CheckInController@create']);
-    $api->get($base. 'checkins/{checkin}', ['as' => 'checkins.show', 'uses' => 'CheckInController@find']);
-    $api->put($base. 'checkins/{checkin}', ['as' => 'checkins.update', 'uses' => 'CheckInController@update']);
 
-    $api->get($base.'checkins/{checkin}/messages', ['uses' => 'CheckInController@listMessages']);
-    $api->get($base.'checkins/{checkin}/recipients', ['uses' => 'CheckInController@listRecipients']);
-    $api->post($base.'checkins/{checkin}/recipients/{recipient}/messages', ['uses' => 'CheckInController@addMessage']);
+    $api->get($base. 'organizations/{organization}/checkins', ['as' => 'checkins.index','uses' => 'CheckInController@all']);
+    $api->post($base.'organizations/{organization}/checkins', ['as' => 'checkins.create', 'uses' => 'CheckInController@create']);
+    $api->get($base. 'organizations/{organization}/checkins/{checkin}', ['as' => 'checkins.show', 'uses' => 'CheckInController@find']);
+    $api->put($base. 'organizations/{organization}/checkins/{checkin}', ['as' => 'checkins.update', 'uses' => 'CheckInController@update']);
+
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/messages', ['uses' => 'CheckInController@listMessages']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/recipients', ['uses' => 'CheckInController@listRecipients']);
+    $api->post($base.'organizations/{organization}/checkins/{checkin}/recipients/{recipient}/messages', ['uses' => 'CheckInController@addMessage']);
 
     // check-in Replies
-    $api->put($base.'checkins/{checkin}/replies/{reply}', ['uses' => 'ReplyController@update']);
-    $api->get($base.'checkins/{checkin}/replies/{reply}', ['uses' => 'ReplyController@find']);
-    $api->get($base.'checkins/{checkin}/replies', ['uses' => 'ReplyController@listReplies']);
-    $api->post($base.'checkins/{checkin}/replies', ['uses' => 'ReplyController@addReply']);
+    $api->put($base.'organizations/{organization}/checkins/{checkin}/replies/{reply}', ['uses' => 'ReplyController@update']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/replies/{reply}', ['uses' => 'ReplyController@find']);
+    $api->get($base.'organizations/{organization}/checkins/{checkin}/replies', ['uses' => 'ReplyController@listReplies']);
+    $api->post($base.'organizations/{organization}/checkins/{checkin}/replies', ['uses' => 'ReplyController@addReply']);
 
     // Subscriptions
     $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');
-    $api->post($base.'organizations/{organization}/subscriptions/hostedpage', ['uses' => 'SubscriptionController@createHostedPage']);
-    $api->put($base.'organizations/{organization}/subscriptions/hostedpage/{subscription}', ['uses' => 'SubscriptionController@updateHostedPage']);
-    $api->post($base.'organizations/{organization}/subscriptions/hostedpagesuccess/{subscription}', ['uses' => 'SubscriptionController@confirmHostedPage']);
+    $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/switchtopro', ['uses' => 'SubscriptionController@getProUpgradeHostedPageUrl']);
+    $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/update', ['uses' => 'SubscriptionController@getUpdatePaymentInfoHostedPageUrl']);
 
 });

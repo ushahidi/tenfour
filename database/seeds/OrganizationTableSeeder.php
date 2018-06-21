@@ -28,7 +28,7 @@ class OrganizationTableSeeder extends Seeder
             'subscription_id' => 'test_subscription',
             'customer_id' => 'test_customer',
             'status' => 'active',
-            'plan_id' => 'standard-plan',
+            'plan_id' => 'pro-plan',
             'quantity' => 40,
             'card_type' => 'Visa',
             'last_four' => '1111',
@@ -38,7 +38,7 @@ class OrganizationTableSeeder extends Seeder
 
         $organization->update([
             'subdomain' => 'ushahidi',
-            'profile_picture' => 'http://github.ushahidi.org/rollcall-pattern-library/assets/img/avatar-org.png',
+            'profile_picture' => 'http://github.ushahidi.org/tenfour-pattern-library/assets/img/avatar-org.png',
         ]);
 
         $user = User::firstOrCreate(

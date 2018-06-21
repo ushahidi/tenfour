@@ -18,12 +18,10 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0)
     {
+
         $query = CheckIn::query()
-          ->orderBy('created_at', 'desc')
-          ->with(['replies' => function ($query) {
-            // Just get the most recent replies for each user
-            $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`check_in_id` = `replies`.`check_in_id`)"));
-          }]);
+            ->orderBy('created_at', 'desc')
+            ->with('replies');
 
         if ($limit > 0) {
           $query
@@ -49,6 +47,7 @@ class EloquentCheckInRepository implements CheckInRepository
 
         $check_ins = $query->get()->toArray();
 
+
         foreach($check_ins as $key => &$check_in)
         {
             // exclude others' self tests, but include my own
@@ -67,8 +66,6 @@ class EloquentCheckInRepository implements CheckInRepository
     {
         $check_in = CheckIn::query()
             ->with(['replies' => function ($query) {
-                // Just get the most recent replies for each user
-                $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`check_in_id` = `replies`.`check_in_id`)"));
                 $query->with('user');
             }])
             ->findOrFail($id)
@@ -110,7 +107,7 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent', 'recipients']);
+        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via']);
 
         $check_in = CheckIn::findorFail($id);
 
@@ -120,6 +117,10 @@ class EloquentCheckInRepository implements CheckInRepository
 
         if (isset($input['status'])) {
             $check_in->status = $input['status'];
+        }
+
+        if (isset($input['send_via'])) {
+            $check_in->send_via = $input['send_via'];
         }
 
         $check_in->save();
@@ -134,7 +135,8 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function getMessages($id, $user_id = null, $contact_id = null)
     {
-        $query = CheckIn::findOrFail($id)->messages()->with('user');
+        $query = CheckIn::findOrFail($id)->messages()
+            ->with('user');
 
         if ($user_id) {
             $query->where('user_id', $user_id);
@@ -234,8 +236,12 @@ class EloquentCheckInRepository implements CheckInRepository
             ->leftJoin('replies', function ($join) {
                 $join->on('check_in_messages.check_in_id', '=', 'replies.check_in_id');
             })
+            ->leftJoin('check_ins', function ($join) {
+                $join->on('check_in_messages.check_in_id', '=', 'check_ins.id');
+            })
             ->where('check_in_messages.contact_id', '=', $contact_id)
             ->where('check_in_messages.from', '=', $from)
+            ->where('check_ins.answers', '!=', '[]')
             ->whereNull('replies.id')
             ->orderBy('check_in_messages.check_in_id', 'desc')
             ->take(1)
