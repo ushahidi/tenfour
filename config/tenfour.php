@@ -51,6 +51,10 @@ return [
                 'driver' => 'nexmo',
                 'from' => $getNexmoFrom('HU')
             ],
+            'DE' => [
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('DE')
+            ],
             'default' => [
                 'driver' => 'nexmo',
                 'from' => explode('|', env('NEXMO_SRC_ADDR', 'tenfour'))
