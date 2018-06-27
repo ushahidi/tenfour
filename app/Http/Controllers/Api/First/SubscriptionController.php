@@ -151,7 +151,7 @@ class SubscriptionController extends ApiController
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
      *   @Parameter("subscription_id", type="number", required=true, description="Subscription id"),
-     *   @Parameter("callback", type="url", required=true, description="Callback URL",
+     *   @Parameter("callback", type="url", required=true, description="Callback URL"),
      * })
      * @Response(200, body={
      *     "url": "http://api.chargebee.com/hostedpage?xxx"
@@ -187,7 +187,7 @@ class SubscriptionController extends ApiController
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
      *   @Parameter("subscription_id", type="number", required=true, description="Subscription id"),
-     *   @Parameter("callback", type="url", required=true, description="Callback URL",
+     *   @Parameter("callback", type="url", required=true, description="Callback URL"),
      * })
      * @Response(200, body={
      *     "url": "http://api.chargebee.com/hostedpage?xxx"

@@ -1602,8 +1602,8 @@ FORMAT: 1A
                 }
             }
 
-## Cancel a subscription [DELETE /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
-
+## Cancel a subscription. [DELETE /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
+Effectively changes a subscription to a free plan.
 
 + Parameters
     + org_id: (number, required) - Organization id
@@ -1624,21 +1624,13 @@ FORMAT: 1A
                 }
             }
 
-## Create a new subscription URL [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+## Create a billing iframe URL for upgrading a subscription to pro. [GET /api/v1/organizations/{org_id}/subscriptions/{subscription_id}/hostedpage/switchtopro?callback={callback}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "callback": "http://subdomain.tenfour.org/callback"
-            }
+    + subscription_id: (number, required) - Subscription id
+    + callback: (url, required) - Callback URL
 
 + Response 200 (application/json)
     + Body
@@ -1647,47 +1639,17 @@ FORMAT: 1A
                 "url": "http://api.chargebee.com/hostedpage?xxx"
             }
 
-## Create an updated subscription URL [PUT /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+## Create a billing iframe URL for updating payment information. [GET /api/v1/organizations/{org_id}/subscriptions/{subscription_id}/hostedpage/update?callback={callback}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
     + subscription_id: (number, required) - Subscription id
-
-+ Request (application/json)
-    + Body
-
-            {
-                "callback": "http://subdomain.tenfour.org/callback"
-            }
+    + callback: (url, required) - Callback URL
 
 + Response 200 (application/json)
     + Body
 
             {
                 "url": "http://api.chargebee.com/hostedpage?xxx"
-            }
-
-## Confirm a subscription [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage/confirm]
-API endpoint called by client after successful ChargeBee subscription creation
-
-+ Parameters
-    + org_id: (number, required) - Organization id
-    + subscription_id: (number, required) - Subscription id
-
-+ Request (application/json)
-    + Body
-
-            {
-                "subscription_id": "cb123uijh12iu3h87"
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "subscription": {
-                    "id": 1,
-                    "status": "active"
-                }
             }
