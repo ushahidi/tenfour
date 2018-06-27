@@ -71,10 +71,10 @@ class CheckIn extends Mailable
           }
         }
 
-        $unsubscribe_url = $client_url . '/unsubscribe/' .
-          '?token=' . urlencode($this->contact['unsubscribe_token']) .
-          '&email=' . urlencode($this->contact['contact']) .
-          '&org_name=' . urlencode($org->name);
+        $unsubscribe_url = $client_url . '/#/unsubscribe/' .
+          urlencode($org->name) . '/' .
+          urlencode($this->contact['contact']) . '/' .
+          urlencode($this->contact['unsubscribe_token']);
 
         return $this->view('emails.checkin')
                     ->text('emails.checkin_plain')

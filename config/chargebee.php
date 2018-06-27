@@ -4,10 +4,17 @@ return [
     // You can set the entity who gets subscribed here.
     'model' => TenFour\Models\Organization::class,
 
-    'plan' => env('CHARGEBEE_PLAN'),
     'site' => env('CHARGEBEE_SITE'),
     'key' => env('CHARGEBEE_KEY'),
-    'addon' => env('CHARGEBEE_ADDON'),
+
+    'addons' => [
+        'credits' => env('CHARGEBEE_ADDON_CREDITS', 'extra-credits'),
+    ],
+
+    'plans' => [
+        'free'  => env('CHARGEBEE_FREE_PLAN', 'free-plan'),
+        'pro'   => env('CHARGEBEE_PRO_PLAN', 'pro-plan')
+    ],
 
     'webhook' => [
         'username' => env('CHARGEBEE_WEBHOOK_USERNAME', 'chargebee'),

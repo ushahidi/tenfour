@@ -100,10 +100,20 @@ class OrganizationController extends ApiController
                     'enabled' => true
                 ],
                 'sms' => [
-                    'enabled' => true,
-                    'default_region' => $location->iso_code,
-                    'regions' => []
+                    'enabled' => true
+                ],
+                'app' => [
+                    'enabled' => true
+                ],
+                'slack' => [
+                    'enabled' => false
                 ]
+            ],
+            'regions' => [
+                'default' => $location->iso_code
+            ],
+            'plan_and_credits' => [
+                'monthlyCreditsExtra' => 0
             ]
         ];
 
@@ -153,6 +163,7 @@ class OrganizationController extends ApiController
         }
         catch (ChargeBee_APIError $e) {
             app('sentry')->captureException($e);
+            \Log::error($e);
         }
 
         return $this->response->item($result, new OrganizationTransformer, 'organization');
@@ -212,7 +223,7 @@ class OrganizationController extends ApiController
      */
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->update($request->except('subdomain'), $organization_id);
+        $organization = $this->organizations->update($request->except('subdomain'), $organization_id, $this->auth->user()['role']);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 

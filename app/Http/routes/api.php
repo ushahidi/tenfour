@@ -46,7 +46,7 @@ $api->version($version, [
 
     //checkins
     ////////////////////////////////////////////////////////////////////
-    
+
     $api->get($base. 'organizations/{organization}/checkins', ['as' => 'checkins.index','uses' => 'CheckInController@all']);
     $api->post($base.'organizations/{organization}/checkins', ['as' => 'checkins.create', 'uses' => 'CheckInController@create']);
     $api->get($base. 'organizations/{organization}/checkins/{checkin}', ['as' => 'checkins.show', 'uses' => 'CheckInController@find']);
@@ -64,8 +64,7 @@ $api->version($version, [
 
     // Subscriptions
     $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');
-    $api->post($base.'organizations/{organization}/subscriptions/hostedpage', ['uses' => 'SubscriptionController@createHostedPage']);
-    $api->put($base.'organizations/{organization}/subscriptions/hostedpage/{subscription}', ['uses' => 'SubscriptionController@updateHostedPage']);
-    $api->post($base.'organizations/{organization}/subscriptions/hostedpagesuccess/{subscription}', ['uses' => 'SubscriptionController@confirmHostedPage']);
+    $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/switchtopro', ['uses' => 'SubscriptionController@getProUpgradeHostedPageUrl']);
+    $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/update', ['uses' => 'SubscriptionController@getUpdatePaymentInfoHostedPageUrl']);
 
 });

@@ -627,7 +627,7 @@ class CheckInCest
         $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Westgate under siege, are you ok?',
             'organization_id' => 2,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 1
@@ -1177,7 +1177,7 @@ class CheckInCest
         $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
             'message' => 'Westgate under siege!',
             'organization_id' => 2,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 1

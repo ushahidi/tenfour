@@ -12,7 +12,7 @@ use Log;
 class CreditService
 {
     const CREDITS_PER_USER_PER_MONTH = 5;
-    const CREDITS_NEW_ORGANIZATION = 10;
+    const CREDITS_NEW_ORGANIZATION = 0;
 
     public function __construct()
     {
@@ -99,7 +99,7 @@ class CreditService
         $organization = $org_repo->find($check_in['organization_id']);
         $available_credits = $organization['credits'];
 
-        if ($check_in['send_via'] == ['apponly']) {
+        if ($check_in['send_via'] == ['app']) {
             return true;
         }
 
@@ -117,5 +117,10 @@ class CreditService
         }
 
         return $available_credits >= 0;
+    }
+
+    public function clearCredits($organization_id) {
+        $balance = $this->getBalance($organization_id);
+        return $this->addCreditAdjustment($organization_id, -$balance, 'clear');
     }
 }

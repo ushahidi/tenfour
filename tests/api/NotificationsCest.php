@@ -135,7 +135,7 @@ class NotificationsCest
         $I->sendPost($this->checkInsEndpoint, [
             'message' => $message,
             'organization_id' => $org_id,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 3

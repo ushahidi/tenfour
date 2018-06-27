@@ -275,16 +275,16 @@ class SendCheckIn implements ShouldQueue
      * Work out by which channel we should send this check-in
      */
     protected function getSendVia($contacts) {
-        $send_via = [];
+        $send_via = ['app'];
         $preferred = [];
         $subscription = $this->organization['current_subscription'];
 
         if (!isset($this->check_in['send_via']) || empty($this->check_in['send_via'])) {
-            return [];
+            return $send_via;
         }
 
-        if (!$subscription) {
-            return [];
+        if (!$subscription || $subscription['plan_id'] === 'free-plan') {
+            return $send_via;
         }
 
         if (in_array('preferred', $this->check_in['send_via'])) {
