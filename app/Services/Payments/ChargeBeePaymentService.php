@@ -177,4 +177,15 @@ class ChargeBeePaymentService implements PaymentService
 
         return $this->toArray($result);
     }
+
+    public function changeToProPlan($subscription_id)
+    {
+        $result = ChargeBee_Subscription::update($subscription_id, [
+            "planId"            => $this->getProPlanId(),
+            "status"            => "active",
+            "replaceAddonList"  => true,
+        ]);
+
+        return $this->toArray($result);
+    }
 }

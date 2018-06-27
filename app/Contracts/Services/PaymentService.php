@@ -13,4 +13,5 @@ interface PaymentService
 
     public function retrieveCoupon($promo_code);
     public function changeToFreePlan($subscription_id);
+    public function changeToProPlan($subscription_id);
 }
