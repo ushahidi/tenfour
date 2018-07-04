@@ -33,12 +33,12 @@ class ChargeBeePaymentService implements PaymentService
         ];
     }
 
-    private function getFreePlanId()
+    public function getFreePlanId()
     {
         return config("chargebee.plans.free");
     }
 
-    private function getProPlanId()
+    public function getProPlanId()
     {
         return config("chargebee.plans.pro");
     }
@@ -48,9 +48,14 @@ class ChargeBeePaymentService implements PaymentService
         return Carbon::now()->addDays(self::TRIAL_PERIOD_DAYS)->timestamp;
     }
 
-    private function getCreditsAddonId()
+    public function getCreditBundleAddonId()
     {
         return config("chargebee.addons.credits");
+    }
+
+    public function getUserBundleAddonId()
+    {
+        return config("chargebee.addons.users");
     }
 
     public function getProUpgradeHostedPageUrl($organization, $redirectUrl)
@@ -78,7 +83,7 @@ class ChargeBeePaymentService implements PaymentService
         //
         // if ($addonQuantity) {
         //     $checkout["addons"] = array(array(
-        //         "id" => $this->getCreditsAddonId(),
+        //         "id" => $this->getCreditBundleAddonId(),
         //         "quantity" => $addonQuantity
         //     ));
         // }
