@@ -61,7 +61,7 @@ class PaymentFailed extends Notification
 
     private function retryUrl()
     {
-        return $this->subscription->organization->url('/settings/plan-and-credits');
+        return $this->subscription->organization->url('/#/settings/payments');
     }
 
     /**
