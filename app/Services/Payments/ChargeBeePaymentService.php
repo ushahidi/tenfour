@@ -71,7 +71,6 @@ class ChargeBeePaymentService implements PaymentService
                 "trialEnd" => 0,
             ),
             "embed" => true,
-            "forceTermReset" => true,
             "redirectUrl" => $redirectUrl,
             "cancelledUrl" => $redirectUrl,
             "passThruContent" => json_encode(["organization_id" => $organization->id]),
