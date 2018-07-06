@@ -168,7 +168,9 @@ class SendCheckIn implements ShouldQueue
             }
         }
 
-        App::make('TenFour\Services\CreditService')->addCreditAdjustment($this->check_in['organization_id'], 0-$creditAdjustmentMeta['credits'], 'check-in', $creditAdjustmentMeta);
+        if ($creditAdjustmentMeta['credits'] > 0) {
+            App::make('TenFour\Services\CreditService')->addCreditAdjustment($this->check_in['organization_id'], 0-$creditAdjustmentMeta['credits'], 'check-in', $creditAdjustmentMeta);
+        }
 
         (new AnalyticsService())->track('CheckIn Sent', [
             'org_id'            => $this->check_in['organization_id'],
