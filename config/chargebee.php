@@ -8,7 +8,8 @@ return [
     'key' => env('CHARGEBEE_KEY'),
 
     'addons' => [
-        'credits' => env('CHARGEBEE_ADDON_CREDITS', 'extra-credits'),
+        'credits' => env('CHARGEBEE_ADDON_CREDITS', 'credit-bundle'),
+        'users' => env('CHARGEBEE_ADDON_USERS', 'user-bundle'),
     ],
 
     'plans' => [

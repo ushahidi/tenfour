@@ -138,7 +138,7 @@ class SubscriptionController extends ApiController
 
         $this->organizations->setSetting($organization_id, 'plan_and_credits', ['monthlyCreditsExtra' => 0]);
 
-        $this->credits->clearCredits($organization_id);
+        // $this->credits->clearCredits($organization_id);
 
         return $this->response->item($subscription->toArray(), new SubscriptionTransformer, 'subscription');
     }

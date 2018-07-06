@@ -11,8 +11,9 @@ use Log;
 
 class CreditService
 {
-    const CREDITS_PER_USER_PER_MONTH = 5;
     const CREDITS_NEW_ORGANIZATION = 0;
+    const BASE_CREDITS_PER_MONTH = 100;
+    const CREDITS_PER_USER_BUNDLE_PER_MONTH = 0;
 
     public function __construct()
     {
@@ -62,34 +63,6 @@ class CreditService
             ->sum('adjustment');
 
         $creditAdjustment->update(['balance' => $balance]);
-    }
-
-    public function expireCreditsOnUnpaid() {
-
-        $expiredSubscriptions = Subscription
-            ::where(function ($query) {
-                $query->whereNotNull('next_billing_at')
-                      ->where('next_billing_at', '<', date('Y-m-d H:i:s'));
-            })
-            ->orWhere(function ($query) {
-                $query->whereNull('next_billing_at')
-                      ->whereNotNull('trial_ends_at')
-                      ->where('trial_ends_at', '<', date('Y-m-d H:i:s'));
-            })
-            ->with('organization')
-            ->get();
-
-        foreach ($expiredSubscriptions as $subscription) {
-            DB::transaction(function () use ($subscription) {
-                $balance = $this->getBalance($subscription->organization->id);
-                $meta = ['previousBalance' => $balance];
-
-                if ($balance > 0) {
-                    Log::info('Expiring credits for organization ' . $subscription->organization->id);
-                    $this->addCreditAdjustment($subscription->organization->id, 0 - $balance, 'expire', $meta);
-                }
-            });
-        }
     }
 
     public function hasSufficientCredits($check_in) {

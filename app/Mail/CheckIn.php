@@ -53,17 +53,24 @@ class CheckIn extends Mailable
         $check_in_url = $client_url .'/checkins/'. $this->check_in['id'];
         $subject = str_limit($this->check_in['message'], $limit = 50, $end = '...');
 
-        $user_url_fragment = '/' . $this->user['id'] . '?token=' . urlencode($this->user['reply_token']);
-        $answer_url_no = $client_url . '/r/' . $this->check_in['id'] . '/0' . $user_url_fragment;
-        $answer_url_yes = $client_url . '/r/' . $this->check_in['id'] . '/1' . $user_url_fragment;
-        $answer_url = $client_url .'/checkins/'. $this->check_in['id']. '/answer';
-        $reply_url = $client_url .'/checkins/'. $this->check_in['id']. '/reply';
+        // $user_url_fragment = '/' . $this->user['id'] . '?token=' . urlencode($this->user['reply_token']);
+        // $answer_url_no = $client_url . '/r/' . $this->check_in['id'] . '/0' . $user_url_fragment;
+        // $answer_url_yes = $client_url . '/r/' . $this->check_in['id'] . '/1' . $user_url_fragment;
+        // $answer_url = $client_url .'/checkins/'. $this->check_in['id']. '/answer';
+        // $reply_url = $client_url .'/checkins/'. $this->check_in['id']. '/reply';
 
         $has_custom_answers = false;
 
         if ($this->check_in['answers']) {
           foreach ($this->check_in['answers'] as $index => $answer) {
-              $this->check_in['answers'][$index]['url'] = $client_url . '/r/' . $this->check_in['id'] . '/' . $index . $user_url_fragment;
+
+              $this->check_in['answers'][$index]['url'] =
+                  $client_url .
+                  '/#/r/' .
+                  $this->check_in['id'] . '/' .
+                  $index . '/' .
+                  $this->user['id'] . '/' .
+                  urlencode($this->user['reply_token']);
 
               if ($answer['type'] == 'custom') {
                 $has_custom_answers = true;

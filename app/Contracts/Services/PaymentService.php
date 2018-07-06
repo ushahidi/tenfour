@@ -14,4 +14,9 @@ interface PaymentService
     public function retrieveCoupon($promo_code);
     public function changeToFreePlan($subscription_id);
     public function changeToProPlan($subscription_id);
+
+    public function getFreePlanId();
+    public function getProPlanId();
+    public function getUserBundleAddonId();
+    public function getCreditBundleAddonId();
 }

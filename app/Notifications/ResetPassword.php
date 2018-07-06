@@ -49,10 +49,10 @@ class ResetPassword extends Notification
     public function toMail($notifiable)
     {
         $resetLink = url($this->organization->url() .
-            '/login/reset-password/' .
-            $this->token .
-            '?email=' . urlencode($this->email) .
-            '&subdomain=' . urlencode($this->organization['subdomain']));
+            '/#/signin/password/reset/' .
+            urlencode($this->organization['subdomain']) . '/' .
+            urlencode($this->email) . '/' .
+            $this->token);
 
         $subject = 'Reset Password';
 

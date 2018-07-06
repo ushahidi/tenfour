@@ -24,7 +24,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command(\TenFour\Console\Commands\ReceiveSMS::class)
         //          ->everyMinute();
 
-        $schedule->job(new \TenFour\Jobs\ExpireCredits)->daily();
         $schedule->job(new \TenFour\Jobs\NotifyFreePromoEnding)->daily();
         $schedule->job(new \TenFour\Jobs\SendWelcomeMail)->hourly();
 

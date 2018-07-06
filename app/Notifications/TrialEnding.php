@@ -63,7 +63,7 @@ class TrialEnding extends Notification
 
     private function url()
     {
-        return $this->subscription->organization->url('/settings/plan-and-credits');
+        return $this->subscription->organization->url('/#/settings/payments');
     }
 
     private function days()

@@ -46,22 +46,4 @@ class CreditServiceCest
         );
     }
 
-    public function testExpireCreditsOnUnpaid(UnitTester $t)
-    {
-        $org_id = 2;
-
-        $t->assertEquals(
-            $this->creditService->getBalance($org_id),
-            3
-        );
-
-        $this->creditService->expireCreditsOnUnpaid();
-
-        $t->assertEquals(
-            $this->creditService->getBalance($org_id),
-            0
-        );
-    }
-
-
 }

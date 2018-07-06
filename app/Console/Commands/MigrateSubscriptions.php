@@ -50,19 +50,19 @@ class MigrateSubscriptions extends Command
                 $subscription = $payments->createSubscription($org);
                 $subscriptions->create($org->id, $subscription);
 
-                $this->info('Created free-plan subscription for' . $org['subdomain']);
+                $this->info('Created free-plan subscription for ' . $org['subdomain']);
 
             } else if (count($org->subscriptions) === 1) {
                 $sub = $org->subscriptions[0];
 
                 if ($sub->plan_id === 'standard-plan') {
-                    if ($sub->status === 'cancelled' || $sub->status === 'in_trial') {
+                    // if ($sub->status === 'cancelled' || $sub->status === 'in_trial') {
                         $payments->changeToFreePlan($sub->subscription_id);
-                        $this->info('Switched ' . $org['subdomain'] . ' to free plan');
-                    } else if ($sub->status === 'active') {
-                        $payments->changeToProPlan($sub->subscription_id);
-                        $this->info('Switched ' . $org['subdomain'] . ' to pro plan');
-                    }
+                        // $this->info('Switched ' . $org['subdomain'] . ' to free plan');
+                    // } else if ($sub->status === 'active') {
+                        // $payments->changeToProPlan($sub->subscription_id);
+                        // $this->info('Switched ' . $org['subdomain'] . ' to pro plan');
+                    // }
                 }
 
             } else {

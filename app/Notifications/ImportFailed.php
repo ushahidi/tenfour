@@ -60,7 +60,7 @@ class ImportFailed extends Notification
 
     private function url()
     {
-        return $this->organization->url('/people/import/menu');
+        return $this->organization->url('/#/settings/contactsImport');
     }
 
     /**
