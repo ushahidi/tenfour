@@ -234,7 +234,14 @@ class SendCheckIn implements ShouldQueue
     protected function dispatchCheckInViaSMS($message_service, $from, $to, $recipient, $org_url, $sender_name, $org_name) {
 
         $params = [];
-        $check_in_url = $org_url .'/r/'. $this->check_in['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
+
+        $check_in_url = $org_url .
+            '/#/r/' .
+            $this->check_in['id'] . '/' .
+            '-/' .
+            $recipient['id'] . '/' .
+            urlencode($recipient['reply_token']);
+
         $check_in_url = $params['check_in_url'] = $this->shortener->shorten($check_in_url);
         $params['answers'] = $this->check_in['answers'];
         $params['keyword'] = $message_service->getKeyword($to);
@@ -268,7 +275,16 @@ class SendCheckIn implements ShouldQueue
 
         if ($unreplied_sms_check_in && $unreplied_sms_check_in['id'] && $unreplied_sms_check_in['from']) {
             $reminder_reply_token = $check_in_repo->getReplyToken($unreplied_sms_check_in['id'], $recipient['id']);
-            $reminder_sms_url = $this->shortener->shorten($org_url .'/r/'. $unreplied_sms_check_in['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
+
+            $reminder_sms_url = $org_url .
+                '/#/r/' .
+                $unreplied_sms_check_in['id'] . '/' .
+                '-/' .
+                $recipient['id'] . '/' .
+                urlencode($reminder_reply_token);
+
+            $reminder_sms_url = $this->shortener->shorten($reminder_sms_url);
+
             $this->sendReminderSMS($message_service, $to, $reminder_sms_url, $from, $unreplied_sms_check_in['id']);
         }
     }
