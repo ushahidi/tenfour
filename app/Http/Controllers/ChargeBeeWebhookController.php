@@ -53,7 +53,7 @@ class ChargeBeeWebhookController extends Controller
 
     protected function getSubscription($payload)
     {
-        $subscription = Subscription::where('subscription_id', $payload->subscription->id)
+        $subscription = Subscription::where('subscription_id', 'Hr5515PQx1wnSHhjk')
             // ->with('addons')
             ->first();
 
@@ -168,6 +168,15 @@ class ChargeBeeWebhookController extends Controller
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
+
+        if (isset($payload->card)) {
+            $subscription->update([
+                'last_four'         => $payload->card->last4,
+                'card_type'         => ucfirst($payload->card->card_type),
+                'expiry_month'      => $payload->card->expiry_month,
+                'expiry_year'       => $payload->card->expiry_year,
+            ]);
+        }
 
         $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
             "adjustment" => $credits,
