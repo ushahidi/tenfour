@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use TenFour\Http\Transformers\UserTransformer;
 
-class ImportSucceeded extends Notification
+class ApproachingPersonQuotaLimit extends Notification
 {
     use Queueable;
 
@@ -17,11 +17,9 @@ class ImportSucceeded extends Notification
      *
      * @return void
      */
-    public function __construct($organization, $count, $dupe_count)
+    public function __construct($organization)
     {
         $this->organization = $organization;
-        $this->count = $count;
-        $this->dupe_count = $dupe_count;
     }
 
     /**
@@ -32,7 +30,7 @@ class ImportSucceeded extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -43,35 +41,31 @@ class ImportSucceeded extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = '';
-
-        if ($this->dupe_count > 0) {
-            $body .= 'You successfully imported ' . $this->count . ' members into your organization. ';
-        } else {
-            $body .= 'Nobody was imported into your organization. ';
-        }
-
-        if ($this->dupe_count > 0) {
-            $body .= $this->dupe_count . ' duplicates were found. ';
-        }
+        $body = 'Your TenFour free plan entitles you to ' . $this->maxPeople() . ' people in your organization. ' .
+          'You are now approaching that limit. You might want to consider upgrading your plan to add more people.';
 
         return (new MailMessage)
             ->view('emails.general', [
                 'action_url'      => $this->url(),
-                'action_text'     => 'Review my Organization\'s Members',
-                'subject'         => 'Import Successful',
+                'action_text'     => 'Upgrade your Plan',
+                'subject'         => 'Upgrade your Plan',
                 'profile_picture' => $this->organization->profile_picture,
                 'org_subdomain'   => $this->organization->subdomain,
                 'org_name'        => $this->organization->name,
                 'initials'        => UserTransformer::generateInitials($this->organization->name),
                 'body'            => $body
             ])
-            ->subject('Import Successful');
+            ->subject('Upgrade your Plan');
+    }
+
+    private function maxPeople()
+    {
+        return \TenFour\Http\Requests\Person\AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN;
     }
 
     private function url()
     {
-        return $this->organization->url('/#/people');
+        return $this->organization->url('/#/settings/payments');
     }
 
     /**
@@ -83,9 +77,7 @@ class ImportSucceeded extends Notification
     public function toArray($notifiable)
     {
         return [
-            'count' => $this->count,
-            'dupe_count' => $this->dupe_count,
-            'url' => $this->url(),
+          //
         ];
     }
 }
