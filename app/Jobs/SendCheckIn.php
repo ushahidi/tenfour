@@ -301,7 +301,7 @@ class SendCheckIn implements ShouldQueue
             return $send_via;
         }
 
-        if (!$subscription || $subscription['plan_id'] === 'free-plan') {
+        if (!$subscription || $subscription['plan_id'] === config("chargebee.plans.free")) {
             return $send_via;
         }
 
