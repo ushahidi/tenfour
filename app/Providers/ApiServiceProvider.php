@@ -91,6 +91,9 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('TenFour\Contracts\Services\PaymentService',
                          'TenFour\Services\Payments\ChargeBeePaymentService');
 
+        $this->app->bind('TenFour\Contracts\Repositories\NotificationRepository',
+                         'TenFour\Repositories\EloquentNotificationRepository');
+
         $this->app->when('TenFour\Messaging\PhoneNumberAdapter')
             ->needs('libphonenumber\PhoneNumberUtil')
             ->give(function () {

@@ -432,6 +432,47 @@ FORMAT: 1A
 
             "OK"
 
+# Notifications [/api/v1/organizations]
+
+## List a person's notifications [GET /api/v1/organizations/{org_id}/people/{person_id}/notifications/{?offset,limit}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+    + offset: (number, optional) - 
+        + Default: 0
+    + limit: (number, optional) - 
+        + Default: 0
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "notifications": [
+                    {
+                        "id": "386f1eae-e8af-4acc-9a9a-6cfd9b086670",
+                        "type": "TenFour\\Notifications\\PersonLeftOrganization",
+                        "notifiable_id": 8,
+                        "notifiable_type": "TenFour\\Models\\User",
+                        "data": {
+                            "person_name": "David Test",
+                            "person_id": 6,
+                            "profile_picture": false,
+                            "initials": "DT"
+                        },
+                        "read_at": null,
+                        "created_at": "2018-07-06 13:58:21",
+                        "updated_at": "2018-07-06 13:58:21"
+                    }
+                ]
+            }
+
 # Contacts [/api/v1/organizations]
 
 ## Add member contact [POST /api/v1/organizations/{org_id}/people/{person_id}/contacts]

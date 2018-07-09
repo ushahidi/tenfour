@@ -30,6 +30,9 @@ $api->version($version, [
     $api->post($base.'organizations/{organization}/people/owner/notify', ['uses' => 'PersonController@notifyOwner']);
     // $api->post($base.'organizations/{organization}/people/{member}/notify', ['uses' => 'PersonController@notifyPerson']);
 
+    // Notifications endpoint
+    $api->get($base.'organizations/{organization}/people/{person}/notifications', ['uses' => 'NotificationController@index']);
+
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
 
