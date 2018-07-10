@@ -571,6 +571,30 @@ FORMAT: 1A
                 "email": "linda@ushahidi.com"
             }
 
+# Tokens [/api/v1/organizations/{org_id}/person/{person_id}/tokens]
+
+## Register a new device token [POST /api/v1/organizations/{org_id}/person/{person_id}/tokens]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "token": "token123123123123op1kpo2k"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
 # Files [/api/v1/organizations]
 
 ## File Upload [POST /api/v1/organizations/{org_id}/files]

@@ -36,6 +36,10 @@ $api->version($version, [
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
 
+    // Device tokens endpoints
+    $api->post($base.'organizations/{organization}/people/{person}/tokens', ['uses' => 'DeviceTokenController@store']);
+    $api->delete($base.'organizations/{organization}/people/{person}/tokens/{token}', ['uses' => 'DeviceTokenController@delete']);
+
     //Org contacts file uploads
     $api->post($base.'organizations/{organization}/files', ['uses' => 'ContactFilesController@create']);
     $api->put($base.'organizations/{organization}/files/{file}', ['uses' => 'ContactFilesController@update']);
