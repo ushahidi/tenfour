@@ -15,6 +15,7 @@ use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Models\Organization;
 use TenFour\Models\User;
+use TenFour\Models\DeviceToken;
 use TenFour\Messaging\SMSService;
 use TenFour\Services\URLShortenerService;
 use TenFour\Services\AnalyticsService;
@@ -97,6 +98,8 @@ class SendCheckIn implements ShouldQueue
             'contacts' => 0,
             'check_in_id' => $this->check_in['id'],
         ];
+
+        $this->dispatchCheckInViaFCM($message_service_factory->make('push'), $organization, $sender_name);
 
         foreach($this->check_in['recipients'] as $recipient)
         {
@@ -215,6 +218,25 @@ class SendCheckIn implements ShouldQueue
         }
     }
 
+    protected function dispatchCheckInViaFCM($message_service, $organization, $sender_name) {
+
+        $recipient_ids = array_map(function ($value) {
+            return $value['id'];
+        }, $this->check_in['recipients']);
+
+        $to = DeviceToken::whereIn('user_id', $recipient_ids)->pluck('token')->all();
+
+        $params['type'] = 'checkin:received';
+        $params['org_name'] = $organization->name;
+        $params['org_id'] = $organization->id;
+        $params['checkin_id'] = $this->check_in['id'];
+        $params['sender_name'] = $sender_name;
+        $params['sender_id'] = $this->check_in['user_id'];
+
+        $message_service->setView('fcm.checkin');
+        $message_service->send($to, $this->check_in['message'], $params, null, null);
+    }
+
     protected function dispatchCheckInViaEmail($message_service, $contact, $to, $creator, $recipient) {
         if ($contact['bounce_count'] >= config('tenfour.messaging.bounce_threshold')) {
             Log::info('Cannot send check-in for ' . $contact['contact'] . ' because bounces exceed threshold');
@@ -301,7 +323,7 @@ class SendCheckIn implements ShouldQueue
             return $send_via;
         }
 
-        if (!$subscription || $subscription['plan_id'] === 'free-plan') {
+        if (!$subscription || $subscription['plan_id'] === config("chargebee.plans.free")) {
             return $send_via;
         }
 

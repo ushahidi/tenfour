@@ -30,8 +30,15 @@ $api->version($version, [
     $api->post($base.'organizations/{organization}/people/owner/notify', ['uses' => 'PersonController@notifyOwner']);
     // $api->post($base.'organizations/{organization}/people/{member}/notify', ['uses' => 'PersonController@notifyPerson']);
 
+    // Notifications endpoint
+    $api->get($base.'organizations/{organization}/people/{person}/notifications', ['uses' => 'NotificationController@index']);
+
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
+
+    // Device tokens endpoints
+    $api->post($base.'organizations/{organization}/people/{person}/tokens', ['uses' => 'DeviceTokenController@store']);
+    $api->delete($base.'organizations/{organization}/people/{person}/tokens/{token}', ['uses' => 'DeviceTokenController@delete']);
 
     //Org contacts file uploads
     $api->post($base.'organizations/{organization}/files', ['uses' => 'ContactFilesController@create']);

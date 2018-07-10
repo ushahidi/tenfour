@@ -169,6 +169,15 @@ class ChargeBeeWebhookController extends Controller
             'status'            => $payload->subscription->status,
         ]);
 
+        if (isset($payload->card)) {
+            $subscription->update([
+                'last_four'         => $payload->card->last4,
+                'card_type'         => ucfirst($payload->card->card_type),
+                'expiry_month'      => $payload->card->expiry_month,
+                'expiry_year'       => $payload->card->expiry_year,
+            ]);
+        }
+
         $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
             "adjustment" => $credits,
             "balance" => $creditAdjustment->balance

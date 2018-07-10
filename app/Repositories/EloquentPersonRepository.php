@@ -3,6 +3,7 @@ namespace TenFour\Repositories;
 
 use TenFour\Models\Organization;
 use TenFour\Models\User;
+use TenFour\Models\Subscription;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\CheckInRepository;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Notification;
 use TenFour\Notifications\PersonJoinedOrganization;
 use TenFour\Notifications\PersonLeftOrganization;
+use TenFour\Notifications\ApproachingPersonQuotaLimit;
 use Illuminate\Support\Facades\Hash;
 use TenFour\Services\StorageService;
 use TenFour\Services\CreditService;
@@ -86,6 +88,11 @@ class EloquentPersonRepository implements PersonRepository
             'total_members' => $this->getOrganizationMemberCount($organization_id),
             'total_users'   => $this->getOrganizationUserCount($organization_id),
         ]);
+
+        if (Subscription::where('organization_id','=',$organization_id)->where('plan_id','=',config("chargebee.plans.free"))
+            && User::where('organization_id', '=', $organization_id)->count() == \TenFour\Http\Requests\Person\AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN - 5) {
+            Notification::send($this->getOwner($organization['id']), new ApproachingPersonQuotaLimit($organization));
+        }
 
         return $user->toArray();
     }
@@ -233,6 +240,13 @@ class EloquentPersonRepository implements PersonRepository
         return User::where('organization_id', $organization_id)
             ->whereIn('role', ['admin', 'owner'])
             ->get();
+    }
+
+    public function getOwner($organization_id)
+    {
+        return User::where('organization_id', $organization_id)
+            ->where('role', '=', 'owner')
+            ->first();
     }
 
     // PersonRepository

@@ -58,7 +58,7 @@ class MigrateSubscriptions extends Command
                 if ($sub->plan_id === 'standard-plan') {
                     // if ($sub->status === 'cancelled' || $sub->status === 'in_trial') {
                         $payments->changeToFreePlan($sub->subscription_id);
-                        // $this->info('Switched ' . $org['subdomain'] . ' to free plan');
+                        $this->info('Switched ' . $org['subdomain'] . ' to free plan');
                     // } else if ($sub->status === 'active') {
                         // $payments->changeToProPlan($sub->subscription_id);
                         // $this->info('Switched ' . $org['subdomain'] . ' to pro plan');
