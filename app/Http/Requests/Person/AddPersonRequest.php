@@ -8,7 +8,7 @@ class AddPersonRequest extends UpdatePersonRequest
 {
     use UserAccess;
 
-    const MAX_PERSONS_IN_FREE_PLAN = 50;
+    const MAX_PERSONS_IN_FREE_PLAN = 100;
 
     public function authorize()
     {
