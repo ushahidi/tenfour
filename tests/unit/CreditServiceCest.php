@@ -5,6 +5,7 @@ use Codeception\Util\Stub;
 
 class CreditServiceCest
 {
+    const base_balance = 178;
 
     public function __construct() {
         $this->creditService = new CreditService();
@@ -16,7 +17,7 @@ class CreditServiceCest
 
         $t->assertEquals(
             $this->creditService->getBalance($org_id),
-            3
+            self::base_balance
         );
     }
 
@@ -28,7 +29,7 @@ class CreditServiceCest
 
         $t->assertEquals(
             $this->creditService->getBalance($org_id),
-            2
+            self::base_balance-1
         );
     }
 
@@ -36,13 +37,13 @@ class CreditServiceCest
     {
         $org_id = 2;
 
-        $this->creditService->addCreditAdjustment($org_id, -4);
+        $this->creditService->addCreditAdjustment($org_id, -(self::base_balance+4));
 
         // allow credits to be overdrawn
 
         $t->assertEquals(
             $this->creditService->getBalance($org_id),
-            -1
+            -4
         );
     }
 

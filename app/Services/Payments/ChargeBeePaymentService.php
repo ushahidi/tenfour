@@ -8,6 +8,7 @@ use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use ChargeBee_Coupon;
 use ChargeBee_InvalidRequestException;
+use ChargeBee_Invoice;
 use Carbon\Carbon;
 
 class ChargeBeePaymentService implements PaymentService
@@ -56,6 +57,11 @@ class ChargeBeePaymentService implements PaymentService
     public function getUserBundleAddonId()
     {
         return config("chargebee.addons.users");
+    }
+
+    public function getCreditTopupAddonId()
+    {
+        return config("chargebee.addons.topup");
     }
 
     public function getProUpgradeHostedPageUrl($organization, $redirectUrl)
@@ -191,5 +197,16 @@ class ChargeBeePaymentService implements PaymentService
         ]);
 
         return $this->toArray($result);
+    }
+
+    public function chargeAddonImmediately($subscription_id, $addonId, $addonQuantity)
+    {
+        $result = ChargeBee_Invoice::chargeAddon(array(
+            "subscriptionId"  => $subscription_id,
+            "addonId"         => $addonId,
+            "addonQuantity"   => $addonQuantity));
+        // $invoice = $result->invoice();
+
+        return $result->invoice()->getValues();
     }
 }

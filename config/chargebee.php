@@ -10,6 +10,7 @@ return [
     'addons' => [
         'credits' => env('CHARGEBEE_ADDON_CREDITS', 'credit-bundle'),
         'users' => env('CHARGEBEE_ADDON_USERS', 'user-bundle'),
+        'topup' => env('CHARGEBEE_ADDON_CREDIT_TOPUP', 'credit-topup')
     ],
 
     'plans' => [

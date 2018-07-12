@@ -73,5 +73,6 @@ $api->version($version, [
     $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');
     $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/switchtopro', ['uses' => 'SubscriptionController@getProUpgradeHostedPageUrl']);
     $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/update', ['uses' => 'SubscriptionController@getUpdatePaymentInfoHostedPageUrl']);
+    $api->post($base.'organizations/{organization}/subscriptions/{subscription}/credits', ['uses' => 'SubscriptionController@addCredits']);
 
 });

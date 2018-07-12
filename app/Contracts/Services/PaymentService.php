@@ -19,4 +19,7 @@ interface PaymentService
     public function getProPlanId();
     public function getUserBundleAddonId();
     public function getCreditBundleAddonId();
+    public function getCreditTopupAddonId();
+
+    public function chargeAddonImmediately($subscription_id, $addon_id, $addon_quantity);
 }

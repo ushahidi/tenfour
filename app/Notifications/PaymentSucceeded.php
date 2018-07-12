@@ -78,6 +78,7 @@ class PaymentSucceeded extends Notification
             'card_type' => $this->subscription->card_type,
             'last_four' => $this->subscription->last_four,
             'adjustment' => $this->creditAdjustment->adjustment,
+            'balance' => $this->creditAdjustment->balance,
             'url' => $this->url(),
         ];
     }

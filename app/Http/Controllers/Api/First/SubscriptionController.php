@@ -7,6 +7,7 @@ use TenFour\Http\Requests\Subscription\UpdateSubscriptionRequest;
 use TenFour\Http\Requests\Subscription\GetSubscriptionRequest;
 use TenFour\Http\Requests\Subscription\DeleteSubscriptionRequest;
 use TenFour\Http\Requests\Subscription\CreateHostedPageRequest;
+use TenFour\Http\Requests\Subscription\AddCreditsRequest;
 use TenFour\Models\Organization;
 use TenFour\Models\Subscription;
 use TenFour\Contracts\Repositories\OrganizationRepository;
@@ -213,5 +214,12 @@ class SubscriptionController extends ApiController
         );
 
         return response()->json(['url' => $url]);
+    }
+
+    public function addCredits(AddCreditsRequest $request, $organization_id, $subscription_id)
+    {
+        $this->payments->chargeAddonImmediately(Subscription::findOrFail($subscription_id)->subscription_id, $this->payments->getCreditTopupAddonId(), $request->input('quantity'));
+
+        return response(200);
     }
 }
