@@ -22,4 +22,6 @@ interface PaymentService
     public function getCreditTopupAddonId();
 
     public function chargeAddonImmediately($subscription_id, $addon_id, $addon_quantity);
+
+    public function estimateBill($subscription);
 }

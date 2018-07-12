@@ -15,14 +15,13 @@ use ChargeBee_InvalidRequestException;
 use TenFour\Notifications\PaymentFailed;
 use TenFour\Notifications\PaymentSucceeded;
 use TenFour\Notifications\TrialEnding;
+use TenFour\Notifications\SubscriptionChanged;
 use TenFour\Contracts\Services\PaymentService;
 
 use Log;
 
 class ChargeBeeWebhookController extends Controller
 {
-    const MAX_USERS_IN_FLAT_RATE = 100;
-    const USERS_IN_USER_BUNDLE = 25;
 
     public function __construct(OrganizationRepository $organizations, CreditService $creditService, PaymentService $payments)
     {
@@ -98,47 +97,14 @@ class ChargeBeeWebhookController extends Controller
         return response('OK', 200);
     }
 
-    public function handleSubscriptionRenewalReminder($payload)
-    {
-        $subscription = $this->getSubscription($payload);
-
-        // use this opportunity to update the subscription based on number of users and addon settings
-        // TODO move this to a daily job
-
-        $numUsers = count($subscription->organization->members);
-        $planAndCreditsSettings = $this->organizations->getSetting($subscription->organization->id, 'plan_and_credits');
-
-        $checkout = array(
-            "planId" => $subscription->plan_id,
-            "replaceAddonList" => true,
-            "addons" => []
-        );
-
-        if ($planAndCreditsSettings && $planAndCreditsSettings->monthlyCreditsExtra) {
-            array_push($checkout["addons"], [
-                "id" => $this->payments->getCreditBundleAddonId(),
-                "quantity" => $planAndCreditsSettings->monthlyCreditsExtra
-            ]);
-        }
-
-        if ($numUsers > self::MAX_USERS_IN_FLAT_RATE) {
-            array_push($checkout["addons"], [
-                "id" => $this->payments->getUserBundleAddonId(),
-                "quantity" => $this->getUserBundleQuantity($numUsers)
-            ]);
-        }
-
-        ChargeBee_Subscription::update($subscription->subscription_id, $checkout);
-
-        Log::info('[ChargeBee] Processed SubscriptionRenewalReminder for subscription ' . $subscription->subscription_id);
-
-        return response('OK', 200);
-    }
-
-    protected function getUserBundleQuantity($numUsersInOrganization)
-    {
-        return ceil(($numUsersInOrganization - self::MAX_USERS_IN_FLAT_RATE) / self::USERS_IN_USER_BUNDLE);
-    }
+    // public function handleSubscriptionRenewalReminder($payload)
+    // {
+    //     $subscription = $this->getSubscription($payload);
+    //
+    //     Log::info('[ChargeBee] Processed SubscriptionRenewalReminder for subscription ' . $subscription->subscription_id);
+    //
+    //     return response('OK', 200);
+    // }
 
     protected function topup($organization_id, $credits, $meta)
     {
@@ -327,6 +293,8 @@ class ChargeBeeWebhookController extends Controller
                 ]);
             }
         }
+
+        $subscription->organization->owner()->notify(new SubscriptionChanged($subscription, $this->payments));
 
         Log::info('[ChargeBee] Processed SubscriptionChanged for subscription ' . $subscription->subscription_id);
 

@@ -14,6 +14,9 @@ use Carbon\Carbon;
 class ChargeBeePaymentService implements PaymentService
 {
     const TRIAL_PERIOD_DAYS = 30;
+    const PRO_PLAN_FLAT_RATE_COST = 39;
+    const CREDIT_BUNDLE_COST = .1;
+    const USER_BUNDLE_COST = 5;
 
     public function __construct()
     {
@@ -208,5 +211,25 @@ class ChargeBeePaymentService implements PaymentService
         // $invoice = $result->invoice();
 
         return $result->invoice()->getValues();
+    }
+
+    public function estimateBill($subscription)
+    {
+        $estimate = 0;
+
+        if ($subscription->plan_id === $this->getProPlanId()) {
+            $estimate += self::PRO_PLAN_FLAT_RATE_COST;
+        }
+
+        foreach ($subscription->addons as $addon) {
+            if ($addon->addon_id === $this->getCreditBundleAddonId()) {
+                $estimate += $addon->quantity * self::CREDIT_BUNDLE_COST;
+            }
+            else if ($addon->addon_id === $this->getUserBundleAddonId()) {
+                $estimate += $addon->quantity * self::USER_BUNDLE_COST;
+            }
+        }
+
+        return $estimate;
     }
 }
