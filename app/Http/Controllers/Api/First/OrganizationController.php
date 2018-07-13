@@ -20,6 +20,8 @@ use TenFour\Http\Response;
 use TenFour\Services\CreditService;
 use TenFour\Contracts\Services\PaymentService;
 use TenFour\Models\Organization;
+use TenFour\Models\User;
+use TenFour\Notifications\Welcome;
 use DB;
 use ChargeBee_APIError;
 
@@ -165,6 +167,8 @@ class OrganizationController extends ApiController
             app('sentry')->captureException($e);
             \Log::error($e);
         }
+
+        User::findOrFail($owner['id'])->notify(new Welcome(Organization::findOrFail($organization['id'])));
 
         return $this->response->item($result, new OrganizationTransformer, 'organization');
     }
