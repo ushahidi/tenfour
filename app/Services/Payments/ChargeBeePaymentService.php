@@ -186,6 +186,7 @@ class ChargeBeePaymentService implements PaymentService
             "planId"            => $this->getFreePlanId(),
             "status"            => "active",
             "replaceAddonList"  => true,
+            "addons"            => []
         ]);
 
         return $this->toArray($result);
@@ -197,6 +198,7 @@ class ChargeBeePaymentService implements PaymentService
             "planId"            => $this->getProPlanId(),
             "status"            => "active",
             "replaceAddonList"  => true,
+            "addons"            => []
         ]);
 
         return $this->toArray($result);
