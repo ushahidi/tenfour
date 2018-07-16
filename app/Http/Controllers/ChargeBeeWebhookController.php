@@ -283,9 +283,9 @@ class ChargeBeeWebhookController extends Controller
             ]);
         }
 
-        if (isset($payload->subscription->addons)) {
-            Addon::where('subscription_id', $subscription->id)->delete();
+        Addon::where('subscription_id', $subscription->id)->delete();
 
+        if (isset($payload->subscription->addons)) {
             foreach ($payload->subscription->addons as $addon) {
                 $subscription->addons()->create([
                     'quantity' => $addon->quantity,

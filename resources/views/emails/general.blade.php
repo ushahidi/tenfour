@@ -50,7 +50,7 @@
         }
 
         img[class="img-max"]{
-          max-width: 100% !important;
+          max-width: 80px !important;
           width: 100% !important;
           height:auto !important;
         }
@@ -162,7 +162,7 @@
                                     <td bgcolor="#EFECE8" align="left" width="100">
                                         <a href="#" target="_blank">
                                           <img alt="TenFour"
-                                            src="{{ $message->embed(public_path() . '/images/tenfour.png') }}" 
+                                            src="{{ $message->embed(public_path() . '/images/tenfour.png') }}"
                                             style="display: block; font-family: Lato, Helvetica, Arial, sans-serif; color: #4A4A4A; font-size: 16px;" border="0" height="40" width="155">
                                         </a>
                                     </td>
