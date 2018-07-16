@@ -50,14 +50,13 @@ class CheckIn extends Mailable
 
         $profile_picture = $this->creator['profile_picture'];
         $initials = UserTransformer::generateInitials($this->creator['name']);
-        $check_in_url = $client_url .'/checkins/'. $this->check_in['id'];
         $subject = str_limit($this->check_in['message'], $limit = 50, $end = '...');
-
-        // $user_url_fragment = '/' . $this->user['id'] . '?token=' . urlencode($this->user['reply_token']);
-        // $answer_url_no = $client_url . '/r/' . $this->check_in['id'] . '/0' . $user_url_fragment;
-        // $answer_url_yes = $client_url . '/r/' . $this->check_in['id'] . '/1' . $user_url_fragment;
-        // $answer_url = $client_url .'/checkins/'. $this->check_in['id']. '/answer';
-        // $reply_url = $client_url .'/checkins/'. $this->check_in['id']. '/reply';
+        $check_in_url = $client_url .
+            '/#/r/'.
+            $this->check_in['id'] . '/' .
+            '/-/' .
+            $this->user['id'] . '/' .
+            urlencode($this->user['reply_token']);
 
         $has_custom_answers = false;
 
