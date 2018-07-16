@@ -2,11 +2,13 @@
 
 namespace TenFour\Notifications;
 
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Http\Requests\Person\AddPersonRequest;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Http\Transformers\UserTransformer;
 
 class ApproachingPersonQuotaLimit extends Notification
 {
@@ -60,7 +62,7 @@ class ApproachingPersonQuotaLimit extends Notification
 
     private function maxPeople()
     {
-        return \TenFour\Http\Requests\Person\AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN;
+        return AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN;
     }
 
     private function url()
@@ -77,7 +79,8 @@ class ApproachingPersonQuotaLimit extends Notification
     public function toArray($notifiable)
     {
         return [
-          //
+            'users' => count($this->organization->members),
+            'max' => AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN
         ];
     }
 }

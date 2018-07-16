@@ -15,14 +15,13 @@ use ChargeBee_InvalidRequestException;
 use TenFour\Notifications\PaymentFailed;
 use TenFour\Notifications\PaymentSucceeded;
 use TenFour\Notifications\TrialEnding;
+use TenFour\Notifications\SubscriptionChanged;
 use TenFour\Contracts\Services\PaymentService;
 
 use Log;
 
 class ChargeBeeWebhookController extends Controller
 {
-    const MAX_USERS_IN_FLAT_RATE = 100;
-    const USERS_IN_USER_BUNDLE = 25;
 
     public function __construct(OrganizationRepository $organizations, CreditService $creditService, PaymentService $payments)
     {
@@ -56,6 +55,8 @@ class ChargeBeeWebhookController extends Controller
         $subscription = Subscription::where('subscription_id', $payload->subscription->id)
             // ->with('addons')
             ->first();
+
+        // $subscription = Subscription::where('subscription_id', '2smoc9EGQxUoH9uRnj')->first();
 
         if (!$subscription) {
             Log::warning('[ChargeBee] No subscription found for id ' . $payload->subscription->id);
@@ -96,47 +97,14 @@ class ChargeBeeWebhookController extends Controller
         return response('OK', 200);
     }
 
-    public function handleSubscriptionRenewalReminder($payload)
-    {
-        $subscription = $this->getSubscription($payload);
-
-        // use this opportunity to update the subscription based on number of users and addon settings
-        // TODO move this to a daily job
-
-        $numUsers = count($subscription->organization->members);
-        $planAndCreditsSettings = $this->organizations->getSetting($subscription->organization->id, 'plan_and_credits');
-
-        $checkout = array(
-            "planId" => $subscription->plan_id,
-            "replaceAddonList" => true,
-            "addons" => []
-        );
-
-        if ($planAndCreditsSettings && $planAndCreditsSettings->monthlyCreditsExtra) {
-            array_push($checkout["addons"], [
-                "id" => $this->payments->getCreditBundleAddonId(),
-                "quantity" => $planAndCreditsSettings->monthlyCreditsExtra
-            ]);
-        }
-
-        if ($numUsers > self::MAX_USERS_IN_FLAT_RATE) {
-            array_push($checkout["addons"], [
-                "id" => $this->payments->getUserBundleAddonId(),
-                "quantity" => $this->getUserBundleQuantity($numUsers)
-            ]);
-        }
-
-        ChargeBee_Subscription::update($subscription->subscription_id, $checkout);
-
-        Log::info('[ChargeBee] Processed SubscriptionRenewalReminder for subscription ' . $subscription->subscription_id);
-
-        return response('OK', 200);
-    }
-
-    protected function getUserBundleQuantity($numUsersInOrganization)
-    {
-        return ceil(($numUsersInOrganization - self::MAX_USERS_IN_FLAT_RATE) / self::USERS_IN_USER_BUNDLE);
-    }
+    // public function handleSubscriptionRenewalReminder($payload)
+    // {
+    //     $subscription = $this->getSubscription($payload);
+    //
+    //     Log::info('[ChargeBee] Processed SubscriptionRenewalReminder for subscription ' . $subscription->subscription_id);
+    //
+    //     return response('OK', 200);
+    // }
 
     protected function topup($organization_id, $credits, $meta)
     {
@@ -146,22 +114,6 @@ class ChargeBeeWebhookController extends Controller
     public function handlePaymentSucceeded($payload)
     {
         $subscription = $this->getSubscription($payload);
-
-        $credits = CreditService::BASE_CREDITS_PER_MONTH;
-
-        if (isset($subscription->addons)) {
-            foreach ($subscription->addons as $key => $addon) {
-                if ($addon->addon_id === $this->payments->getCreditBundleAddonId()) {
-                    $credits += $addon->quantity;
-                }
-
-                if ($addon->addon_id === $this->payments->getUserBundleAddonId()) {
-                    $credits += CreditService::CREDITS_PER_USER_BUNDLE_PER_MONTH;
-                }
-            }
-        }
-
-        $creditAdjustment = $this->topup($subscription->organization->id, $credits, $payload);
 
         $subscription->update([
             'next_billing_at'   => $payload->subscription->next_billing_at,
@@ -178,10 +130,33 @@ class ChargeBeeWebhookController extends Controller
             ]);
         }
 
-        $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
-            "adjustment" => $credits,
-            "balance" => $creditAdjustment->balance
-        ]));
+        $credits = 0;
+
+        if (isset($payload->invoice) && isset($payload->invoice->line_items)) {
+            foreach ($payload->invoice->line_items as $line_item) {
+                if ($line_item->entity_id === $this->payments->getProPlanId()) {
+                    $credits += CreditService::BASE_CREDITS_PER_MONTH;
+                }
+                else if ($line_item->entity_id === $this->payments->getUserBundleAddonId()) {
+                    $credits += CreditService::CREDITS_PER_USER_BUNDLE_PER_MONTH * $line_item->quantity;
+                }
+                else if ($line_item->entity_id === $this->payments->getCreditBundleAddonId()) {
+                    $credits += $line_item->quantity;
+                }
+                else if ($line_item->entity_id === $this->payments->getCreditTopupAddonId()) {
+                    $credits += $line_item->quantity;
+                }
+            }
+        }
+
+        if ($credits) {
+            $creditAdjustment = $this->topup($subscription->organization->id, $credits, $payload);
+
+            $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
+                "adjustment" => $credits,
+                "balance" => $creditAdjustment->balance
+            ]));
+        }
 
         Log::info('[ChargeBee] Processed PaymentSucceeded for subscription ' . $subscription->subscription_id);
 
@@ -197,8 +172,6 @@ class ChargeBeeWebhookController extends Controller
         $subscription->update([
             'status'            => $payload->subscription->status,
         ]);
-
-        // FIXME handle dunning
 
         Log::info('[ChargeBee] Processed PaymentFailed for subscription ' . $subscription->subscription_id);
 
@@ -320,6 +293,8 @@ class ChargeBeeWebhookController extends Controller
                 ]);
             }
         }
+
+        $subscription->organization->owner()->notify(new SubscriptionChanged($subscription, $this->payments));
 
         Log::info('[ChargeBee] Processed SubscriptionChanged for subscription ' . $subscription->subscription_id);
 

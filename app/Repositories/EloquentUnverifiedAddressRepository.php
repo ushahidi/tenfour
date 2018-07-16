@@ -34,8 +34,8 @@ class EloquentUnverifiedAddressRepository implements UnverifiedAddressRepository
 
     public function delete($id)
     {
-		$address = UnverifiedAddress::findOrFail($id);
-		$address->delete();
+        $address = UnverifiedAddress::findOrFail($id);
+        $address->delete();
 
         return $address->toArray();
     }

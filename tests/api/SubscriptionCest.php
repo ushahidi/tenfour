@@ -32,6 +32,11 @@ class SubscriptionCest
                 "card_type" => "smurfcard",
                 "expiry_month" => 10,
                 "expiry_year" => 30,
+            ],
+            "invoice" => [
+                "line_items" => [[
+                    "entity_id" => "pro-plan"
+                ]]
             ]
         ];
 
@@ -248,6 +253,58 @@ class SubscriptionCest
         $I->seeRecord('outgoing_mail_log', [
             'subject'     => "Trial Ending",
             'type'        => 'TrialEnding',
+            'to'          => 'org_owner@ushahidi.com',
+        ]);
+    }
+
+    public function handleCreditBundlePayment(ApiTester $I)
+    {
+        $payload = $this->makeChargeBeeEvent('payment_succeeded');
+        $payload['content']['invoice']['line_items'][0]['entity_id'] = 'credit-bundle';
+        $payload['content']['invoice']['line_items'][0]['quantity'] = 175;
+
+        $I->wantTo('Handle a ChargeBee credit bundle payment succeeded event');
+        $I->amAuthenticatedAsChargeBee();
+        $I->sendPOST($this->webhookEndpoint, $payload);
+        $I->seeResponseCodeIs(200);
+
+        // check that the credit adjustment has been made
+        $I->seeRecord('credit_adjustments', [
+            'organization_id'         => 2,
+            'adjustment'              => 175,
+            'balance'                 => 178,
+            'type'                    => 'topup',
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Payment Succeeded",
+            'type'        => 'PaymentSucceeded',
+            'to'          => 'org_owner@ushahidi.com',
+        ]);
+    }
+
+    public function handleOnceOffPayment(ApiTester $I)
+    {
+        $payload = $this->makeChargeBeeEvent('payment_succeeded');
+        $payload['content']['invoice']['line_items'][0]['entity_id'] = 'credit-topup';
+        $payload['content']['invoice']['line_items'][0]['quantity'] = 175;
+
+        $I->wantTo('Handle a ChargeBee once-off payment succeeded event');
+        $I->amAuthenticatedAsChargeBee();
+        $I->sendPOST($this->webhookEndpoint, $payload);
+        $I->seeResponseCodeIs(200);
+
+        // check that the credit adjustment has been made
+        $I->seeRecord('credit_adjustments', [
+            'organization_id'         => 2,
+            'adjustment'              => 175,
+            'balance'                 => 178,
+            'type'                    => 'topup',
+        ]);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Payment Succeeded",
+            'type'        => 'PaymentSucceeded',
             'to'          => 'org_owner@ushahidi.com',
         ]);
     }

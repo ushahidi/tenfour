@@ -15,7 +15,7 @@ class MigrateSubscriptions extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate:subscriptions';
+    protected $signature = 'subscriptions:migrate';
 
     /**
      * The console command description.

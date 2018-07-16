@@ -25,7 +25,8 @@ class Kernel extends ConsoleKernel
         //          ->everyMinute();
 
         $schedule->job(new \TenFour\Jobs\NotifyFreePromoEnding)->daily();
-        $schedule->job(new \TenFour\Jobs\SendWelcomeMail)->hourly();
+        $schedule->job(new \TenFour\Jobs\SyncSubscriptions)->hourly();
+        $schedule->job(new \TenFour\Jobs\CheckQuotas)->hourly();
 
     }
 }

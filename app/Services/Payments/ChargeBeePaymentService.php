@@ -8,11 +8,15 @@ use ChargeBee_HostedPage;
 use ChargeBee_Subscription;
 use ChargeBee_Coupon;
 use ChargeBee_InvalidRequestException;
+use ChargeBee_Invoice;
 use Carbon\Carbon;
 
 class ChargeBeePaymentService implements PaymentService
 {
     const TRIAL_PERIOD_DAYS = 30;
+    const PRO_PLAN_FLAT_RATE_COST = 39;
+    const CREDIT_BUNDLE_COST = .1;
+    const USER_BUNDLE_COST = 5;
 
     public function __construct()
     {
@@ -56,6 +60,11 @@ class ChargeBeePaymentService implements PaymentService
     public function getUserBundleAddonId()
     {
         return config("chargebee.addons.users");
+    }
+
+    public function getCreditTopupAddonId()
+    {
+        return config("chargebee.addons.topup");
     }
 
     public function getProUpgradeHostedPageUrl($organization, $redirectUrl)
@@ -191,5 +200,36 @@ class ChargeBeePaymentService implements PaymentService
         ]);
 
         return $this->toArray($result);
+    }
+
+    public function chargeAddonImmediately($subscription_id, $addonId, $addonQuantity)
+    {
+        $result = ChargeBee_Invoice::chargeAddon(array(
+            "subscriptionId"  => $subscription_id,
+            "addonId"         => $addonId,
+            "addonQuantity"   => $addonQuantity));
+        // $invoice = $result->invoice();
+
+        return $result->invoice()->getValues();
+    }
+
+    public function estimateBill($subscription)
+    {
+        $estimate = 0;
+
+        if ($subscription->plan_id === $this->getProPlanId()) {
+            $estimate += self::PRO_PLAN_FLAT_RATE_COST;
+        }
+
+        foreach ($subscription->addons as $addon) {
+            if ($addon->addon_id === $this->getCreditBundleAddonId()) {
+                $estimate += $addon->quantity * self::CREDIT_BUNDLE_COST;
+            }
+            else if ($addon->addon_id === $this->getUserBundleAddonId()) {
+                $estimate += $addon->quantity * self::USER_BUNDLE_COST;
+            }
+        }
+
+        return $estimate;
     }
 }
