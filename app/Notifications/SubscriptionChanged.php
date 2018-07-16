@@ -68,7 +68,7 @@ class SubscriptionChanged extends Notification
 
         $body .= '<li>Your next billing date is ' . (new Carbon($this->subscription->next_billing_at))->toFormattedDateString() . '</li>';
 
-        $body .= '<li>Your next bill is estimated to be USD $' . $this->payments->estimateBill($this->subscription) . '</li>';
+        $body .= '<li>Your next bill is estimated to be USD $' . number_format($this->payments->estimateBill($this->subscription), 2, ',', '.')  . '</li>';
 
         $body .= '</ul>';
 
