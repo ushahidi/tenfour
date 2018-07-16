@@ -6,6 +6,7 @@ use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\SubscriptionRepository;
+use TenFour\Contracts\Repositories\UnverifiedAddressRepository;
 use TenFour\Http\Requests\Organization\GetOrganizationsRequest;
 use TenFour\Http\Requests\Organization\CreateOrganizationRequest;
 use TenFour\Http\Requests\Organization\GetOrganizationRequest;
@@ -31,7 +32,16 @@ use ChargeBee_APIError;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService, PaymentService $payments, SubscriptionRepository $subscriptions)
+    public function __construct(
+        OrganizationRepository $organizations,
+        PersonRepository $people,
+        ContactRepository $contacts,
+        Auth $auth,
+        Response $response,
+        CreditService $creditService,
+        PaymentService $payments,
+        SubscriptionRepository $subscriptions,
+        UnverifiedAddressRepository $addresses)
     {
         $this->organizations = $organizations;
         $this->people = $people;
@@ -41,6 +51,7 @@ class OrganizationController extends ApiController
         $this->creditService = $creditService;
         $this->payments = $payments;
         $this->subscriptions = $subscriptions;
+        $this->addresses = $addresses;
     }
 
     /**
@@ -139,6 +150,9 @@ class OrganizationController extends ApiController
             'type'        => 'email',
             'preferred'   => 1
         ];
+
+        $address = $this->addresses->getByAddress($request['email'], null, $request['verification_code']);
+        $this->addresses->delete($address['id']);
 
         DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
             $organization = $this->organizations->create($org_input);

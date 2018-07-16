@@ -25,10 +25,12 @@ class CreateOrganizationRequest extends UpdateOrganizationRequest
     public function rules()
     {
         return parent::rules() + [
-            'owner'     => 'required',
-            'email'     => 'required|email',
-            'password'  => 'required|min:8',
-            'subdomain' => 'required|alpha_dash|reserved_word',
+            'owner'             => 'required',
+            'email'             => 'required|email',
+            'password'          => 'required|min:8',
+            'subdomain'         => 'required|alpha_dash|reserved_word',
+            'email'             => 'required|exists:unverified_addresses,address',
+            'verification_code' => 'required|exists:unverified_addresses,code'
         ];
     }
 

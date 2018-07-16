@@ -149,11 +149,12 @@ class OrganizationCest
         $I->amAuthenticatedAsUser();
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST($this->endpoint, [
-            'name'      => 'Test org',
-            'subdomain' => 'test',
-            'owner'     => 'Mary Mata',
-            'email'     => 'mary@ushahidi.org',
-            'password'  => 'testtest',
+            'name'              => 'Test org',
+            'subdomain'         => 'test',
+            'owner'             => 'Mary Mata',
+            'email'             => 'mary@ushahidi.com',
+            'password'          => 'testtest',
+            'verification_code' => '123456',
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
@@ -172,11 +173,14 @@ class OrganizationCest
                 'role'          => 'owner',
                 'person_type'   => 'user',
                 'contact'       => [
-                    'contact'   => 'mary@ushahidi.org',
+                    'contact'   => 'mary@ushahidi.com',
                     'type'      => 'email',
                     'preferred' => 1
                 ]
             ]
+        ]);
+        $I->cantSeeInDatabase('unverified_addresses', [
+            'address' => 'mary@ushahidi.com'
         ]);
     }
 
@@ -358,5 +362,25 @@ class OrganizationCest
             ]
         ]);
 
+    }
+
+    /*
+     * Create organization as new owner
+     *
+     */
+    public function createOrganizationWithInvalidCode(ApiTester $I)
+    {
+        $I->wantTo('Create an organization with invalid code');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'name'              => 'Test org',
+            'subdomain'         => 'test',
+            'owner'             => 'Mary Mata',
+            'email'             => 'mary@ushahidi.com',
+            'password'          => 'testtest',
+            'verification_code' => '123457',
+        ]);
+        $I->seeResponseCodeIs(422);
     }
 }

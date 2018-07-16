@@ -42,9 +42,6 @@ class AddressVerificationCest
         $I->sendGET($endpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->cantSeeInDatabase('unverified_addresses', [
-            'address' => 'mary@ushahidi.com'
-        ]);
         $I->seeResponseContainsJson([
               'address' => 'mary@ushahidi.com',
               'id'      => 1,
@@ -62,9 +59,6 @@ class AddressVerificationCest
         $I->sendGET($endpoint);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
-        $I->cantSeeInDatabase('unverified_addresses', [
-            'address' => 'mary@ushahidi.com'
-        ]);
         $I->seeResponseContainsJson([
               'address' => 'mary@ushahidi.com',
               'id'      => 1,

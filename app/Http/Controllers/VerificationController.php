@@ -60,6 +60,8 @@ class VerificationController extends Controller
         }
 
         // Return valid address and delete it
-        return $this->addresses->delete($address['id']);
+        // return $this->addresses->delete($address['id']);
+
+        return $address;
     }
 }
