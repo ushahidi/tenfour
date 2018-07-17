@@ -81,10 +81,12 @@ class Organization extends Model
             return 'http://localhost:8080' . $path;
         }
 
+        $domain = str_replace('app.', '', config('tenfour.domain'));
+
         return 'https://' .
             $this->subdomain .
             '.' .
-            config('tenfour.domain') .
+            $domain .
             $path;
     }
 

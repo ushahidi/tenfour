@@ -44,7 +44,7 @@ class CheckIn extends Mailable
         $org = Organization::findOrFail($this->organization['id']);
 
         $client_url = $org->url();
-        $domain = config('tenfour.domain');
+        $domain = str_replace('app.', '', config('tenfour.domain'));
 
         $from_address = 'checkin-' . $this->check_in['id'] .'@'. $domain;
 
