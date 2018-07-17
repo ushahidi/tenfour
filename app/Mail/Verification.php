@@ -36,7 +36,7 @@ class Verification extends Mailable
     {
         $shortener = App::make('TenFour\Services\URLShortenerService');
 
-        $url = 'https://app.' .
+        $url = 'https://' .
             config('tenfour.domain') .
             '/#/signup/verify/' .
             urlencode($this->address['address']) .
