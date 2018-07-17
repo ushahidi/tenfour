@@ -66,9 +66,10 @@ class SubscriptionChanged extends Notification
             }
         }
 
-        $body .= '<li>Your next billing date is ' . (new Carbon($this->subscription->next_billing_at))->toFormattedDateString() . '</li>';
-
-        $body .= '<li>Your next bill is estimated to be USD $' . number_format($this->payments->estimateBill($this->subscription), 2)  . '</li>';
+        if ($this->subscription->plan_id === $this->payments->getProPlanId()) {
+            $body .= '<li>Your next billing date is ' . (new Carbon($this->subscription->next_billing_at))->toFormattedDateString() . '</li>';
+            $body .= '<li>Your next bill is estimated to be USD $' . number_format($this->payments->estimateBill($this->subscription), 2)  . '</li>';
+        }
 
         $body .= '</ul>';
 
