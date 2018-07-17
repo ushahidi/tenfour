@@ -3,6 +3,7 @@ namespace TenFour\Repositories;
 
 use TenFour\Models\Organization;
 use TenFour\Models\User;
+use TenFour\Models\Subscription;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\CheckInRepository;
@@ -180,21 +181,19 @@ class EloquentPersonRepository implements PersonRepository
     }
 
     // OrgCrudRepository
-    public function find($organization_id, $user_id)
+    public function find($organization_id, $user_id, $history_offset = 0, $history_limit = 1)
     {
-        // This should probably be passed in as param but there
-        // might not be any benefit of showing a user's full
-        // check-in activity here.
-        $history_limit = 1;
-
         $userModel = User::where('id', $user_id)
             ->where('organization_id', $organization_id)
             ->with([
-                'checkins' => function ($query) use ($history_limit) {
-                    $query->latest()->limit($history_limit);
+                'checkins' => function ($query) use ($history_offset, $history_limit) {
+                    $query->latest()->offset($history_offset)->limit($history_limit);
                 },
-                'contacts.replies' => function ($query) use ($history_limit) {
-                    $query->latest()->limit($history_limit);
+                'contacts.replies' => function ($query) use ($history_offset, $history_limit) {
+                    $query->latest()->offset($history_offset)->limit($history_limit);
+                },
+                'replies' => function ($query) use ($history_offset, $history_limit) {
+                    $query->latest()->offset($history_offset)->limit($history_limit);
                 },
                 'contacts'
             ])
@@ -211,12 +210,6 @@ class EloquentPersonRepository implements PersonRepository
         $user['organization']['current_subscription'] = $userModel->organization->currentSubscription();
 
         $user['organization'] = (new OrganizationTransformer)->transform($user['organization']);
-
-        // @todo can we remove this?
-        foreach ($user['checkins'] as &$check_in)
-        {
-            $check_in += $this->check_ins->getCounts($check_in['id']);
-        }
 
         foreach ($user['checkins'] as &$check_in)
         {
@@ -241,6 +234,13 @@ class EloquentPersonRepository implements PersonRepository
         return User::where('organization_id', $organization_id)
             ->whereIn('role', ['admin', 'owner'])
             ->get();
+    }
+
+    public function getOwner($organization_id)
+    {
+        return User::where('organization_id', $organization_id)
+            ->where('role', '=', 'owner')
+            ->first();
     }
 
     // PersonRepository

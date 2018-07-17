@@ -50,20 +50,26 @@ class CheckIn extends Mailable
 
         $profile_picture = $this->creator['profile_picture'];
         $initials = UserTransformer::generateInitials($this->creator['name']);
-        $check_in_url = $client_url .'/checkins/'. $this->check_in['id'];
         $subject = str_limit($this->check_in['message'], $limit = 50, $end = '...');
-
-        $user_url_fragment = '/' . $this->user['id'] . '?token=' . urlencode($this->user['reply_token']);
-        $answer_url_no = $client_url . '/r/' . $this->check_in['id'] . '/0' . $user_url_fragment;
-        $answer_url_yes = $client_url . '/r/' . $this->check_in['id'] . '/1' . $user_url_fragment;
-        $answer_url = $client_url .'/checkins/'. $this->check_in['id']. '/answer';
-        $reply_url = $client_url .'/checkins/'. $this->check_in['id']. '/reply';
+        $check_in_url = $client_url .
+            '/#/r/'.
+            $this->check_in['id'] . '/' .
+            '/-/' .
+            $this->user['id'] . '/' .
+            urlencode($this->user['reply_token']);
 
         $has_custom_answers = false;
 
         if ($this->check_in['answers']) {
           foreach ($this->check_in['answers'] as $index => $answer) {
-              $this->check_in['answers'][$index]['url'] = $client_url . '/r/' . $this->check_in['id'] . '/' . $index . $user_url_fragment;
+
+              $this->check_in['answers'][$index]['url'] =
+                  $client_url .
+                  '/#/r/' .
+                  $this->check_in['id'] . '/' .
+                  $index . '/' .
+                  $this->user['id'] . '/' .
+                  urlencode($this->user['reply_token']);
 
               if ($answer['type'] == 'custom') {
                 $has_custom_answers = true;
@@ -71,10 +77,10 @@ class CheckIn extends Mailable
           }
         }
 
-        $unsubscribe_url = $client_url . '/unsubscribe/' .
-          '?token=' . urlencode($this->contact['unsubscribe_token']) .
-          '&email=' . urlencode($this->contact['contact']) .
-          '&org_name=' . urlencode($org->name);
+        $unsubscribe_url = $client_url . '/#/unsubscribe/' .
+          urlencode($org->name) . '/' .
+          urlencode($this->contact['contact']) . '/' .
+          urlencode($this->contact['unsubscribe_token']);
 
         return $this->view('emails.checkin')
                     ->text('emails.checkin_plain')

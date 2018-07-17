@@ -51,13 +51,13 @@ class Invite extends Mailable
 
         $url = secure_url(
           $client_url
-          .'/login/invite/'
-          .'?email=' . urlencode($this->email)
-          .'&personId=' . $this->member['id']
-          .'&orgId=' . $this->organization['id']
-          .'&orgSubdomain=' . $this->organization['subdomain']
-          .'&token=' . $this->member['invite_token']
+          . '/#/signin/invite/'
+          . urlencode($this->organization['subdomain']) . '/'
+          . urlencode($this->member['id']) . '/'
+          . urlencode($this->email) . '/'
+          . urlencode($this->member['invite_token'])
         );
+
         $msg = 'You have been invited to join '.$this->organization['name'].'\'s TenFour, please click the link below to complete registration';
         $subject = $this->organization['name'] . ' invited you to join TenFour';
 

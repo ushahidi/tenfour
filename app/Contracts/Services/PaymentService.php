@@ -3,12 +3,8 @@ namespace TenFour\Contracts\Services;
 
 interface PaymentService
 {
-    public function getPlanId();
-    public function getAddonId();
-
-    public function checkoutHostedPage($organization, $redirectUrl, $addonQuantity = 0, $isFreeTrial = false);
-    public function checkoutUpdateHostedPage($organization, $redirectUrl);
-    public function retrieveHostedPage($subscription_id);
+    public function getProUpgradeHostedPageUrl($organization, $redirectUrl);
+    public function getUpdatePaymentInfoHostedPageUrl($organization, $redirectUrl);
 
     public function createSubscription($organization);
     public function retrieveSubscription($subscription_id);
@@ -16,4 +12,16 @@ interface PaymentService
     public function reactivateSubscription($subscription_id);
 
     public function retrieveCoupon($promo_code);
+    public function changeToFreePlan($subscription_id);
+    public function changeToProPlan($subscription_id);
+
+    public function getFreePlanId();
+    public function getProPlanId();
+    public function getUserBundleAddonId();
+    public function getCreditBundleAddonId();
+    public function getCreditTopupAddonId();
+
+    public function chargeAddonImmediately($subscription_id, $addon_id, $addon_quantity);
+
+    public function estimateBill($subscription);
 }

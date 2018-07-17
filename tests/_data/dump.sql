@@ -4,7 +4,7 @@ INSERT INTO organizations (id, name, subdomain) VALUES ('2', 'TenFourTest', 'ten
 INSERT INTO organizations (id, name, subdomain) VALUES ('3', 'Testers', 'testers');
 INSERT INTO organizations (id, name, subdomain) VALUES ('4', 'Dummy org', 'dummy');
 
-INSERT INTO subscriptions (organization_id, subscription_id, customer_id, status, plan_id, quantity, card_type, trial_ends_at, last_four) VALUES ('2', 'sub1', 'cust1', 'active', 'standard-plan', 10, 'visa', '2016-10-30 12:05:01', '1234');
+INSERT INTO subscriptions (organization_id, subscription_id, customer_id, status, plan_id, quantity, card_type, trial_ends_at, last_four) VALUES ('2', 'sub1', 'cust1', 'active', 'pro-plan', 10, 'visa', '2016-10-30 12:05:01', '1234');
 INSERT INTO addons (subscription_id, name, addon_id, quantity) VALUES (1, "extra-credits", "extra-credits", 1000);
 INSERT INTO credit_adjustments (organization_id, adjustment, balance) VALUES (2, 3, 3);
 
@@ -88,6 +88,7 @@ INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) 
 INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('3', 'Latest answer', '4', '1', '4', NOW());
 INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('4', 'Not OK again', '6', '3', '4', NOW() - INTERVAL 2 MINUTE);
 INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('5', 'Latest answer again', '6', '3', '4', NOW() - INTERVAL 1 MINUTE);
+INSERT INTO replies (id, message, contact_id, check_in_id, user_id, created_at) VALUES ('6', 'Another latest answer', '4', '1', '4', NOW());
 
 -- Add test settings
 INSERT INTO settings (organization_id, `key`, `values`) VALUES ('2', 'organization_types', '["election"]') ON DUPLICATE KEY UPDATE `values` = '["election"]';
@@ -100,7 +101,7 @@ VALUES
 ('1', '2', '["name", "role", "phone", "email", "address", "twitter"]', '{"0":"name","2":"phone","3":"email"}', '/contacts/sample.csv');
 
 -- Add test unverified address
-INSERT INTO unverified_addresses (id, address, verification_token) VALUES ('1', 'mary@ushahidi.com', 'token');
+INSERT INTO unverified_addresses (id, address, verification_token, code) VALUES ('1', 'mary@ushahidi.com', 'token', '123456');
 
 -- Add test organization groups
 INSERT INTO groups (id, name, organization_id) VALUES ('1', 'Test Group 1', '2');

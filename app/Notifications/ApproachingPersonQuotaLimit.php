@@ -2,17 +2,15 @@
 
 namespace TenFour\Notifications;
 
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Http\Requests\Person\AddPersonRequest;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Models\Organization;
-use TenFour\Http\Transformers\UserTransformer;
 
-// Send followup email who abandon at payments screen and let them know you have a free trial
-// https://github.com/ushahidi/RollCall/issues/847
-
-class WelcomeAbandoned extends Notification
+class ApproachingPersonQuotaLimit extends Notification
 {
     use Queueable;
 
@@ -21,7 +19,7 @@ class WelcomeAbandoned extends Notification
      *
      * @return void
      */
-    public function __construct(Organization $organization)
+    public function __construct($organization)
     {
         $this->organization = $organization;
     }
@@ -45,29 +43,31 @@ class WelcomeAbandoned extends Notification
      */
     public function toMail($notifiable)
     {
-        $body = "Thank you for checking out TenFour. TenFour helps you reach your team during an emergency." .
-            "<br><br>" .
-            "Finish signing up at " .
-            "<a href='" . $this->url() . "'>" . $this->url() . "</a> " .
-            " to make sure your team is prepared.";
+        $body = 'Your TenFour free plan entitles you to ' . $this->maxPeople() . ' people in your organization. ' .
+          'You are now approaching that limit. You might want to consider upgrading your plan to add more people.';
 
         return (new MailMessage)
             ->view('emails.general', [
                 'action_url'      => $this->url(),
-                'action_text'     => 'Log in to TenFour',
-                'subject'         => 'Welcome to TenFour',
+                'action_text'     => 'Upgrade your Plan',
+                'subject'         => 'Upgrade your Plan',
                 'profile_picture' => $this->organization->profile_picture,
                 'org_subdomain'   => $this->organization->subdomain,
                 'org_name'        => $this->organization->name,
                 'initials'        => UserTransformer::generateInitials($this->organization->name),
                 'body'            => $body
             ])
-            ->subject('Welcome to TenFour');
+            ->subject('Upgrade your Plan');
+    }
+
+    private function maxPeople()
+    {
+        return AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN;
     }
 
     private function url()
     {
-        return $this->organization->url();
+        return $this->organization->url('/#/settings/payments');
     }
 
     /**
@@ -79,7 +79,8 @@ class WelcomeAbandoned extends Notification
     public function toArray($notifiable)
     {
         return [
-            'url' => $this->url(),
+            'users' => count($this->organization->members),
+            'max' => AddPersonRequest::MAX_PERSONS_IN_FREE_PLAN
         ];
     }
 }

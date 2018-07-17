@@ -29,6 +29,7 @@ class GetPersonRequest extends FormRequest
         if ($this->isSelf($this->route('person'))) {
             return true;
         }
+        
         return false;
     }
 

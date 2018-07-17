@@ -3,6 +3,7 @@ namespace TenFour\Repositories;
 
 use TenFour\Models\UnverifiedAddress;
 use TenFour\Contracts\Repositories\UnverifiedAddressRepository;
+use DB;
 
 class EloquentUnverifiedAddressRepository implements UnverifiedAddressRepository
 {
@@ -33,13 +34,13 @@ class EloquentUnverifiedAddressRepository implements UnverifiedAddressRepository
 
     public function delete($id)
     {
-		$address = UnverifiedAddress::findOrFail($id);
-		$address->delete();
+        $address = UnverifiedAddress::findOrFail($id);
+        $address->delete();
 
         return $address->toArray();
     }
 
-    public function getByAddress($address, $token = false)
+    public function getByAddress($address, $token = false, $code = false)
     {
         $results = [];
 
@@ -53,6 +54,12 @@ class EloquentUnverifiedAddressRepository implements UnverifiedAddressRepository
             ]);
         }
 
+        if ($code) {
+            $query->where([
+                'code' => $code,
+            ]);
+        }
+
         $address = $query->get();
 
         if (!$address->isEmpty()) {
@@ -60,5 +67,10 @@ class EloquentUnverifiedAddressRepository implements UnverifiedAddressRepository
         }
 
         return $results;
+    }
+
+    public function incrementCodeAttempts($address)
+    {
+        DB::table('unverified_addresses')->where('address', '=', $address)->increment('code_attempts');
     }
 }

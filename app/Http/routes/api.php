@@ -30,8 +30,15 @@ $api->version($version, [
     $api->post($base.'organizations/{organization}/people/owner/notify', ['uses' => 'PersonController@notifyOwner']);
     // $api->post($base.'organizations/{organization}/people/{member}/notify', ['uses' => 'PersonController@notifyPerson']);
 
+    // Notifications endpoint
+    $api->get($base.'organizations/{organization}/people/{person}/notifications', ['uses' => 'NotificationController@index']);
+
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');
+
+    // Device tokens endpoints
+    $api->post($base.'organizations/{organization}/people/{person}/tokens', ['uses' => 'DeviceTokenController@store']);
+    $api->delete($base.'organizations/{organization}/people/{person}/tokens/{token}', ['uses' => 'DeviceTokenController@delete']);
 
     //Org contacts file uploads
     $api->post($base.'organizations/{organization}/files', ['uses' => 'ContactFilesController@create']);
@@ -46,7 +53,7 @@ $api->version($version, [
 
     //checkins
     ////////////////////////////////////////////////////////////////////
-    
+
     $api->get($base. 'organizations/{organization}/checkins', ['as' => 'checkins.index','uses' => 'CheckInController@all']);
     $api->post($base.'organizations/{organization}/checkins', ['as' => 'checkins.create', 'uses' => 'CheckInController@create']);
     $api->get($base. 'organizations/{organization}/checkins/{checkin}', ['as' => 'checkins.show', 'uses' => 'CheckInController@find']);
@@ -64,8 +71,8 @@ $api->version($version, [
 
     // Subscriptions
     $api->resource($base.'organizations/{organization}/subscriptions', 'SubscriptionController');
-    $api->post($base.'organizations/{organization}/subscriptions/hostedpage', ['uses' => 'SubscriptionController@createHostedPage']);
-    $api->put($base.'organizations/{organization}/subscriptions/hostedpage/{subscription}', ['uses' => 'SubscriptionController@updateHostedPage']);
-    $api->post($base.'organizations/{organization}/subscriptions/hostedpagesuccess/{subscription}', ['uses' => 'SubscriptionController@confirmHostedPage']);
+    $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/switchtopro', ['uses' => 'SubscriptionController@getProUpgradeHostedPageUrl']);
+    $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/update', ['uses' => 'SubscriptionController@getUpdatePaymentInfoHostedPageUrl']);
+    $api->post($base.'organizations/{organization}/subscriptions/{subscription}/credits', ['uses' => 'SubscriptionController@addCredits']);
 
 });

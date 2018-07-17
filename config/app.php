@@ -163,6 +163,7 @@ return [
         \Torann\GeoIP\GeoIPServiceProvider::class,
         ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
         League\StatsD\Laravel5\Provider\StatsdServiceProvider::class,
+        LaravelFCM\FCMServiceProvider::class,
     ],
 
     /*
@@ -219,6 +220,8 @@ return [
         'UrlShortener' => Waavi\UrlShortener\Facades\UrlShortener::class,
         'GeoIP'     => \Torann\GeoIP\Facades\GeoIP::class,
         'Statsd'    => League\StatsD\Laravel5\Facade\StatsdFacade::class,
+        'FCM'       => LaravelFCM\Facades\FCM::class,
+	       // 'FCMGroup' => LaravelFCM\Facades\FCMGroup::class, // Optional
     ],
 
 ];

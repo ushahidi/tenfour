@@ -6,6 +6,7 @@ use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\SubscriptionRepository;
+use TenFour\Contracts\Repositories\UnverifiedAddressRepository;
 use TenFour\Http\Requests\Organization\GetOrganizationsRequest;
 use TenFour\Http\Requests\Organization\CreateOrganizationRequest;
 use TenFour\Http\Requests\Organization\GetOrganizationRequest;
@@ -20,6 +21,8 @@ use TenFour\Http\Response;
 use TenFour\Services\CreditService;
 use TenFour\Contracts\Services\PaymentService;
 use TenFour\Models\Organization;
+use TenFour\Models\User;
+use TenFour\Notifications\Welcome;
 use DB;
 use ChargeBee_APIError;
 
@@ -29,7 +32,16 @@ use ChargeBee_APIError;
 class OrganizationController extends ApiController
 {
 
-    public function __construct(OrganizationRepository $organizations, PersonRepository $people, ContactRepository $contacts, Auth $auth, Response $response, CreditService $creditService, PaymentService $payments, SubscriptionRepository $subscriptions)
+    public function __construct(
+        OrganizationRepository $organizations,
+        PersonRepository $people,
+        ContactRepository $contacts,
+        Auth $auth,
+        Response $response,
+        CreditService $creditService,
+        PaymentService $payments,
+        SubscriptionRepository $subscriptions,
+        UnverifiedAddressRepository $addresses)
     {
         $this->organizations = $organizations;
         $this->people = $people;
@@ -39,6 +51,7 @@ class OrganizationController extends ApiController
         $this->creditService = $creditService;
         $this->payments = $payments;
         $this->subscriptions = $subscriptions;
+        $this->addresses = $addresses;
     }
 
     /**
@@ -100,10 +113,20 @@ class OrganizationController extends ApiController
                     'enabled' => true
                 ],
                 'sms' => [
-                    'enabled' => true,
-                    'default_region' => $location->iso_code,
-                    'regions' => []
+                    'enabled' => true
+                ],
+                'app' => [
+                    'enabled' => true
+                ],
+                'slack' => [
+                    'enabled' => false
                 ]
+            ],
+            'regions' => [
+                'default' => $location->iso_code
+            ],
+            'plan_and_credits' => [
+                'monthlyCreditsExtra' => 0
             ]
         ];
 
@@ -127,6 +150,9 @@ class OrganizationController extends ApiController
             'type'        => 'email',
             'preferred'   => 1
         ];
+
+        $address = $this->addresses->getByAddress($request['email'], null, $request['verification_code']);
+        $this->addresses->delete($address['id']);
 
         DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
             $organization = $this->organizations->create($org_input);
@@ -153,7 +179,10 @@ class OrganizationController extends ApiController
         }
         catch (ChargeBee_APIError $e) {
             app('sentry')->captureException($e);
+            \Log::error($e);
         }
+
+        User::findOrFail($owner['id'])->notify(new Welcome(Organization::findOrFail($organization['id'])));
 
         return $this->response->item($result, new OrganizationTransformer, 'organization');
     }
@@ -212,7 +241,7 @@ class OrganizationController extends ApiController
      */
     public function update(UpdateOrganizationRequest $request, $organization_id)
     {
-        $organization = $this->organizations->update($request->except('subdomain'), $organization_id);
+        $organization = $this->organizations->update($request->except('subdomain'), $organization_id, $this->auth->user()['role']);
         return $this->response->item($organization, new OrganizationTransformer, 'organization');
     }
 

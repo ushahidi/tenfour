@@ -44,7 +44,7 @@ class ImportSucceeded extends Notification
     public function toMail($notifiable)
     {
         $body = '';
-        
+
         if ($this->dupe_count > 0) {
             $body .= 'You successfully imported ' . $this->count . ' members into your organization. ';
         } else {
@@ -71,7 +71,7 @@ class ImportSucceeded extends Notification
 
     private function url()
     {
-        return $this->organization->url('/people');
+        return $this->organization->url('/#/people');
     }
 
     /**

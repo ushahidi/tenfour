@@ -96,6 +96,12 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('TenFour\Models\Reply');
     }
 
+    public function deviceTokens()
+    {
+        return $this->hasMany('TenFour\Models\DeviceToken');
+    }
+
+
     public function sendPasswordResetNotification($token) {
         $this->notify(new ResetPassword($token, $this->getEmailForPasswordReset(), $this->organization));
     }

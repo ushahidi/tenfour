@@ -62,7 +62,7 @@
           display: none !important;
         }
         img[class="img-max"]{
-          max-width: 100% !important;
+          max-width: 80px !important;
           width: 100% !important;
           height:auto !important;
         }

@@ -15,15 +15,19 @@ use ChargeBee_InvalidRequestException;
 use TenFour\Notifications\PaymentFailed;
 use TenFour\Notifications\PaymentSucceeded;
 use TenFour\Notifications\TrialEnding;
+use TenFour\Notifications\SubscriptionChanged;
+use TenFour\Contracts\Services\PaymentService;
 
 use Log;
 
 class ChargeBeeWebhookController extends Controller
 {
-    public function __construct(OrganizationRepository $organizations, CreditService $creditService)
+
+    public function __construct(OrganizationRepository $organizations, CreditService $creditService, PaymentService $payments)
     {
         $this->organizations = $organizations;
         $this->creditService = $creditService;
+        $this->payments = $payments;
 
         ChargeBee_Environment::configure(config("chargebee.site"),config("chargebee.key"));
     }
@@ -52,8 +56,24 @@ class ChargeBeeWebhookController extends Controller
             // ->with('addons')
             ->first();
 
+        // $subscription = Subscription::where('subscription_id', '2smoc9EGQxUoH9uRnj')->first();
+
         if (!$subscription) {
             Log::warning('[ChargeBee] No subscription found for id ' . $payload->subscription->id);
+            return abort(200, 'No subscription found');
+        }
+
+        return $subscription;
+    }
+
+    protected function getSubscriptionByCustomerId($payload)
+    {
+        $subscription = Subscription::where('customer_id', $payload->customer->id)
+            // ->with('addons')
+            ->first();
+
+        if (!$subscription) {
+            Log::warning('[ChargeBee] No subscription found for customer id ' . $payload->customer->id);
             return abort(200, 'No subscription found');
         }
 
@@ -77,42 +97,17 @@ class ChargeBeeWebhookController extends Controller
         return response('OK', 200);
     }
 
-    public function handleSubscriptionRenewalReminder($payload)
+    // public function handleSubscriptionRenewalReminder($payload)
+    // {
+    //     $subscription = $this->getSubscription($payload);
+    //
+    //     Log::info('[ChargeBee] Processed SubscriptionRenewalReminder for subscription ' . $subscription->subscription_id);
+    //
+    //     return response('OK', 200);
+    // }
+
+    protected function topup($organization_id, $credits, $meta)
     {
-        $subscription = $this->getSubscription($payload);
-
-        // use this opportunity to update the subscription based on number of users and extra credit settings
-
-        $numUsers = count($subscription->organization->members);
-        $planAndCreditsSettings = $this->organizations->getSetting($subscription->organization->id, 'plan_and_credits');
-
-        $checkout = array(
-            "planId" => config("chargebee.plan"),
-            "planQuantity" => $numUsers,
-            "replaceAddonList" => true,
-        );
-
-        if ($planAndCreditsSettings && $planAndCreditsSettings->monthlyCreditsExtra) {
-            $checkout["addons"] = array(array(
-                "id" => config("chargebee.addon"),
-                "quantity" => $planAndCreditsSettings->monthlyCreditsExtra
-            ));
-        }
-
-        ChargeBee_Subscription::update($subscription->subscription_id, $checkout);
-
-        Log::info('[ChargeBee] Processed SubscriptionRenewalReminder for subscription ' . $subscription->subscription_id);
-
-        return response('OK', 200);
-    }
-
-    protected function topup($organization_id, $credits, $meta, $zeroing)
-    {
-        if ($zeroing) {
-            $balance = $this->creditService->getBalance($organization_id);
-            $credits -= $balance;
-        }
-
         return $this->creditService->addCreditAdjustment($organization_id, $credits, 'topup', $meta);
     }
 
@@ -120,35 +115,48 @@ class ChargeBeeWebhookController extends Controller
     {
         $subscription = $this->getSubscription($payload);
 
-        // 5 text message (SMS) credits per plan quantity
-        // plus addon quantity
-
-        // TODO this webhook will need to be updated to handle mid-cycle payments
-
-        $credits = CreditService::CREDITS_PER_USER_PER_MONTH * $payload->subscription->plan_quantity;
-
-        if (isset($subscription->addons)) {
-            foreach ($subscription->addons as $key => $addon) {
-                if ($addon->addon_id === config("chargebee.addon")) {
-                    $credits += $addon->quantity;
-                }
-            }
-        }
-
-        $meta = $payload;
-
-        $creditAdjustment = $this->topup($subscription->organization->id, $credits, $meta, true);
-
         $subscription->update([
             'next_billing_at'   => $payload->subscription->next_billing_at,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
 
-        $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
-            "adjustment" => $credits,
-            "balance" => $creditAdjustment->balance
-        ]));
+        if (isset($payload->card)) {
+            $subscription->update([
+                'last_four'         => $payload->card->last4,
+                'card_type'         => ucfirst($payload->card->card_type),
+                'expiry_month'      => $payload->card->expiry_month,
+                'expiry_year'       => $payload->card->expiry_year,
+            ]);
+        }
+
+        $credits = 0;
+
+        if (isset($payload->invoice) && isset($payload->invoice->line_items)) {
+            foreach ($payload->invoice->line_items as $line_item) {
+                if ($line_item->entity_id === $this->payments->getProPlanId()) {
+                    $credits += CreditService::BASE_CREDITS_PER_MONTH;
+                }
+                else if ($line_item->entity_id === $this->payments->getUserBundleAddonId()) {
+                    $credits += CreditService::CREDITS_PER_USER_BUNDLE_PER_MONTH * $line_item->quantity;
+                }
+                else if ($line_item->entity_id === $this->payments->getCreditBundleAddonId()) {
+                    $credits += $line_item->quantity;
+                }
+                else if ($line_item->entity_id === $this->payments->getCreditTopupAddonId()) {
+                    $credits += $line_item->quantity;
+                }
+            }
+        }
+
+        if ($credits) {
+            $creditAdjustment = $this->topup($subscription->organization->id, $credits, $payload);
+
+            $subscription->organization->owner()->notify(new PaymentSucceeded($subscription, (object) [
+                "adjustment" => $credits,
+                "balance" => $creditAdjustment->balance
+            ]));
+        }
 
         Log::info('[ChargeBee] Processed PaymentSucceeded for subscription ' . $subscription->subscription_id);
 
@@ -178,6 +186,8 @@ class ChargeBeeWebhookController extends Controller
             'status'            => $payload->subscription->status,
         ]);
 
+        $this->payments->changeToFreePlan($subscription->subscription_id);
+
         Log::info('[ChargeBee] Processed SubscriptionCancelled for subscription ' . $subscription->subscription_id);
 
         return response('OK', 200);
@@ -200,14 +210,9 @@ class ChargeBeeWebhookController extends Controller
     {
         $subscription = Subscription::where('subscription_id', $payload->subscription->id)->first();
 
-        if ($subscription) {
-            Log::info('[ChargeBee] Skipping existing subscription ' . $payload->subscription->id);
-            return response('OK', 200);
-        }
+        // nothing to do here - subscriptions are handled during organization onboarding
 
-        // The client didn't handle the create subscription callback correctly
-
-        Log::error('[ChargeBee] Received SubscriptionCreated for non-existent subscription ' . $payload->subscription->id);
+        Log::info('[ChargeBee] Processed SubscriptionCreated for subscription ' . $payload->subscription->id);
 
         return response('OK', 200);
 
@@ -230,7 +235,7 @@ class ChargeBeeWebhookController extends Controller
                 if ($coupon_result->coupon()->discountPercentage == 100) {
                     $meta = $payload;
                     $meta->rc_freepromo = true;
-                    $creditAdjustment = $this->topup($subscription->organization->id, config('credits.freepromo'), $meta, true);
+                    $creditAdjustment = $this->topup($subscription->organization->id, config('credits.freepromo'), $meta);
                 }
             }
             catch (ChargeBee_InvalidRequestException $e) {}
@@ -247,8 +252,7 @@ class ChargeBeeWebhookController extends Controller
     {
         $subscription = $this->getSubscription($payload);
 
-        Addon::where('subscription_id', $subscription->id)->delete();
-        Subscription::where('id', $subscription->id)->delete();
+        $this->payments->changeToFreePlan($subscription->subscription_id);
 
         Log::info('[ChargeBee] Processed SubscriptionDeleted for subscription ' . $subscription->subscription_id);
 
@@ -261,6 +265,7 @@ class ChargeBeeWebhookController extends Controller
 
         $subscription->update([
             'status'            => $payload->subscription->status,
+            'plan_id'           => $payload->subscription->plan_id,
             'next_billing_at'   => $payload->subscription->next_billing_at,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'quantity'          => $payload->subscription->plan_quantity,
@@ -278,9 +283,9 @@ class ChargeBeeWebhookController extends Controller
             ]);
         }
 
-        if (isset($payload->subscription->addons)) {
-            Addon::where('subscription_id', $subscription->id)->delete();
+        Addon::where('subscription_id', $subscription->id)->delete();
 
+        if (isset($payload->subscription->addons)) {
             foreach ($payload->subscription->addons as $addon) {
                 $subscription->addons()->create([
                     'quantity' => $addon->quantity,
@@ -289,9 +294,28 @@ class ChargeBeeWebhookController extends Controller
             }
         }
 
+        $subscription->organization->owner()->notify(new SubscriptionChanged($subscription, $this->payments));
+
         Log::info('[ChargeBee] Processed SubscriptionChanged for subscription ' . $subscription->subscription_id);
 
         return response('OK', 200);
     }
 
+    public function handleCardUpdated($payload)
+    {
+        $subscription = $this->getSubscriptionByCustomerId($payload);
+
+        if (isset($payload->card)) {
+            $subscription->update([
+                'last_four'         => $payload->card->last4,
+                'card_type'         => ucfirst($payload->card->card_type),
+                'expiry_month'      => $payload->card->expiry_month,
+                'expiry_year'       => $payload->card->expiry_year,
+            ]);
+        }
+
+        Log::info('[ChargeBee] Processed CardUpdated for subscription ' . $subscription->subscription_id);
+
+        return response('OK', 200);
+    }
 }

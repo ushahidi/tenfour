@@ -200,9 +200,9 @@ FORMAT: 1A
 
 + Parameters
     + org_id: (number, required) - Organization id
-    + offset: (string, optional) - 
+    + offset: (number, optional) - 
         + Default: 0
-    + limit: (string, optional) - 
+    + limit: (number, optional) - 
         + Default: 0
 
 + Request (application/json)
@@ -269,12 +269,16 @@ FORMAT: 1A
                 ]
             }
 
-## Find a member [GET /api/v1/organizations/{org_id}/people/{person_id}]
+## Find a member [GET /api/v1/organizations/{org_id}/people/{person_id}/{?history_offset,history_limit}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
     + person_id: (number, required) - Person id
+    + history_offset: (number, optional) - 
+        + Default: 0
+    + history_limit: (number, optional) - 
+        + Default: 1
 
 + Request (application/json)
     + Headers
@@ -286,6 +290,8 @@ FORMAT: 1A
 
             {
                 "person": {
+                    "checkins": [],
+                    "replies": [],
                     "contacts": [
                         {
                             "contact": "+254721674180",
@@ -426,6 +432,47 @@ FORMAT: 1A
 
             "OK"
 
+# Notifications [/api/v1/organizations]
+
+## List a person's notifications [GET /api/v1/organizations/{org_id}/people/{person_id}/notifications/{?offset,limit}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+    + offset: (number, optional) - 
+        + Default: 0
+    + limit: (number, optional) - 
+        + Default: 0
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "notifications": [
+                    {
+                        "id": "386f1eae-e8af-4acc-9a9a-6cfd9b086670",
+                        "type": "TenFour\\Notifications\\PersonLeftOrganization",
+                        "notifiable_id": 8,
+                        "notifiable_type": "TenFour\\Models\\User",
+                        "data": {
+                            "person_name": "David Test",
+                            "person_id": 6,
+                            "profile_picture": false,
+                            "initials": "DT"
+                        },
+                        "read_at": null,
+                        "created_at": "2018-07-06 13:58:21",
+                        "updated_at": "2018-07-06 13:58:21"
+                    }
+                ]
+            }
+
 # Contacts [/api/v1/organizations]
 
 ## Add member contact [POST /api/v1/organizations/{org_id}/people/{person_id}/contacts]
@@ -523,6 +570,30 @@ FORMAT: 1A
                 "token": "anunsubscribetoken",
                 "email": "linda@ushahidi.com"
             }
+
+# Tokens [/api/v1/organizations/{org_id}/person/{person_id}/tokens]
+
+## Register a new device token [POST /api/v1/organizations/{org_id}/person/{person_id}/tokens]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "token": "token123123123123op1kpo2k"
+            }
+
++ Response 200 (application/json)
+    + Body
+
+            []
 
 # Files [/api/v1/organizations]
 
@@ -875,7 +946,6 @@ FORMAT: 1A
             }
 
 # Checkins [/api/v1/organizations/{org_id}/checkins]
-* @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
 
 ## Get all check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins{?offset,limit}]
 
@@ -1597,8 +1667,8 @@ FORMAT: 1A
                 }
             }
 
-## Cancel a subscription [DELETE /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
-
+## Cancel a subscription. [DELETE /api/v1/organizations/{org_id}/subscriptions/{subscription_id}]
+Effectively changes a subscription to a free plan.
 
 + Parameters
     + org_id: (number, required) - Organization id
@@ -1619,21 +1689,13 @@ FORMAT: 1A
                 }
             }
 
-## Create an ChargeBee Hosted Page subscription url [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+## Create a billing iframe URL for upgrading a subscription to pro. [GET /api/v1/organizations/{org_id}/subscriptions/{subscription_id}/hostedpage/switchtopro?callback={callback}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
-
-+ Request (application/json)
-    + Headers
-
-            Authorization: Bearer token
-    + Body
-
-            {
-                "callback": "http://subdomain.tenfour.org/callback"
-            }
+    + subscription_id: (number, required) - Subscription id
+    + callback: (url, required) - Callback URL
 
 + Response 200 (application/json)
     + Body
@@ -1642,47 +1704,17 @@ FORMAT: 1A
                 "url": "http://api.chargebee.com/hostedpage?xxx"
             }
 
-## Create a ChargeBee hosted page url for updating the subscription [PUT /api/v1/organizations/{org_id}/subscriptions/hostedpage]
+## Create a billing iframe URL for updating payment information. [GET /api/v1/organizations/{org_id}/subscriptions/{subscription_id}/hostedpage/update?callback={callback}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
     + subscription_id: (number, required) - Subscription id
-
-+ Request (application/json)
-    + Body
-
-            {
-                "callback": "http://subdomain.tenfour.org/callback"
-            }
+    + callback: (url, required) - Callback URL
 
 + Response 200 (application/json)
     + Body
 
             {
                 "url": "http://api.chargebee.com/hostedpage?xxx"
-            }
-
-## API endpoint called by client after successful ChargeBee subscription creation [POST /api/v1/organizations/{org_id}/subscriptions/hostedpage/confirm]
-
-
-+ Parameters
-    + org_id: (number, required) - Organization id
-    + subscription_id: (number, required) - Subscription id
-
-+ Request (application/json)
-    + Body
-
-            {
-                "subscription_id": "cb123uijh12iu3h87"
-            }
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "subscription": {
-                    "id": 1,
-                    "status": "active"
-                }
             }

@@ -22,8 +22,18 @@ interface OrganizationRepository extends CrudRepository
 
     /**
      * Get an organization's setting by key
-     * @param  $subdomain
+     * @param  $organization_id
+     * @param  $setting_key
      * @return array
      */
     public function getSetting($id, $key);
+
+    /**
+     * Set an organization's setting by key
+     * @param  $organization_id
+     * @param  $setting_key
+     * @param  $setting_value
+     * @return array
+     */
+    public function setSetting($id, $key, $value);
 }

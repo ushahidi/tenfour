@@ -135,7 +135,7 @@ class NotificationsCest
         $I->sendPost($this->checkInsEndpoint, [
             'message' => $message,
             'organization_id' => $org_id,
-            'send_via' => ['apponly'],
+            'send_via' => ['app'],
             'recipients' => [
                 [
                     'id' => 3
@@ -198,4 +198,32 @@ class NotificationsCest
         ]);
     }
 
+    /*
+     * Test notifications endpoint
+     *
+     */
+    public function testNotificationsEndpoint(ApiTester $I)
+    {
+        $org_id = 2;
+        $I->wantTo('I want to get a paged list of notifications');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
+            'name' => 'Timmy OToole',
+            'email' => 'timmy@tenfour.org',
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/5/notifications?offset=0&limit=1');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'notifications' => [[
+                'type' => 'TenFour\Notifications\PersonJoinedOrganization',
+                'data' => [
+                  'person_name' => 'Timmy OToole',
+                ]
+            ]]
+        ]);
+    }
 }

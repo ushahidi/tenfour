@@ -12,7 +12,7 @@ return [
 
     'domain' => env('APP_DOMAIN', 'tenfour.org'),
 
-    'reserved_words' => ['app', 'rollcall', 'tenfour', 'www', 'staging', 'admin'],
+    'reserved_words' => ['app', 'rollcall', 'tenfour', 'www', 'staging', 'admin', 'dev', 'pwa', 'legacy'],
 
     'messaging' => [
         'incoming_driver' => env('RC_MESSAGING_INCOMING', 'aws-ses-sns'),

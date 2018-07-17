@@ -15,6 +15,7 @@ use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
 use TenFour\Models\Organization;
 use TenFour\Models\User;
+use TenFour\Models\DeviceToken;
 use TenFour\Messaging\SMSService;
 use TenFour\Services\URLShortenerService;
 use TenFour\Services\AnalyticsService;
@@ -98,6 +99,8 @@ class SendCheckIn implements ShouldQueue
             'check_in_id' => $this->check_in['id'],
         ];
 
+        $this->dispatchCheckInViaFCM($message_service_factory->make('push'), $organization, $sender_name);
+
         foreach($this->check_in['recipients'] as $recipient)
         {
             // Check if user has a pending reply
@@ -168,7 +171,9 @@ class SendCheckIn implements ShouldQueue
             }
         }
 
-        App::make('TenFour\Services\CreditService')->addCreditAdjustment($this->check_in['organization_id'], 0-$creditAdjustmentMeta['credits'], 'check-in', $creditAdjustmentMeta);
+        if ($creditAdjustmentMeta['credits'] > 0) {
+            App::make('TenFour\Services\CreditService')->addCreditAdjustment($this->check_in['organization_id'], 0-$creditAdjustmentMeta['credits'], 'check-in', $creditAdjustmentMeta);
+        }
 
         (new AnalyticsService())->track('CheckIn Sent', [
             'org_id'            => $this->check_in['organization_id'],
@@ -213,6 +218,25 @@ class SendCheckIn implements ShouldQueue
         }
     }
 
+    protected function dispatchCheckInViaFCM($message_service, $organization, $sender_name) {
+
+        $recipient_ids = array_map(function ($value) {
+            return $value['id'];
+        }, $this->check_in['recipients']);
+
+        $to = DeviceToken::whereIn('user_id', $recipient_ids)->pluck('token')->all();
+
+        $params['type'] = 'checkin:received';
+        $params['org_name'] = $organization->name;
+        $params['org_id'] = $organization->id;
+        $params['checkin_id'] = $this->check_in['id'];
+        $params['sender_name'] = $sender_name;
+        $params['sender_id'] = $this->check_in['user_id'];
+
+        $message_service->setView('fcm.checkin');
+        $message_service->send($to, $this->check_in['message'], $params, null, null);
+    }
+
     protected function dispatchCheckInViaEmail($message_service, $contact, $to, $creator, $recipient) {
         if ($contact['bounce_count'] >= config('tenfour.messaging.bounce_threshold')) {
             Log::info('Cannot send check-in for ' . $contact['contact'] . ' because bounces exceed threshold');
@@ -232,7 +256,14 @@ class SendCheckIn implements ShouldQueue
     protected function dispatchCheckInViaSMS($message_service, $from, $to, $recipient, $org_url, $sender_name, $org_name) {
 
         $params = [];
-        $check_in_url = $org_url .'/r/'. $this->check_in['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($recipient['reply_token']);
+
+        $check_in_url = $org_url .
+            '/#/r/' .
+            $this->check_in['id'] . '/' .
+            '-/' .
+            $recipient['id'] . '/' .
+            urlencode($recipient['reply_token']);
+
         $check_in_url = $params['check_in_url'] = $this->shortener->shorten($check_in_url);
         $params['answers'] = $this->check_in['answers'];
         $params['keyword'] = $message_service->getKeyword($to);
@@ -266,7 +297,16 @@ class SendCheckIn implements ShouldQueue
 
         if ($unreplied_sms_check_in && $unreplied_sms_check_in['id'] && $unreplied_sms_check_in['from']) {
             $reminder_reply_token = $check_in_repo->getReplyToken($unreplied_sms_check_in['id'], $recipient['id']);
-            $reminder_sms_url = $this->shortener->shorten($org_url .'/r/'. $unreplied_sms_check_in['id'] .  '/-/' . $recipient['id'] . '?token=' . urlencode($reminder_reply_token));
+
+            $reminder_sms_url = $org_url .
+                '/#/r/' .
+                $unreplied_sms_check_in['id'] . '/' .
+                '-/' .
+                $recipient['id'] . '/' .
+                urlencode($reminder_reply_token);
+
+            $reminder_sms_url = $this->shortener->shorten($reminder_sms_url);
+
             $this->sendReminderSMS($message_service, $to, $reminder_sms_url, $from, $unreplied_sms_check_in['id']);
         }
     }
@@ -275,16 +315,16 @@ class SendCheckIn implements ShouldQueue
      * Work out by which channel we should send this check-in
      */
     protected function getSendVia($contacts) {
-        $send_via = [];
+        $send_via = ['app'];
         $preferred = [];
         $subscription = $this->organization['current_subscription'];
 
         if (!isset($this->check_in['send_via']) || empty($this->check_in['send_via'])) {
-            return [];
+            return $send_via;
         }
 
-        if (!$subscription) {
-            return [];
+        if (!$subscription || $subscription['plan_id'] === config("chargebee.plans.free")) {
+            return $send_via;
         }
 
         if (in_array('preferred', $this->check_in['send_via'])) {
