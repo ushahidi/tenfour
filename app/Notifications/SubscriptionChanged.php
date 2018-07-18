@@ -69,6 +69,10 @@ class SubscriptionChanged extends Notification
         if ($this->subscription->plan_id === $this->payments->getProPlanId()) {
             $body .= '<li>Your next billing date is ' . (new Carbon($this->subscription->next_billing_at))->toFormattedDateString() . '</li>';
             $body .= '<li>Your next bill is estimated to be USD $' . number_format($this->payments->estimateBill($this->subscription), 2)  . '</li>';
+
+            if ($this->subscription->promo_code) {
+                $body .= '<li>Your discount code <strong>' . $this->subscription->promo_code . '</strong> will be applied to this bill.</li>';
+            }
         }
 
         $body .= '</ul>';
