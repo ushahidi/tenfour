@@ -69,8 +69,6 @@ class ChargeBeePaymentService implements PaymentService
 
     public function getProUpgradeHostedPageUrl($organization, $redirectUrl)
     {
-        // $numUsers = count($organization->members);
-
         $checkout = array(
             "subscription" => array(
                 "id" => $organization->currentSubscription()->subscription_id,
@@ -84,17 +82,6 @@ class ChargeBeePaymentService implements PaymentService
             "cancelledUrl" => $redirectUrl,
             "passThruContent" => json_encode(["organization_id" => $organization->id]),
         );
-
-        // if ($isFreeTrial) {
-        //     unset($checkout['subscription']['trialEnd']);
-        // }
-        //
-        // if ($addonQuantity) {
-        //     $checkout["addons"] = array(array(
-        //         "id" => $this->getCreditBundleAddonId(),
-        //         "quantity" => $addonQuantity
-        //     ));
-        // }
 
         $hostedPage = ChargeBee_HostedPage::checkoutExisting($checkout)->hostedPage();
 
@@ -118,27 +105,17 @@ class ChargeBeePaymentService implements PaymentService
         return $hostedPage->url;
     }
 
-    // public function retrieveHostedPage($subscription_id)
-    // {
-    //     $result = ChargeBee_HostedPage::retrieve($subscription_id);
-    //     $hostedPage = $result->hostedPage();
-    //     $passThruContent = json_decode($hostedPage->passThruContent);
-    //     $hostedPage->organization_id = $passThruContent->organization_id;
-    //
-    //     return $hostedPage;
-    // }
-
     public function createSubscription($organization)
     {
         // create a freemium subscription for new organizations
 
         $result = ChargeBee_Subscription::create([
-            "planId" => $this->getFreePlanId(),
-            // "trial_end" => $this->getTrialEnd(),
-            "customer" => array(
-                "email" => $organization->owner()->email(),
-                "company" => $organization->name,
-                "phone" => $organization->owner()->phone()
+            "planId"          => $this->getFreePlanId(),
+            "autoCollection"  => "off",
+            "customer"        => array(
+                "email"       => $organization->owner()->email(),
+                "company"     => $organization->name,
+                "phone"       => $organization->owner()->phone()
             ),
         ]);
 
@@ -210,7 +187,6 @@ class ChargeBeePaymentService implements PaymentService
             "subscriptionId"  => $subscription_id,
             "addonId"         => $addonId,
             "addonQuantity"   => $addonQuantity));
-        // $invoice = $result->invoice();
 
         return $result->invoice()->getValues();
     }
