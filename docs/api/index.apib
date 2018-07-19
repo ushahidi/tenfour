@@ -571,9 +571,9 @@ FORMAT: 1A
                 "email": "linda@ushahidi.com"
             }
 
-# Tokens [/api/v1/organizations/{org_id}/person/{person_id}/tokens]
+# Tokens [/api/v1/organizations/{org_id}/people/{person_id}/tokens]
 
-## Register a new device token [POST /api/v1/organizations/{org_id}/person/{person_id}/tokens]
+## Register a new device token [POST /api/v1/organizations/{org_id}/people/{person_id}/tokens]
 
 
 + Parameters
@@ -589,6 +589,27 @@ FORMAT: 1A
             {
                 "token": "token123123123123op1kpo2k"
             }
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Delete a device token [POST /api/v1/organizations/{org_id}/people/{person_id}/tokens/{token}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+    + token: (string, required) - The device token to delete
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
 
 + Response 200 (application/json)
     + Body
