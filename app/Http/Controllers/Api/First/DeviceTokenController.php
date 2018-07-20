@@ -9,7 +9,7 @@ use Dingo\Api\Auth\Auth;
 use TenFour\Http\Response;
 
 /**
- * @Resource("Tokens", uri="/api/v1/organizations/{org_id}/person/{person_id}/tokens")
+ * @Resource("Tokens", uri="/api/v1/organizations/{org_id}/people/{person_id}/tokens")
  */
 
 class DeviceTokenController extends ApiController
@@ -57,7 +57,7 @@ class DeviceTokenController extends ApiController
      * @Post("/{token}")
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
-     *   @Parameter("person_id", type="number", required=true, description="Person id")
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
      *   @Parameter("token",required=true, description="The device token to delete")
      * })
      *

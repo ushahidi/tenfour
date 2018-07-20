@@ -44,6 +44,11 @@ class MigrateSubscriptions extends Command
         foreach ($organizations->all() as $org) {
             $org = Organization::findOrFail($org['id']);
 
+            if (!$org->owner()) {
+                $this->info('Org ' . $org['subdomain'] . ' has no owner');
+                continue;
+            }
+
             if (count($org->subscriptions) === 0) {
                 // create a freemium subscription on chargebee for this orgs
 
