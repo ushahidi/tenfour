@@ -54,7 +54,7 @@ class CheckLowCredits implements ShouldQueue
                 continue;
             };
 
-            if ($subscription->plan_id === $payments->getFreePlanId()) {
+            if ($subscription->plan_id !== $payments->getProPlanId()) {
                 continue;
             }
 
