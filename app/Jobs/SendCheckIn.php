@@ -226,7 +226,7 @@ class SendCheckIn implements ShouldQueue
 
         $to = DeviceToken::whereIn('user_id', $recipient_ids)->pluck('token')->all();
 
-        $params['type'] = 'checkin:received';
+        $params['type'] = 'checkin:created';
         $params['org_name'] = $organization->name;
         $params['org_id'] = $organization->id;
         $params['checkin_id'] = $this->check_in['id'];
