@@ -15,6 +15,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+use Carbon\Carbon;
+
 class CheckLowCredits implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -45,6 +47,12 @@ class CheckLowCredits implements ShouldQueue
                 \Log::warning("Organization " . $org->subdomain . " has no subscriptions");
                 continue;
             }
+
+            $created_at = Carbon::createFromTimestamp(strtotime($org->created_at));
+
+            if ($created_at->diffInDays(Carbon::now()) < 1) {
+                continue;
+            };
 
             if ($subscription->plan_id === $payments->getFreePlanId()) {
                 continue;
