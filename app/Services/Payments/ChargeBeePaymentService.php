@@ -111,7 +111,7 @@ class ChargeBeePaymentService implements PaymentService
 
         $result = ChargeBee_Subscription::create([
             "planId"          => $this->getFreePlanId(),
-            "autoCollection"  => "off",
+            "autoCollection"  => "on",
             "customer"        => array(
                 "email"       => $organization->owner()->email(),
                 "company"     => $organization->name,
