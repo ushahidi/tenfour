@@ -85,7 +85,7 @@ class ChargeBeeWebhookController extends Controller
         $subscription = $this->getSubscription($payload);
 
         $subscription->update([
-            'next_billing_at'   => $payload->subscription->next_billing_at,
+            'next_billing_at'   => isset($payload->subscription->next_billing_at)?$payload->subscription->next_billing_at:null,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
@@ -116,7 +116,7 @@ class ChargeBeeWebhookController extends Controller
         $subscription = $this->getSubscription($payload);
 
         $subscription->update([
-            'next_billing_at'   => $payload->subscription->next_billing_at,
+            'next_billing_at'   => isset($payload->subscription->next_billing_at)?$payload->subscription->next_billing_at:null,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
@@ -223,7 +223,7 @@ class ChargeBeeWebhookController extends Controller
         $subscription = $this->getSubscription($payload);
 
         $subscription->update([
-            'next_billing_at'   => $payload->subscription->next_billing_at,
+            'next_billing_at'   => isset($payload->subscription->next_billing_at)?$payload->subscription->next_billing_at:null,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'status'            => $payload->subscription->status,
         ]);
@@ -266,7 +266,7 @@ class ChargeBeeWebhookController extends Controller
         $subscription->update([
             'status'            => $payload->subscription->status,
             'plan_id'           => $payload->subscription->plan_id,
-            'next_billing_at'   => $payload->subscription->next_billing_at,
+            'next_billing_at'   => isset($payload->subscription->next_billing_at)?$payload->subscription->next_billing_at:null,
             'trial_ends_at'     => isset($payload->subscription->trial_end)?$payload->subscription->trial_end:null,
             'quantity'          => $payload->subscription->plan_quantity,
             'promo_code'        => isset($payload->subscription->coupons) && count($payload->subscription->coupons) ? $payload->subscription->coupons[0]->coupon_id : null,
