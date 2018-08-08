@@ -4,11 +4,11 @@ about: Report something that is broken or not working as intended.
 
 ---
 
-### Expected Behaviour
+#### Expected Behaviour
 
-### Actual Behaviour
+#### Actual Behaviour
 
-### Steps to Reproduce
+#### Steps to Reproduce
 
 #### Environment
 - [ ] www.tenfour.org

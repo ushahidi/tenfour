@@ -24,7 +24,7 @@ class ContactFilesCest
                 'id'   => 2,
             ],
             'columns' => [
-                'Name', 'Description', 'Phone', 'Email', 'Address', 'Twitter'
+                'Name', 'Description', 'Phone', 'Email', 'Address', 'Twitter', 'Role'
             ],
         ]);
     }
@@ -40,8 +40,8 @@ class ContactFilesCest
         $I->wantTo('update CSV columns and map as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendPUT($this->endpoint."/$org_id/files/$id", [
-            'columns'  => ['name','description', 'phone', 'email', 'address', 'twitter'],
-            'maps_to'  => ['name', null, 'phone', 'email', null, 'twitter']
+            'columns'  => ['name','description', 'phone', 'email', 'address', 'twitter', 'role'],
+            'maps_to'  => ['name', null, 'phone', 'email', null, 'twitter', 'role']
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
@@ -49,14 +49,15 @@ class ContactFilesCest
                 'id'   => 2,
             ],
             'columns' => [
-                'name', 'description', 'phone', 'email', 'address', 'twitter'
+                'name', 'description', 'phone', 'email', 'address', 'twitter','role'
             ],
             'maps_to' => [
                 '0' => 'name',
                 '2' => 'phone',
                 '3' => 'email',
                 '5' => 'twitter',
-            ]
+                '6' => 'role'
+             ]
         ]);
     }
 
@@ -66,10 +67,10 @@ class ContactFilesCest
      */
     public function importContactsAsOrgAdmin(ApiTester $I)
     {
-        $header = "name, role, phone, email, address, twitter\n";
-        $contents = '"Mary", "designer", "254722111111", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md"'
+        $header = "name, role, phone, email, address, twitter, role\n";
+        $contents = '"Mary", "designer", "254722111111", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md", admin'
                   ."\n"
-                  . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk"';
+                  . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk", responder';
 
         Storage::put('contacts/sample.csv', $header . $contents);
 

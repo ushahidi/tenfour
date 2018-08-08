@@ -2,13 +2,16 @@
 
 namespace TenFour\Http\Controllers;
 
-use Log;
-use App;
 use TenFour\Contracts\Repositories\ReplyRepository;
 use TenFour\Messaging\SMSService;
 use TenFour\Messaging\Validators\NexmoMessageValidator;
-use Illuminate\Http\Request;
+use TenFour\Models\Organization;
+
+use Log;
+use App;
 use SMS;
+
+use Illuminate\Http\Request;
 use libphonenumber\NumberParseException;
 
 class SMSController extends Controller
@@ -58,11 +61,12 @@ class SMSController extends Controller
         if ($reply_obj) {
             $response_from = $reply_obj['from'];
             $check_in_id = $reply_obj['check_in_id'];
+            $org_name = Organization::findOrFail($reply_obj['organization_id'])->name;
 
             try {
                 $response_to = App::make('TenFour\Messaging\PhoneNumberAdapter');
                 $response_to->setRawNumber($from);
-                $this->message_service->sendResponseReceivedSMS($response_to, $response_from, $check_in_id);
+                $this->message_service->sendResponseReceivedSMS($org_name, $response_to, $response_from, $check_in_id);
             } catch (NumberParseException $exception) {
                 // Somehow the number format could not be parsed
                 Log::info("[SMSController] Could not parse MSISDN: " . $from);
