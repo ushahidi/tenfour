@@ -147,12 +147,13 @@ class SMSService implements MessageService
         return $message;
     }
 
-    public function sendResponseReceivedSMS($to, $from = null, $check_in_id = 0) {
+    public function sendResponseReceivedSMS($org_name, $to, $from = null, $check_in_id = 0) {
         Log::info('Sending "response received" sms to: ' . $to->getNormalizedNumber());
 
         $params = [
-            'sms_type' => 'response_received',
-            'check_in_id' => $check_in_id
+            'sms_type'    => 'response_received',
+            'check_in_id' => $check_in_id,
+            'org_name'    => $org_name,
         ];
 
         $this->setView('sms.response_received');

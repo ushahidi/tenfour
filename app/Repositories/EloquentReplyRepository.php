@@ -154,9 +154,10 @@ class EloquentReplyRepository implements ReplyRepository
                 }
 
                 return [
-                  "check_in_id"   => $check_in_id,
-                  "contact_id"    => $contact['id'],
-                  "from"          => $outgoing_number
+                  "check_in_id"     => $check_in_id,
+                  "contact_id"      => $contact['id'],
+                  "from"            => $outgoing_number,
+                  "organization_id" => $check_in['organization_id'],
                 ];
             } else {
                 \Log::warning('Could not find the check-in for incoming message from ' . $from);
