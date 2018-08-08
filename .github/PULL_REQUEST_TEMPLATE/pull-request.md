@@ -11,7 +11,7 @@ about: Request to merge changes from a branch.
 -
 
 #### Related Issues
-- ushahidi/tenfour/issues/
+- ushahidi/tenfour#
 
 #### Type Of Changes
 - [ ] Bug fix
