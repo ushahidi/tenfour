@@ -13,8 +13,8 @@ use TenFour\Http\Requests\Organization\GetOrganizationRequest;
 use TenFour\Http\Requests\Organization\UpdateOrganizationRequest;
 use TenFour\Http\Requests\Organization\DeleteOrganizationRequest;
 use TenFour\Http\Requests\Organization\UpdateMemberRequest;
+use TenFour\Http\Requests\Organization\LookupOrganizationRequest;
 use TenFour\Http\Requests\Person\AcceptInviteRequest;
-use Dingo\Api\Auth\Auth;
 use TenFour\Http\Transformers\OrganizationTransformer;
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Http\Response;
@@ -23,14 +23,19 @@ use TenFour\Contracts\Services\PaymentService;
 use TenFour\Models\Organization;
 use TenFour\Models\User;
 use TenFour\Notifications\Welcome;
+use TenFour\Jobs\SendOrgLookupMail;
+
 use DB;
 use ChargeBee_APIError;
+use Dingo\Api\Auth\Auth;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 /**
  * @Resource("Organizations", uri="/api/v1/organizations")
  */
 class OrganizationController extends ApiController
 {
+    use DispatchesJobs;
 
     public function __construct(
         OrganizationRepository $organizations,
@@ -315,5 +320,36 @@ class OrganizationController extends ApiController
         }
 
         abort(401, 'Not authenticated');
+    }
+
+     /**
+     * Lookup an organization's domain by email address.
+     *
+     * Sends an email to the email address with a list of organizations related
+     * to that email address.
+     *
+     * @Post("organization/lookup")
+     * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("email", required=true, description="Email address"),
+     * })
+     *
+     * @Request({
+     *     "email": "example@tenfour.org",
+     * }, headers={"Authorization": "Bearer token"})
+     * @Response(200)
+     *
+     * @param LookupOrganizationRequest $request
+     * @return Response
+     */
+    public function lookup(LookupOrganizationRequest $request)
+    {
+        $organizations = $this->organizations->findByEmail($request['email']);
+
+        if (count($organizations)) {
+            $this->dispatch((new SendOrgLookupMail($organizations, $request['email']))/*->onQueue('mails')*/);
+        }
+
+        return response()->json([], 200);
     }
 }
