@@ -453,12 +453,14 @@ to that email address.
 
 # Notifications [/api/v1/organizations]
 
-## List a person's notifications [GET /api/v1/organizations/{org_id}/people/{person_id}/notifications/{?offset,limit}]
+## List a person's notifications [GET /api/v1/organizations/{org_id}/people/{person_id}/notifications/{?offset,limit,unread}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
     + person_id: (number, required) - Person id
+    + unread: (number, optional) - Return only a person's unread notifications
+        + Default: 0
     + offset: (number, optional) - 
         + Default: 0
     + limit: (number, optional) - 
