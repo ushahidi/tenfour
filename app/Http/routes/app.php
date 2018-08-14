@@ -53,4 +53,5 @@ Route::get('verification/email', 'VerificationController@verifyEmail');
 Route::post('/chargebee/webhook', 'ChargeBeeWebhookController@handle')->middleware('auth.basic.chargebee-webhook');
 
 // Create organization needs to be outside api because it uses client_credentials grants
-Route::post('create_organization', ['middleware' => 'client_credentials', 'uses' => 'Api\First\OrganizationController@store']);
+Route::post('organization/create', ['middleware' => 'client_credentials', 'uses' => 'Api\First\OrganizationController@store']);
+Route::post('organization/lookup', ['uses' => 'Api\First\OrganizationController@lookup']);

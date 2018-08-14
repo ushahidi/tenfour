@@ -21,6 +21,13 @@ interface OrganizationRepository extends CrudRepository
     public function findBySubdomain($subdomain);
 
     /**
+     * Get a list of organizations by a member's email
+     * @param  $email
+     * @return array
+     */
+    public function findByEmail($email);
+
+    /**
      * Get an organization's setting by key
      * @param  $organization_id
      * @param  $setting_key

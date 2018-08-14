@@ -383,4 +383,26 @@ class OrganizationCest
         ]);
         $I->seeResponseCodeIs(422);
     }
+
+
+    /*
+     * Lookup an organization
+     *
+     */
+    public function lookupOrganization(ApiTester $I)
+    {
+        $I->wantTo('Lookup an organization by email address');
+        // $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST('/organization/lookup', [
+            'email'             => 'linda@ushahidi.com',
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->seeRecord('outgoing_mail_log', [
+            'subject'     => "Your TenFour domain",
+            'type'        => 'orglookup',
+            'to'          => 'linda@ushahidi.com',
+        ]);
+    }
 }

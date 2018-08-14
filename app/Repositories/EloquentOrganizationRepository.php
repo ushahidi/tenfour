@@ -51,6 +51,13 @@ class EloquentOrganizationRepository implements OrganizationRepository
             ->toArray();
     }
 
+    public function findByEmail($email) {
+        return Organization::leftJoin('contacts', 'organizations.id', '=', 'contacts.organization_id')
+            ->where('contacts.contact', '=', $email)
+            ->get(['organizations.*'])
+            ->toArray();
+    }
+
     public function update(array $input, $id, $user_role = 'responder')
     {
         $organization = Organization::findorFail($id);
