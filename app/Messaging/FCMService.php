@@ -29,7 +29,7 @@ class FCMService implements MessageService
         }
 
         if (!config('fcm.http.server_key') || !config('fcm.http.sender_id')) {
-            Log::warn('FCM not configured - skipping sending message "' . $subject . '"');
+            Log::warning('FCM not configured - skipping sending message "' . $subject . '"');
             return;
         }
 
