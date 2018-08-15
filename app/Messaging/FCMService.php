@@ -8,7 +8,7 @@ use App;
 use TenFour\Contracts\Messaging\MessageService;
 use TenFour\Jobs\SendFCM;
 
-class PushService implements MessageService
+class FCMService implements MessageService
 {
     private $view;
 
