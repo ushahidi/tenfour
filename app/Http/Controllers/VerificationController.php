@@ -41,7 +41,7 @@ class VerificationController extends Controller
           abort(409);
         }
 
-        dispatch((new SendVerificationEmail($payload))/*->onQueue('mails')*/);
+      dispatch((new SendVerificationEmail($payload))/*->no Queue('mails')*/);
 
         return $address;
     }
