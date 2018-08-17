@@ -3,17 +3,13 @@
 namespace TenFour\Mail;
 
 use App;
-use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use TenFour\Models\Organization;
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Services\URLShortenerService;
 
 class Verification extends Mailable
 {
-    use Queueable, SerializesModels;
 
     protected $address;
 

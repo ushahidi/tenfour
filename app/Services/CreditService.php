@@ -5,6 +5,8 @@ namespace TenFour\Services;
 use TenFour\Models\Organization;
 use TenFour\Models\Subscription;
 use TenFour\Models\CreditAdjustment;
+use TenFour\Notifications\CreditsChanged;
+
 use DB;
 use App;
 use Log;
@@ -42,8 +44,9 @@ class CreditService
 
     public function addCreditAdjustment($organization_id, $adjustment, $type = 'misc', $meta = null) {
         $creditAdjustment = new CreditAdjustment;
+        $balance = 0;
 
-        DB::transaction(function () use ($creditAdjustment, $organization_id, $adjustment, $type, $meta) {
+        DB::transaction(function () use ($creditAdjustment, $organization_id, $adjustment, $type, $meta, $balance) {
             $creditAdjustment->organization_id = $organization_id;
             $creditAdjustment->adjustment = $adjustment;
             $creditAdjustment->balance = 0;
@@ -51,8 +54,10 @@ class CreditService
             $creditAdjustment->meta = $meta;
             $creditAdjustment->save();
 
-            $this->syncBalance($creditAdjustment);
+            $balance = $this->syncBalance($creditAdjustment);
         });
+
+        Organization::findOrFail($organization_id)->owner()->notify(new CreditsChanged($balance));
 
         return $creditAdjustment;
     }
@@ -63,6 +68,8 @@ class CreditService
             ->sum('adjustment');
 
         $creditAdjustment->update(['balance' => $balance]);
+
+        return $balance;
     }
 
     public function hasSufficientCredits($check_in) {

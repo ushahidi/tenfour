@@ -22,8 +22,8 @@ class MessageServiceFactory implements messageServiceFactoryInterface
             $message_service = new SlackService;
         }
 
-        if ($message_type === 'push') {
-            $message_service = new PushService;
+        if ($message_type === 'fcm') {
+            $message_service = new FCMService;
         }
 
         return $message_service;

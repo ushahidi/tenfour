@@ -5,6 +5,7 @@ namespace TenFour\Notifications;
 use TenFour\Models\Subscription;
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Contracts\Services\PaymentService;
+use TenFour\Channels\FCM as FCMChannel;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -36,7 +37,7 @@ class SubscriptionChanged extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['mail', 'database', FCMChannel::class];
     }
 
     /**
@@ -120,5 +121,22 @@ class SubscriptionChanged extends Notification
         }
 
         return $ret;
+    }
+
+    /**
+     * Get the fcm representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toFCM($notifiable)
+    {
+        return [
+            'type'            => 'subscription:changed',
+            'subject'         => 'Subscription Changed',
+            'msg'             => null,
+            'plan_id'         => $this->subscription->plan_id,
+            'status'          => $this->subscription->status
+        ];
     }
 }
