@@ -226,4 +226,53 @@ class NotificationsCest
             ]]
         ]);
     }
+
+
+    /*
+     * Test unread notifications endpoint
+     *
+     */
+    public function testUnreadNotificationsEndpoint(ApiTester $I)
+    {
+        $org_id = 2;
+        $I->wantTo('I want to get a paged list of unread notifications');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
+            'name' => 'Bart Simpson',
+            'email' => 'bart@tenfour.org',
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendPut($this->organizationsEndpoint."/$org_id/people/me", [
+            'name' => 'null',
+            'notifications' => [] // mark all notifications as read
+        ]);
+
+        $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
+            'name' => 'Timmy OToole',
+            'email' => 'timmy@tenfour.org',
+        ]);
+        $I->seeResponseCodeIs(200);
+
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/5/notifications?offset=0&limit=1&unread=1');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->dontSeeResponseContainsJson([
+            'notifications' => [[
+                'type' => 'TenFour\Notifications\PersonJoinedOrganization',
+                'data' => [
+                  'person_name' => 'Bart Simpson',
+                ]
+            ]]
+        ]);
+        $I->seeResponseContainsJson([
+            'notifications' => [[
+                'type' => 'TenFour\Notifications\PersonJoinedOrganization',
+                'data' => [
+                  'person_name' => 'Timmy OToole',
+                ]
+            ]]
+        ]);
+    }
 }

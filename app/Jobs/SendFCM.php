@@ -58,9 +58,13 @@ class SendFCM implements ShouldQueue
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
 
-        $notificationBuilder = new PayloadNotificationBuilder('TenFour Check-in');
-        $notificationBuilder->setBody(view($this->view, $this->params))
-        				    ->setSound('default');
+        $notificationBuilder = new PayloadNotificationBuilder(isset($this->params['title'])?$this->params['title']:null);
+
+        if (isset($this->view)) {
+            $notificationBuilder->setBody(view($this->view, $this->params))->setSound('default');
+        } else if (isset($this->params['msg'])) {
+            $notificationBuilder->setBody($this->params['msg'])->setSound('default');                    
+        }
 
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData($this->params);

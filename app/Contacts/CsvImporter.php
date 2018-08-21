@@ -50,7 +50,7 @@ class CsvImporter implements CsvImporterInterface
      *
      * @var array
      */
-    private $user_fields = ['name', 'description'];
+    private $user_fields = ['name', 'description', 'role'];
 
      /**
      * Contact fields

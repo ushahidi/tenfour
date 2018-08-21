@@ -99,7 +99,7 @@ class SendCheckIn implements ShouldQueue
             'check_in_id' => $this->check_in['id'],
         ];
 
-        $this->dispatchCheckInViaFCM($message_service_factory->make('push'), $organization, $sender_name);
+        $this->dispatchCheckInViaFCM($message_service_factory->make('fcm'), $organization, $sender_name);
 
         foreach($this->check_in['recipients'] as $recipient)
         {
@@ -234,7 +234,7 @@ class SendCheckIn implements ShouldQueue
         $params['sender_id'] = $this->check_in['user_id'];
 
         $message_service->setView('fcm.checkin');
-        $message_service->send($to, $this->check_in['message'], $params, null, null);
+        $message_service->send($to, $this->check_in['message'], $params, 'TenFour Check-In', null);
     }
 
     protected function dispatchCheckInViaEmail($message_service, $contact, $to, $creator, $recipient) {

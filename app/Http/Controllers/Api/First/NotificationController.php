@@ -21,13 +21,14 @@ class NotificationController extends ApiController
     /**
      * List a person's notifications
      *
-     * @Get("/{org_id}/people/{person_id}/notifications/{?offset,limit}")
+     * @Get("/{org_id}/people/{person_id}/notifications/{?offset,limit,unread}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
      *   @Parameter("person_id", type="number", required=true, description="Person id"),
-     *   @Parameter("offset", type="number", default=0),
-     *   @Parameter("limit", type="number", default=0)
+     *   @Parameter("unread", type="number", required=false, default=0, description="Return only a person's unread notifications"),
+     *   @Parameter("offset", type="number", required=false, default=0),
+     *   @Parameter("limit", type="number", required=false, default=0)
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -57,8 +58,9 @@ class NotificationController extends ApiController
     {
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 0);
+        $unread = !!$request->input('unread', false);
 
-        return $this->response->collection($this->notifications->all($person_id, $offset, $limit),
+        return $this->response->collection($this->notifications->all($person_id, $offset, $limit, $unread),
                                            new NotificationTransformer, 'notifications');
     }
 }

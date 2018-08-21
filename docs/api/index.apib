@@ -155,6 +155,25 @@ FORMAT: 1A
                 }
             }
 
+## Lookup an organization's domain by email address. [POST /api/v1/organizations/organization/lookup]
+Sends an email to the email address with a list of organizations related
+to that email address.
+
++ Parameters
+    + email: (string, required) - Email address
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            {
+                "email": "example@tenfour.org"
+            }
+
++ Response 200 (application/json)
+
 # People [/api/v1/organizations]
 
 ## Add member to an organization [POST /api/v1/organizations/{org_id}/people]
@@ -434,12 +453,14 @@ FORMAT: 1A
 
 # Notifications [/api/v1/organizations]
 
-## List a person's notifications [GET /api/v1/organizations/{org_id}/people/{person_id}/notifications/{?offset,limit}]
+## List a person's notifications [GET /api/v1/organizations/{org_id}/people/{person_id}/notifications/{?offset,limit,unread}]
 
 
 + Parameters
     + org_id: (number, required) - Organization id
     + person_id: (number, required) - Person id
+    + unread: (number, optional) - Return only a person's unread notifications
+        + Default: 0
     + offset: (number, optional) - 
         + Default: 0
     + limit: (number, optional) - 
@@ -645,7 +666,8 @@ FORMAT: 1A
                         "Phone",
                         "Email",
                         "Address",
-                        "Twitter"
+                        "Twitter",
+                        "Role"
                     ],
                     "id": 2,
                     "organization": {
@@ -676,7 +698,8 @@ FORMAT: 1A
                     "phone",
                     "email",
                     "address",
-                    "twitter"
+                    "twitter",
+                    "role"
                 ],
                 "maps_to": [
                     "name",
@@ -684,7 +707,8 @@ FORMAT: 1A
                     "phone",
                     "email",
                     null,
-                    "twitter"
+                    "twitter",
+                    "role"
                 ]
             }
 
@@ -698,7 +722,8 @@ FORMAT: 1A
                     "phone",
                     "email",
                     "address",
-                    "twitter"
+                    "twitter",
+                    "role"
                 ],
                 "maps_to": [
                     "name",
@@ -706,7 +731,8 @@ FORMAT: 1A
                     "phone",
                     "email",
                     null,
-                    "twitter"
+                    "twitter",
+                    "role"
                 ]
             }
 

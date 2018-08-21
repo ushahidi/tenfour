@@ -88,7 +88,7 @@ class SMSCest
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
-            'message' => "We received your response.\n",
+            'message' => "TenFourTest has received your response.\n",
             'type'    => 'response_received',
             'to'      => '+254792999999',
             'from'    => '20880'
@@ -115,7 +115,7 @@ class SMSCest
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
-            'message' => "We received your response.\n",
+            'message' => "Testers has received your response.\n",
             'type'    => 'response_received',
             'to'      => '+254792999999',
             'from'    => '20881'

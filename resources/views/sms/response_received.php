@@ -1,1 +1,0 @@
-We received your response.

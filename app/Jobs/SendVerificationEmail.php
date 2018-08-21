@@ -2,16 +2,13 @@
 
 namespace TenFour\Jobs;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use TenFour\Contracts\Messaging\MessageServiceFactory;
 use TenFour\Mail\Verification as VerificationMail;
 
-class SendVerificationEmail implements ShouldQueue
+class SendVerificationEmail
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use SerializesModels;
 
     private $address;
 

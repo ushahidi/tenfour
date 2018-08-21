@@ -44,7 +44,8 @@ class ContactFilesController extends ApiController
      *             "Phone",
      *             "Email",
      *             "Address",
-     *            "Twitter"
+     *             "Twitter",
+     *             "Role"
      *         },
      *         "id": 2,
      *         "organization": {
@@ -95,12 +96,12 @@ class ContactFilesController extends ApiController
      * })
      *
      * @Request({
-     *     "columns": {"name", "description", "phone", "email", "address", "twitter"},
-     *     "maps_to": {"name", null, "phone", "email", null, "twitter"}
+     *     "columns": {"name", "description", "phone", "email", "address", "twitter", "role"},
+     *     "maps_to": {"name", null, "phone", "email", null, "twitter", "role"}
      * }, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
-     *     "columns": {"name","description", "phone", "email", "address", "twitter"},
-     *     "maps_to": {"name", null, "phone", "email", null, "twitter"}
+     *     "columns": {"name","description", "phone", "email", "address", "twitter", "role"},
+     *     "maps_to": {"name", null, "phone", "email", null, "twitter", "role"}
      * })
      *
      * @param Request $request
