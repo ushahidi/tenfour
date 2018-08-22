@@ -494,6 +494,41 @@ to that email address.
                 ]
             }
 
+## Update all notifications. [PUT /api/v1/organizations/{org_id}/people/{person_id}/notifications]
+The only result of this action is all notifications are marked as read.
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+## Update a notification. [PUT /api/v1/organizations/{org_id}/people/{person_id}/notifications/{notification_id}]
+The only result of this action is the notification is marked as read.
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + person_id: (number, required) - Person id
+    + notification_id: (number, required) - Notification id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
 # Contacts [/api/v1/organizations]
 
 ## Add member contact [POST /api/v1/organizations/{org_id}/people/{person_id}/contacts]

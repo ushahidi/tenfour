@@ -32,6 +32,8 @@ $api->version($version, [
 
     // Notifications endpoint
     $api->get($base.'organizations/{organization}/people/{person}/notifications', ['uses' => 'NotificationController@index']);
+    $api->put($base.'organizations/{organization}/people/{person}/notifications', ['uses' => 'NotificationController@updateAll']);
+    $api->put($base.'organizations/{organization}/people/{person}/notifications/{notification}', ['uses' => 'NotificationController@update']);
 
     // Org member contacts
     $api->resource($base.'organizations/{organization}/people/{person}/contacts', 'PersonContactController');

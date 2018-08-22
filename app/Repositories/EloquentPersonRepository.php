@@ -138,11 +138,6 @@ class EloquentPersonRepository implements PersonRepository
             if (isset($input['groups'])) {
                 $user->groups()->sync(collect($input['groups'])->pluck('id')->all());
             }
-
-            // Mark notifications read
-            if (isset($input['notifications'])) {
-                $user->unreadNotifications->markAsRead();
-            }
         });
 
         return $user->toArray();
@@ -197,7 +192,7 @@ class EloquentPersonRepository implements PersonRepository
                 },
                 'contacts'
             ])
-            ->with('notifications')
+            // ->with('notifications')
             ->with('organization')
             ->with('groups')
             ->with('organization.subscriptions')
@@ -225,7 +220,7 @@ class EloquentPersonRepository implements PersonRepository
     public function findObject($id)
     {
         return User::with('contacts')
-            ->with('notifications')
+            // ->with('notifications')
             ->find($id);
     }
 
