@@ -79,4 +79,13 @@ interface PersonRepository extends OrgCrudRepository
      */
     public function findByEmailAndSubdomain($email, $subdomain);
 
+    /**
+     * Find a user using her source and source_id (e.g. an LDAP dn)
+     *
+     * @param string $source
+     * @param string $source_id
+     *
+     * @return object
+     */
+    public function findBySource($organization_id, $source, $source_id);
 }

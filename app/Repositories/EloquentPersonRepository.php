@@ -175,6 +175,14 @@ class EloquentPersonRepository implements PersonRepository
             ->toArray();
     }
 
+    public function findBySource($organization_id, $source, $source_id)
+    {
+        return User::where('source', '=', $source)
+            ->where('source_id', '=', $source_id)
+            ->where('organization_id', '=', $organization_id)
+            ->first();
+    }
+
     // OrgCrudRepository
     public function find($organization_id, $user_id, $history_offset = 0, $history_limit = 1)
     {

@@ -47,4 +47,13 @@ interface GroupRepository extends OrgCrudRepository
     public function delete($organization_id, $group_id);
 
 
+    /**
+     * Find a group using the source and source_id (e.g. an LDAP dn)
+     *
+     * @param string $source
+     * @param string $source_id
+     *
+     * @return object
+     */
+    public function findBySource($organization_id, $source, $source_id);
 }
