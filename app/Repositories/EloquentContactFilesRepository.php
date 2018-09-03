@@ -4,6 +4,7 @@ namespace TenFour\Repositories;
 use TenFour\Models\User;
 use TenFour\Models\Organization;
 use TenFour\Models\Contact;
+use TenFour\Models\Group;
 use TenFour\Models\ContactFiles;
 use League\Csv\Reader;
 use TenFour\Contracts\Repositories\ContactFilesRepository;
