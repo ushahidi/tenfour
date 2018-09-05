@@ -535,7 +535,7 @@ class CheckInController extends ApiController
             'id' => $recipient_id,
         ]);
 
-      dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
+        dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
 
         $recipient = $this->check_ins->getRecipient($check_in_id, $recipient_id);
         return $this->response->item($recipient, new UserTransformer, 'recipient');

@@ -90,8 +90,10 @@ class CreditService
         $contacts = $contact_repo->getByUserId($recipient_ids, $check_in['send_via']);
 
         foreach ($contacts as $contact) {
+            // TODO calculate also for voice
+            // TODO check if contact canReceiveCheckIn()
             if ($contact['type'] === 'phone') {
-                // TODO this is where we calculate different credit for different contact region and operator
+                // TODO this is where we have to calculate different credit for different contact region and operator
                 $available_credits--;
             }
         }

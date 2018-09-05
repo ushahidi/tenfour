@@ -61,7 +61,7 @@ interface CheckInRepository extends CrudRepository
      * @param int $contact_id
      * @return array
      */
-    public function addMessage($id, $contact_id, $from);
+    public function addMessage($id, $contact_id, $from, $to, $channel, $credits = 0);
 
     /**
      * Update a user's response status

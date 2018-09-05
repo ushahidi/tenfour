@@ -157,7 +157,7 @@ class NotificationsCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'TenFour\Notifications\CheckInReceived',
+                'type' => 'TenFour\Notifications\CheckIn',
                 'data' => [
                   'check_in_message' => $message
                 ]
@@ -246,7 +246,7 @@ class NotificationsCest
 
         $I->sendPut($this->organizationsEndpoint."/$org_id/people/5/notifications", []);
         $I->seeResponseCodeIs(200);
-        
+
         $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
             'name' => 'Timmy OToole',
             'email' => 'timmy@tenfour.org',

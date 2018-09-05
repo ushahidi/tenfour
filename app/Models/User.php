@@ -147,7 +147,7 @@ class User extends Model implements AuthenticatableContract,
             case 'mail':
                 return $this->email();
             case 'nexmo':
-                return $this->phone_number;
+                return $this->phone();
         }
     }
 

@@ -3,9 +3,15 @@
 namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use App;
 
 class Contact extends Model
 {
+    use Notifiable;
+
     /**
      * The database table used by the model.
      *
@@ -18,7 +24,7 @@ class Contact extends Model
      *
      * @var array
      */
-    protected $fillable = ['type', 'preferred', 'user_id', 'organization_id', 'contact', 'passed_self_test', 'unsubscribe_token', 'blocked', 'meta'];
+    protected $fillable = ['type', 'preferred', 'user_id', 'organization_id', 'contact', 'passed_self_test', 'unsubscribe_token', 'blocked', 'meta', 'bounce_count'];
 
     /**
      * The attributes that should be casted to native types.
@@ -56,5 +62,31 @@ class Contact extends Model
     public function replies()
     {
         return $this->hasMany('TenFour\Models\Reply');
+    }
+
+    public function isValid()
+    {
+        if ($this->type === 'email') {
+            return (new EmailValidator())->isValid($this->contact, new RFCValidation());
+        }
+        else if ($this->type === 'phone') {
+            try {
+                $to = App::make('TenFour\Messaging\PhoneNumberAdapter');
+                $to->setRawNumber($this->contact);
+            } catch (NumberParseException $exception) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return true;
+    }
+
+    public function canReceiveCheckIn()
+    {
+        return $this->isValid()
+            && !$this->blocked
+            && $this->bounce_count < config('tenfour.messaging.bounce_threshold');
     }
 }

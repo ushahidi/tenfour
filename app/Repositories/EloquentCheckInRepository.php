@@ -81,28 +81,8 @@ class EloquentCheckInRepository implements CheckInRepository
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $check_in->recipients()->sync($userIds);
 
-        if (!$check_in['self_test_check_in']) {
-            $this->notifyCheckIn($check_in);
-        }
-
         return $check_in->fresh()
             ->toArray();
-    }
-
-    protected function notifyCheckIn($check_in) {
-
-        $organizations = resolve('TenFour\Contracts\Repositories\OrganizationRepository');
-        $channels = $organizations->getSetting($check_in['organization_id'], 'channels');
-
-        if (isset($channels->slack) &&
-            isset($channels->slack->enabled) &&
-            isset($channels->slack->webhook_url) &&
-            in_array('slack', $check_in['send_via'])) {
-            $check_in->_slack_webhook_url = $channels->slack->webhook_url;
-        }
-
-        Notification::send($check_in->recipients, new CheckInReceived($check_in));
-        Notification::send($check_in, new CheckInReceived($check_in));
     }
 
     public function update(array $input, $id)
@@ -312,11 +292,16 @@ class EloquentCheckInRepository implements CheckInRepository
             ->value('check_in_messages.check_in_id');
     }
 
-    public function addMessage($id, $contact_id, $from)
+    public function addMessage($id, $contact_id, $from, $to, $channel, $credits = 0)
     {
         $check_in = CheckIn::findorFail($id);
 
-        $check_in->messages()->attach($contact_id, ['from' => $from]);
+        $check_in->messages()->attach($contact_id, [
+            'from'    => $from,
+            'to'      => $to,
+            'channel' => $channel,
+            'credits' => $credits
+        ]);
 
         return CheckIn::findorFail($id)
             ->messages()
