@@ -274,8 +274,8 @@ class CheckIn extends Notification
                'type' => 'phone',
                'number' => $from
            ],
-           'answer_url' => ["https://" . config('tenfour.domain') . "/voice/answer?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
-           'event_url' => ["https://" . config('tenfour.domain') . "/voice/event?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
+           'answer_url' => ["https://" . config('api.domain') . "/voice/answer?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
+           'event_url' => ["https://" . config('api.domain') . "/voice/event?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
            // 'machine_detection' => 'continue'
          ];
     }

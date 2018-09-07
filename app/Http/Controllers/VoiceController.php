@@ -104,7 +104,7 @@ class VoiceController extends Controller
             $answer_text .= 'Press ' . ($key+1) . ' for ' . $answer['answer'] . '. ';
         }
 
-        $reply_url = "https://" . config('tenfour.domain') . "/voice/reply?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id;
+        $reply_url = "https://" . config('api.domain') . "/voice/reply?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id;
 
         return [
             [
