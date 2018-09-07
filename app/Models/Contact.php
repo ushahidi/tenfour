@@ -74,6 +74,7 @@ class Contact extends Model
                 $to = App::make('TenFour\Messaging\PhoneNumberAdapter');
                 $to->setRawNumber($this->contact);
             } catch (NumberParseException $exception) {
+                \Log::warning('Invalid phone number: ' . $this->contact);
                 return false;
             }
 

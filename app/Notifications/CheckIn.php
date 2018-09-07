@@ -9,6 +9,7 @@ use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Channels\FCM as FCMChannel;
 use TenFour\Channels\CheckInMail as CheckInMailChannel;
 use TenFour\Channels\CheckInSMS as CheckInSMSChannel;
+use TenFour\Channels\Voice as VoiceChannel;
 use TenFour\Mail\CheckIn as CheckInMail;
 use TenFour\Contracts\Repositories\CheckInRepository;
 
@@ -60,8 +61,8 @@ class CheckIn extends Notification
             "sms"       => CheckInSMSChannel::class,
             "slack"     => "slack",
             "app"       => FCMChannel::class,
+            "voice"     => VoiceChannel::class,
             // "whatsapp"  => WhatsAppChannel::class,
-            // "voice"     => VoiceChannel::class,
         ];
 
         if (class_basename($notifiable) === 'CheckIn') {
@@ -81,6 +82,9 @@ class CheckIn extends Notification
             }
             if ($notifiable->type === 'email' && in_array('email', $this->check_in['send_via'])) {
                 array_push($channels, 'email');
+            }
+            if ($notifiable->type === 'phone' && in_array('voice', $this->check_in['send_via'])) {
+                array_push($channels, 'voice');
             }
         }
 
@@ -250,5 +254,29 @@ class CheckIn extends Notification
         } else {
             return $from;
         }
+    }
+
+    public function toVoice($contact)
+    {
+        $recipient_id = $contact->user_id;
+        $check_in_id = $this->check_in['id'];
+        $contact_id = $contact->id;
+        $from = config('sms.nexmo.outgoing_call_number');
+
+        $this->check_in_repo->addMessage($this->check_in['id'], $contact['id'], $from, $contact['contact'], 'voice', 1);
+
+        return [
+           'to' => [[
+               'type' => 'phone',
+               'number' => $contact->contact
+           ]],
+           'from' => [
+               'type' => 'phone',
+               'number' => $from
+           ],
+           'answer_url' => ["https://" . config('tenfour.domain') . "/voice/answer?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
+           'event_url' => ["https://" . config('tenfour.domain') . "/voice/event?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
+           // 'machine_detection' => 'continue'
+         ];
     }
 }

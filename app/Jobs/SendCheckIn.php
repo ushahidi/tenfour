@@ -67,8 +67,8 @@ class SendCheckIn implements ShouldQueue
 
         $notification = new CheckInNotification(
             $this->check_in,
-            $this->organization,
-            $this->job->getJobId());
+            $this->organization);
+
 
         foreach($this->check_in['recipients'] as $recipient)
         {

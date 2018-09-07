@@ -125,6 +125,9 @@ class OrganizationController extends ApiController
                 ],
                 'slack' => [
                     'enabled' => false
+                ],
+                'voice' => [
+                    'enabled' => true
                 ]
             ],
             'regions' => [
