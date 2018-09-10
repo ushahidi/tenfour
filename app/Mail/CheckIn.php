@@ -19,19 +19,27 @@ class CheckIn extends Mailable
     protected $creator;
     protected $contact;
     protected $user;
+    protected $reply_token;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(array $check_in, array $organization, array $creator, array $contact, array $user)
+    public function __construct(array $check_in, array $organization, array $creator, array $contact, array $user, string $reply_token)
     {
         $this->check_in = $check_in;
         $this->organization = $organization;
         $this->creator = $creator;
         $this->contact = $contact;
         $this->user = $user;
+        $this->reply_token = $reply_token;
+    }
+
+    public function getFromAddress()
+    {
+        $domain = str_replace('app.', '', config('tenfour.domain'));
+        return 'checkin-' . $this->check_in['id'] .'@'. $domain;
     }
 
     /**
@@ -44,9 +52,7 @@ class CheckIn extends Mailable
         $org = Organization::findOrFail($this->organization['id']);
 
         $client_url = $org->url();
-        $domain = str_replace('app.', '', config('tenfour.domain'));
-
-        $from_address = 'checkin-' . $this->check_in['id'] .'@'. $domain;
+        $from_address = $this->getFromAddress();
 
         $profile_picture = $this->creator['profile_picture'];
         $initials = UserTransformer::generateInitials($this->creator['name']);
@@ -56,7 +62,7 @@ class CheckIn extends Mailable
             $this->check_in['id'] . '/' .
             '/-/' .
             $this->user['id'] . '/' .
-            urlencode($this->user['reply_token']);
+            urlencode($this->reply_token);
 
         $has_custom_answers = false;
 
@@ -69,7 +75,7 @@ class CheckIn extends Mailable
                   $this->check_in['id'] . '/' .
                   $index . '/' .
                   $this->user['id'] . '/' .
-                  urlencode($this->user['reply_token']);
+                  urlencode($this->reply_token);
 
               if ($answer['type'] == 'custom') {
                 $has_custom_answers = true;

@@ -83,6 +83,10 @@ class CreditService
             return true;
         }
 
+        if (!$check_in['send_via']) {
+            $check_in['send_via'] = [];
+        }
+
         $recipient_ids = array_map(function ($recipient) {
             return $recipient['id'];
         }, $check_in['recipients']);
@@ -91,8 +95,13 @@ class CreditService
 
         foreach ($contacts as $contact) {
             if ($contact['type'] === 'phone') {
-                // TODO this is where we calculate different credit for different contact region and operator
-                $available_credits--;
+                if (in_array('sms', $check_in['send_via'])) {
+                    $available_credits--;
+                }
+
+                if (in_array('voice', $check_in['send_via'])) {
+                    $available_credits--;
+                }
             }
         }
 

@@ -53,6 +53,8 @@ return [
     'nexmo' => [
         'api_key' => env('NEXMO_KEY', 'Your Nexmo API key'),
         'api_secret' => env('NEXMO_SECRET', 'Your Nexmo API secret'),
+        'app_id' => env('NEXMO_APP_ID', '785e2e29-2765-4d0e-828f-b016c74baead'),
+        'outgoing_call_number' => env('NEXMO_OUTGOING_CALL_NUMBER', '12015799005'),
         // Extra param to rate limit internally
         'messages_per_second' => env('NEXMO_MESSAGES_PER_SECOND', 1)
     ],

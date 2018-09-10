@@ -4,6 +4,7 @@ namespace TenFour\Http\Controllers\Api\First;
 
 use TenFour\Contracts\Repositories\NotificationRepository;
 use TenFour\Http\Requests\Person\GetPersonRequest;
+use TenFour\Http\Requests\Person\UpdateNotificationRequest;
 use TenFour\Http\Transformers\NotificationTransformer;
 use TenFour\Http\Response;
 
@@ -62,5 +63,57 @@ class NotificationController extends ApiController
 
         return $this->response->collection($this->notifications->all($person_id, $offset, $limit, $unread),
                                            new NotificationTransformer, 'notifications');
+    }
+
+    /**
+     * Update all notifications.
+     *
+     * The only result of this action is all notifications are marked as read.
+     *
+     * @Put("/{org_id}/people/{person_id}/notifications")
+     * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     * })
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={})
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function updateAll(UpdateNotificationRequest $request, $organization_id, $person_id)
+    {
+        return $this->response->collection($this->notifications->markAllAsRead($person_id),
+                                           new NotificationTransformer, 'notifications');
+
+    }
+    /**
+     * Update a notification.
+     *
+     * The only result of this action is the notification is marked as read.
+     *
+     * @Put("/{org_id}/people/{person_id}/notifications/{notification_id}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *   @Parameter("org_id", type="number", required=true, description="Organization id"),
+     *   @Parameter("person_id", type="number", required=true, description="Person id"),
+     *   @Parameter("notification_id", type="number", required=true, description="Notification id"),
+     * })
+     * @Request(headers={"Authorization": "Bearer token"})
+     * @Response(200, body={})
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function update(UpdateNotificationRequest $request, $organization_id, $person_id, $notification_id)
+    {
+        $offset = $request->input('offset', 0);
+        $limit = $request->input('limit', 0);
+        $unread = !!$request->input('unread', false);
+
+        return $this->response->item($this->notifications->markAsRead($person_id, $notification_id),
+                                     new NotificationTransformer, 'notification');
+
     }
 }

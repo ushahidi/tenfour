@@ -1,13 +1,13 @@
 <?php
 
-use TenFour\Jobs\SendCheckIn;
+use TenFour\Channels\CheckInSMS;
 use Codeception\Util\Stub;
 
 class ConcatinatedSMSCest
 {
 
     public function __construct() {
-        $this->sendCheckIn = new SendCheckIn([]);
+        $this->checkInSMSChannel = new CheckInSMS([]);
     }
 
     public function testIsURLOnSMSBoundary(UnitTester $t)
@@ -25,7 +25,7 @@ class ConcatinatedSMSCest
         ];
 
         $t->assertTrue(
-          $this->sendCheckIn->isURLOnSMSBoundary('sms.checkin', $data)
+          $this->checkInSMSChannel->isURLOnSMSBoundary('sms.checkin', $data)
         );
     }
 
@@ -41,7 +41,7 @@ class ConcatinatedSMSCest
         ];
 
         $t->assertFalse(
-          $this->sendCheckIn->isURLOnSMSBoundary('sms.checkin', $data)
+          $this->checkInSMSChannel->isURLOnSMSBoundary('sms.checkin', $data)
         );
     }
 }

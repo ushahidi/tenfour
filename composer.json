@@ -61,6 +61,7 @@
         "swiftmailer/swiftmailer": "^6.0.0",
         "egulias/email-validator": "~2.1",
         "itsgoingd/clockwork": "^2.2",
+        "nexmo/client": "^1.3",
         "brozot/laravel-fcm": "^1.2"
     },
     "require-dev": {

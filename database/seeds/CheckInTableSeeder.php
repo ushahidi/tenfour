@@ -9,7 +9,6 @@ use TenFour\Models\User;
 use TenFour\Models\Contact;
 use TenFour\Models\CheckIn;
 use TenFour\Models\Reply;
-use TenFour\Notifications\CheckInReceived;
 use TenFour\Notifications\ReplyReceived;
 use DB;
 
@@ -55,8 +54,6 @@ class CheckInTableSeeder extends Seeder
             ]);
 
             $this->addUsersToCheckIn($users, $check_in);
-
-            Notification::send($check_in->recipients, new CheckInReceived($check_in));
 
             if (count($answers) > 0) {
                 $this->addReply($check_in, $users[1], 'I am not ok', $answers[0]['answer']);

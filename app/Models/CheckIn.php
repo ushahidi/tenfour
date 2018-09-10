@@ -79,7 +79,7 @@ class CheckIn extends Model
      */
     public function messages()
     {
-        return $this->belongsToMany('TenFour\Models\Contact', 'check_in_messages')->withTimestamps()->withPivot('from');
+        return $this->belongsToMany('TenFour\Models\Contact', 'check_in_messages')->withTimestamps()->withPivot('from', 'to', 'channel', 'credits', 'credit_adjustment_id');
     }
 
     /**

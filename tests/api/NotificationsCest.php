@@ -22,12 +22,12 @@ class NotificationsCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendGet($this->peopleEndpoint);
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/5/notifications');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'PersonJoinedOrganization',
+                'type' => 'TenFour\Notifications\PersonJoinedOrganization',
                 'data' => [
                   'person_name' => 'Mary',
                 ]
@@ -52,12 +52,12 @@ class NotificationsCest
         $I->seeResponseCodeIs(200);
 
         $I->amAuthenticatedAsUser();
-        $I->sendGet($this->peopleEndpoint);
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/1/notifications');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
             'notifications' => [
-              'type' => 'PersonJoinedOrganization',
+              'type' => 'TenFour\Notifications\PersonJoinedOrganization',
               'data' => [
                   'person_name' => 'Mary',
                 ]
@@ -79,12 +79,12 @@ class NotificationsCest
         $I->sendDelete($this->organizationsEndpoint."/$org_id/people/$user_id");
         $I->seeResponseCodeIs(200);
 
-        $I->sendGet($this->peopleEndpoint);
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/5/notifications');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'PersonLeftOrganization',
+                'type' => 'TenFour\Notifications\PersonLeftOrganization',
                 'data' => [
                   'person_name' => 'Org member',
                 ]
@@ -108,12 +108,12 @@ class NotificationsCest
         $I->seeResponseCodeIs(200);
 
         $I->amAuthenticatedAsUser();
-        $I->sendGet($this->peopleEndpoint);
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/1/notifications');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
             'notifications' => [
-                'type' => 'PersonLeftOrganization',
+                'type' => 'TenFour\Notifications\PersonLeftOrganization',
                 'data' => [
                   'person_name' => 'Org member',
                 ]
@@ -152,12 +152,12 @@ class NotificationsCest
         $I->seeResponseIsJson();
 
         $I->amAuthenticatedAsOrgOwner();
-        $I->sendGet($this->peopleEndpoint);
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/4/notifications');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'CheckInReceived',
+                'type' => 'TenFour\Notifications\CheckIn',
                 'data' => [
                   'check_in_message' => $message
                 ]
@@ -184,12 +184,12 @@ class NotificationsCest
         $I->seeResponseIsJson();
 
         $I->amAuthenticatedAsOrgOwner();
-        $I->sendGet($this->peopleEndpoint);
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/4/notifications');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             'notifications' => [
-                'type' => 'ReplyReceived',
+                'type' => 'TenFour\Notifications\ReplyReceived',
                 'data' => [
                   'check_in_id' => $check_in_id,
                   'reply_from' => 'Org admin',
@@ -244,10 +244,8 @@ class NotificationsCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPut($this->organizationsEndpoint."/$org_id/people/me", [
-            'name' => 'null',
-            'notifications' => [] // mark all notifications as read
-        ]);
+        $I->sendPut($this->organizationsEndpoint."/$org_id/people/5/notifications", []);
+        $I->seeResponseCodeIs(200);
 
         $I->sendPost($this->organizationsEndpoint."/$org_id/people", [
             'name' => 'Timmy OToole',
@@ -255,24 +253,24 @@ class NotificationsCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/5/notifications?offset=0&limit=1&unread=1');
+        $I->sendGet($this->organizationsEndpoint . '/$org_id/people/5/notifications?unread=1');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->dontSeeResponseContainsJson([
-            'notifications' => [[
+            'notifications' => [
                 'type' => 'TenFour\Notifications\PersonJoinedOrganization',
                 'data' => [
                   'person_name' => 'Bart Simpson',
                 ]
-            ]]
+            ]
         ]);
         $I->seeResponseContainsJson([
-            'notifications' => [[
+            'notifications' => [
                 'type' => 'TenFour\Notifications\PersonJoinedOrganization',
                 'data' => [
                   'person_name' => 'Timmy OToole',
                 ]
-            ]]
+            ]
         ]);
     }
 }
