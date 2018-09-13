@@ -141,9 +141,8 @@ class CsvImporter implements CsvImporterInterface
             {
                 $row = $this->transformer->transform($row);
 
-                $contacts = array_except($row, [$this->user_fields, $group_fields]);
-                $user_input = array_except($row, [$this->contact_fields, $group_fields]);
-                $groups = array_except($row, [$this->user_fields, $this->contact_fields]);
+                $contacts = array_except($row, [$this->user_fields]);
+                $user_input = array_except($row, [$this->contact_fields]);
                 $normalized_contacts = [];
 
                 // normalize contacts
@@ -216,17 +215,6 @@ class CsvImporter implements CsvImporterInterface
                     }
 
                     $this->contacts->create($contact_input);
-                }
-
-                //Save groups for user
-                foreach ($groups as $key => $group) {
-                  $group_input = [
-                    'group' => $group,
-                    'organization_id' => $this->organization_id
-                    'user_id' => $person['id']
-                  ];
-
-                  $this->groups->createorupdate($group_input);
                 }
 
                 array_push($members, $person['id']);
