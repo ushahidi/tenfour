@@ -20,3 +20,4 @@ codeship.aes
 deployment.env
 docs/api/index.html
 
+nexmo-private.key
