@@ -29,6 +29,7 @@ use DB;
 use ChargeBee_APIError;
 use Dingo\Api\Auth\Auth;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @Resource("Organizations", uri="/api/v1/organizations")
@@ -154,9 +155,10 @@ class OrganizationController extends ApiController
         ];
 
         $contact_input = [
-            'contact'     => $input['email'],
-            'type'        => 'email',
-            'preferred'   => 1
+            'contact'           => $input['email'],
+            'type'              => 'email',
+            'preferred'         => 1,
+            'unsubscribe_token' => Hash::Make(config('app.key')),
         ];
 
         $address = $this->addresses->getByAddress($request['email'], null, $request['verification_code']);
