@@ -24,7 +24,7 @@ class ContactFilesCest
                 'id'   => 2,
             ],
             'columns' => [
-                'Name', 'Description', 'Phone', 'Email', 'Address', 'Twitter', 'Role', 'Groups'
+                'Name', 'Description', 'Phone', 'Email', 'Address', 'Twitter', 'Role'
             ],
         ]);
     }
@@ -40,8 +40,8 @@ class ContactFilesCest
         $I->wantTo('update CSV columns and map as an org admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->sendPUT($this->endpoint."/$org_id/files/$id", [
-            'columns'  => ['name','description', 'phone', 'email', 'address', 'twitter', 'role', 'groups'],
-            'maps_to'  => ['name', null, 'phone', 'email', null, 'twitter', 'role', 'groups']
+            'columns'  => ['name','description', 'phone', 'email', 'address', 'twitter', 'role'],
+            'maps_to'  => ['name', null, 'phone', 'email', null, 'twitter', 'role']
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseContainsJson([
@@ -49,15 +49,14 @@ class ContactFilesCest
                 'id'   => 2,
             ],
             'columns' => [
-                'name', 'description', 'phone', 'email', 'address', 'twitter','role','groups'
+                'name', 'description', 'phone', 'email', 'address', 'twitter','role'
             ],
             'maps_to' => [
                 '0' => 'name',
                 '2' => 'phone',
                 '3' => 'email',
                 '5' => 'twitter',
-                '6' => 'role',
-                '7' => 'groups'
+                '6' => 'role'
              ]
         ]);
     }
