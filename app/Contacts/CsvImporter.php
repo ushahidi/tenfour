@@ -5,7 +5,6 @@ namespace TenFour\Contacts;
 use TenFour\Contracts\Contacts\CsvImporter as CsvImporterInterface;
 use TenFour\Contracts\Repositories\ContactRepository;
 use TenFour\Contracts\Repositories\PersonRepository;
-use TenFour\Contracts\Repositories\GroupRepository;
 use TenFour\Contracts\Contacts\CsvReader as CsvReaderInterface;
 use TenFour\Contracts\Contacts\CsvTransformer as CsvTransformerInterface;
 use DB;
@@ -47,13 +46,6 @@ class CsvImporter implements CsvImporterInterface
     private $people;
 
     /**
-     * The Groups repository
-     *
-     * @var object
-     */
-    private $groups;
-
-    /**
      * User fields
      *
      * @var array
@@ -66,13 +58,6 @@ class CsvImporter implements CsvImporterInterface
      * @var array
      */
     private $contact_fields = ['email', 'twitter', 'phone', 'address', 'slack'];
-
-    /**
-    * Group fields
-    *
-    * @var array
-    */
-    private $group_fields = ['groups'];
 
     public function setReader(CsvReaderInterface $reader)
     {
@@ -92,11 +77,6 @@ class CsvImporter implements CsvImporterInterface
     public function setPeople(PersonRepository $people)
     {
         $this->people = $people;
-    }
-
-    public function setGroups(GroupRepository $groups)
-    {
-        $this->groups = $groups;
     }
 
     public function setOrganizationId($organization_id)
@@ -141,9 +121,8 @@ class CsvImporter implements CsvImporterInterface
             {
                 $row = $this->transformer->transform($row);
 
-                $contacts = array_except($row, [$this->user_fields, $group_fields]);
-                $user_input = array_except($row, [$this->contact_fields, $group_fields]);
-                $groups = array_except($row, [$this->user_fields, $this->contact_fields]);
+                $contacts = array_except($row, $this->user_fields);
+                $user_input = array_except($row, $this->contact_fields);
                 $normalized_contacts = [];
 
                 // normalize contacts
@@ -216,17 +195,6 @@ class CsvImporter implements CsvImporterInterface
                     }
 
                     $this->contacts->create($contact_input);
-                }
-
-                //Save groups for user
-                foreach ($groups as $key => $group) {
-                  $group_input = [
-                    'group' => $group,
-                    'organization_id' => $this->organization_id
-                    'user_id' => $person['id']
-                  ];
-
-                  $this->groups->createorupdate($group_input);
                 }
 
                 array_push($members, $person['id']);
