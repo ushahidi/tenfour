@@ -44,7 +44,7 @@ class CheckInChanged extends Notification
     public function toFCM($notifiable)
     {
         return [
-            'type'    => 'checkin:changed',
+            'type'    => 'checkin:updated',
             'subject' => 'TenFour Check-In Updated',
             'checkin_id'  => $this->check_in['id'],
         ];
