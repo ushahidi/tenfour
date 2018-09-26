@@ -2,14 +2,15 @@
 
 namespace TenFour\Http\Controllers;
 
-use Log;
-use App;
 use TenFour\Contracts\Repositories\CheckInRepository;
 use TenFour\Contracts\Repositories\ReplyRepository;
 use TenFour\Models\User;
 use TenFour\Models\Organization;
-use Illuminate\Http\Request;
+use TenFour\Services\URLFactory;
 
+use Log;
+use App;
+use Illuminate\Http\Request;
 use libphonenumber\NumberParseException;
 
 class VoiceController extends Controller
@@ -104,7 +105,7 @@ class VoiceController extends Controller
             $answer_text .= 'Press ' . ($key+1) . ' for ' . $answer['answer'] . '. ';
         }
 
-        $reply_url = "https://" . config('api.domain') . "/voice/reply?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id;
+        $reply_url = URLFactory::makeVoiceReplyURL($check_in_id, $recipient_id);
 
         return [
             [

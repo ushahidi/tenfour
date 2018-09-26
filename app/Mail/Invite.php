@@ -7,9 +7,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+
+use TenFour\Services\URLFactory;
 use TenFour\Models\Organization;
 use TenFour\Http\Transformers\UserTransformer;
-use TenFour\Services\URLShortenerService;
 
 class Invite extends Mailable
 {
@@ -38,10 +39,6 @@ class Invite extends Mailable
      */
     public function build()
     {
-        $shortener = App::make('TenFour\Services\URLShortenerService');
-
-        $client_url = Organization::findOrFail($this->organization['id'])->url();
-
         foreach($this->member['contacts'] as $contact)
         {
           if ($contact['type'] == 'email') {
@@ -49,21 +46,19 @@ class Invite extends Mailable
           }
         }
 
-        $url = secure_url(
-          $client_url
-          . '/#/signin/invite/'
-          . urlencode($this->organization['subdomain']) . '/'
-          . urlencode($this->member['id']) . '/'
-          . urlencode($this->email) . '/'
-          . urlencode($this->member['invite_token'])
-        );
+        $url = URLFactory::makeInviteURL(
+            Organization::findOrFail($this->organization['id']),
+            $this->member['id'],
+            $this->email,
+            $this->member['invite_token']
+          );
 
         $msg = 'You have been invited to join '.$this->organization['name'].'\'s TenFour, please click the link below to complete registration';
         $subject = $this->organization['name'] . ' invited you to join TenFour';
 
         return $this->view('emails.general')
             ->with([
-                'action_url' => $shortener->shorten($url),
+                'action_url' => URLFactory::shorten($url),
                 'action_text' => 'Join ' . $this->organization['name'] . '\'s TenFour',
                 'subject' => $subject,
                 'org_name' => $this->organization['name'],

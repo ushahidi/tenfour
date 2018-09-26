@@ -2,11 +2,13 @@
 
 namespace TenFour\Notifications;
 
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLFactory;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Http\Transformers\UserTransformer;
 
 class LDAPSyncFailed extends Notification
 {
@@ -60,7 +62,7 @@ class LDAPSyncFailed extends Notification
 
     private function url()
     {
-        return $this->organization->url('/#/settings/ldap');
+        return URLFactory::makeLDAPSettingsURL($this->organization);
     }
 
     /**

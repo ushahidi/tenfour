@@ -3,13 +3,14 @@
 namespace TenFour\Notifications;
 
 use TenFour\Models\Subscription;
+use TenFour\Services\URLFactory;
+use TenFour\Http\Transformers\UserTransformer;
 
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Http\Transformers\UserTransformer;
 
 /**
  * Notify beta users when their 100% discount promo code is about to expire.
@@ -69,7 +70,7 @@ class FreePromoEnding extends Notification
 
     private function url()
     {
-        return $this->subscription->organization->url('/#/settings/payments');
+        return URLFactory::makePaymentsURL($this->subscription->organization);
     }
 
     private function days()
