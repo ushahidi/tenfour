@@ -21,6 +21,6 @@ class FCM
 
         $to = $notifiable->deviceTokens()->pluck('token')->toArray();
 
-        (new FCMService())->send($to, $params['msg'], $params, $params['subject']);
+        (new FCMService())->send($to, isset($params['msg'])?$params['msg']:'', $params, $params['subject']);
     }
 }
