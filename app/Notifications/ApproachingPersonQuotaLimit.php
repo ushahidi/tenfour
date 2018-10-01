@@ -4,6 +4,7 @@ namespace TenFour\Notifications;
 
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Http\Requests\Person\AddPersonRequest;
+use TenFour\Services\URLFactory;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -67,7 +68,7 @@ class ApproachingPersonQuotaLimit extends Notification
 
     private function url()
     {
-        return $this->organization->url('/#/settings/payments');
+        return URLFactory::makePaymentsURL($this->organization);
     }
 
     /**

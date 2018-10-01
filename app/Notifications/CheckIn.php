@@ -12,6 +12,7 @@ use TenFour\Channels\CheckInSMS as CheckInSMSChannel;
 use TenFour\Channels\Voice as VoiceChannel;
 use TenFour\Mail\CheckIn as CheckInMail;
 use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Services\URLFactory;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -37,7 +38,6 @@ class CheckIn extends Notification
         $this->check_in = $check_in;
         $this->organization = $organization;
         $this->sender = User::findOrFail($this->check_in['user_id']);
-        $this->shortener = App::make('TenFour\Services\URLShortenerService');
         $this->check_in_repo = App::make('TenFour\Contracts\Repositories\CheckInRepository');
     }
 
@@ -115,14 +115,14 @@ class CheckIn extends Notification
         $params = [];
         $reply_token = $this->check_in_repo->getReplyToken($this->check_in['id'], $contact->user_id);
 
-        $check_in_url = $this->organization->url(
-            '/#/r/' .
-            $this->check_in['id'] . '/' .
-            '-/' .
-            $contact->user_id . '/' .
-            urlencode($reply_token));
+        $check_in_url = URLFactory::makeCheckInURL(
+            $this->organization,
+            $this->check_in['id'],
+            $contact->user_id,
+            $reply_token
+          );
 
-        $params['check_in_url'] = $this->shortener->shorten($check_in_url);
+        $params['check_in_url'] = URLFactory::shorten($check_in_url);
         $params['check_in_id'] = $this->check_in['id'];
         $params['answers'] = $this->check_in['answers'];
         $params['sender_name'] = $this->sender->name;
@@ -274,8 +274,8 @@ class CheckIn extends Notification
                'type' => 'phone',
                'number' => $from
            ],
-           'answer_url' => ["https://" . config('api.domain') . "/voice/answer?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
-           'event_url' => ["https://" . config('api.domain') . "/voice/event?check_in_id=" . $check_in_id . "&recipient_id=" . $recipient_id . "&contact_id=" . $contact_id],
+           'answer_url' => [URLFactory::makeVoiceAnswerURL($check_in_id, $recipient_id, $contact_id)],
+           'event_url' => [URLFactory::makeVoiceEventURL($check_in_id, $recipient_id, $contact_id)],
            // 'machine_detection' => 'continue'
          ];
     }

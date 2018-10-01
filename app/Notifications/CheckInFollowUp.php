@@ -8,6 +8,7 @@ use TenFour\Models\Organization;
 use TenFour\Models\Contact;
 use TenFour\Channels\SMS as SMSChannel;
 use TenFour\Contracts\Repositories\CheckInRepository;
+use TenFour\Services\URLFactory;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -28,7 +29,6 @@ class CheckInFollowUp extends Notification
         $this->check_in = User::findOrFail($check_in_id);
         $this->organization = $organization;
         $this->from = $from;
-        $this->shortener = App::make('TenFour\Services\URLShortenerService');
         $this->check_in_repo = App::make('TenFour\Contracts\Repositories\CheckInRepository');
     }
 
@@ -47,14 +47,8 @@ class CheckInFollowUp extends Notification
     {
         $reminder_reply_token = $this->check_in_repo->getReplyToken($this->check_in->id, $notifiable->user->id);
 
-        $check_in_url = $this->organization->url(
-            '/#/r/' .
-            $this->check_in->id . '/' .
-            '-/' .
-            $notifiable->user->id . '/' .
-            urlencode($reminder_reply_token));
-
-        $check_in_url = $this->shortener->shorten($check_in_url);
+        $check_in_url = URLFactory::makeCheckInURL($this->organization, $this->check_in->id, $notifiable->user->id, $reminder_reply_token);
+        $check_in_url = URLFactory::shorten($check_in_url);
 
         return [
             'from'        => $this->from,

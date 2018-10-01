@@ -10,6 +10,10 @@ use TenFour\Http\Requests\Reply\CreateReplyRequest;
 use TenFour\Http\Requests\Reply\UpdateReplyRequest;
 use TenFour\Http\Transformers\ReplyTransformer;
 use TenFour\Http\Response;
+use TenFour\Notifications\CheckInChanged;
+use TenFour\Models\CheckIn;
+
+use Illuminate\Support\Facades\Notification;
 use Dingo\Api\Auth\Auth;
 
 /**
@@ -89,7 +93,17 @@ class ReplyController extends ApiController
           ]
         );
 
+        $this->notifyCheckInChanged($request['check_in_id']);
+
         return $this->response->item($reply, new ReplyTransformer, 'reply');
+    }
+
+    private function notifyCheckInChanged($check_in_id)
+    {
+        $check_in = CheckIn::findOrFail($check_in_id);
+
+        Notification::send($check_in->recipients, new CheckInChanged($check_in->toArray()));
+        Notification::send($check_in->user, new CheckInChanged($check_in->toArray()));
     }
 
     /**
@@ -140,6 +154,9 @@ class ReplyController extends ApiController
 
         // Update response status
         $this->check_ins->updateRecipientStatus($check_in_id, $user_id, 'replied');
+
+        $this->notifyCheckInChanged($check_in_id);
+
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }
 
@@ -154,6 +171,8 @@ class ReplyController extends ApiController
             'user_id' => $user_id,
             'check_in_id' => $id
           ], $id);
+
+        $this->notifyCheckInChanged($id);
 
         // Update response status
         $this->check_ins->updateRecipientStatus($id, $user_id, 'replied');
@@ -266,6 +285,8 @@ class ReplyController extends ApiController
     public function update(UpdateReplyRequest $request, $organization_id, $check_in_id, $reply_id)
     {
         $reply = $this->reply->update($request->all(), $reply_id);
+
+        $this->notifyCheckInChanged($check_in_id);
 
         return $this->response->item($reply, new ReplyTransformer, 'reply');
     }

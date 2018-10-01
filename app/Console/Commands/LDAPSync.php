@@ -17,7 +17,7 @@ class LDAPSync extends Command
      *
      * @var string
      */
-    protected $signature = 'sync:ldap {subdomain?}';
+    protected $signature = 'ldap:sync {subdomain?}';
 
     /**
      * The console command description.

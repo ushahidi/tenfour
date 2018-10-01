@@ -10,7 +10,6 @@ use TenFour\Models\Organization;
 use TenFour\Models\User;
 use TenFour\Contracts\Messaging\MessageServiceFactory;
 use TenFour\Http\Transformers\UserTransformer;
-use TenFour\Services\URLShortenerService;
 use TenFour\Mail\Invite as InviteMail;
 use Log;
 
@@ -40,7 +39,7 @@ class SendInvite implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageServiceFactory $message_service_factory, URLShortenerService $shortener)
+    public function handle(MessageServiceFactory $message_service_factory)
     {
         foreach($this->member['contacts'] as $contact)
         {

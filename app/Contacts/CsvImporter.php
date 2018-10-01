@@ -59,10 +59,6 @@ class CsvImporter implements CsvImporterInterface
      */
     private $contact_fields = ['email', 'twitter', 'phone', 'address', 'slack'];
 
-<<<<<<< HEAD
-
-=======
->>>>>>> cc5bd18... Fix csv upload with roles (#1425)
     public function setReader(CsvReaderInterface $reader)
     {
         $this->reader = $reader;
@@ -126,11 +122,7 @@ class CsvImporter implements CsvImporterInterface
                 $row = $this->transformer->transform($row);
 
                 $contacts = array_except($row, $this->user_fields);
-<<<<<<< HEAD
-                $user_input = array_except($row,$this->contact_fields);
-=======
                 $user_input = array_except($row, $this->contact_fields);
->>>>>>> cc5bd18... Fix csv upload with roles (#1425)
                 $normalized_contacts = [];
 
                 // normalize contacts

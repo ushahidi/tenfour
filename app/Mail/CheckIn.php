@@ -2,13 +2,14 @@
 
 namespace TenFour\Mail;
 
+use TenFour\Models\Organization;
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLFactory;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use TenFour\Models\Organization;
-use TenFour\Http\Transformers\UserTransformer;
-
 
 class CheckIn extends Mailable
 {
@@ -57,25 +58,23 @@ class CheckIn extends Mailable
         $profile_picture = $this->creator['profile_picture'];
         $initials = UserTransformer::generateInitials($this->creator['name']);
         $subject = str_limit($this->check_in['message'], $limit = 50, $end = '...');
-        $check_in_url = $client_url .
-            '/#/r/'.
-            $this->check_in['id'] . '/' .
-            '/-/' .
-            $this->user['id'] . '/' .
-            urlencode($this->reply_token);
+
+        $check_in_url = URLFactory::makeCheckInURL(
+            $org,
+            $this->check_in['id'],
+            $this->user['id'],
+            $this->reply_token);
 
         $has_custom_answers = false;
 
         if ($this->check_in['answers']) {
           foreach ($this->check_in['answers'] as $index => $answer) {
-
-              $this->check_in['answers'][$index]['url'] =
-                  $client_url .
-                  '/#/r/' .
-                  $this->check_in['id'] . '/' .
-                  $index . '/' .
-                  $this->user['id'] . '/' .
-                  urlencode($this->reply_token);
+              $this->check_in['answers'][$index]['url'] = URLFactory::makeCheckInURL(
+                  $org,
+                  $this->check_in['id'],
+                  $this->user['id'],
+                  $this->reply_token,
+                  $index);
 
               if ($answer['type'] == 'custom') {
                 $has_custom_answers = true;
@@ -83,10 +82,10 @@ class CheckIn extends Mailable
           }
         }
 
-        $unsubscribe_url = $client_url . '/#/unsubscribe/' .
-          urlencode($org->name) . '/' .
-          urlencode($this->contact['contact']) . '/' .
-          urlencode($this->contact['unsubscribe_token']);
+        $unsubscribe_url = URLFactory::makeUnsubscribeURL(
+            $org,
+            $this->contact['contact'],
+            $this->contact['unsubscribe_token']);
 
         return $this->view('emails.checkin')
                     ->text('emails.checkin_plain')

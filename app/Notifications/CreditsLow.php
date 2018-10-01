@@ -3,6 +3,7 @@
 namespace TenFour\Notifications;
 
 use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLFactory;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -62,7 +63,7 @@ class CreditsLow extends Notification
 
     private function url()
     {
-        return $this->organization->url('/#/settings/payments');
+        return URLFactory::makePaymentsURL($this->organization);
     }
 
     /**

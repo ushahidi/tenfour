@@ -2,11 +2,12 @@
 
 namespace TenFour\Mail;
 
-use App;
-use Illuminate\Mail\Mailable;
 use TenFour\Models\Organization;
 use TenFour\Http\Transformers\UserTransformer;
-use TenFour\Services\URLShortenerService;
+use TenFour\Services\URLFactory;
+
+use App;
+use Illuminate\Mail\Mailable;
 
 class Verification extends Mailable
 {
@@ -30,18 +31,12 @@ class Verification extends Mailable
      */
     public function build()
     {
-        $shortener = App::make('TenFour\Services\URLShortenerService');
-
-        $url = 'https://' .
-            config('tenfour.domain') .
-            '/#/signup/verify/' .
-            urlencode($this->address['address']) .
-            '/' .
-            urlencode($this->address['code']);
+        $url = URLFactory::makeVerifyURL($this->address['address'], $this->address['code']);
+        $url = URLFactory::shorten($url);
 
         return $this->view('emails.verification')
             ->with([
-                'action_url'        => $shortener->shorten($url),
+                'action_url'        => $url,
                 'code'              => $this->address['code']
             ])
             ->subject('Verify your TenFour email address');

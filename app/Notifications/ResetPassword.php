@@ -2,10 +2,12 @@
 
 namespace TenFour\Notifications;
 
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLFactory;
+
 use App;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Http\Transformers\UserTransformer;
 
 class ResetPassword extends Notification
 {
@@ -48,16 +50,15 @@ class ResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
-        $resetLink = url($this->organization->url() .
-            '/#/signin/password/reset/' .
-            urlencode($this->organization['subdomain']) . '/' .
-            urlencode($this->email) . '/' .
+        $reset_url = URLFactory::makeResetPasswordURL(
+            $this->organization,
+            $this->email,
             $this->token);
 
         $subject = 'Reset Password';
 
         $data = [
-            'action_url'      => $resetLink,
+            'action_url'      => $reset_url,
             'action_text'     => $subject,
             'subject'         => 'Need to reset your password?',
             'org_subdomain'   => $this->organization['subdomain'],
