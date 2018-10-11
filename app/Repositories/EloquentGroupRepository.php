@@ -155,4 +155,11 @@ class EloquentGroupRepository implements GroupRepository
         return $group;
     }
 
+    public function findBySource($organization_id, $source, $source_id)
+    {
+        return Group::where('source', '=', $source)
+            ->where('source_id', '=', $source_id)
+            ->where('organization_id', '=', $organization_id)
+            ->first();
+    }
 }

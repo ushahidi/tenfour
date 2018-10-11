@@ -67,10 +67,10 @@ class ContactFilesCest
      */
     public function importContactsAsOrgAdmin(ApiTester $I)
     {
-        $header = "name, role, phone, email, address, twitter, role\n";
-        $contents = '"Mary", "designer", "254722111111", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md", admin'
+        $header = "name, role, phone, email, address, twitter, role, groups\n";
+        $contents = '"Mary", "designer", "254722111111", "mary@ushahidi.com", "MV Building, Waiyaki Way", "@md", "admin"'
                   ."\n"
-                  . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk", responder';
+                  . '"David", "software developer", "254722111222", "david@ushahidi.com", "P.O. Box 42, Nairobi", "@lk", "responder"';
 
         Storage::put('contacts/sample.csv', $header . $contents);
 

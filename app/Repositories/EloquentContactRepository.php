@@ -97,7 +97,7 @@ class EloquentContactRepository implements ContactRepository
         // Filter contacts by method if required
         if (!empty($methods)) {
             $methods = array_map(function ($method) {
-                return $method === 'sms' ? 'phone' : $method;
+                return $method === 'sms' || $method === 'voice' ? 'phone' : $method;
             }, $methods);
 
             $query->where(function ($query) use ($methods) {

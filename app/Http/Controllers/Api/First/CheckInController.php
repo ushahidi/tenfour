@@ -18,7 +18,10 @@ use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Http\Response;
 use TenFour\Jobs\SendCheckIn;
 use TenFour\Services\CreditService;
+use TenFour\Notifications\CheckInChanged;
+use TenFour\Models\CheckIn;
 
+use Illuminate\Support\Facades\Notification;
 use Dingo\Api\Auth\Auth;
 use App;
 
@@ -375,7 +378,7 @@ class CheckInController extends ApiController
         }
 
         // Send check-in
-      dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
+        dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
 
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
@@ -493,8 +496,11 @@ class CheckInController extends ApiController
                 return response('Payment Required', 402);
             }
 
-          dispatch((new SendCheckIn($check_in_to_dispatch))/*->onQueue('checkins')*/);
+            dispatch((new SendCheckIn($check_in_to_dispatch))/*->onQueue('checkins')*/);
         }
+
+        Notification::send(CheckIn::findOrFail($check_in['id'])->recipients, new CheckInChanged($check_in));
+        Notification::send(CheckIn::findOrFail($check_in['id'])->user, new CheckInChanged($check_in));
 
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
@@ -535,7 +541,7 @@ class CheckInController extends ApiController
             'id' => $recipient_id,
         ]);
 
-      dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
+        dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
 
         $recipient = $this->check_ins->getRecipient($check_in_id, $recipient_id);
         return $this->response->item($recipient, new UserTransformer, 'recipient');

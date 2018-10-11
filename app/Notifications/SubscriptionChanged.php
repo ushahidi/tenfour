@@ -6,6 +6,7 @@ use TenFour\Models\Subscription;
 use TenFour\Http\Transformers\UserTransformer;
 use TenFour\Contracts\Services\PaymentService;
 use TenFour\Channels\FCM as FCMChannel;
+use TenFour\Services\URLFactory;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -94,7 +95,7 @@ class SubscriptionChanged extends Notification
 
     private function url()
     {
-        return $this->subscription->organization->url('/#/settings/payments');
+        return URLFactory::makePaymentsURL($this->subscription->organization);
     }
 
     /**

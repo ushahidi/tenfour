@@ -2,11 +2,13 @@
 
 namespace TenFour\Notifications;
 
+use TenFour\Services\URLFactory;
+use TenFour\Http\Transformers\UserTransformer;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Http\Transformers\UserTransformer;
 
 class ImportFailed extends Notification
 {
@@ -60,7 +62,7 @@ class ImportFailed extends Notification
 
     private function url()
     {
-        return $this->organization->url('/#/settings/contactsImport');
+        return URLFactory::makeContactsImportURL($this->organization);
     }
 
     /**

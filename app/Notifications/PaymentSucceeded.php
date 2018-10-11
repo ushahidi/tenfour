@@ -1,13 +1,16 @@
 <?php
 
 namespace TenFour\Notifications;
+
+use TenFour\Models\Subscription;
+use TenFour\Models\CreditAdjustment;
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLFactory;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Models\Subscription;
-use TenFour\Models\CreditAdjustment;
-use TenFour\Http\Transformers\UserTransformer;
 
 class PaymentSucceeded extends Notification
 {
@@ -63,7 +66,7 @@ class PaymentSucceeded extends Notification
 
     private function url()
     {
-        return $this->subscription->organization->url('/#/settings/payments');
+        return URLFactory::makePaymentsURL($this->subscription->organization);
     }
 
     /**

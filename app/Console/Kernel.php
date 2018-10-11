@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \TenFour\Jobs\SyncSubscriptions)->hourly();
         $schedule->job(new \TenFour\Jobs\CheckQuotas)->hourly();
         $schedule->job(new \TenFour\Jobs\CheckLowCredits)->hourly();
+        $schedule->job(new \TenFour\Jobs\LDAPSyncAll)->daily();
+        $schedule->job(new \TenFour\Jobs\ExpireUnverifiedAddresses)->daily();
 
     }
 }

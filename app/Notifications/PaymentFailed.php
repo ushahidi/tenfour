@@ -1,12 +1,15 @@
 <?php
 
 namespace TenFour\Notifications;
+
+use TenFour\Services\URLFactory;
+use TenFour\Models\Subscription;
+use TenFour\Http\Transformers\UserTransformer;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Models\Subscription;
-use TenFour\Http\Transformers\UserTransformer;
 
 class PaymentFailed extends Notification
 {
@@ -61,7 +64,7 @@ class PaymentFailed extends Notification
 
     private function retryUrl()
     {
-        return $this->subscription->organization->url('/#/settings/payments');
+        return URLFactory::makePaymentsURL($this->subscription->organization);
     }
 
     /**

@@ -29,6 +29,11 @@ Route::post('password/reset', ['uses' => 'Auth\PasswordController@postReset']);
 Route::post('sms/receive/africastalking', 'SMSController@receiveAfricasTalking');
 Route::match(['get', 'post'], 'sms/receive/nexmo', 'SMSController@receiveNexmo');
 
+Route::get('voice/answer', 'VoiceController@makeCheckInNCCO');
+Route::post('voice/event', 'VoiceController@handleEvent');
+Route::post('voice/reply', 'VoiceController@handleReply');
+
+
 Route::post('invite/{organization}/accept/{member}', ['uses' => 'Api\First\OrganizationController@acceptInvite']);
 
 // Unsubscribe from emails

@@ -2,11 +2,13 @@
 
 namespace TenFour\Notifications;
 
+use TenFour\Http\Transformers\UserTransformer;
+use TenFour\Services\URLFactory;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use TenFour\Http\Transformers\UserTransformer;
 
 class ImportSucceeded extends Notification
 {
@@ -71,7 +73,7 @@ class ImportSucceeded extends Notification
 
     private function url()
     {
-        return $this->organization->url('/#/people');
+        return URLFactory::makePeopleURL($this->organization);
     }
 
     /**

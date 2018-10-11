@@ -18,7 +18,7 @@ class Group extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'organization_id', 'user_id', 'description', 'profile_picture'];
+    protected $fillable = ['name', 'organization_id', 'user_id', 'description', 'profile_picture', 'source', 'source_id'];
     /**
      * The attributes that should be casted to native types.
      *
