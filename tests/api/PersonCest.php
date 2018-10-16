@@ -830,4 +830,36 @@ class PersonCest
         ]);
     }
 
+    /*
+     * Filter people in an organization
+     *
+     */
+    public function filterMembersAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Filter people of an organization as org Admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$id/people?filter=Org&offset=0&limit=1");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 5,
+                    'name' => 'Org admin',
+                ]
+            ]
+        ]);
+
+        $I->dontSeeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 4,
+                    'name' => 'Org owner',
+                ]
+            ]
+        ]);
+    }
 }

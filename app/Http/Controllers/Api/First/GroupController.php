@@ -110,11 +110,12 @@ class GroupController extends ApiController
     /**
      * Get all groups for an organization
      *
-     * @Get("/{?offset,limit}")
+     * @Get("/{?offset,limit,filter}")
      * @Versions({"v1"})
      * @Parameters({
      *     @Parameter("offset", default=0),
-     *     @Parameter("limit", default=0)
+     *     @Parameter("limit", default=0),
+     *     @Parameter("filter", type="String", required=false, description="Filter results by group's name")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -181,8 +182,9 @@ class GroupController extends ApiController
     {
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 0);
+        $filter = $request->input('filter', null);
 
-        return $this->response->collection($this->groups->all($organization_id, $offset, $limit),
+        return $this->response->collection($this->groups->all($organization_id, $offset, $limit, $filter),
                                            new GroupTransformer, 'groups');
     }
     /**

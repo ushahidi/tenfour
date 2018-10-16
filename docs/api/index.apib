@@ -214,7 +214,7 @@ to that email address.
                 }
             }
 
-## List members of an organization [GET /api/v1/organizations/{org_id}/people/{?offset,limit}]
+## List members of an organization [GET /api/v1/organizations/{org_id}/people/{?offset,limit,filter}]
 
 
 + Parameters
@@ -223,6 +223,7 @@ to that email address.
         + Default: 0
     + limit: (number, optional) - 
         + Default: 0
+    + filter: (String, optional) - Filter results by user's name
 
 + Request (application/json)
     + Headers
@@ -288,7 +289,7 @@ to that email address.
                 ]
             }
 
-## Find a member [GET /api/v1/organizations/{org_id}/people/{person_id}/{?history_offset,history_limit}]
+## Retrieve a member [GET /api/v1/organizations/{org_id}/people/{person_id}/{?history_offset,history_limit}]
 
 
 + Parameters
@@ -702,7 +703,8 @@ The only result of this action is the notification is marked as read.
                         "Email",
                         "Address",
                         "Twitter",
-                        "Role"
+                        "Role",
+                        "Groups"
                     ],
                     "id": 2,
                     "organization": {
@@ -734,7 +736,8 @@ The only result of this action is the notification is marked as read.
                     "email",
                     "address",
                     "twitter",
-                    "role"
+                    "role",
+                    "groups"
                 ],
                 "maps_to": [
                     "name",
@@ -743,7 +746,8 @@ The only result of this action is the notification is marked as read.
                     "email",
                     null,
                     "twitter",
-                    "role"
+                    "role",
+                    "groups"
                 ]
             }
 
@@ -758,7 +762,8 @@ The only result of this action is the notification is marked as read.
                     "email",
                     "address",
                     "twitter",
-                    "role"
+                    "role",
+                    "groups"
                 ],
                 "maps_to": [
                     "name",
@@ -767,7 +772,8 @@ The only result of this action is the notification is marked as read.
                     "email",
                     null,
                     "twitter",
-                    "role"
+                    "role",
+                    "groups"
                 ]
             }
 
@@ -865,7 +871,7 @@ The only result of this action is the notification is marked as read.
                 }
             }
 
-## Get all groups for an organization [GET /api/v1/organizations/{org_id}/groups{?offset,limit}]
+## Get all groups for an organization [GET /api/v1/organizations/{org_id}/groups{?offset,limit,filter}]
 
 
 + Parameters
@@ -873,6 +879,7 @@ The only result of this action is the notification is marked as read.
         + Default: 0
     + limit: (string, optional) - 
         + Default: 0
+    + filter: (String, optional) - Filter results by group's name
 
 + Request (application/json)
     + Headers

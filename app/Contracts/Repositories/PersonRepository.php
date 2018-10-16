@@ -4,7 +4,7 @@ namespace TenFour\Contracts\Repositories;
 interface PersonRepository extends OrgCrudRepository
 {
 
-    public function all($organization_id, $offset = 0, $limit = 0);
+    public function all($organization_id, $offset = 0, $limit = 0, $filter = null);
 
     /**
      * Get role of member in an organization

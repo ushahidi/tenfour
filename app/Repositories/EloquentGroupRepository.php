@@ -16,11 +16,15 @@ class EloquentGroupRepository implements GroupRepository
     }
 
     // OrgCrudRepository
-    public function all($organization_id, $offset = 0, $limit = 0)
+    public function all($organization_id, $offset = 0, $limit = 0, $filter = null)
     {
         $query = Group::where('organization_id', '=', $organization_id)
                     ->with('members.contacts')
                     ->orderBy('name', 'asc');
+
+        if ($filter) {
+            $query = $query->whereRaw( "LOWER(`name`) like ?", array( '%'.strtolower($filter).'%' ) );
+        }
 
         if ($limit > 0) {
             $query
