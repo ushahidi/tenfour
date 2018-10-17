@@ -220,7 +220,12 @@
                                               {{ $code }}
                                             </td>
                                         </tr>
-                                    </tbody></table>
+                                        <tr>
+                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">
+                                               The verification code will expire in 24 hours. After that time, <a href="http://tenfour.org/">feel free to sign up again</a>.
+                                            </td>
+                                        </tr>
+                                      </tbody></table>
                                 </td>
                             </tr>
                             <tr>

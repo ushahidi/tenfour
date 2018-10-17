@@ -34,7 +34,7 @@ class EloquentPersonRepository implements PersonRepository
     }
 
     // OrgCrudRepository
-    public function all($organization_id, $offset = 0, $limit = 0)
+    public function all($organization_id, $offset = 0, $limit = 0, $filter = null)
     {
         $query = Organization::findOrFail($organization_id)
             ->members()
@@ -42,10 +42,14 @@ class EloquentPersonRepository implements PersonRepository
             ->select('users.*','role')
             ->orderby('name', 'asc');
 
+        if ($filter) {
+            $query = $query->whereRaw( "LOWER(`name`) like ?", array( '%'.strtolower($filter).'%' ) );
+        }
+
         if ($limit > 0) {
-          $query
-            ->offset($offset)
-            ->limit($limit);
+            $query
+              ->offset($offset)
+              ->limit($limit);
         }
 
         $members = $query->get();
