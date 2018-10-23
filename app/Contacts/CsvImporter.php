@@ -168,7 +168,7 @@ class CsvImporter implements CsvImporterInterface
                     'name' => $user_input['name'],
                     'description' => $user_input['description'],
                     'role' => 'responder'
-                  ]
+                  ];
                 }
                 $person = $this->people->create($this->organization_id, $user_input);
 
