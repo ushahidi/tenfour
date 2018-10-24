@@ -2,6 +2,8 @@
 namespace TenFour\Messaging;
 
 use TenFour\Messaging\Drivers\AfricasTalking;
+use TenFour\Messaging\Drivers\BulkSMS;
+
 use GuzzleHttp\Client;
 
 use SimpleSoftwareIO\SMS\DriverManager as BaseDriverManager;
@@ -21,6 +23,22 @@ class DriverManager extends BaseDriverManager
             new Client,
             $config['api_key'],
             $config['username']
+        );
+    }
+
+     /**
+     * Create an instance of BulkSMS driver
+     *
+     * @return BulkSMS
+     */
+    public function createBulkSMSDriver()
+    {
+        $config = $this->app['config']->get('sms.bulksms', []);
+
+        return new BulkSMS(
+            new Client,
+            $config['token_id'],
+            $config['token_secret']
         );
     }
 }
