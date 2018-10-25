@@ -130,7 +130,10 @@ class CheckIn extends Notification
         $params['msg'] = $this->check_in['message'];
         $params['from'] = $this->getFromNumber($contact);
 
-        $params['_last_unreplied_check_in_id'] = $this->getLastUnrepliedCheckIn($contact, $params['from']);
+        if ($params['from'] !== 'REPLIABLE') {
+            $params['_last_unreplied_check_in_id'] = $this->getLastUnrepliedCheckIn($contact, $params['from']);
+        }
+
 
         $this->check_in_repo->addMessage($this->check_in['id'], $contact['id'], $params['from'], $contact['contact'], 'sms', 1);
 
