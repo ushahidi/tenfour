@@ -61,12 +61,15 @@ class BulkSMS extends AbstractSMS implements DriverInterface
         ];
 
         $body = [
-            // 'from'     => $message->getFrom(),
-            'from'     => [ 'type' => 'REPLIABLE' ],
+            'from'     => $message->getFrom(),
             'body'     => $message->composeMessage(),
             'to'       => $message->getTo()[0],
             'encoding' => 'UNICODE',
         ];
+
+        if ($body['from'] === 'REPLIABLE') {
+            $body['from'] = [ 'type' => 'REPLIABLE' ];
+        }
 
         return $this->client->request('POST', $this->api_rest_url, [
             'headers'     => $headers,
