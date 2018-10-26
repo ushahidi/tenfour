@@ -17,6 +17,12 @@ return [
         'messages_per_second' => env('AFRICASTALKING_MESSAGES_PER_SECOND', 5)
     ],
 
+    'bulksms' => [
+        'token_id'      => env('BULKSMS_TOKEN_ID', 'Your BulkSMS Token ID'),
+        'token_secret'  => env('BULKSMS_TOKEN_SECRET', 'Your BulkSMS Token Secret'),
+        'incoming_secret' => env('BULKSMS_INCOMING_SECRET', 'The "secret" query parameter set in MO query URL in BulkSMS profile')
+    ],
+
     'callfire' => [
         'app_login' => env('CALLFIRE_LOGIN', 'Your CallFire API Login'),
         'app_password' => env('CALLFIRE_PASSWORD', 'Your CallFire API Password')

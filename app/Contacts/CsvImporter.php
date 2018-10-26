@@ -164,12 +164,9 @@ class CsvImporter implements CsvImporterInterface
 
                 // Save new user
                 if (empty($user_input['role'])) {
-                  $user_input = [
-                    'name' => $user_input['name'],
-                    'description' => $user_input['description'],
-                    'role' => 'responder'
-                  ]
+                  $user_input['role'] = 'responder';
                 }
+
                 $person = $this->people->create($this->organization_id, $user_input);
 
                 // Save contacts for user

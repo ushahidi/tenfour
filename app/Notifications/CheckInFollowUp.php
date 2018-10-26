@@ -26,7 +26,7 @@ class CheckInFollowUp extends Notification
      */
     public function __construct(int $check_in_id, Organization $organization, string $from)
     {
-        $this->check_in = User::findOrFail($check_in_id);
+        $this->check_in = CheckInModel::findOrFail($check_in_id);
         $this->organization = $organization;
         $this->from = $from;
         $this->check_in_repo = App::make('TenFour\Contracts\Repositories\CheckInRepository');

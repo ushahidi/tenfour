@@ -28,7 +28,7 @@ class CheckInSMS
 
         $sms = $notification->toSMS($contact);
 
-        if ($sms['_last_unreplied_check_in_id']) {
+        if (isset($sms['_last_unreplied_check_in_id'])) {
             $contact->notify(new CheckInFollowUp(
                 $sms['_last_unreplied_check_in_id'],
                 $notification->organization,
