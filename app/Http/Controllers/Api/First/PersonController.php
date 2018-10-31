@@ -78,12 +78,13 @@ class PersonController extends ApiController
     /**
      * List members of an organization
      *
-     * @Get("/{org_id}/people/{?offset,limit}")
+     * @Get("/{org_id}/people/{?offset,limit,filter}")
      * @Versions({"v1"})
      * @Parameters({
      *   @Parameter("org_id", type="number", required=true, description="Organization id"),
-     *   @Parameter("offset", type="number", default=0),
-     *   @Parameter("limit", type="number", default=0)
+     *   @Parameter("offset", type="number", required=false, default=0),
+     *   @Parameter("limit", type="number", required=false, default=0),
+     *   @Parameter("filter", type="String", required=false, description="Filter results by user's name")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -149,13 +150,14 @@ class PersonController extends ApiController
     {
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 0);
+        $filter = $request->input('filter', null);
 
-        return $this->response->collection($this->people->all($organization_id, $offset, $limit),
+        return $this->response->collection($this->people->all($organization_id, $offset, $limit, $filter),
                                            new UserTransformer, 'people');
     }
 
     /**
-     * Find a member
+     * Retrieve a member
      *
      * @Get("{org_id}/people/{person_id}/{?history_offset,history_limit}")
      * @Versions({"v1"})

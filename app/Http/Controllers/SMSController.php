@@ -88,6 +88,22 @@ class SMSController extends Controller
     }
 
     /**
+     * Receive push MOs from BulkSMS
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function receiveBulkSMS(Request $request)
+    {
+        if ($request->query('secret') !== config('sms.bulksms.incoming_secret')) {
+            Log::error('Missing secret in BulkSMS MO Reply URL');
+            abort(403);
+        }
+
+        return $this->receive('bulksms');
+    }
+
+    /**
      * Receive push MOs from Nexmo
      *
      * @param Request $request

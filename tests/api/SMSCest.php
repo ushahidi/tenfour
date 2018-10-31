@@ -22,6 +22,24 @@ class SMSCest
         $I->seeResponseCodeIs(200);
     }
 
+    public function receiveBulkSMSMOs(ApiTester $I)
+    {
+        $endpoint = 'sms/receive/bulksms?secret=westgate';
+        $I->wantTo('Receive MOs from BulkSMS');
+        $I->sendPost($endpoint, [
+            'sender' => '254721674180',
+            'message' => 'test MO from BulkSMS',
+            'msg_id' => '111111',
+        ]);
+
+        $I->seeRecord('replies', [
+            'message' => 'test MO from BulkSMS',
+            'message_id' => '111111',
+        ]);
+
+        $I->seeResponseCodeIs(200);
+    }
+
     public function receiveNexmoMOsWithoutSignature(ApiTester $I)
     {
         $endpoint = 'sms/receive/nexmo';

@@ -55,6 +55,94 @@ return [
                 'driver' => 'nexmo',
                 'from' => $getNexmoFrom('DE')
             ],
+            'AU' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'AT' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'BE' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'DK' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'FI' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'HK' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'LS' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'NA' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'NL' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'NO' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'PH' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'ZA' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'ES' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'SZ' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'SE' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'CH' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'TH' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+
+            // These regions have NO local number available:
+
+            'LB' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'IQ' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'JO' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+            'SY' => [
+                'driver' => 'bulksms',
+                'from' => 'REPLIABLE'
+            ],
+
             'default' => [
                 'driver' => 'nexmo',
                 'from' => explode('|', env('NEXMO_SRC_ADDR', 'tenfour'))

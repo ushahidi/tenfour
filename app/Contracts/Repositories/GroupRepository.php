@@ -4,7 +4,7 @@ namespace TenFour\Contracts\Repositories;
 interface GroupRepository extends OrgCrudRepository
 {
 
-    public function all($organization_id, $offset = 0, $limit = 0);
+    public function all($organization_id, $offset = 0, $limit = 0, $filter = null);
 
     /**
      * Add group to an organization

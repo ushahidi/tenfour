@@ -131,6 +131,7 @@ class GroupCest
             ]
         ]);
     }
+
     /*
      * Delete group
      *
@@ -187,6 +188,46 @@ class GroupCest
         $I->amAuthenticatedAsViewer();
         $I->sendGET($this->endpoint."/$id/groups/$group_id");
         $I->seeResponseCodeIs(200);
+    }
+
+    /*
+     * Filter groups in an organization
+     *
+     */
+    public function filterOrgGroupsAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Filter a list of groups for an organization as an organization admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint."/$id/groups?filter=group+2");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'groups' => [
+                [
+                    'id' => 2,
+                    'name' => 'Test Group 2',
+                    'organization' => [
+                        'id' => 2
+                    ],
+                    'members' => [
+                        [
+                            'id' => 2,
+                            'name' => 'Admin user'
+                        ]
+                    ]
+
+                ],
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([
+            'groups' => [
+                [
+                    'id' => 1,
+                    'name' => 'Test Group 1',
+                ],
+            ]
+        ]);
     }
 
 }
