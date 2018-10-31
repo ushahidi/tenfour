@@ -36,8 +36,8 @@ return [
                 'from' => $getNexmoFrom('CA')
             ],
             'IE' => [
-                'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('IE')
             ],
             'GB' => [
                 'driver' => 'nexmo',
