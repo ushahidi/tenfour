@@ -24,8 +24,8 @@ return [
                 'from' => explode('|', env('AFRICASTALKING_SRC_ADDR', '20880|20881'))
             ],
             'US' => [
-                'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
+                'driver' => 'nexmo',
+                'from' => $getNexmoFrom('US')
             ],
             'NZ' => [
                 'driver' => 'nexmo',
