@@ -215,14 +215,14 @@
                                               Once you verify your email address, you can create your organization and help keep your team safe during an emergency
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <td style="padding: 20px 0 0 0; letter-spacing: 10px; font-weight: bold; font-size: 40px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">
                                               {{ $code }}
                                             </td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
                                             <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Lato, Helvetica, Arial, sans-serif; color: #666666;" class="padding-copy" align="center">
-                                               The verification code will expire in 24 hours. After that time, <a href="http://tenfour.org/">feel free to sign up again</a>.
+                                               This verification email will expire in 24 hours. After that time, <a href="http://tenfour.org/">feel free to sign up again</a>.
                                             </td>
                                         </tr>
                                       </tbody></table>
