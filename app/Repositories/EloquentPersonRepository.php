@@ -38,12 +38,26 @@ class EloquentPersonRepository implements PersonRepository
     {
         $query = Organization::findOrFail($organization_id)
             ->members()
-            ->with('contacts')
             ->select('users.*','role')
             ->orderby('name', 'asc');
 
         if ($filter) {
-            $query = $query->whereRaw( "LOWER(`name`) like ?", array( '%'.strtolower($filter).'%' ) );
+            $query = $query->where(function ($query) use ($filter, $organization_id) {
+                $query = $query->whereRaw( "LOWER(`name`) like ?", array( '%'.strtolower($filter).'%' ) );
+                $query = $query->orwhereRaw( "LOWER(`role`) like ?", array( '%'.strtolower($filter).'%' ) );
+
+                $query = $query->orwhereHas("contacts", function ($query) use ($filter, $organization_id) {
+                  $query->whereRaw( "LOWER(`contact`) like ?", array( '%'.strtolower($filter).'%' ) );
+                  $query->where('organization_id','=',$organization_id);
+                });
+
+                $query = $query->orwhereHas("groups", function ($query) use ($filter, $organization_id) {
+                  $query->whereRaw( "LOWER(`name`) like ?", array( '%'.strtolower($filter).'%' ) );
+                  $query->where('organization_id','=',$organization_id);
+                });
+            });
+        } else {
+            $query = $query->with('contacts');
         }
 
         if ($limit > 0) {

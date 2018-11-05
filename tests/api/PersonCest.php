@@ -837,10 +837,10 @@ class PersonCest
     public function filterMembersAsOrgAdmin(ApiTester $I)
     {
         $id = 2;
-        $I->wantTo('Filter people of an organization as org Admin');
+        $I->wantTo('Filter people of an organization by name as org Admin');
         $I->amAuthenticatedAsOrgAdmin();
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendGET($this->endpoint."/$id/people?filter=Org&offset=0&limit=1");
+        $I->sendGET($this->endpoint."/$id/people?filter=Org+&offset=0&limit=1");
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
 
@@ -862,4 +862,104 @@ class PersonCest
             ]
         ]);
     }
+
+
+    /*
+     * Filter people in an organization by group
+     *
+     */
+    public function filterMembersByGroupAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Filter people of an organization by group as org Admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$id/people?filter=Test+Group+1&offset=0&limit=1");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 2,
+                    'name' => 'Admin user',
+                ]
+            ]
+        ]);
+
+        $I->dontSeeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 4,
+                    'name' => 'Org owner',
+                ]
+            ]
+        ]);
+    }
+
+    /*
+     * Filter people in an organization by contact
+     *
+     */
+    public function filterMembersByContactAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Filter people of an organization by contact as org Admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$id/people?filter=linda@ushahidi.com&offset=0&limit=1");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 2,
+                    'name' => 'Admin user',
+                ]
+            ]
+        ]);
+
+        $I->dontSeeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 4,
+                    'name' => 'Org owner',
+                ]
+            ]
+        ]);
+    }
+    /*
+     * Filter people in an organization by role
+     *
+     */
+    public function filterMembersByRoleAsOrgAdmin(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Filter people of an organization by role as org Admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET($this->endpoint."/$id/people?filter=author&offset=0&limit=1");
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->seeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 11,
+                    'name' => 'Author',
+                ]
+            ]
+        ]);
+
+        $I->dontSeeResponseContainsJson([
+            'people' => [
+                [
+                    'id' => 4,
+                    'name' => 'Org owner',
+                ]
+            ]
+        ]);
+    }
+
 }
