@@ -22,7 +22,8 @@ VALUES
 ('9', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2),
 ('10', 'SMS member','SMS member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2),
 ('11', 'Author','Author role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'author', 2),
-('12', 'Viewer','Viewer role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'viewer', 2);
+('12', 'Viewer','Viewer role','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'viewer', 2),
+('13', 'Iraq member','Iraq member','$2y$10$IuqAql1uP05eZ5ZEen3q1.6v4EhGbh6x7hOUsvR1x9FvI8jnbdRlC', 'user', NULL, 'responder', 2);
 
 -- Add OAuth clients and tokens
 INSERT INTO oauth_personal_access_clients VALUES (1, 2, '2016-10-30 12:05:01','2016-10-30 12:05:01');
@@ -53,6 +54,7 @@ INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VA
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('14', '10', '2', '1', 'phone', '+254722123457');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('15', '5', '2', '1', 'phone', '+254721674200');
 INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('16', '11', '2', '1', 'email', 'test+author@organization2.com');
+INSERT INTO contacts (id, user_id, organization_id, preferred, type, contact) VALUES ('17', '13', '2', '1', 'phone', '+964721674200');
 
 -- Add test check-ins
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id) VALUES ('1', 'Westgate under siege', '2', 'pending', '0', '4');
