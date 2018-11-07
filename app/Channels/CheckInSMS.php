@@ -38,19 +38,20 @@ class CheckInSMS
         $to = App::make('TenFour\Messaging\PhoneNumberAdapter');
         $to->setRawNumber($contact->contact);
         $sms['keyword'] = $this->message_service->getKeyword($to);
+        $oneway = $this->message_service->isOneWay($to);;
 
-        // TODO add delays to allow SMS messages the time to be received in order
+        // TODO add delays to allow SMS messages the time to be received in order #1414
 
-        if ($this->isURLOnSMSBoundary('sms.checkin', $sms)) {
+        if ($this->isURLOnSMSBoundary($oneway?'sms.checkin_oneway':'sms.checkin', $sms)) {
             // send sms without check-in url
             $check_in_url = $sms['check_in_url'];
             unset($sms['check_in_url']);
-            $this->sendCheckInSMS($sms['from'], $to, $sms['msg'], $sms);
+            $this->sendCheckInSMS($sms['from'], $to, $sms['msg'], $sms, $oneway);
             // send check-in url
-            $this->sendCheckInURLSMS($sms['from'], $to, $check_in_url, $sms);
+            $this->sendCheckInURLSMS($sms['from'], $to, $check_in_url, $sms, $oneway);
         } else {
             // send together
-            $this->sendCheckInSMS($sms['from'], $to, $sms['msg'], $sms);
+            $this->sendCheckInSMS($sms['from'], $to, $sms['msg'], $sms, $oneway);
         }
     }
 
@@ -65,15 +66,15 @@ class CheckInSMS
         return $count_with_url !== $count_without_url;
     }
 
-    private function sendCheckInSMS($from, $to, $msg, $params) {
+    private function sendCheckInSMS($from, $to, $msg, $params, $oneway) {
         $params['sms_type'] = 'check_in';
-        $this->message_service->setView('sms.checkin');
+        $this->message_service->setView($oneway?'sms.checkin_oneway':'sms.checkin');
         $this->message_service->send($to, $msg, $params, null, $from);
     }
 
-    private function sendCheckInURLSMS($from, $to, $check_in_url, $params) {
+    private function sendCheckInURLSMS($from, $to, $check_in_url, $params, $oneway) {
         $params['sms_type'] = 'check_in_url';
-        $this->message_service->setView('sms.checkin_url');
+        $this->message_service->setView($oneway?'sms.checkin_oneway_url':'sms.checkin_url');
         $this->message_service->send($to, $check_in_url, $params, null, $from);
     }
 

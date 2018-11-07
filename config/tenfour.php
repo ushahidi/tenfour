@@ -128,19 +128,23 @@ return [
 
             'LB' => [
                 'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
+                'from' => 'TenFour',
+                'oneway' => true
             ],
             'IQ' => [
                 'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
+                'from' => 'TenFour',
+                'oneway' => true
             ],
             'JO' => [
                 'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
+                'from' => 'TenFour',
+                'oneway' => true
             ],
             'SY' => [
                 'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
+                'from' => 'TenFour',
+                'oneway' => true
             ],
 
             'default' => [

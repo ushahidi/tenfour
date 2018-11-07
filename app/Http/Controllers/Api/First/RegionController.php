@@ -17,21 +17,31 @@ class RegionController extends ApiController
         $this->response = $response;
     }
 
+    private function getConfiguredRegions()
+    {
+        // All configured regions are available for all orgs for now.
+        $providers =  config('tenfour.messaging.sms_providers');
+        unset($providers['default']);
+
+        // Extract ISO 3166-1 Alpha-2 codes
+        return array_keys($providers);
+    }
+
+    private function getAllRegions()
+    {
+        $regions = PhoneNumberUtil::getInstance()->getSupportedRegions();
+
+        // Extract ISO 3166-1 Alpha-2 codes
+        return array_values($regions);
+    }
+
     public function all(GetSupportedRegionsRequest $request)
     {
         $util = PhoneNumberUtil::getInstance();
 
-        // All configured regions are available for all orgs for now.
-        $providers =  config('tenfour.messaging.sms_providers');
-
-        unset($providers['default']);
-
-        // Extract ISO 3166-1 Alpha-2 codes
-        $supported_codes = array_keys($providers);
-
         $regions = [];
 
-        foreach($supported_codes as $code)
+        foreach($this->getAllRegions() as $code)
         {
             $country_code = $util->getCountryCodeForRegion($code);
 

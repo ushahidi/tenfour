@@ -52,6 +52,13 @@ class SMSService implements MessageService
         return config('sms.'.$driver.'.keyword');
     }
 
+    public function isOneWay($to)
+    {
+        $region_code = $to->getRegionCode();
+
+        return !!config('tenfour.messaging.sms_providers.'.$region_code.'.oneway');
+    }
+
     public function send($to, $msg = '', $additional_params = [], $subject = null, $from = null)
     {
         $region_code = $to->getRegionCode();

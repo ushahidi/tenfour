@@ -1300,4 +1300,39 @@ class CheckInCest
         );
     }
 
+    /*
+     * Send one-way check-ins
+    */
+    public function sendOneWayCheckIn(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Send a check-in to a region that only supports one-way SMS');
+        $I->amAuthenticatedAsOrgAdmin();
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Alien Attack! are you ok?',
+            'send_via' => ['sms'],
+            'organization_id' => 2,
+            'recipients' => [
+                [
+                    'id' => 13
+                ]
+            ],
+            'answers' => [
+              ['answer'=>'No'],
+              ['answer'=>'Yes']
+            ]
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+
+        $I->seeRecord('outgoing_sms_log', [
+            'to'          => '+964721674200',
+            'from'        => 'TenFour',
+            'check_in_id' => '8',
+            'type'        => 'check_in',
+            'message'     => "Org admin from TenFourTest says: Alien Attack! are you ok?\n"
+        ]);
+    }
 }
