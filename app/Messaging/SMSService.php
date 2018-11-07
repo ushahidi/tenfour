@@ -56,6 +56,10 @@ class SMSService implements MessageService
     {
         $region_code = $to->getRegionCode();
 
+        if (!config('tenfour.messaging.sms_providers.'.$region_code)) {
+            return !!config('tenfour.messaging.sms_providers.default.oneway');
+        }
+
         return !!config('tenfour.messaging.sms_providers.'.$region_code.'.oneway');
     }
 
