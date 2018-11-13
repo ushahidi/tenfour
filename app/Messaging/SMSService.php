@@ -63,7 +63,7 @@ class SMSService implements MessageService
         return !!config('tenfour.messaging.sms_providers.'.$region_code.'.oneway');
     }
 
-    public function send($to, $msg = '', $additional_params = [], $subject = null, $from = null)
+    public function send($to, $msg = '', $additional_params = [], $subject = null, $from = null, $delay = 0)
     {
         $region_code = $to->getRegionCode();
 
@@ -94,7 +94,7 @@ class SMSService implements MessageService
 
         $view = isset($this->view) ? $this->view : $msg;
 
-        dispatch((new SendSMS($view, $additional_params, $driver, $from, $to, $region_code))/*->onQueue('sms')*/);
+        dispatch(((new SendSMS($view, $additional_params, $driver, $from, $to, $region_code))->delay($delay))/*->onQueue('sms')*/);
     }
 
     protected function logSMS($to, $from, $driver, $check_in_id = 0, $type = 'other', $message = '')
