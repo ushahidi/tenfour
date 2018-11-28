@@ -96,7 +96,7 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via', 'everyone', 'group_ids']);
+        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via', 'everyone', 'group_ids', 'template']);
 
         $check_in = CheckIn::findorFail($id);
 

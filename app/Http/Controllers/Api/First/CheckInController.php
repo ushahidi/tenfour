@@ -326,7 +326,8 @@ class CheckInController extends ApiController
      *         }
      *     },
      *     "group_ids": {},
-     *     "everyone": false
+     *     "everyone": false,
+     *     "template": false
      *}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "checkin": {
