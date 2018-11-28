@@ -41,12 +41,13 @@ class CheckInController extends ApiController
     /**
      * Get all check-ins for an organization
      *
-     * @Get("/{?offset,limit}")
+     * @Get("/{?offset,limit,template}")
      * @Versions({"v1"})
      * @Parameters({
      *     @Parameter("org_id", type="number", required=true, description="Organization id"),
      *     @Parameter("offset", default=0),
-     *     @Parameter("limit", default=0)
+     *     @Parameter("limit", default=0),
+     *     @Parameter("template", type="boolean", default=false, description="only retrieve check-in templates")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -191,7 +192,6 @@ class CheckInController extends ApiController
      */
     public function all(GetCheckInsRequest $request, $organization_id)
     {
-
         $user_id = null;
 
         $offset = $request->input('offset', 0);
@@ -209,11 +209,10 @@ class CheckInController extends ApiController
             $request->input('recipient_id'),
             $this->auth->user()['id'],
             $offset,
-            $limit);
+            $limit,
+            $request->input('template', false));
 
         return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
-
-
     }
 
     /**
