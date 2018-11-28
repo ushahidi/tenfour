@@ -64,6 +64,8 @@ INSERT INTO check_ins (id, message, organization_id, status, sent, user_id, answ
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id, answers) VALUES ('5', 'check-in with answers', '2', 'pending', '0', '2', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","type":"custom"},{"answer":"Yes","color":"#E8C440","icon":"icon-check","type":"custom"}]');
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id, answers, self_test_check_in) VALUES ('6', 'Did you receive this test check-in?', '2', 'pending', '0', '1', '[{"answer":"Confirmed","color":"#BC6969","icon":"icon-check","type":"custom"}]', 1);
 INSERT INTO check_ins (id, message, organization_id, status, sent, user_id, answers, self_test_check_in) VALUES ('7', 'Did you receive this test check-in?', '2', 'pending', '0', '2', '[{"answer":"Confirmed","color":"#BC6969","icon":"icon-check","type":"custom"}]', 1);
+INSERT INTO check_ins (id, message, organization_id, status, sent, user_id, answers, template, everyone) VALUES ('8', 'check-in template', '2', 'pending', '0', '2', '[{"answer":"No","color":"#BC6969","icon":"icon-exclaim","type":"custom"},{"answer":"Yes","color":"#E8C440","icon":"icon-check","type":"custom"}]', true, true);
+INSERT INTO check_ins (id, message, organization_id, status, sent, user_id) VALUES ('9', 'check-in groups', '2', 'pending', '0', '2');
 
 -- Add test check-in messages
 INSERT INTO check_in_messages (contact_id, check_in_id) VALUES ('1', '1');
@@ -109,6 +111,9 @@ INSERT INTO unverified_addresses (id, address, verification_token, code) VALUES 
 INSERT INTO groups (id, name, organization_id) VALUES ('1', 'Test Group 1', '2');
 INSERT INTO groups (id, name, organization_id) VALUES ('2', 'Test Group 2', '2');
 INSERT INTO groups (id, name, organization_id) VALUES ('3', 'Test Group 3', '2');
+
+-- Add test check-in groups
+INSERT INTO check_in_groups (group_id, check_in_id) VALUES ('1', '9');
 
 -- Add test group members
 INSERT INTO group_users (group_id, user_id) VALUES ('1', '2');
