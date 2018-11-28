@@ -37,7 +37,7 @@ class CheckIn extends Model
      *
      * @var array
      */
-    protected $with = ['recipients', 'replies', 'user', 'organization'];
+    protected $with = ['recipients', 'replies', 'user', 'organization', 'groups'];
 
     /**
      * The attributes excluded from the model's JSON form.
