@@ -1410,4 +1410,68 @@ class CheckInCest
             ]
         ]);
     }
+
+
+    /*
+     * Create a check-in template
+     *
+     */
+    public function createCheckInTemplate(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create a check-in template');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Template',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ],
+            'group_ids' => [],
+            'template' => true,
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkin' =>
+            [
+                'template' => 1
+            ]
+        ]);
+    }
+
+
+    /*
+     * Get organization's check-in templates
+     *
+     */
+    public function getOrganizationCheckInTemplates(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Get a list of all check-ins template for an organization');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins?template=true');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkins' =>
+            [
+                'id' => 8,
+                'message' => 'check-in template',
+                'template' => 1
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([ 'checkins' =>
+            [
+                'id' => 1,
+                'message' => 'Westgate under siege'
+            ]
+        ]);
+    }
 }
