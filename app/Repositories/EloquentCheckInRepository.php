@@ -86,13 +86,17 @@ class EloquentCheckInRepository implements CheckInRepository
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $check_in->recipients()->sync($userIds);
 
+        if (isset($input['group_ids'])) {
+            $check_in->groups()->sync($input['group_ids']);
+        }
+
         return $check_in->fresh()
             ->toArray();
     }
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via']);
+        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via', 'everyone', 'group_ids']);
 
         $check_in = CheckIn::findorFail($id);
 
@@ -106,6 +110,10 @@ class EloquentCheckInRepository implements CheckInRepository
 
         if (isset($input['send_via'])) {
             $check_in->send_via = $input['send_via'];
+        }
+
+        if (isset($input['group_ids'])) {
+            $check_in->groups()->sync($input['group_ids']);
         }
 
         $check_in->save();

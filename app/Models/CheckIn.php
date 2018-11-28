@@ -30,7 +30,7 @@ class CheckIn extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in'];
+    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in', 'everyone'];
 
     /**
      * The relations to eager load on every query.
@@ -71,6 +71,15 @@ class CheckIn extends Model
     public function recipients()
     {
         return $this->belongsToMany('TenFour\Models\User', 'check_in_recipients')->withPivot('response_status', 'reply_token');
+    }
+
+    /**
+     *
+     * Check-ins belong to user
+     */
+    public function groups()
+    {
+        return $this->belongsToMany('TenFour\Models\Group', 'check_in_groups');
     }
 
     /**
