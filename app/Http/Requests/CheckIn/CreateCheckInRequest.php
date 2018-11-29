@@ -45,7 +45,7 @@ class CreateCheckInRequest extends FormRequest
             'message'         => 'required',
             'organization_id' => 'required|integer|exists:organizations,id',
             // 'send_via'        => 'required',
-            'recipients'      => 'required',
+            // 'recipients'      => 'required',
             'recipients.*.id' => 'required|exists:users,id',
             'answers.*.answer' => 'distinct',
         ];
