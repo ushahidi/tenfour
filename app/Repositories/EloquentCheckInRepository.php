@@ -119,6 +119,8 @@ class EloquentCheckInRepository implements CheckInRepository
             $check_in->groups()->sync($input['group_ids']);
         }
 
+        $check_in->template = $input['template'];
+
         $check_in->save();
 
         if (isset($input['recipients'])) {

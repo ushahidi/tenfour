@@ -1411,7 +1411,6 @@ class CheckInCest
         ]);
     }
 
-
     /*
      * Create a check-in template
      *
@@ -1447,7 +1446,6 @@ class CheckInCest
         ]);
     }
 
-
     /*
      * Get organization's check-in templates
      *
@@ -1471,6 +1469,28 @@ class CheckInCest
             [
                 'id' => 1,
                 'message' => 'Westgate under siege'
+            ]
+        ]);
+    }
+
+    /*
+     * Delete a check-in template
+     *
+     */
+    public function deleteCheckInTemplate(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Delete a check-in template');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/8', [
+            'template' => false,
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkin' =>
+            [
+                'template' => 0
             ]
         ]);
     }

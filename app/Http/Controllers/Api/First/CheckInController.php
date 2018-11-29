@@ -501,8 +501,10 @@ class CheckInController extends ApiController
             dispatch((new SendCheckIn($check_in_to_dispatch))/*->onQueue('checkins')*/);
         }
 
-        Notification::send(CheckIn::findOrFail($check_in['id'])->recipients, new CheckInChanged($check_in));
-        Notification::send(CheckIn::findOrFail($check_in['id'])->user, new CheckInChanged($check_in));
+        if (!$request->input('template')) {
+            Notification::send(CheckIn::findOrFail($check_in['id'])->recipients, new CheckInChanged($check_in));
+            Notification::send(CheckIn::findOrFail($check_in['id'])->user, new CheckInChanged($check_in));
+        }
 
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
