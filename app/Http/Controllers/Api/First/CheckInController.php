@@ -325,6 +325,7 @@ class CheckInController extends ApiController
      *         }
      *     },
      *     "group_ids": {},
+     *     "user_ids": {},
      *     "everyone": false,
      *     "template": false
      *}, headers={"Authorization": "Bearer token"})

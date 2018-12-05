@@ -37,7 +37,7 @@ class CheckIn extends Model
      *
      * @var array
      */
-    protected $with = ['recipients', 'replies', 'user', 'organization', 'groups'];
+    protected $with = ['recipients', 'replies', 'user', 'organization', 'groups', 'users'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -66,7 +66,7 @@ class CheckIn extends Model
 
     /**
      *
-     * Check-ins belong to user
+     * Check-ins have been sent to these users (combination of check-in users and/or groups and/or everyone)
      */
     public function recipients()
     {
@@ -75,7 +75,16 @@ class CheckIn extends Model
 
     /**
      *
-     * Check-ins belong to user
+     * Check-in users (for templates - check-in may not have been sent to these users yet)
+     */
+    public function users()
+    {
+        return $this->belongsToMany('TenFour\Models\User', 'check_in_users');
+    }
+
+    /**
+     *
+     * Check-in groups (for templates)
      */
     public function groups()
     {
