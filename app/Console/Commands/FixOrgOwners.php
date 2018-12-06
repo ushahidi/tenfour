@@ -39,22 +39,8 @@ class FixOrgOwners extends Command
      */
     public function handle(OrganizationRepository $organizations)
     {
-        foreach ($organizations->all() as $org) {
-            $org = Organization::findOrFail($org['id']);
+        $job = new \TenFour\Jobs\FixOrgOwners();
 
-            if (!$org->owner()) {
-                $this->info('Org ' . $org['subdomain'] . ' has no owner');
-
-                $admin = $org->members->where('role', 'admin')->first();
-
-                if (!$admin) {
-                    $admin = $org->members->first();
-                }
-
-                $admin->role = 'owner';
-
-                $admin->save();
-            }
-        }
+        $job->handle($organizations);
     }
 }
