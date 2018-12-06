@@ -38,6 +38,8 @@ class DbHelper extends \Codeception\Module\Db
         // Delete check_in_messages, check_in_recipients pivot data
         $dbh->exec('TRUNCATE TABLE check_in_messages');
         $dbh->exec('TRUNCATE TABLE check_in_recipients');
+        $dbh->exec('TRUNCATE TABLE check_in_groups');
+        $dbh->exec('TRUNCATE TABLE check_in_users');
 
         // Delete check-in replies
         $dbh->exec('TRUNCATE TABLE replies');

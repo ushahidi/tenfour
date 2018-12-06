@@ -16,7 +16,7 @@ class EloquentCheckInRepository implements CheckInRepository
     {
     }
 
-    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0)
+    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0, $template = false)
     {
 
         $query = CheckIn::query()
@@ -48,8 +48,11 @@ class EloquentCheckInRepository implements CheckInRepository
             $query->orWhere('user_id', $recipient_id);
         }
 
-        $check_ins = $query->get()->toArray();
+        if ($template) {
+            $query->where('template', true);
+        }
 
+        $check_ins = $query->get()->toArray();
 
         foreach($check_ins as $key => &$check_in)
         {
@@ -86,13 +89,21 @@ class EloquentCheckInRepository implements CheckInRepository
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $check_in->recipients()->sync($userIds);
 
+        if (isset($input['group_ids'])) {
+            $check_in->groups()->sync($input['group_ids']);
+        }
+
+        if (isset($input['user_ids'])) {
+            $check_in->users()->sync($input['user_ids']);
+        }
+
         return $check_in->fresh()
             ->toArray();
     }
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via']);
+        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via', 'everyone', 'group_ids', 'user_ids', 'template']);
 
         $check_in = CheckIn::findorFail($id);
 
@@ -107,6 +118,16 @@ class EloquentCheckInRepository implements CheckInRepository
         if (isset($input['send_via'])) {
             $check_in->send_via = $input['send_via'];
         }
+
+        if (isset($input['group_ids'])) {
+            $check_in->groups()->sync($input['group_ids']);
+        }
+
+        if (isset($input['user_ids'])) {
+            $check_in->users()->sync($input['user_ids']);
+        }
+
+        $check_in->template = isset($input['template']) && $input['template'];
 
         $check_in->save();
 
