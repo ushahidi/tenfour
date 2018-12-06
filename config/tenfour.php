@@ -27,10 +27,6 @@ return [
                 'driver' => 'nexmo',
                 'from' => $getNexmoFrom('US')
             ],
-            'NZ' => [
-                'driver' => 'nexmo',
-                'from' => $getNexmoFrom('NZ')
-            ],
             'CA' => [
                 'driver' => 'nexmo',
                 'from' => $getNexmoFrom('CA')
@@ -124,28 +120,10 @@ return [
                 'from' => 'REPLIABLE'
             ],
 
-            // These regions have NO local number available:
-
-            'LB' => [
-                'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
-            ],
-            'IQ' => [
-                'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
-            ],
-            'JO' => [
-                'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
-            ],
-            'SY' => [
-                'driver' => 'bulksms',
-                'from' => 'REPLIABLE'
-            ],
-
             'default' => [
-                'driver' => 'nexmo',
-                'from' => explode('|', env('NEXMO_SRC_ADDR', 'tenfour'))
+                'driver' => 'bulksms',
+                'from' => 'TenFour',
+                'oneway' => true
             ],
         ],
 

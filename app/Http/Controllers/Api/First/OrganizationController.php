@@ -162,9 +162,10 @@ class OrganizationController extends ApiController
         ];
 
         $address = $this->addresses->getByAddress($request['email'], null, $request['verification_code']);
-        $this->addresses->delete($address['id']);
 
-        DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact) {
+        DB::transaction(function () use ($org_input, $owner_input, $contact_input, &$organization, &$owner, &$contact, $address) {
+            $this->addresses->delete($address['id']);
+
             $organization = $this->organizations->create($org_input);
 
             $this->creditService->createStartingBalance($organization['id']);
