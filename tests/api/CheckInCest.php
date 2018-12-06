@@ -1361,10 +1361,6 @@ class CheckInCest
             'group_ids' => [1],
             'answers' => []
         ]);
-        $I->seeRecord('check_in_groups', [
-            'group_id'       => 1,
-            'check_in_id'    => 9,
-        ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
@@ -1374,6 +1370,49 @@ class CheckInCest
                 ]
             ]
         );
+        $I->seeRecord('check_in_groups', [
+            'group_id'       => 1,
+            'check_in_id'    => 9,
+        ]);
+    }
+
+    /*
+     * Create a check-in with saved users
+     *
+     */
+    public function createUsersCheckIn(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create a check-in template with users');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Are you users?',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [],
+            'group_ids' => [],
+            'user_ids' => [3,1],
+            'template' => true,
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'users' => [
+                    [ 'id' => 1 ]
+                ]
+            ]
+        );
+        $I->seeRecord('check_in_users', [
+            'check_in_id'   => 10,
+            'user_id'       => 1,
+        ]);
+        $I->seeRecord('check_in_users', [
+            'check_in_id'   => 10,
+            'user_id'       => 3,
+        ]);
     }
 
     /*
