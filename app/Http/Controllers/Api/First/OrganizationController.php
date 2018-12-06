@@ -201,7 +201,7 @@ class OrganizationController extends ApiController
         return $this->response->item($result, new OrganizationTransformer, 'organization');
     }
 
-    private function createZeroStateTemplates($organization_id, $owner_id)
+    public function createZeroStateTemplates($organization_id, $owner_id)
     {
         CheckIn::create([
             'message'           => 'Are you ok?',
