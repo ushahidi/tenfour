@@ -914,27 +914,27 @@ class CheckInCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'check_in',
             'message'     => "Org admin from TenFourTest says: Alien Attack! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'check_in_url',
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'check_in_id' => '9',
+            'check_in_id' => '11',
             'type'        => 'check_in',
             'message'     => "Org admin from TenFourTest says: Alien Attack Part II! are you ok?\nReply with \"No\" or \"Yes\" in your response"
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'check_in_id' => '9',
+            'check_in_id' => '11',
             'type'        => 'check_in_url',
         ]);
     }
@@ -977,13 +977,13 @@ class CheckInCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'reminder'
         ]);
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20880',
-            'check_in_id' => '10',
+            'check_in_id' => '12',
             'type'        => 'check_in',
             'message'     => "Org admin from TenFourTest says: Alien Attack Part 3!\nReply with \"No\" or \"Yes\" in your response"
         ]);
@@ -1023,7 +1023,7 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/8', [
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/10', [
             'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -1064,39 +1064,39 @@ class CheckInCest
 
         $I->seeRecord('check_in_recipients', [
             'user_id'         => 1,
-            'check_in_id'    => 8,
+            'check_in_id'    => 10,
             'response_status' => 'waiting',
         ]);
 
         $I->seeRecord('check_in_recipients', [
             'user_id'         => 10,
-            'check_in_id'    => 8,
+            'check_in_id'    => 10,
             'response_status' => 'waiting',
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674181',
             'from'        => '20880',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'check_in'
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674181',
             'from'        => '20880',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'check_in'
         ]);
 
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254722123457',
             'from'        => '20880',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'check_in'
         ]);
 
         $I->seeNumRecords(0, 'outgoing_sms_log', [
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'reminder'
         ]); // from a previous test
     }
@@ -1125,14 +1125,14 @@ class CheckInCest
         ]);
         $I->seeResponseCodeIs(200);
 
-        $I->sendPOST($this->endpoint.'/'.$id.'/checkins/8/replies', [
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins/10/replies', [
             'message'  => 'Test response',
             'answer'   => 'yes'
         ]);
         $I->seeResponseCodeIs(200);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/8', [
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/10', [
             'message' => 'Resending a check-in',
             'organization_id' => 2,
             'send_via' => ['sms'],
@@ -1252,7 +1252,7 @@ class CheckInCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'check_in_id' => '9',
+            'check_in_id' => '11',
             'type'        => 'check_in',
             'message'     => "Org admin from TenFourTest says: We are under attack. Stay tuned for next message.\n"
         ]);
@@ -1260,7 +1260,7 @@ class CheckInCest
         $I->dontSeeRecord('outgoing_sms_log', [
             'to'          => '+254721674180',
             'from'        => '20881',
-            'check_in_id' => '9',
+            'check_in_id' => '11',
             'type'        => 'reminder'
         ]);
     }
@@ -1330,9 +1330,207 @@ class CheckInCest
         $I->seeRecord('outgoing_sms_log', [
             'to'          => '+964721674200',
             'from'        => 'TenFour',
-            'check_in_id' => '8',
+            'check_in_id' => '10',
             'type'        => 'check_in',
             'message'     => "Org admin from TenFourTest says: Alien Attack! are you ok?\n"
+        ]);
+    }
+
+    /*
+     * Create a group check-in
+     *
+     */
+    public function createGroupCheckIn(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create a group check-in');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Are you a group?',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ],
+            'group_ids' => [1],
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'groups' => [
+                    [ 'id' => 1 ]
+                ]
+            ]
+        );
+        $I->seeRecord('check_in_groups', [
+            'group_id'       => 1,
+            'check_in_id'    => 9,
+        ]);
+    }
+
+    /*
+     * Create a check-in with saved users
+     *
+     */
+    public function createUsersCheckIn(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create a check-in template with users');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Are you users?',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [],
+            'group_ids' => [],
+            'user_ids' => [3,1],
+            'template' => true,
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'users' => [
+                    [ 'id' => 1 ]
+                ]
+            ]
+        );
+        $I->seeRecord('check_in_users', [
+            'check_in_id'   => 10,
+            'user_id'       => 1,
+        ]);
+        $I->seeRecord('check_in_users', [
+            'check_in_id'   => 10,
+            'user_id'       => 3,
+        ]);
+    }
+
+    /*
+     * Create an "everyone" check-in
+     *
+     */
+    public function createEveryoneCheckIn(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create an everyone check-in');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Are you everyone?',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ],
+            'group_ids' => [],
+            'everyone' => true,
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkin' =>
+            [
+                'everyone' => 1
+            ]
+        ]);
+    }
+
+    /*
+     * Create a check-in template
+     *
+     */
+    public function createCheckInTemplate(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create a check-in template');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Template',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 3
+                ],
+                [
+                    'id' => 1
+                ]
+            ],
+            'group_ids' => [],
+            'template' => true,
+            'answers' => []
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkin' =>
+            [
+                'template' => 1
+            ]
+        ]);
+    }
+
+    /*
+     * Get organization's check-in templates
+     *
+     */
+    public function getOrganizationCheckInTemplates(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Get a list of all check-ins template for an organization');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->sendGET($this->endpoint.'/'.$id.'/checkins?template=true');
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkins' =>
+            [
+                'id' => 8,
+                'message' => 'check-in template',
+                'template' => 1
+            ]
+        ]);
+        $I->dontSeeResponseContainsJson([ 'checkins' =>
+            [
+                'id' => 1,
+                'message' => 'Westgate under siege'
+            ]
+        ]);
+    }
+
+    /*
+     * Delete a check-in template
+     *
+     */
+    public function deleteCheckInTemplate(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Delete a check-in template');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPUT($this->endpoint.'/'.$id.'/checkins/8', [
+            'template' => false,
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([ 'checkin' =>
+            [
+                'template' => 0
+            ]
         ]);
     }
 }

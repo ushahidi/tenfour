@@ -133,8 +133,8 @@ class MailCest
             'subject'     => "Sinkhole has opened. Are you ok?",
             'type'        => 'check_in',
             'to'          => 'org_member@ushahidi.com',
-            'check_in_id' => 8,
-            'from'        => 'checkin-8@qa.tenfour.org'
+            'check_in_id' => 10,
+            'from'        => 'checkin-10@qa.tenfour.org'
         ]);
     }
 }

@@ -405,4 +405,30 @@ class OrganizationCest
             'to'          => 'linda@ushahidi.com',
         ]);
     }
+
+    /*
+     * Create organization as new owner
+     *
+     */
+    public function createOrganizationWithTemplates(ApiTester $I)
+    {
+        $I->wantTo('Create an organization and see zero-state templates');
+        $I->amAuthenticatedAsUser();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint, [
+            'name'              => 'Test org',
+            'subdomain'         => 'test',
+            'owner'             => 'Mary Mata',
+            'email'             => 'mary@ushahidi.com',
+            'password'          => 'testtest',
+            'verification_code' => '123456',
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeRecord('check_ins', [
+            'message'         => "Are you ok?",
+            'template'        => 1,
+            'everyone'        => 1,
+            'organization_id' => 5,
+        ]);
+    }
 }

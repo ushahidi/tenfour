@@ -5,22 +5,24 @@ namespace TenFour\Console\Commands;
 use Illuminate\Console\Command;
 use TenFour\Contracts\Repositories\OrganizationRepository;
 use TenFour\Models\Organization;
+use TenFour\Models\CheckIn;
+use App;
 
-class FixOrgOwners extends Command
+class AddTemplates extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'org:fix-owners';
+    protected $signature = 'templates:add';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'For organizations without owners, set the owner to be the first admin';
+    protected $description = 'Add default templates to all orgs';
 
     /**
      * Create a new command instance.
@@ -39,8 +41,14 @@ class FixOrgOwners extends Command
      */
     public function handle(OrganizationRepository $organizations)
     {
-        $job = new \TenFour\Jobs\FixOrgOwners();
+        foreach ($organizations->all() as $org) {
+            $org = Organization::findOrFail($org['id']);
 
-        $job->handle($organizations);
+            if (!CheckIn::where('organization_id', $org['id'])->where('template', true)->count()) {
+                $this->info('Org ' . $org['subdomain'] . ' has no default templates - adding now');
+
+                App::make('TenFour\Http\Controllers\Api\First\OrganizationController')->createZeroStateTemplates($org->id, $org->owner()->id);
+            }
+        }
     }
 }
