@@ -43,7 +43,9 @@ class CheckInTransformer extends TransformerAbstract
     protected $defaultIncludes = [
         'user',
         'replies',
-        'recipients'
+        'recipients',
+        'groups',
+        'users',
     ];
 
     /**
@@ -54,7 +56,9 @@ class CheckInTransformer extends TransformerAbstract
     protected $availableIncludes = [
         'user',
         'replies',
-        'recipients'
+        'recipients',
+        'groups',
+        'users'
     ];
 
     /**
@@ -70,7 +74,7 @@ class CheckInTransformer extends TransformerAbstract
     }
 
     /**
-     * Include Author
+     * Include recipients
      *
      * @return League\Fractal\ItemResource
      */
@@ -82,7 +86,31 @@ class CheckInTransformer extends TransformerAbstract
     }
 
     /**
-     * Include Author
+     * Include groups
+     *
+     * @return League\Fractal\ItemResource
+     */
+    public function includeGroups(array $check_in)
+    {
+        $groups = $check_in['groups'];
+
+        return $this->collection($groups, new GroupTransformer);
+    }
+
+    /**
+     * Include users
+     *
+     * @return League\Fractal\ItemResource
+     */
+    public function includeUsers(array $check_in)
+    {
+        $users = $check_in['users'];
+
+        return $this->collection($users, new UserTransformer);
+    }
+
+    /**
+     * Include replies
      *
      * @return League\Fractal\ItemResource
      */

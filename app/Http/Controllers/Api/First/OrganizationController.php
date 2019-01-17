@@ -22,6 +22,7 @@ use TenFour\Services\CreditService;
 use TenFour\Contracts\Services\PaymentService;
 use TenFour\Models\Organization;
 use TenFour\Models\User;
+use TenFour\Models\CheckIn;
 use TenFour\Notifications\Welcome;
 use TenFour\Jobs\SendOrgLookupMail;
 
@@ -176,6 +177,8 @@ class OrganizationController extends ApiController
                 'user_id'         => $owner['id'],
                 'organization_id' => $organization['id'],
             ]);
+
+            $this->createZeroStateTemplates($organization['id'], $owner['id']);
         });
 
         $result = $organization + [
@@ -196,6 +199,31 @@ class OrganizationController extends ApiController
         User::findOrFail($owner['id'])->notify(new Welcome(Organization::findOrFail($organization['id'])));
 
         return $this->response->item($result, new OrganizationTransformer, 'organization');
+    }
+
+    public function createZeroStateTemplates($organization_id, $owner_id)
+    {
+        CheckIn::create([
+            'message'           => 'Are you ok?',
+            'organization_id'   => $organization_id,
+            'user_id'           => $owner_id,
+            'answers'           => [
+                ["answer"=>"No","color"=>"#BC6969","icon"=>"icon-exclaim","type"=>"custom"],
+                ["answer"=>"Yes","color"=>"#E8C440","icon"=>"icon-check","type"=>"custom"]
+            ],
+            'send_via'          => ["sms","email","voice","app"],
+            'everyone'          => true,
+            'template'          => true
+        ]);
+        CheckIn::create([
+            'message'           => 'Please check-in.',
+            'organization_id'   => $organization_id,
+            'user_id'           => $owner_id,
+            'answers'           => [],
+            'send_via'          => ["sms","email","voice","app"],
+            'everyone'          => true,
+            'template'          => true
+        ]);
     }
 
     /**

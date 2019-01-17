@@ -40,17 +40,6 @@ class ReplyCest
         $I->seeResponseContainsJson([
             'replies' => [
                 [
-                    'id'       => 3,
-                    'message'  => 'Latest answer',
-                    'contact'  => [
-                        'id' => 4
-                    ],
-                    'user' => [
-                        'id' => 4,
-                        'name' => 'Org owner'
-                    ]
-                ],
-                [
                     'id'       => 6,
                     'message'  => 'Another latest answer',
                     'contact'  => [

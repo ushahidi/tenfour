@@ -228,20 +228,7 @@ class ChargeBeeWebhookController extends Controller
             'status'            => $payload->subscription->status,
         ]);
 
-        if ($subscription['promo_code']) {
-            // https://github.com/ushahidi/RollCall/issues/735
-            try {
-                $coupon_result = ChargeBee_Coupon::retrieve($subscription['promo_code']);
-                if ($coupon_result->coupon()->discountPercentage == 100) {
-                    $meta = $payload;
-                    $meta->rc_freepromo = true;
-                    $creditAdjustment = $this->topup($subscription->organization->id, config('credits.freepromo'), $meta);
-                }
-            }
-            catch (ChargeBee_InvalidRequestException $e) {}
-            catch (Exception $e) {}
-        }
-
+        $this->handlePartnerPromoTopup($subscription, $payload);
 
         Log::info('[ChargeBee] Processed SubscriptionRenewed for subscription ' . $subscription->subscription_id);
 
@@ -294,6 +281,10 @@ class ChargeBeeWebhookController extends Controller
             }
         }
 
+        if ($payload->subscription->plan_id == $this->payments->getProPlanId()) {
+            $this->handlePartnerPromoTopup($subscription, $payload);
+        }
+
         $subscription->organization->owner()->notify(new SubscriptionChanged($subscription, $this->payments));
 
         Log::info('[ChargeBee] Processed SubscriptionChanged for subscription ' . $subscription->subscription_id);
@@ -317,5 +308,24 @@ class ChargeBeeWebhookController extends Controller
         Log::info('[ChargeBee] Processed CardUpdated for subscription ' . $subscription->subscription_id);
 
         return response('OK', 200);
+    }
+
+
+    private function handlePartnerPromoTopup($subscription, $payload)
+    {
+        // https://github.com/ushahidi/RollCall/issues/735
+
+        if ($subscription['promo_code']) {
+            try {
+                $coupon_result = ChargeBee_Coupon::retrieve($subscription['promo_code']);
+                if ($coupon_result->coupon()->discountPercentage == 100) {
+                    $meta = $payload;
+                    $meta->rc_freepromo = true;
+                    $creditAdjustment = $this->topup($subscription->organization->id, config('credits.freepromo'), $meta);
+                }
+            }
+            catch (ChargeBee_InvalidRequestException $e) {}
+            catch (Exception $e) {}
+        }
     }
 }

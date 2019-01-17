@@ -30,14 +30,14 @@ class CheckIn extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in'];
+    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in', 'everyone', 'template'];
 
     /**
      * The relations to eager load on every query.
      *
      * @var array
      */
-    protected $with = ['recipients', 'replies', 'user', 'organization'];
+    protected $with = ['recipients', 'replies', 'user', 'organization', 'groups', 'users'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -66,11 +66,29 @@ class CheckIn extends Model
 
     /**
      *
-     * Check-ins belong to user
+     * Check-ins have been sent to these users (combination of check-in users and/or groups and/or everyone)
      */
     public function recipients()
     {
         return $this->belongsToMany('TenFour\Models\User', 'check_in_recipients')->withPivot('response_status', 'reply_token');
+    }
+
+    /**
+     *
+     * Check-in users (for templates - check-in may not have been sent to these users yet)
+     */
+    public function users()
+    {
+        return $this->belongsToMany('TenFour\Models\User', 'check_in_users');
+    }
+
+    /**
+     *
+     * Check-in groups (for templates)
+     */
+    public function groups()
+    {
+        return $this->belongsToMany('TenFour\Models\Group', 'check_in_groups');
     }
 
     /**

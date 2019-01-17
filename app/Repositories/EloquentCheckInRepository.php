@@ -16,12 +16,15 @@ class EloquentCheckInRepository implements CheckInRepository
     {
     }
 
-    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0)
+    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0, $template = false)
     {
 
         $query = CheckIn::query()
-            ->orderBy('created_at', 'desc')
-            ->with('replies');
+          ->orderBy('created_at', 'desc')
+          ->with(['replies' => function ($query) {
+            // Just get the most recent replies for each user
+            $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`check_in_id` = `replies`.`check_in_id`)"));
+          }]);
 
         if ($limit > 0) {
           $query
@@ -45,8 +48,11 @@ class EloquentCheckInRepository implements CheckInRepository
             $query->orWhere('user_id', $recipient_id);
         }
 
-        $check_ins = $query->get()->toArray();
+        if ($template) {
+            $query->where('template', true);
+        }
 
+        $check_ins = $query->get()->toArray();
 
         foreach($check_ins as $key => &$check_in)
         {
@@ -66,6 +72,8 @@ class EloquentCheckInRepository implements CheckInRepository
     {
         $check_in = CheckIn::query()
             ->with(['replies' => function ($query) {
+                // Just get the most recent replies for each user
+                $query->where('replies.created_at', DB::raw("(SELECT max(`r2`.`created_at`) FROM `replies` AS r2 WHERE `r2`.`user_id` = `replies`.`user_id` AND `r2`.`check_in_id` = `replies`.`check_in_id`)"));
                 $query->with('user');
             }])
             ->findOrFail($id)
@@ -81,13 +89,21 @@ class EloquentCheckInRepository implements CheckInRepository
         $userIds = collect($input['recipients'])->pluck('id')->all();
         $check_in->recipients()->sync($userIds);
 
+        if (isset($input['group_ids'])) {
+            $check_in->groups()->sync($input['group_ids']);
+        }
+
+        if (isset($input['user_ids'])) {
+            $check_in->users()->sync($input['user_ids']);
+        }
+
         return $check_in->fresh()
             ->toArray();
     }
 
     public function update(array $input, $id)
     {
-        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via']);
+        $input = array_only($input, ['status', 'sent', 'recipients', 'send_via', 'everyone', 'group_ids', 'user_ids', 'template']);
 
         $check_in = CheckIn::findorFail($id);
 
@@ -102,6 +118,16 @@ class EloquentCheckInRepository implements CheckInRepository
         if (isset($input['send_via'])) {
             $check_in->send_via = $input['send_via'];
         }
+
+        if (isset($input['group_ids'])) {
+            $check_in->groups()->sync($input['group_ids']);
+        }
+
+        if (isset($input['user_ids'])) {
+            $check_in->users()->sync($input['user_ids']);
+        }
+
+        $check_in->template = isset($input['template']) && $input['template'];
 
         $check_in->save();
 

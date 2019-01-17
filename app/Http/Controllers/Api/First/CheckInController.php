@@ -41,12 +41,13 @@ class CheckInController extends ApiController
     /**
      * Get all check-ins for an organization
      *
-     * @Get("/{?offset,limit}")
+     * @Get("/{?offset,limit,template}")
      * @Versions({"v1"})
      * @Parameters({
      *     @Parameter("org_id", type="number", required=true, description="Organization id"),
      *     @Parameter("offset", default=0),
-     *     @Parameter("limit", default=0)
+     *     @Parameter("limit", default=0),
+     *     @Parameter("template", type="boolean", default=false, description="only retrieve check-in templates")
      * })
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
@@ -191,7 +192,6 @@ class CheckInController extends ApiController
      */
     public function all(GetCheckInsRequest $request, $organization_id)
     {
-
         $user_id = null;
 
         $offset = $request->input('offset', 0);
@@ -209,11 +209,10 @@ class CheckInController extends ApiController
             $request->input('recipient_id'),
             $this->auth->user()['id'],
             $offset,
-            $limit);
+            $limit,
+            $request->input('template', false));
 
         return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
-
-
     }
 
     /**
@@ -324,7 +323,11 @@ class CheckInController extends ApiController
      *         {
      *             "id": 1
      *         }
-     *     }
+     *     },
+     *     "group_ids": {},
+     *     "user_ids": {},
+     *     "everyone": false,
+     *     "template": false
      *}, headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      *     "checkin": {
@@ -499,8 +502,10 @@ class CheckInController extends ApiController
             dispatch((new SendCheckIn($check_in_to_dispatch))/*->onQueue('checkins')*/);
         }
 
-        Notification::send(CheckIn::findOrFail($check_in['id'])->recipients, new CheckInChanged($check_in));
-        Notification::send(CheckIn::findOrFail($check_in['id'])->user, new CheckInChanged($check_in));
+        if (!$request->input('template')) {
+            Notification::send(CheckIn::findOrFail($check_in['id'])->recipients, new CheckInChanged($check_in));
+            Notification::send(CheckIn::findOrFail($check_in['id'])->user, new CheckInChanged($check_in));
+        }
 
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
