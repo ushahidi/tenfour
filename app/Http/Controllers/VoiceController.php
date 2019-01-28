@@ -33,16 +33,18 @@ class VoiceController extends Controller
         $recipient_id = (int) $request->input('recipient_id');
         $check_in = $this->checkins->find($check_in_id);
 
-        $answer_text = $check_in['answers'][$answer_id]['answer'];
+        if (isset($check_in['answers'][$answer_id])) {
+            $answer_text = $check_in['answers'][$answer_id]['answer'];
 
-        $reply = $this->replies->addReply(
-            [
-              'user_id' => $recipient_id,
-              'check_in_id' => $check_in_id,
-              'answer' => $answer_text,
-            ], $check_in_id);
+            $reply = $this->replies->addReply(
+                [
+                  'user_id' => $recipient_id,
+                  'check_in_id' => $check_in_id,
+                  'answer' => $answer_text,
+                ], $check_in_id);
 
-        $this->checkins->updateRecipientStatus($check_in_id, $recipient_id, 'replied');
+            $this->checkins->updateRecipientStatus($check_in_id, $recipient_id, 'replied');
+        }
 
         return response('OK', 200);
     }
