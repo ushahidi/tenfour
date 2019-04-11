@@ -78,7 +78,7 @@ class AuthCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
             "token_type" => "Bearer",
-            "expires_in" => 31536000
+            "expires_in" => 31622400
         ]);
         $I->seeResponseMatchesJsonType([
             'access_token' => 'string',
