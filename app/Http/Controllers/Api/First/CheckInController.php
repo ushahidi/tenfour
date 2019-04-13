@@ -24,6 +24,7 @@ use TenFour\Models\CheckIn;
 use Illuminate\Support\Facades\Notification;
 use Dingo\Api\Auth\Auth;
 use App;
+use TenFour\Models\ScheduledCheckIn;
 
 /**
  * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
@@ -314,6 +315,12 @@ class CheckInController extends ApiController
      *             "answer": "Yes",
      *         }
      *     },
+     *     "schedule": {
+     *       "starts_at": "2019-03-4",
+     *       "expires_at": "2019-03-20",
+     *       "check_in_count": 20,
+     *       "frequency": "weekly"
+     *     },
      *     "message": "Westgate under siege, are you ok?",
      *     "organization_id": 2,
      *     "recipients": {
@@ -375,14 +382,27 @@ class CheckInController extends ApiController
         $check_in = $this->check_ins->create($request->input() + [
             'user_id' => $this->auth->user()['id'],
         ]);
-
         if (!$this->creditService->hasSufficientCredits($check_in)) {
             return response('Payment Required', 402);
         }
-
-        // Send check-in
-        dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
-
+        $schedule = $request->input('schedule');
+        if ($schedule && $schedule['frequency'] && $schedule['frequency'] !== 'once') {
+            // created scheduled check in that will be picked up by the laravel scheduler task
+            $scheduled_check_in = new ScheduledCheckIn(
+                [
+                    'expires_at' => $schedule['expires_at'],
+                    'starts_at' => $schedule['starts_at'],
+                    'frequency' => $schedule['frequency'],
+                    'remaining_count' => $schedule['remaining_count'],
+                    'check_ins_id' => $check_in['id'],
+                    'scheduled' => 0
+                ]
+            );
+            $scheduled_check_in->save();
+        } else {         
+            // Send check-in
+            dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
+        }
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
 

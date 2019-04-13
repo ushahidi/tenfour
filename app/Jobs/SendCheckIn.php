@@ -5,6 +5,7 @@ namespace TenFour\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use TenFour\Contracts\Repositories\CheckInRepository;
@@ -24,7 +25,7 @@ use Statsd;
 
 class SendCheckIn implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable,InteractsWithQueue, Queueable, SerializesModels;
 
     public $check_in, $organization;
     protected $check_in_repo, $notification;
@@ -93,7 +94,6 @@ class SendCheckIn implements ShouldQueue
         }
 
         CheckIn::findOrFail($this->check_in['id'])->notify($notification);
-
         $this->deductCredits();
         $this->sendAnalytics();
     }
