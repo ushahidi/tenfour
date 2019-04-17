@@ -44,15 +44,13 @@ class ScheduledCheckIn extends Model
     public static function active($columns = ['*'])
     {
          $scheduledCheckIns = self::where([
-                ['starts_at', '<', DB::raw('NOW()')],
-                ['expires_at', '>', DB::raw('NOW()')],
-                ['remaining_count', '>', 0],
                 ['scheduled', '=', DB::raw('false')]
             ])
             ->with('check_ins')
             ->get();
         return $scheduledCheckIns;
     }
+    
     public function setAsScheduled(){
         $this->save(['scheduled' => 1]);
     }

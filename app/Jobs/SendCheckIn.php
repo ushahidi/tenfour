@@ -69,7 +69,7 @@ class SendCheckIn implements ShouldQueue
         $notification = new CheckInNotification(
             $this->check_in,
             $this->organization);
-
+            Log::warning("RECIPIENTS: " . var_export($this->check_in['recipients'],true));
         foreach($this->check_in['recipients'] as $recipient)
         {
             $this->markPreviousCheckInUnresponsive($recipient);
@@ -93,6 +93,10 @@ class SendCheckIn implements ShouldQueue
         }
 
         CheckIn::findOrFail($this->check_in['id'])->notify($notification);
+        // set sent
+        $check_in = CheckIn::findOrFail($this->check_in['id']);
+        $check_in->sent = 1;
+        $check_in->save();
         $this->deductCredits();
         $this->sendAnalytics();
     }

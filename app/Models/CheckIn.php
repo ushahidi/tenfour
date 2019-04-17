@@ -30,7 +30,7 @@ class CheckIn extends Model
      *
      * @var array
      */
-    protected $fillable = ['message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in', 'everyone', 'template'];
+    protected $fillable = ['scheduled_check_in_id', 'send_at', 'message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in', 'everyone', 'template'];
 
     /**
      * The relations to eager load on every query.
