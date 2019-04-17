@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 class SendScheduledCheckin implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    protected $check_in_repo;
     /**
      * Create a new job instance.
      *
@@ -24,18 +24,29 @@ class SendScheduledCheckin implements ShouldQueue
      */
     public function __construct()
     {
-
+        
     }
     /**
      * Execute the job.
      *
      * @return mixed
      */
-    public function handle()
-    {DB::connection()->enableQueryLog();
-
+    public function handle(CheckInRepository $check_in_repo)
+    {
+        $this->check_in_repo = $check_in_repo;
         $check_ins = CheckIn::where([['send_at', '<', DB::raw('NOW()')], ['sent', '=', 0]])->get();
         array_map(function($check_in) {
+            $scheduled_check_in = ScheduledCheckIn::where(
+                [['id', '=', $check_in['scheduled_check_in_id']]]
+            )->first();
+            $original = CheckIn::where(
+                [['scheduled_check_in_id', '=', $scheduled_check_in->id]]
+            )->whereNull('send_at')->first();
+            $check_in['recipients'] = $original->recipients;
+            $recipients = array_map(function($recipient) {
+                return ['id' => $recipient['id']];
+            }, $original->recipients->toArray());
+            $this->check_in_repo->update(['recipients' => $recipients], $check_in['id']);
             dispatch((new SendCheckIn($check_in)));
         }, $check_ins->toArray());
     }

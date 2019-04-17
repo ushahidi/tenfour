@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Notification;
 use Dingo\Api\Auth\Auth;
 use App;
 use TenFour\Models\ScheduledCheckIn;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
@@ -396,6 +397,8 @@ class CheckInController extends ApiController
                 ]
             );
             $scheduled_check_in->save();
+            CheckIn::findorFail($check_in['id'])
+                ->update(['scheduled_check_in_id' => $scheduled_check_in->id]);
         } else {
             if (!$this->creditService->hasSufficientCredits($check_in)) {
                 return response('Payment Required', 402);

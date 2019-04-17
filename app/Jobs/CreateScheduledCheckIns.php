@@ -49,11 +49,10 @@ class CreateScheduledCheckIns implements ShouldQueue
                     $checkInTemplate = $scheduledCheckIn->check_ins->toArray();
                     $cron = CronExpression::factory("@$scheduledCheckIn->frequency");
                     $checkInTemplate['send_at'] = $nextRunDate;
-                    //$checkInTemplate['scheduled_check_in_id'] = $scheduledCheckIn
                     unset($checkInTemplate['id']);
                     unset($checkInTemplate['created_at']);
                     unset($checkInTemplate['updated_at']);
-                    unset($checkInTemplate['recipients']);
+                    $checkInTemplate['recipients'] = [];
                     unset($checkInTemplate['deleted_at']);
                     $check_in_repo->create($checkInTemplate);
                     $nextRunDate = $cron->getNextRunDate($nextRunDate)->format('Y-m-d H:i:s');
