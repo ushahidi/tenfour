@@ -19,6 +19,7 @@ class AddScheduledCheckin extends Migration
             $table->foreign('check_ins_id')
                 ->references('id')->on('check_ins')
                 ->onDelete('cascade');
+            $table->boolean('scheduled')->default(false);
             // frequency (string) - how often the checkin will be sent with possible options:
             // once, hourly, daily, weekly, biweekly, monthly
             $table->string('frequency')->default('once');

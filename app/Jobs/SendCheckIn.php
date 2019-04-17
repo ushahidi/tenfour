@@ -58,7 +58,7 @@ class SendCheckIn implements ShouldQueue
     {
         $this->check_in_repo = $check_in_repo;
         $this->organization = Organization::findOrFail($this->check_in['organization_id']);
-
+        
         if ($this->isDisabledDueToComplaints()) {
             Log::warning('Cannot send check-in for ' . $this->organization->name . ' because complaints exceed threshold');
             return;
@@ -69,7 +69,6 @@ class SendCheckIn implements ShouldQueue
         $notification = new CheckInNotification(
             $this->check_in,
             $this->organization);
-
 
         foreach($this->check_in['recipients'] as $recipient)
         {

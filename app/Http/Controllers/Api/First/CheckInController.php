@@ -382,9 +382,6 @@ class CheckInController extends ApiController
         $check_in = $this->check_ins->create($request->input() + [
             'user_id' => $this->auth->user()['id'],
         ]);
-        if (!$this->creditService->hasSufficientCredits($check_in)) {
-            return response('Payment Required', 402);
-        }
         $schedule = $request->input('schedule');
         if ($schedule && $schedule['frequency'] && $schedule['frequency'] !== 'once') {
             // created scheduled check in that will be picked up by the laravel scheduler task
@@ -399,7 +396,10 @@ class CheckInController extends ApiController
                 ]
             );
             $scheduled_check_in->save();
-        } else {         
+        } else {
+            if (!$this->creditService->hasSufficientCredits($check_in)) {
+                return response('Payment Required', 402);
+            }
             // Send check-in
             dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
         }
