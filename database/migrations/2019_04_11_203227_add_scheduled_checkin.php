@@ -26,9 +26,9 @@ class AddScheduledCheckin extends Migration
             // once, hourly, daily, weekly, biweekly, monthly
             $table->string('frequency')->default('once');
             // started_at (date) - the start date for the first checkin to be sent
-            $table->date('starts_at');
+            $table->dateTimeTz('starts_at');
             // expired_at (date) - the finish date for the last checkin will be sent
-            $table->date('expires_at');
+            $table->dateTimeTz('expires_at');
             // remaining_count (integer) - the number of remaining checkins to be sent before it expires
             $table->integer('remaining_count')->default(1);
             $table->timestamps();

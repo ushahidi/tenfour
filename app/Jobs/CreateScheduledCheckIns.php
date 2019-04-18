@@ -44,10 +44,11 @@ class CreateScheduledCheckIns implements ShouldQueue
                 $scheduledCheckIn->save();
                 // get template of a checkin to create others
                 $checkInTemplate = $scheduledCheckIn->check_ins->toArray();
-                $nextRunDate = $scheduledCheckIn->starts_at;
+                // QUESTION: if starts_at is lower than NOW for whatever reason, shouuld we do NOW instead?
+                $cron = CronExpression::factory("@$scheduledCheckIn->frequency");
+                $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at)->format('Y-m-d H:i:s');
                 while (new \DateTime($scheduledCheckIn->expires_at) >= new \DateTime($nextRunDate)) {
                     $checkInTemplate = $scheduledCheckIn->check_ins->toArray();
-                    $cron = CronExpression::factory("@$scheduledCheckIn->frequency");
                     $checkInTemplate['send_at'] = $nextRunDate;
                     unset($checkInTemplate['id']);
                     unset($checkInTemplate['created_at']);
