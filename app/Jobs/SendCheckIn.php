@@ -69,7 +69,7 @@ class SendCheckIn implements ShouldQueue
         $notification = new CheckInNotification(
             $this->check_in,
             $this->organization);
-            Log::warning("RECIPIENTS: " . var_export($this->check_in['recipients'],true));
+
         foreach($this->check_in['recipients'] as $recipient)
         {
             $this->markPreviousCheckInUnresponsive($recipient);
