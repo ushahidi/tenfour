@@ -15,6 +15,8 @@ class AddScheduledCheckin extends Migration
     {
 
         Schema::create('scheduled_check_in', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            // id of the check in this scheduled check_in group was created from
             $table->integer('check_ins_id')->unsigned()->default(0);
             $table->foreign('check_ins_id')
                 ->references('id')->on('check_ins')
@@ -35,11 +37,10 @@ class AddScheduledCheckin extends Migration
 
     /**
      * Reverse the migrations.
-     *
      * @return void
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('scheduled_check_in');
     }
 }
