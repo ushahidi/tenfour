@@ -3,24 +3,11 @@
 namespace Tests\Unit;
 
 use TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use TenFour\Jobs\CreateScheduledCheckIns;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use TenFour\Models\CheckIn;
-use TenFour\Repositories\EloquentCheckInRepository;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use TenFour\Models\ScheduledCheckIn;
-use Illuminate\Database\Eloquent\Collection;
 use Faker\Factory;
-class ScheduledCheckInCest extends TestCase
+class ScheduledCheckInCest
 {
-    use DatabaseTransactions;
-    public function setUp()
-    {
-         parent::setUp();
-    }
-    
     /**
      * @return void
      */
