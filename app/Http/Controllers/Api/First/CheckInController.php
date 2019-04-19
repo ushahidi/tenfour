@@ -388,10 +388,10 @@ class CheckInController extends ApiController
             // created scheduled check in that will be picked up by the laravel scheduler task
             $scheduled_check_in = new ScheduledCheckIn(
                 [
-                    'expires_at' => $schedule['expires_at'],
-                    'starts_at' => $schedule['starts_at'],
-                    'frequency' => $schedule['frequency'],
-                    'remaining_count' => $schedule['remaining_count'],
+                    'expires_at' => $schedule['expires_at'] ?? null,
+                    'starts_at' => $schedule['starts_at'] ?? date("Y-m-d H:i:s"),
+                    'frequency' => $schedule['frequency'] ?? 'daily' ,
+                    'remaining_count' => $schedule['remaining_count'] ?? 1,
                     'check_ins_id' => $check_in['id'],
                     'scheduled' => 0
                 ]

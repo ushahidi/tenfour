@@ -443,6 +443,63 @@ class CheckInCest
     }
 
     /*
+     * Create a scheduled check-in as org admin
+     *
+     */
+    public function createScheduledCheckIn(ApiTester $I)
+    {
+        $id = 2;
+        $I->wantTo('Create a scheduled check-in as admin');
+        $I->amAuthenticatedAsOrgAdmin();
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPOST($this->endpoint.'/'.$id.'/checkins', [
+            'message' => 'Scheduled checking from an org admin',
+            'organization_id' => 2,
+            'send_via' => ['email'],
+            'recipients' => [
+                [
+                    'id' => 1
+                ]
+            ],
+            'template' => true,
+            'schedule' => [
+                'starts_at' => '2019-04-18 20:53:09',
+                "expires_at" => '2019-04-20 20:53:01',
+                'frequency' => 'hourly'
+            ],
+            'answers' => [
+              ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
+              ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
+            ]
+        ]);
+        $I->seeRecord('scheduled_check_in', [
+            'starts_at' => '2019-04-18 20:53:09',
+            "expires_at" => '2019-05-20 20:53:01',
+            'frequency' => 'hourly'
+        ]);
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'checkin' => [
+                    'message' => 'Scheduled checking from an org admin',
+                    'organization' => [
+                        'id' => 2
+                    ],
+                    'user' => [
+                        'id' => 5
+                    ],
+                    'recipients' => [
+                        [
+                            'id' => 1
+                        ],
+                    ]
+                ]
+            ]
+        );
+    }
+
+    /*
      * Send check-in to self
      *
      */

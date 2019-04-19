@@ -41,7 +41,7 @@ class ScheduledCheckIn extends Model
      * @param  array|mixed  $columns
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public static function active()
+    public function findActive()
     {
          $scheduledCheckIns = self::where([
                 ['scheduled', '=', DB::raw('false')]
@@ -49,9 +49,5 @@ class ScheduledCheckIn extends Model
             ->with('check_ins')
             ->get();
         return $scheduledCheckIns;
-    }
-
-    public function setAsScheduled(){
-        $this->save(['scheduled' => 1]);
     }
 }
