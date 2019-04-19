@@ -463,9 +463,9 @@ class CheckInCest
             ],
             'template' => true,
             'schedule' => [
-                'starts_at' => '2019-04-18 20:53:09',
-                "expires_at" => '2019-04-20 20:53:01',
-                'frequency' => 'hourly'
+                'starts_at' => '2119-04-18 20:53:09',
+                "expires_at" => '2119-04-20 20:53:01',
+                'frequency' => 'weekly'
             ],
             'answers' => [
               ['answer'=>'No','color'=>'#BC6969','icon'=>'icon-exclaim','type'=>'negative'],
@@ -473,9 +473,9 @@ class CheckInCest
             ]
         ]);
         $I->seeRecord('scheduled_check_in', [
-            'starts_at' => '2019-04-18 20:53:09',
-            "expires_at" => '2019-05-20 20:53:01',
-            'frequency' => 'hourly'
+            'starts_at' => '2119-04-18 20:53:09',
+            "expires_at" => '2119-04-20 20:53:01',
+            'frequency' => 'weekly'
         ]);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
