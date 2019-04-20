@@ -195,7 +195,8 @@ class CheckInController extends ApiController
     public function all(GetCheckInsRequest $request, $organization_id)
     {
         $user_id = null;
-
+        $template = $request->input('template', false);
+        $template = filter_var($template, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 1 : 0 ;
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 0);
 
@@ -212,7 +213,7 @@ class CheckInController extends ApiController
             $this->auth->user()['id'],
             $offset,
             $limit,
-            $request->input('template', false));
+            $template);
 
         return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
     }
