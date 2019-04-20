@@ -5,6 +5,7 @@ namespace TenFour\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ScheduledCheckIn extends Model
 {
@@ -44,7 +45,7 @@ class ScheduledCheckIn extends Model
     public function findActive()
     {
          $scheduledCheckIns = self::where([
-                ['scheduled', '=', DB::raw('false')]
+                ['scheduled', '=', 0]
             ])
             ->with('check_ins')
             ->get();

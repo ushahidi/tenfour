@@ -381,11 +381,13 @@ class CheckInController extends ApiController
      */
     public function create(CreateCheckInRequest $request, $organization_id)
     {
-        $check_in = $this->check_ins->create($request->input() + [
-            'user_id' => $this->auth->user()['id'],
-        ]);
+        
         $schedule = $request->input('schedule');
         if ($schedule && $schedule['frequency'] && $schedule['frequency'] !== 'once') {
+            $check_in = $this->check_ins->create(array_merge($request->input(), [
+                'user_id' => $this->auth->user()['id'],
+                'template' => 1,
+            ]));
             // created scheduled check in that will be picked up by the laravel scheduler task
             $scheduled_check_in = new ScheduledCheckIn(
                 [
@@ -401,6 +403,9 @@ class CheckInController extends ApiController
             CheckIn::findorFail($check_in['id'])
                 ->update(['scheduled_check_in_id' => $scheduled_check_in->id]);
         } else {
+            $check_in = $this->check_ins->create($request->input() + [
+                'user_id' => $this->auth->user()['id'],
+            ]);
             if (!$this->creditService->hasSufficientCredits($check_in)) {
                 return response('Payment Required', 402);
             }

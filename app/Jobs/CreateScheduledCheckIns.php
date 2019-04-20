@@ -75,8 +75,13 @@ class CreateScheduledCheckIns implements ShouldQueue
      *
      * @return void
      */
-    public function handle($checkInRepo, $scheduledCheckIns = [])
+    public function handle(CheckInRepository $checkInRepo, $scheduledCheckIns = null)
     {
+        if (!$scheduledCheckIns) {
+            // Get all scheduled_check_in entries from the database that are not already processed
+            $scheduledCheckInClass = new ScheduledCheckIn();
+            $scheduledCheckIns = $scheduledCheckInClass->findActive();
+        }
         foreach ($scheduledCheckIns as $scheduledCheckIn) {
             $scheduledCheckIn->scheduled = true;
             //stop other jobs from getting this scheduled check-in and processing it
@@ -132,6 +137,7 @@ class CreateScheduledCheckIns implements ShouldQueue
         unset($checkInTemplate['created_at']);
         unset($checkInTemplate['updated_at']);
         unset($checkInTemplate['deleted_at']);
+        unset($checkInTemplate['template']);
         $checkInTemplate['recipients'] = [];
         return $checkInTemplate;
     }

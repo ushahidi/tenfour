@@ -33,12 +33,6 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \TenFour\Jobs\LDAPSyncAll)->daily();
         $schedule->job(new \TenFour\Jobs\ExpireUnverifiedAddresses)->daily();
         $schedule->job(new \TenFour\Jobs\SendScheduledCheckin)->everyMinute();
-        if (Schema::hasTable('scheduled_check_in')) {
-            // Get all scheduled_check_in entries from the database that are not already processed
-            $scheduledCheckInClass = new ScheduledCheckIn();
-            $scheduledCheckIns = $scheduledCheckInClass->findActive();
-            $schedule->job(new \TenFour\Jobs\CreateScheduledCheckIns, $scheduledCheckIns)->everyMinute();
-        }
-        
+        $schedule->job(new \TenFour\Jobs\CreateScheduledCheckIns)->everyMinute();
     }
 }
