@@ -98,39 +98,56 @@ class CreateScheduledCheckIns implements ShouldQueue
             }
         }
     }
-    public function createCheckIns($scheduledCheckIn, $nextRunDate, $checkInRepo, $cron) {
-        $checkInTemplate = $this->fromCheckInTemplate($scheduledCheckIn->check_ins->toArray(), $nextRunDate);
-        $checkInRepo->create($checkInTemplate);
 
+    public function createCheckIns($scheduledCheckIn, $prevRunDate, $checkInRepo, $cron) {
+        $checkInTemplate = $this->fromCheckInTemplate($scheduledCheckIn->check_ins->toArray(), $prevRunDate);
+        $checkInRepo->create($checkInTemplate);
+        $nextRunDate = null;
         if ($scheduledCheckIn->frequency === 'monthly') {
-            $nextRunDate = $this->getMonthlyDates($nextRunDate, $cron, $scheduledCheckIn);
+            $nextRunDate = $this->getMonthlyDates($prevRunDate, $scheduledCheckIn);
         } else if ($scheduledCheckIn->frequency === 'biweekly') {
-            $nextRunDate = $cron->getNextRunDate($nextRunDate, 1)->format('Y-m-d H:i:s');
+            $nextRunDate = $cron->getNextRunDate($prevRunDate, 1)->format('Y-m-d H:i:s');
         } else {
-            $nextRunDate = $cron->getNextRunDate($nextRunDate)->format('Y-m-d H:i:s');
+            $nextRunDate = $cron->getNextRunDate($prevRunDate)->format('Y-m-d H:i:s');
         }
-        
         return $nextRunDate;
     }
     /**
      * Fixes dates using months for months when the run date is higher than the last day of the next month. 
      * Example: running on the 31st of every month won't work in Febraury and needs a special fix
+     * 30 days has September,
+     * April, June, and November.
+     * When short February's done
+     * All the rest have 31...
      * @return void
      */
-    private function getMonthlyDates($nextRunDate, $cron, $scheduledCheckIn) {
-        //example $nextRunDate 2190-01-31 21:19:00 
-        $previousMonthDate = new \DateTime($nextRunDate);
-        // will return  2190-03-31 21:19:00 
-        $calculatedNextRunDate =  $cron->getNextRunDate($nextRunDate);
-        if ( $calculatedNextRunDate->format('n') - $previousMonthDate->format('n') > 1) {
-            $previousMonthDate->modify("last day of next month");
-            $cronExpression = $this->cronFormat($scheduledCheckIn->frequency, $previousMonthDate);
-            $cron = CronExpression::factory($cronExpression);
-            return $cron->getNextRunDate($previousMonthDate->format('Y-m-d H:i:s'))->format('Y-m-d H:i:s');
+    public function getMonthlyDates($prevRunDate, $scheduledCheckIn) {
+        // the date in the scheduled check in that the user selecteed
+        $originalStartDate = new \DateTime($scheduledCheckIn->starts_at);
+        // the last date we calculated for a check in to run at, will be used to calculate the next one.
+        $prevRunDateTime = new \DateTime($prevRunDate);
+        // the  last run date that will be modified to pre-calculate the next one, 
+        // used for formatting and internal logic only.
+        $nextRunDate = new \DateTime($prevRunDate);
+        $nextRunDate->modify('+1 month');
+        $dayWasChanged = $originalStartDate->format('d') !== $prevRunDateTime->format('d');
+        $nextDateSkippedMonth = ($nextRunDate->format('n') - $prevRunDateTime->format('n')) > 1;
+        if ($nextDateSkippedMonth){
+            $return = $prevRunDateTime->modify('last day of next month')->format('Y-m-d H:i:s');
+        } else if ($dayWasChanged){
+            $day = $originalStartDate->format('d');
+            $nextMonth = $prevRunDateTime->modify('last day of next month');
+            $return = $nextMonth->setDate(
+                $nextMonth->format('Y'),
+                $nextMonth->format('n'),
+                $day
+            )->format('Y-m-d H:i:s');
         } else {
-            return $cron->getNextRunDate($nextRunDate)->format('Y-m-d H:i:s');
+            $return = $prevRunDateTime->modify('+1 month')->format('Y-m-d H:i:s');
         }
+        return $return;
     }
+
     public function fromCheckInTemplate($checkInTemplate, $nextRunDate){
         $checkInTemplate['send_at'] = $nextRunDate;
         unset($checkInTemplate['id']);

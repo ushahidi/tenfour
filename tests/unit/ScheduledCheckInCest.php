@@ -159,4 +159,24 @@ class ScheduledCheckInCest
         $scheduled = new CreateScheduledCheckIns();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
+
+    public function testMonthlyReturnsCorrectDates(\UnitTester $t)
+    {
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
+        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
+            [
+                'check_ins_id' => $checkIn->id,
+                'frequency' => 'monthly',
+                'starts_at' => '2190-01-31 21:19:00',
+                'expires_at' => '2190-05-01 21:19:00',
+            ]
+        );
+        $scheduled = new CreateScheduledCheckIns();
+        $return = $scheduled->getMonthlyDates('2019-02-28 21:19:00', $sci1);
+        $t->assertEquals($return, '2019-03-31 21:19:00');
+        $return = $scheduled->getMonthlyDates('2019-01-31 21:19:00', $sci1);
+        $t->assertEquals($return, '2019-02-28 21:19:00');
+        $return = $scheduled->getMonthlyDates('2019-03-31 21:19:00', $sci1);
+        $t->assertEquals($return, '2019-04-30 21:19:00');
+    }
 }
