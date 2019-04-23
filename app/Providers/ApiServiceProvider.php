@@ -54,6 +54,9 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('TenFour\Contracts\Repositories\CheckInRepository',
                          'TenFour\Repositories\EloquentCheckInRepository');
 
+        $this->app->bind('TenFour\Contracts\Repositories\ScheduledCheckInRepository',
+                         'TenFour\Repositories\EloquentScheduledCheckInRepository');
+
         $this->app->bind('TenFour\Contracts\Repositories\ReplyRepository',
                          'TenFour\Repositories\EloquentReplyRepository');
 

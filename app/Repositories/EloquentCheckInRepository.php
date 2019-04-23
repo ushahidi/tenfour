@@ -17,7 +17,7 @@ class EloquentCheckInRepository implements CheckInRepository
     {
     }
 
-    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0, $template = false)
+    public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0, $template = false, $scheduled = false)
     {
         $query = CheckIn::query()
           ->orderBy('created_at', 'desc')
@@ -33,6 +33,10 @@ class EloquentCheckInRepository implements CheckInRepository
         }
         // start of "AND" check in filters
         $query->where('template', $template);
+
+        if ($scheduled) {
+            $query->where('scheduled_check_in_id', DB::raw("IS NOT NULL"));
+        }
 
         if ($org_id) {
             $query->where('organization_id', $org_id);
