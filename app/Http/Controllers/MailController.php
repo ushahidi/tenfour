@@ -48,7 +48,7 @@ class MailController extends Controller
         $visibleMessage = \EmailReplyParser\EmailReplyParser::parseReply($message);
 
         $check_in_id = null;
-        if (preg_match('/^checkin-(\d*)@.*$/', $to, $matches)) {
+        if (preg_match('/^checkin[\-\+](\d*)@.*$/', $to, $matches)) {
             $check_in_id = $matches[1];
         }
 

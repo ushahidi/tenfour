@@ -134,7 +134,7 @@ class MailCest
             'type'        => 'check_in',
             'to'          => 'org_member@ushahidi.com',
             'check_in_id' => 10,
-            'from'        => 'checkin-10@qa.tenfour.org'
+            'from'        => 'checkin+10@qa.tenfour.org'
         ]);
     }
 }

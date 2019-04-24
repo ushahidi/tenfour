@@ -9,7 +9,7 @@ function makeSNSMailNotification($from_email, $check_in_id, $message) {
     'content' => 'From: John Doe <' . $from_email . '>
 Content-Type: multipart/alternative;boundary=\'Apple-Mail=_853679B4-70FE-4F54-9EC2-BDAE6FBA1A9C\'
 Mime-Version: 1.0
-To: TenFour <checkin-' . $check_in_id . '@tenfour.org>
+To: TenFour <checkin+' . $check_in_id . '@tenfour.org>
 
 ' . $message . '
 
