@@ -5,6 +5,7 @@ namespace TenFour\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use TenFour\Contracts\Repositories\CheckInRepository;
@@ -24,7 +25,7 @@ use Statsd;
 
 class SendCheckIn implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable,InteractsWithQueue, Queueable, SerializesModels;
 
     public $check_in, $organization;
     protected $check_in_repo, $notification;
@@ -57,7 +58,7 @@ class SendCheckIn implements ShouldQueue
     {
         $this->check_in_repo = $check_in_repo;
         $this->organization = Organization::findOrFail($this->check_in['organization_id']);
-
+        
         if ($this->isDisabledDueToComplaints()) {
             Log::warning('Cannot send check-in for ' . $this->organization->name . ' because complaints exceed threshold');
             return;
@@ -68,7 +69,6 @@ class SendCheckIn implements ShouldQueue
         $notification = new CheckInNotification(
             $this->check_in,
             $this->organization);
-
 
         foreach($this->check_in['recipients'] as $recipient)
         {
@@ -93,7 +93,10 @@ class SendCheckIn implements ShouldQueue
         }
 
         CheckIn::findOrFail($this->check_in['id'])->notify($notification);
-
+        // set sent
+        $check_in = CheckIn::findOrFail($this->check_in['id']);
+        $check_in->sent = 1;
+        $check_in->save();
         $this->deductCredits();
         $this->sendAnalytics();
     }

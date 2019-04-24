@@ -4,6 +4,8 @@ namespace TenFour\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use TenFour\Models\ScheduledCheckIn;
+use Illuminate\Support\Facades\Schema;
 
 class Kernel extends ConsoleKernel
 {
@@ -23,7 +25,6 @@ class Kernel extends ConsoleKernel
         // Disable pulling SMS, this doesn't work well with multiple providers
         // $schedule->command(\TenFour\Console\Commands\ReceiveSMS::class)
         //          ->everyMinute();
-
         $schedule->job(new \TenFour\Jobs\FixOrgOwners)->hourly();
         $schedule->job(new \TenFour\Jobs\NotifyFreePromoEnding)->daily();
         $schedule->job(new \TenFour\Jobs\SyncSubscriptions)->hourly();
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \TenFour\Jobs\CheckLowCredits)->hourly();
         $schedule->job(new \TenFour\Jobs\LDAPSyncAll)->daily();
         $schedule->job(new \TenFour\Jobs\ExpireUnverifiedAddresses)->daily();
-
+        $schedule->job(new \TenFour\Jobs\SendScheduledCheckin)->everyMinute();
+        $schedule->job(new \TenFour\Jobs\CreateScheduledCheckIns)->everyMinute();
     }
 }

@@ -24,6 +24,8 @@ use TenFour\Models\CheckIn;
 use Illuminate\Support\Facades\Notification;
 use Dingo\Api\Auth\Auth;
 use App;
+use TenFour\Models\ScheduledCheckIn;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
@@ -193,7 +195,8 @@ class CheckInController extends ApiController
     public function all(GetCheckInsRequest $request, $organization_id)
     {
         $user_id = null;
-
+        $template = $request->input('template', false);
+        $template = filter_var($template, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 1 : 0 ;
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 0);
 
@@ -210,7 +213,7 @@ class CheckInController extends ApiController
             $this->auth->user()['id'],
             $offset,
             $limit,
-            $request->input('template', false));
+            $template);
 
         return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
     }
@@ -314,6 +317,12 @@ class CheckInController extends ApiController
      *             "answer": "Yes",
      *         }
      *     },
+     *     "schedule": {
+     *       "starts_at": "2019-03-4",
+     *       "expires_at": "2019-03-20",
+     *       "check_in_count": 20,
+     *       "frequency": "weekly"
+     *     },
      *     "message": "Westgate under siege, are you ok?",
      *     "organization_id": 2,
      *     "recipients": {
@@ -372,17 +381,37 @@ class CheckInController extends ApiController
      */
     public function create(CreateCheckInRequest $request, $organization_id)
     {
-        $check_in = $this->check_ins->create($request->input() + [
-            'user_id' => $this->auth->user()['id'],
-        ]);
-
-        if (!$this->creditService->hasSufficientCredits($check_in)) {
-            return response('Payment Required', 402);
+        
+        $schedule = $request->input('schedule');
+        if ($schedule && $schedule['frequency'] && $schedule['frequency'] !== 'once') {
+            $check_in = $this->check_ins->create(array_merge($request->input(), [
+                'user_id' => $this->auth->user()['id'],
+                'template' => 1,
+            ]));
+            // created scheduled check in that will be picked up by the laravel scheduler task
+            $scheduled_check_in = new ScheduledCheckIn(
+                [
+                    'expires_at' => $schedule['expires_at'] ?? null,
+                    'starts_at' => $schedule['starts_at'] ?? date("Y-m-d H:i:s"),
+                    'frequency' => $schedule['frequency'] ?? 'daily' ,
+                    'remaining_count' => $schedule['remaining_count'] ?? 1,
+                    'check_ins_id' => $check_in['id'],
+                    'scheduled' => 0
+                ]
+            );
+            $scheduled_check_in->save();
+            CheckIn::findorFail($check_in['id'])
+                ->update(['scheduled_check_in_id' => $scheduled_check_in->id]);
+        } else {
+            $check_in = $this->check_ins->create($request->input() + [
+                'user_id' => $this->auth->user()['id'],
+            ]);
+            if (!$this->creditService->hasSufficientCredits($check_in)) {
+                return response('Payment Required', 402);
+            }
+            // Send check-in
+            dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
         }
-
-        // Send check-in
-        dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
-
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }
 

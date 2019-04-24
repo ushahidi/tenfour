@@ -9,6 +9,7 @@ use DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Hash;
 use TenFour\Notifications\CheckInReceived;
+use Illuminate\Support\Facades\Log;
 
 class EloquentCheckInRepository implements CheckInRepository
 {
@@ -18,7 +19,6 @@ class EloquentCheckInRepository implements CheckInRepository
 
     public function all($org_id = null, $user_id = null, $recipient_id = null, $auth_user_id = null, $offset = 0, $limit = 0, $template = false)
     {
-
         $query = CheckIn::query()
           ->orderBy('created_at', 'desc')
           ->with(['replies' => function ($query) {
@@ -31,6 +31,8 @@ class EloquentCheckInRepository implements CheckInRepository
             ->offset($offset)
             ->limit($limit);
         }
+        // start of "AND" check in filters
+        $query->where('template', $template);
 
         if ($org_id) {
             $query->where('organization_id', $org_id);
@@ -39,21 +41,14 @@ class EloquentCheckInRepository implements CheckInRepository
         if ($user_id) {
             $query->where('user_id', $user_id);
         }
-
+        // end of "AND" check in filters
         if ($recipient_id) {
             $query->whereHas('recipients', function ($query) use ($recipient_id) {
                 $query->where('user_id', $recipient_id);
             });
-
             $query->orWhere('user_id', $recipient_id);
         }
-
-        if ($template) {
-            $query->where('template', true);
-        }
-
         $check_ins = $query->get()->toArray();
-
         foreach($check_ins as $key => &$check_in)
         {
             // exclude others' self tests, but include my own
