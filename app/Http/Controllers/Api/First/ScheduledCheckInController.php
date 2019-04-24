@@ -120,7 +120,7 @@ class ScheduledCheckInController extends ApiController
         if ($deleted) {
             return response()->json(['status' => 'Deleted']);
         } else {
-            return response()->json(['status' => 'Not deleted']);
+            return response()->json(['status' => 'Not deleted', 400]);
         }
     }
 
