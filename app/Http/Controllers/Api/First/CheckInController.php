@@ -199,7 +199,10 @@ class CheckInController extends ApiController
         $template = filter_var($template, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ? 1 : 0 ;
         $offset = $request->input('offset', 0);
         $limit = $request->input('limit', 0);
-
+        $scheduled = filter_var(
+                $request->input('scheduled', false),
+                FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE
+            ) ? 1 : 0 ;
         if ($request->query('user') === 'me') {
             $user_id = $this->auth->user()['id'];
         } else {
@@ -213,7 +216,9 @@ class CheckInController extends ApiController
             $this->auth->user()['id'],
             $offset,
             $limit,
-            $template);
+            $template,
+            $scheduled
+        );
 
         return $this->response->collection($check_ins, new CheckInTransformer, 'checkins');
     }
