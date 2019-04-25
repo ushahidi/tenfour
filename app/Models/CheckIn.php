@@ -46,10 +46,6 @@ class CheckIn extends Model
      */
     protected $hidden = ['pivot'];
 
-    public function scheduledCheckIn() {
-        return $this->hasOne('TenFour\Models\ScheduledCheckIn', 'check_ins_id', 'id');
-    }
-
     /**
      *
      * Check-ins belong to an organization
