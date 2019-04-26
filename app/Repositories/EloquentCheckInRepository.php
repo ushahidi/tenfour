@@ -34,10 +34,20 @@ class EloquentCheckInRepository implements CheckInRepository
         // start of "AND" check in filters
         $query->where('template', $template);
 
-        if ($scheduled) {
-            $query->where('scheduled_check_in_id', DB::raw("IS NOT NULL"));
-        }
+        $query->where(function($query)
+        {
 
+            $query->where(function($query)
+            {
+                $query->whereRaw('scheduled_check_in_id IS NOT NULL')
+                ->where('sent','=',1);
+            });
+            $query->orWhere(function($query) {
+                $query->orWhereRaw('scheduled_check_in_id IS NULL');
+            });;
+        }
+        );
+        
         if ($org_id) {
             $query->where('organization_id', $org_id);
         }
@@ -52,6 +62,7 @@ class EloquentCheckInRepository implements CheckInRepository
             });
             $query->orWhere('user_id', $recipient_id);
         }
+
         $check_ins = $query->get()->toArray();
         foreach($check_ins as $key => &$check_in)
         {
