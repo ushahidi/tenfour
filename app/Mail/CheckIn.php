@@ -40,7 +40,7 @@ class CheckIn extends Mailable
     public function getFromAddress()
     {
         $domain = str_replace('app.', '', config('tenfour.domain'));
-        return 'checkin-' . $this->check_in['id'] .'@'. $domain;
+        return 'checkin+' . $this->check_in['id'] .'@'. $domain;
     }
 
     /**
