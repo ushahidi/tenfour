@@ -13,12 +13,12 @@ class RenameScheduledCheckins extends Migration
      */
     public function up()
     {
-        Schema::table('scheduled_check_in', function(Blueprint $table) {
+        Schema::rename('scheduled_check_in', 'scheduled_checkin');
+
+        Schema::table('scheduled_checkin', function(Blueprint $table) {
             $table->dropForeign('scheduled_check_in_check_ins_id_foreign');
             $table->dropColumn('check_ins_id');
         });
-
-        Schema::rename('scheduled_check_in', 'scheduled_checkin');
     }
 
     /**
@@ -28,6 +28,13 @@ class RenameScheduledCheckins extends Migration
      */
     public function down()
     {
-        //noop
+        Schema::rename('scheduled_checkin', 'scheduled_check_in');
+
+        Schema::table('scheduled_check_in', function(Blueprint $table) {
+            $table->integer('check_ins_id')->unsigned()->default(0);
+            $table->foreign('check_ins_id')
+                ->references('id')->on('check_ins')
+                ->onDelete('cascade');
+        });
     }
 }
