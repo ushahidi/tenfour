@@ -8,13 +8,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use TenFour\Contracts\Repositories\CheckInRepository;
-use TenFour\Models\ScheduledCheckIn;
+use TenFour\Models\ScheduledCheckin;
 use Cron\CronExpression;
 use Illuminate\Support\Facades\Log;
 use TenFour\Models\CheckIn;
 use Illuminate\Support\Facades\Schema;
+use Nexmo\Verify\Check;
 
-class CreateScheduledCheckIns implements ShouldQueue
+class CreateScheduledCheckins implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -78,11 +79,16 @@ class CreateScheduledCheckIns implements ShouldQueue
     public function handle(CheckInRepository $checkInRepo, $scheduledCheckIns = null)
     {
         if (!$scheduledCheckIns) {
-            // Get all scheduled_check_in entries from the database that are not already processed
-            $scheduledCheckInClass = new ScheduledCheckIn();
+            // Get all scheduled_checkin entries from the database that are not already processed
+            $scheduledCheckInClass = new ScheduledCheckin();
             $scheduledCheckIns = $scheduledCheckInClass->findActive();
         }
         foreach ($scheduledCheckIns as $scheduledCheckIn) {
+            $checkInTemplate = CheckIn::where([
+                ['scheduled_checkin_id', '=', $scheduledCheckIn->id],
+                ['template', '=', 1]
+            ]
+            )->get()->toArray();
             $scheduledCheckIn->scheduled = true;
             //stop other jobs from getting this scheduled check-in and processing it
             $scheduledCheckIn->save();
@@ -94,13 +100,13 @@ class CreateScheduledCheckIns implements ShouldQueue
                 $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at, 0, true)->format('Y-m-d H:i:s');
             }
             while (new \DateTime($scheduledCheckIn->expires_at) >= new \DateTime($nextRunDate)) {
-                $nextRunDate = $this->createCheckIns($scheduledCheckIn, $nextRunDate, $checkInRepo, $cron);
+                $nextRunDate = $this->createCheckIns($scheduledCheckIn, $nextRunDate, $checkInRepo, $checkInTemplate, $cron);
             }
         }
     }
 
-    public function createCheckIns($scheduledCheckIn, $prevRunDate, $checkInRepo, $cron) {
-        $checkInTemplate = $this->fromCheckInTemplate($scheduledCheckIn->check_ins->toArray(), $prevRunDate);
+    public function createCheckIns($scheduledCheckIn, $prevRunDate, $checkInRepo, $checkInTemplate, $cron) {
+        $checkInTemplate = $this->fromCheckInTemplate($checkInTemplate, $prevRunDate);
         $checkInRepo->create($checkInTemplate);
         $nextRunDate = null;
         if ($scheduledCheckIn->frequency === 'monthly') {

@@ -3,27 +3,25 @@
 namespace Tests\Unit;
 
 use TestCase;
-use TenFour\Jobs\CreateScheduledCheckIns;
+use TenFour\Jobs\CreateScheduledCheckins;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory;
-class ScheduledCheckInCest
+class ScheduledCheckinCest
 {
     /**
      * @return void
      */
     public function testCreateScheduledCheckinsHourly()
     {
-
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create();
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['message' => 'Scheduled template', 'scheduled_checkin_id'=> $sci1]);
         // default hourly 1 day
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(['check_ins_id' => $checkIn->id]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
-        // 
         $check_in_repo->shouldReceive('create')->times(24);
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
 
@@ -33,17 +31,18 @@ class ScheduledCheckInCest
     public function testCreateScheduledCheckinsDaily()
     {
 
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
+        
         // 1 per day, 1 day
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
-            ['check_ins_id' => $checkIn->id, 'frequency' => 'daily']
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
+            ['frequency' => 'daily']
         );
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
         $check_in_repo->shouldReceive('create')->times(1);
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
     /**
@@ -52,17 +51,18 @@ class ScheduledCheckInCest
     public function testCreateScheduledCheckinsWeekly()
     {
 
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
+        
         // 1 per week, 1 day
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
-            ['check_ins_id' => $checkIn->id, 'frequency' => 'weekly']
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
+            ['frequency' => 'weekly']
         );
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
         $check_in_repo->shouldReceive('create')->times(1);
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
 
@@ -71,18 +71,17 @@ class ScheduledCheckInCest
      */
     public function testCreateScheduledCheckinsBiWeeklySingleRun()
     {
-
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
         // 1 per week, 1 day
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
-            ['check_ins_id' => $checkIn->id, 'frequency' => 'biweekly']
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
+            ['frequency' => 'biweekly']
         );
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
         $check_in_repo->shouldReceive('create')->times(1);
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
 
@@ -93,20 +92,20 @@ class ScheduledCheckInCest
     {
         $faker = Factory::create();
 
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
+        
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
             [
-                'check_ins_id' => $checkIn->id,
                 'frequency' => 'biweekly',
                 'expires_at' => date_format($faker->dateTimeBetween('+1 month', '+1 month'), "Y-m-d H:i:s"),
             ]
         );
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
         $check_in_repo->shouldReceive('create')->times(3); // today, 2 weeks from today, 4 weeks from today
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
 
@@ -116,21 +115,19 @@ class ScheduledCheckInCest
     public function testCreateScheduledCheckinsMonthlyFullMonthExpiration()
     {
         $faker = Factory::create();
-
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
             [
-                'check_ins_id' => $checkIn->id,
                 'frequency' => 'monthly',
                 'expires_at' => date_format($faker->dateTimeBetween('+1 month', '+1 month'), "Y-m-d H:i:s"),
             ]
         );
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
         $check_in_repo->shouldReceive('create')->times(2); // today, 1 month from today
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
      /**
@@ -141,37 +138,34 @@ class ScheduledCheckInCest
     public function testCreateScheduledCheckinsMonthlyCheckLastDaysWork()
     {
         $faker = Factory::create();
-
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
             [
-                'check_ins_id' => $checkIn->id,
                 'frequency' => 'monthly',
                 'starts_at' => '2190-01-31 21:19:00',
                 'expires_at' => '2190-04-03 21:19:00',
             ]
         );
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
         $scheduledCheckIns =[
             $sci1
         ];
         $check_in_repo =  \Mockery::spy('TenFour\Contracts\Repositories\CheckInRepository');
         $check_in_repo->shouldReceive('create')->times(3); // today, 1 month from today
-        $scheduled = new CreateScheduledCheckIns();
+        $scheduled = new CreateScheduledCheckins();
         $scheduled->handle($check_in_repo, $scheduledCheckIns);
     }
 
     public function testMonthlyReturnsCorrectDates(\UnitTester $t)
     {
-        $checkIn = factory(\TenFour\Models\CheckIn::class)->create();
-        $sci1 = factory(\TenFour\Models\ScheduledCheckIn::class)->create(
+        $sci1 = factory(\TenFour\Models\ScheduledCheckin::class)->create(
             [
-                'check_ins_id' => $checkIn->id,
                 'frequency' => 'monthly',
                 'starts_at' => '2190-01-31 21:19:00',
                 'expires_at' => '2190-05-01 21:19:00',
             ]
         );
-        $scheduled = new CreateScheduledCheckIns();
+        $checkIn = factory(\TenFour\Models\CheckIn::class)->create(['scheduled_checkin_id'=> $sci1]);
+        $scheduled = new CreateScheduledCheckins();
         $return = $scheduled->getMonthlyDates('2019-02-28 21:19:00', $sci1);
         $t->assertEquals($return, '2019-03-31 21:19:00');
         $return = $scheduled->getMonthlyDates('2019-01-31 21:19:00', $sci1);

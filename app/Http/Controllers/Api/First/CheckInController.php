@@ -24,7 +24,7 @@ use TenFour\Models\CheckIn;
 use Illuminate\Support\Facades\Notification;
 use Dingo\Api\Auth\Auth;
 use App;
-use TenFour\Models\ScheduledCheckIn;
+use TenFour\Models\ScheduledCheckin;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -394,19 +394,18 @@ class CheckInController extends ApiController
                 'template' => 1,
             ]));
             // created scheduled check in that will be picked up by the laravel scheduler task
-            $scheduled_check_in = new ScheduledCheckIn(
+            $scheduled_checkin = new ScheduledCheckin(
                 [
                     'expires_at' => $schedule['expires_at'] ?? null,
                     'starts_at' => $schedule['starts_at'] ?? date("Y-m-d H:i:s"),
                     'frequency' => $schedule['frequency'] ?? 'daily' ,
                     'remaining_count' => $schedule['remaining_count'] ?? 1,
-                    'check_ins_id' => $check_in['id'],
                     'scheduled' => 0
                 ]
             );
-            $scheduled_check_in->save();
+            $scheduled_checkin->save();
             CheckIn::findorFail($check_in['id'])
-                ->update(['scheduled_check_in_id' => $scheduled_check_in->id]);
+                ->update(['scheduled_checkin_id' => $scheduled_checkin->id]);
         } else {
             $check_in = $this->check_ins->create($request->input() + [
                 'user_id' => $this->auth->user()['id'],

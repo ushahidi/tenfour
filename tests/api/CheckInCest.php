@@ -446,7 +446,7 @@ class CheckInCest
      * Create a scheduled check-in as org admin
      *
      */
-    public function createScheduledCheckIn(ApiTester $I)
+    public function createScheduledCheckin(ApiTester $I)
     {
         $id = 2;
         $I->wantTo('Create a scheduled check-in as admin');
@@ -472,7 +472,7 @@ class CheckInCest
               ['answer'=>'Yes','color'=>'#E8C440','icon'=>'icon-check','type'=>'positive']
             ]
         ]);
-        $I->seeRecord('scheduled_check_in', [
+        $I->seeRecord('scheduled_checkin', [
             'starts_at' => '2119-04-18 20:53:09',
             "expires_at" => '2119-04-20 20:53:01',
             'frequency' => 'weekly'

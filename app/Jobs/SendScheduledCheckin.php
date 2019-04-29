@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use TenFour\Models\CheckIn;
-use TenFour\Models\ScheduledCheckIn;
+use TenFour\Models\ScheduledCheckin;
 use TenFour\Contracts\Repositories\CheckInRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -36,11 +36,11 @@ class SendScheduledCheckin implements ShouldQueue
         $this->check_in_repo = $check_in_repo;
         $check_ins = CheckIn::where([['send_at', '<', DB::raw('NOW()')], ['sent', '=', 0]])->get();
         array_map(function($check_in) {
-            $scheduled_check_in = ScheduledCheckIn::where(
-                [['id', '=', $check_in['scheduled_check_in_id']]]
+            $scheduled_checkin = ScheduledCheckin::where(
+                [['id', '=', $check_in['scheduled_checkin_id']]]
             )->first();
             $original = CheckIn::where(
-                [['scheduled_check_in_id', '=', $scheduled_check_in->id]]
+                [['scheduled_checkin_id', '=', $scheduled_checkin->id]]
             )->whereNull('send_at')->first();
             $check_in['recipients'] = $original->recipients;
             $recipients = array_map(function($recipient) {

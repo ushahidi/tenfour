@@ -6,7 +6,7 @@ use Dingo\Api\Http\FormRequest;
 use TenFour\Traits\UserAccess;
 use App;
 
-class DeleteScheduledCheckInRequest extends FormRequest
+class DeleteScheduledCheckinRequest extends FormRequest
 {
     use UserAccess;
 
@@ -18,7 +18,7 @@ class DeleteScheduledCheckInRequest extends FormRequest
     public function authorize()
     {
         // @todo should anyone really be able to update a check-in?
-        $check_in = App::make('TenFour\Contracts\Repositories\ScheduledCheckInRepository')
+        $check_in = App::make('TenFour\Contracts\Repositories\ScheduledCheckinRepository')
                  ->find($this->route('id'));
         if ($this->user()->isAdmin($check_in->check_ins->organization_id)) {
             return true;

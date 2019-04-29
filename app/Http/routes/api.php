@@ -55,8 +55,8 @@ $api->version($version, [
 
     //checkins
     ////////////////////////////////////////////////////////////////////
-    $api->get($base. 'organizations/{organization}/checkins/scheduled', ['as' => 'scheduled_check_ins.index','uses' => 'ScheduledCheckInController@pending']);
-    $api->delete($base. 'organizations/{organization}/checkins/scheduled/{id}', ['uses' => 'ScheduledCheckInController@delete']);
+    $api->get($base. 'organizations/{organization}/checkins/scheduled', ['as' => 'scheduled_checkins.index','uses' => 'ScheduledCheckinController@pending']);
+    $api->delete($base. 'organizations/{organization}/checkins/scheduled/{id}', ['uses' => 'ScheduledCheckinController@delete']);
 
     $api->get($base. 'organizations/{organization}/checkins', ['as' => 'checkins.index','uses' => 'CheckInController@all']);
     
