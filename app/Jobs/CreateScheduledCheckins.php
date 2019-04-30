@@ -89,6 +89,7 @@ class CreateScheduledCheckins implements ShouldQueue
                 ['template', '=', 1]
             ]
             )->get()->toArray();
+            $checkInTemplate = array_pop($checkInTemplate);
             $scheduledCheckIn->scheduled = true;
             //stop other jobs from getting this scheduled check-in and processing it
             $scheduledCheckIn->save();
@@ -106,8 +107,8 @@ class CreateScheduledCheckins implements ShouldQueue
     }
 
     public function createCheckIns($scheduledCheckIn, $prevRunDate, $checkInRepo, $checkInTemplate, $cron) {
-        $checkInTemplate = $this->fromCheckInTemplate($checkInTemplate, $prevRunDate);
-        $checkInRepo->create($checkInTemplate);
+        $checkIn = $this->fromCheckInTemplate($checkInTemplate, $prevRunDate);
+        $checkInRepo->create($checkIn);
         $nextRunDate = null;
         if ($scheduledCheckIn->frequency === 'monthly') {
             $nextRunDate = $this->getMonthlyDates($prevRunDate, $scheduledCheckIn);
@@ -161,6 +162,7 @@ class CreateScheduledCheckins implements ShouldQueue
         unset($checkInTemplate['updated_at']);
         unset($checkInTemplate['deleted_at']);
         unset($checkInTemplate['template']);
+        unset($checkInTemplate['users']);
         $checkInTemplate['recipients'] = [];
         return $checkInTemplate;
     }
