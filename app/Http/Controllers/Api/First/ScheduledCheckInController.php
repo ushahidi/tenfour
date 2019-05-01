@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use TenFour\Http\Requests\CheckIn\DeleteScheduledCheckinRequest;
 
 /**
- * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/scheduled_checkins")
+ * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins/scheduled")
  */
 class ScheduledCheckinController extends ApiController
 {
@@ -35,7 +35,7 @@ class ScheduledCheckinController extends ApiController
      * @Response(200, body={
      * {
      *   "scheduled_checkins": 
-     *   [
+     *   {
      *       {
      *           "id": 3,
      *           "scheduled": 1,
@@ -54,19 +54,17 @@ class ScheduledCheckinController extends ApiController
      *               "created_at": "2019-04-23 22:35:51",
      *               "updated_at": "2019-04-23 22:35:51",
      *               "user_id": 1,
-     *               "send_via": [
-     *                   "app"
-     *               ],
+     *               "send_via": {},
      *               "complaint_count": 0,
      *               "self_test_check_in": 0,
      *               "everyone": 0,
      *               "template": 1,
      *               "scheduled_checkin_id": 3,
      *               "send_at": null,
-     *               "replies": []
+     *               "replies": {}
      *           }
      *        }
-     *    ]
+     *    }
      * }
      * })
      *
@@ -109,7 +107,7 @@ class ScheduledCheckinController extends ApiController
      * @Response(200, body={
      * {
      *   "scheduled_checkins": 
-     *   [
+     *   {
      *       {
      *           "id": 3,
      *           "scheduled": 1,
@@ -128,19 +126,17 @@ class ScheduledCheckinController extends ApiController
      *               "created_at": "2019-04-23 22:35:51",
      *               "updated_at": "2019-04-23 22:35:51",
      *               "user_id": 1,
-     *               "send_via": [
-     *                   "app"
-     *               ],
+     *               "send_via": {},
      *               "complaint_count": 0,
      *               "self_test_check_in": 0,
      *               "everyone": 0,
      *               "template": 1,
      *               "scheduled_checkin_id": 3,
      *               "send_at": null,
-     *               "replies": []
+     *               "replies": {}
      *           }
      *        }
-     *    ]
+     *    }
      * }
      * })
      *
@@ -170,9 +166,9 @@ class ScheduledCheckinController extends ApiController
     /**
      * Delete a scheduled check in
      *
-     * @Delete("/organizations/{organization}/scheduled_checkins/{id}")
+     * @Delete("/organizations/{organization}/checkins/scheduled/{id}")
      * @Parameters({
-     *   @Parameter("organization",required=true, description="The org id")
+     *   @Parameter("organization",required=true, description="The org id"),
      *   @Parameter("id",required=true, description="The scheduled checkin to delete")
      * })
      *
@@ -183,6 +179,7 @@ class ScheduledCheckinController extends ApiController
      * @param Request $request
      * @return Response
      */
+    
     public function delete(DeleteScheduledCheckinRequest $request, $organization, $id)
     {
         $request = $request->all();
