@@ -1,6 +1,6 @@
 FORMAT: 1A
 
-# TenFour API
+# tenfour
 
 # Organizations [/api/v1/organizations]
 
@@ -1034,9 +1034,9 @@ The only result of this action is the notification is marked as read.
                 }
             }
 
-# Checkins [/api/v1/organizations/{org_id}/checkins]
+# Checkins [/api/v1/organizations/{org_id}/checkins/scheduled]
 
-## Get all check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins{?offset,limit}]
+## Get all pending scheduled check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins/scheduled{?offset,limit,template}]
 
 
 + Parameters
@@ -1045,6 +1045,140 @@ The only result of this action is the notification is marked as read.
         + Default: 0
     + limit: (string, optional) - 
         + Default: 0
+    + template: (boolean, optional) - only retrieve check-in templates
+        + Default: 
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            [
+                {
+                    "scheduled_checkins": [
+                        {
+                            "id": 3,
+                            "scheduled": 1,
+                            "frequency": "hourly",
+                            "starts_at": "2019-04-23 22:35:51",
+                            "expires_at": "2019-04-24 22:35:00",
+                            "remaining_count": 1,
+                            "created_at": "2019-04-23 22:35:51",
+                            "updated_at": "2019-04-23 22:36:03",
+                            "checkins": {
+                                "id": 29,
+                                "message": "my sch",
+                                "organization_id": 1,
+                                "status": "pending",
+                                "sent": 0,
+                                "created_at": "2019-04-23 22:35:51",
+                                "updated_at": "2019-04-23 22:35:51",
+                                "user_id": 1,
+                                "send_via": [],
+                                "complaint_count": 0,
+                                "self_test_check_in": 0,
+                                "everyone": 0,
+                                "template": 1,
+                                "scheduled_checkin_id": 3,
+                                "send_at": null,
+                                "replies": []
+                            }
+                        }
+                    ]
+                }
+            ]
+
+## Get all scheduled check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins/scheduled{?offset,limit,template}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + offset: (string, optional) - 
+        + Default: 0
+    + limit: (string, optional) - 
+        + Default: 0
+    + template: (boolean, optional) - only retrieve check-in templates
+        + Default: 
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+
++ Response 200 (application/json)
+    + Body
+
+            [
+                {
+                    "scheduled_checkins": [
+                        {
+                            "id": 3,
+                            "scheduled": 1,
+                            "frequency": "hourly",
+                            "starts_at": "2019-04-23 22:35:51",
+                            "expires_at": "2019-04-24 22:35:00",
+                            "remaining_count": 1,
+                            "created_at": "2019-04-23 22:35:51",
+                            "updated_at": "2019-04-23 22:36:03",
+                            "checkins": {
+                                "id": 29,
+                                "message": "my sch",
+                                "organization_id": 1,
+                                "status": "pending",
+                                "sent": 0,
+                                "created_at": "2019-04-23 22:35:51",
+                                "updated_at": "2019-04-23 22:35:51",
+                                "user_id": 1,
+                                "send_via": [],
+                                "complaint_count": 0,
+                                "self_test_check_in": 0,
+                                "everyone": 0,
+                                "template": 1,
+                                "scheduled_checkin_id": 3,
+                                "send_at": null,
+                                "replies": []
+                            }
+                        }
+                    ]
+                }
+            ]
+
+## Delete a scheduled check in [DELETE /api/v1/organizations/{org_id}/checkins/scheduled/organizations/{organization}/checkins/scheduled/{id}]
+
+
++ Parameters
+    + organization: (string, required) - The org id
+    + id: (string, required) - The scheduled checkin to delete
+
++ Request (application/json)
+    + Headers
+
+            Authorization: Bearer token
+    + Body
+
+            []
+
++ Response 200 (application/json)
+    + Body
+
+            []
+
+# Checkins [/api/v1/organizations/{org_id}/checkins]
+
+## Get all check-ins for an organization [GET /api/v1/organizations/{org_id}/checkins{?offset,limit,template}]
+
+
++ Parameters
+    + org_id: (number, required) - Organization id
+    + offset: (string, optional) - 
+        + Default: 0
+    + limit: (string, optional) - 
+        + Default: 0
+    + template: (boolean, optional) - only retrieve check-in templates
+        + Default: 
 
 + Request (application/json)
     + Headers
@@ -1282,6 +1416,12 @@ The only result of this action is the notification is marked as read.
                         "answer": "Yes"
                     }
                 ],
+                "schedule": {
+                    "starts_at": "2019-03-4",
+                    "expires_at": "2019-03-20",
+                    "check_in_count": 20,
+                    "frequency": "weekly"
+                },
                 "message": "Westgate under siege, are you ok?",
                 "organization_id": 2,
                 "recipients": [
@@ -1293,6 +1433,7 @@ The only result of this action is the notification is marked as read.
                     }
                 ],
                 "group_ids": [],
+                "user_ids": [],
                 "everyone": false,
                 "template": false
             }

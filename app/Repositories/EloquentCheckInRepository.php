@@ -39,11 +39,11 @@ class EloquentCheckInRepository implements CheckInRepository
 
             $query->where(function($query)
             {
-                $query->whereRaw('scheduled_check_in_id IS NOT NULL')
+                $query->whereRaw('scheduled_checkin_id IS NOT NULL')
                 ->where('sent','=',1);
             });
             $query->orWhere(function($query) {
-                $query->orWhereRaw('scheduled_check_in_id IS NULL');
+                $query->orWhereRaw('scheduled_checkin_id IS NULL');
             });;
         }
         );

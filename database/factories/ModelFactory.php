@@ -43,7 +43,7 @@ $factory->define(\TenFour\Models\CheckIn::class, function (Faker\Generator $fake
     ];
 });
 
-$factory->define(\TenFour\Models\ScheduledCheckIn::class, function (Faker\Generator $faker) {
+$factory->define(\TenFour\Models\ScheduledCheckin::class, function (Faker\Generator $faker) {
     return [
         'starts_at' => date("Y-m-d H:i:s"),
         "expires_at" => date_format($faker->dateTimeBetween('+23 hours', '+23 hours'), "Y-m-d H:i:s"),

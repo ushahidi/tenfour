@@ -30,22 +30,25 @@ class CheckIn extends Model
      *
      * @var array
      */
-    protected $fillable = ['scheduled_check_in_id', 'send_at', 'message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in', 'everyone', 'template'];
+    protected $fillable = ['scheduled_checkin_id', 'send_at', 'message', 'organization_id', 'user_id', 'answers', 'send_via', 'self_test_check_in', 'everyone', 'template'];
 
     /**
      * The relations to eager load on every query.
      *
      * @var array
      */
-    protected $with = ['recipients', 'replies', 'user', 'organization', 'groups', 'users'];
+    protected $with = ['scheduledCheckin', 'recipients', 'replies', 'user', 'organization', 'groups', 'users'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['pivot'];
+    // protected $hidden = ['pivot'];
 
+    public function scheduledCheckin() {
+        return $this->belongsTo('TenFour\Models\ScheduledCheckin', 'scheduled_checkin_id', 'id');
+    }
     /**
      *
      * Check-ins belong to an organization

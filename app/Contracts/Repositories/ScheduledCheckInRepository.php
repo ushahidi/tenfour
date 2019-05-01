@@ -1,7 +1,7 @@
 <?php
 namespace TenFour\Contracts\Repositories;
 
-interface ScheduledCheckInRepository extends CrudRepository
+interface ScheduledCheckinRepository extends CrudRepository
 {
     /**
      * Get all

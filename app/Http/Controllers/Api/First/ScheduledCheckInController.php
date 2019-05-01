@@ -1,24 +1,22 @@
 <?php
 
 namespace TenFour\Http\Controllers\Api\First;
-
-use TenFour\Http\Requests\CheckIn\GetCheckInsRequest;
 use TenFour\Http\Response;
 use Dingo\Api\Auth\Auth;
-use TenFour\Contracts\Repositories\ScheduledCheckInRepository;
-use TenFour\Http\Transformers\ScheduledCheckInTransformer;
-use TenFour\Http\Requests\CheckIn\GetScheduledCheckInsRequest;
+use TenFour\Contracts\Repositories\ScheduledCheckinRepository;
+use TenFour\Http\Transformers\ScheduledCheckinTransformer;
+use TenFour\Http\Requests\CheckIn\GetScheduledCheckinsRequest;
 use Symfony\Component\HttpFoundation\Request;
-use TenFour\Http\Requests\CheckIn\DeleteScheduledCheckInRequest;
+use TenFour\Http\Requests\CheckIn\DeleteScheduledCheckinRequest;
 
 /**
- * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/scheduled_check_ins")
+ * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins/scheduled")
  */
-class ScheduledCheckInController extends ApiController
+class ScheduledCheckinController extends ApiController
 {
-    public function __construct(ScheduledCheckInRepository $scheduled_check_ins, Auth $auth, Response $response)
+    public function __construct(ScheduledCheckinRepository $scheduled_checkins, Auth $auth, Response $response)
     {
-        $this->scheduled_check_ins = $scheduled_check_ins;
+        $this->scheduled_checkins = $scheduled_checkins;
         $this->auth = $auth;
         $this->response = $response;
     }
@@ -36,11 +34,10 @@ class ScheduledCheckInController extends ApiController
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      * {
-     *   "scheduled_check_ins": 
-     *   [
+     *   "scheduled_checkins": 
+     *   {
      *       {
      *           "id": 3,
-     *           "check_ins_id": 29,
      *           "scheduled": 1,
      *           "frequency": "hourly",
      *           "starts_at": "2019-04-23 22:35:51",
@@ -48,7 +45,7 @@ class ScheduledCheckInController extends ApiController
      *           "remaining_count": 1,
      *           "created_at": "2019-04-23 22:35:51",
      *           "updated_at": "2019-04-23 22:36:03",
-     *           "check_ins": {
+     *           "checkins": {
      *               "id": 29,
      *               "message": "my sch",
      *               "organization_id": 1,
@@ -57,19 +54,17 @@ class ScheduledCheckInController extends ApiController
      *               "created_at": "2019-04-23 22:35:51",
      *               "updated_at": "2019-04-23 22:35:51",
      *               "user_id": 1,
-     *               "send_via": [
-     *                   "app"
-     *               ],
+     *               "send_via": {},
      *               "complaint_count": 0,
      *               "self_test_check_in": 0,
      *               "everyone": 0,
      *               "template": 1,
-     *               "scheduled_check_in_id": 3,
+     *               "scheduled_checkin_id": 3,
      *               "send_at": null,
-     *               "replies": []
+     *               "replies": {}
      *           }
      *        }
-     *    ]
+     *    }
      * }
      * })
      *
@@ -77,7 +72,7 @@ class ScheduledCheckInController extends ApiController
      * @param org_id
      * @return Response
      */
-    public function pending(GetScheduledCheckInsRequest $request, $organization_id)
+    public function pending(GetScheduledCheckinsRequest $request, $organization_id)
     {
         $user_id = null;
         $offset = $request->input('offset', 0);
@@ -87,7 +82,7 @@ class ScheduledCheckInController extends ApiController
         } else {
             $user_id = $request->query('user');
         }
-        $scheduled_check_in = $this->scheduled_check_ins->pending(
+        $scheduled_checkin = $this->scheduled_checkins->pending(
             $request->route('organization'),
             $user_id,
             false,
@@ -95,7 +90,7 @@ class ScheduledCheckInController extends ApiController
             $limit
         );
 
-        return $this->response->collection($scheduled_check_in, new ScheduledCheckInTransformer, 'scheduled_check_ins');
+        return $this->response->collection($scheduled_checkin, new ScheduledCheckinTransformer, 'scheduled_checkins');
     }
     /**
      * Get all scheduled check-ins for an organization
@@ -111,11 +106,10 @@ class ScheduledCheckInController extends ApiController
      * @Request(headers={"Authorization": "Bearer token"})
      * @Response(200, body={
      * {
-     *   "scheduled_check_ins": 
-     *   [
+     *   "scheduled_checkins": 
+     *   {
      *       {
      *           "id": 3,
-     *           "check_ins_id": 29,
      *           "scheduled": 1,
      *           "frequency": "hourly",
      *           "starts_at": "2019-04-23 22:35:51",
@@ -123,7 +117,7 @@ class ScheduledCheckInController extends ApiController
      *           "remaining_count": 1,
      *           "created_at": "2019-04-23 22:35:51",
      *           "updated_at": "2019-04-23 22:36:03",
-     *           "check_ins": {
+     *           "checkins": {
      *               "id": 29,
      *               "message": "my sch",
      *               "organization_id": 1,
@@ -132,19 +126,17 @@ class ScheduledCheckInController extends ApiController
      *               "created_at": "2019-04-23 22:35:51",
      *               "updated_at": "2019-04-23 22:35:51",
      *               "user_id": 1,
-     *               "send_via": [
-     *                   "app"
-     *               ],
+     *               "send_via": {},
      *               "complaint_count": 0,
      *               "self_test_check_in": 0,
      *               "everyone": 0,
      *               "template": 1,
-     *               "scheduled_check_in_id": 3,
+     *               "scheduled_checkin_id": 3,
      *               "send_at": null,
-     *               "replies": []
+     *               "replies": {}
      *           }
      *        }
-     *    ]
+     *    }
      * }
      * })
      *
@@ -152,7 +144,7 @@ class ScheduledCheckInController extends ApiController
      * @param org_id
      * @return Response
      */
-    public function all(GetScheduledCheckInsRequest $request, $organization_id)
+    public function all(GetScheduledCheckinsRequest $request, $organization_id)
     {
         $user_id = null;
         $offset = $request->input('offset', 0);
@@ -162,21 +154,21 @@ class ScheduledCheckInController extends ApiController
         } else {
             $user_id = $request->query('user');
         }
-        $scheduled_check_in = $this->scheduled_check_ins->all(
+        $scheduled_checkin = $this->scheduled_checkins->all(
             $request->route('organization'),
             $user_id,
             $offset,
             $limit
         );
 
-        return $this->response->collection($scheduled_check_in, new ScheduledCheckInTransformer, 'scheduled_check_ins');
+        return $this->response->collection($scheduled_checkin, new ScheduledCheckinTransformer, 'scheduled_checkins');
     }
     /**
      * Delete a scheduled check in
      *
-     * @Delete("/organizations/{organization}/scheduled_check_ins/{id}")
+     * @Delete("/organizations/{organization}/checkins/scheduled/{id}")
      * @Parameters({
-     *   @Parameter("organization",required=true, description="The org id")
+     *   @Parameter("organization",required=true, description="The org id"),
      *   @Parameter("id",required=true, description="The scheduled checkin to delete")
      * })
      *
@@ -187,10 +179,11 @@ class ScheduledCheckInController extends ApiController
      * @param Request $request
      * @return Response
      */
-    public function delete(DeleteScheduledCheckInRequest $request, $organization, $id)
+    
+    public function delete(DeleteScheduledCheckinRequest $request, $organization, $id)
     {
         $request = $request->all();
-        $deleted = $this->scheduled_check_ins->find($id)->delete();
+        $deleted = $this->scheduled_checkins->find($id)->delete();
         if ($deleted) {
             return response()->json(['status' => 'Deleted']);
         } else {

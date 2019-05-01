@@ -5,7 +5,7 @@ namespace TenFour\Http\Requests\CheckIn;
 use Dingo\Api\Http\FormRequest;
 use TenFour\Traits\UserAccess;
 
-class GetScheduledCheckInsRequest extends FormRequest
+class GetScheduledCheckinsRequest extends FormRequest
 {
     use UserAccess;
 

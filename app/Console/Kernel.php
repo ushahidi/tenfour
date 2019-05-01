@@ -4,7 +4,7 @@ namespace TenFour\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use TenFour\Models\ScheduledCheckIn;
+use TenFour\Models\ScheduledCheckin;
 use Illuminate\Support\Facades\Schema;
 
 class Kernel extends ConsoleKernel
@@ -33,6 +33,6 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \TenFour\Jobs\LDAPSyncAll)->daily();
         $schedule->job(new \TenFour\Jobs\ExpireUnverifiedAddresses)->daily();
         $schedule->job(new \TenFour\Jobs\SendScheduledCheckin)->everyMinute();
-        $schedule->job(new \TenFour\Jobs\CreateScheduledCheckIns)->everyMinute();
+        $schedule->job(new \TenFour\Jobs\CreateScheduledCheckins)->everyMinute();
     }
 }
