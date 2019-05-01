@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use TenFour\Http\Requests\CheckIn\DeleteScheduledCheckinRequest;
 
 /**
- * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/scheduled_checkins")
+ * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins/scheduled")
  */
 class ScheduledCheckinController extends ApiController
 {
