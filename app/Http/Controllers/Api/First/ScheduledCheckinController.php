@@ -8,6 +8,7 @@ use TenFour\Http\Transformers\ScheduledCheckinTransformer;
 use TenFour\Http\Requests\CheckIn\GetScheduledCheckinsRequest;
 use Symfony\Component\HttpFoundation\Request;
 use TenFour\Http\Requests\CheckIn\DeleteScheduledCheckinRequest;
+use TenFour\Models\CheckIn;
 
 /**
  * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins/scheduled")
@@ -183,8 +184,12 @@ class ScheduledCheckinController extends ApiController
     public function delete(DeleteScheduledCheckinRequest $request, $organization, $id)
     {
         $request = $request->all();
+        $futureCheckins = CheckIn::query()
+            ->where('scheduled_checkin_id', '=', $id)
+            ->where('sent', '=', 0)
+            ->delete();
         $deleted = $this->scheduled_checkins->find($id)->delete();
-        if ($deleted) {
+        if ($deleted && $futureCheckins) {
             return response()->json(['status' => 'Deleted']);
         } else {
             return response()->json(['status' => 'Not deleted', 400]);
