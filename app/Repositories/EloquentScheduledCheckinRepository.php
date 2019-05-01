@@ -92,10 +92,6 @@ class EloquentScheduledCheckinRepository implements ScheduledCheckinRepository
      * @return mixed
      */
     public function find($id) {
-        $query = ScheduledCheckin::query()
-          ->with(['check_ins' => function ($query) use ($id){
-            $query->where('check_ins.scheduled_checkin_id', $id);
-          }]);
-        return $query->findOrFail($id);
+        return ScheduledCheckin::findOrFail($id);
     }
 }
