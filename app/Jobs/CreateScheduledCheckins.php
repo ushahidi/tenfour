@@ -95,11 +95,7 @@ class CreateScheduledCheckins implements ShouldQueue
             $scheduledCheckIn->save();
             $cronExpression = $this->cronFormat($scheduledCheckIn->frequency, new \DateTime($scheduledCheckIn->starts_at));
             $cron = CronExpression::factory($cronExpression);
-            if ($scheduledCheckIn->frequency === 'biweekly') {
-                $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at, 0, true)->format('Y-m-d H:i:s');
-            } else {
-                $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at, 0, true)->format('Y-m-d H:i:s');
-            }
+            $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at, 0, true)->format('Y-m-d H:i:s');
             while (new \DateTime($scheduledCheckIn->expires_at) >= new \DateTime($nextRunDate)) {
                 $nextRunDate = $this->createCheckIns($scheduledCheckIn, $nextRunDate, $checkInRepo, $checkInTemplate, $cron);
             }
