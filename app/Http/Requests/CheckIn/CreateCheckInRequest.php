@@ -44,6 +44,26 @@ class CreateCheckInRequest extends FormRequest
         return [
             'message'         => 'required',
             'organization_id' => 'required|integer|exists:organizations,id',
+            'schedule.starts_at'    => [
+                function($attribute, $value, $fail) {
+                    $schedule = $this->input('schedule');
+                    if ($schedule && $schedule['frequency'] !== 'once' && !$value) {
+                        return $fail($attribute.' is required for scheduled checkins.');
+                    }
+                    if ($schedule && $schedule['expires_at'] && !$value) {
+                        return $fail($attribute.' is required for scheduled checkins.');
+                    }
+                },
+            ],
+            'schedule.expires_at'    => [
+                function($attribute, $value, $fail) {
+                    $schedule = $this->input('schedule');
+                    if ($schedule['frequency'] && $schedule['frequency'] !== 'once' && !$value) {
+                        return $fail($attribute.' is required for recurring scheduled checkins.');
+                    }
+                },                
+                'nullable',
+            ],
             // 'send_via'        => 'required',
             // 'recipients'      => 'required',
             'recipients.*.id' => 'required|exists:users,id',
