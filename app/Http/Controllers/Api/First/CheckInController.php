@@ -386,17 +386,22 @@ class CheckInController extends ApiController
      */
     public function create(CreateCheckInRequest $request, $organization_id)
     {
-        
         $schedule = $request->input('schedule');
-        if ($schedule && $schedule['frequency'] && $schedule['frequency'] !== 'once') {
+        if ($schedule) {
+            $expires_at = $schedule['expires_at'];
+            if (!$expires_at && $schedule['frequency'] === 'once') {
+                // frequency is once so we can safely make it expire when it starts
+                $expires_at = $schedule['starts_at'];
+            }
             $check_in = $this->check_ins->create(array_merge($request->input(), [
                 'user_id' => $this->auth->user()['id'],
                 'template' => 1,
             ]));
+            
             // created scheduled check in that will be picked up by the laravel scheduler task
             $scheduled_checkin = new ScheduledCheckin(
                 [
-                    'expires_at' => $schedule['expires_at'] ?? null,
+                    'expires_at' => $expires_at,
                     'starts_at' => $schedule['starts_at'] ?? date("Y-m-d H:i:s"),
                     'frequency' => $schedule['frequency'] ?? 'daily' ,
                     'remaining_count' => $schedule['remaining_count'] ?? 1,

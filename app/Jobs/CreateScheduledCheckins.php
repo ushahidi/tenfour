@@ -93,12 +93,19 @@ class CreateScheduledCheckins implements ShouldQueue
             $scheduledCheckIn->scheduled = true;
             //stop other jobs from getting this scheduled check-in and processing it
             $scheduledCheckIn->save();
-            $cronExpression = $this->cronFormat($scheduledCheckIn->frequency, new \DateTime($scheduledCheckIn->starts_at));
-            $cron = CronExpression::factory($cronExpression);
-            $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at, 0, true)->format('Y-m-d H:i:s');
-            while (new \DateTime($scheduledCheckIn->expires_at) >= new \DateTime($nextRunDate)) {
-                $nextRunDate = $this->createCheckIns($scheduledCheckIn, $nextRunDate, $checkInRepo, $checkInTemplate, $cron);
+            if ($scheduledCheckIn->frequency === 'once') {
+                $nextRunDate = new \DateTime($scheduledCheckIn->starts_at);
+                $checkIn = $this->fromCheckInTemplate($checkInTemplate, $nextRunDate->format('Y-m-d H:i:s'));
+                $checkInRepo->create($checkIn);
+            } else { 
+                $cronExpression = $this->cronFormat($scheduledCheckIn->frequency, new \DateTime($scheduledCheckIn->starts_at));
+                $cron = CronExpression::factory($cronExpression);
+                $nextRunDate = $cron->getNextRunDate($scheduledCheckIn->starts_at, 0, true)->format('Y-m-d H:i:s');
+                while (new \DateTime($scheduledCheckIn->expires_at) >= new \DateTime($nextRunDate)) {
+                    $nextRunDate = $this->createCheckIns($scheduledCheckIn, $nextRunDate, $checkInRepo, $checkInTemplate, $cron);
+                }
             }
+
         }
     }
 
