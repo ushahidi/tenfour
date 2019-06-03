@@ -164,6 +164,7 @@ return [
         ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
         League\StatsD\Laravel5\Provider\StatsdServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
+        Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
     ],
 
     /*

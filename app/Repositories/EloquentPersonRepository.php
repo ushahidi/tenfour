@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use TenFour\Services\StorageService;
 use TenFour\Services\CreditService;
 use TenFour\Services\AnalyticsService;
+use TenFour\Models\UserLocation;
 
 class EloquentPersonRepository implements PersonRepository
 {
@@ -321,4 +322,11 @@ class EloquentPersonRepository implements PersonRepository
         return $this->contacts->delete($contact_id);
     }
 
+    public function savePersonLocation($user_id, $location_geo, $location_text) {
+        $userLocation = new UserLocation(
+            ['user_id' => $user_id, 'location_text' => $location_text]
+        );
+        $userLocation->setGeoLocation($location_geo, $location_text);
+        return $userLocation->save();
+    }
 }

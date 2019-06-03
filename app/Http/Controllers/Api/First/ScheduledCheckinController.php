@@ -86,7 +86,6 @@ class ScheduledCheckinController extends ApiController
         $scheduled_checkin = $this->scheduled_checkins->pending(
             $request->route('organization'),
             $user_id,
-            false,
             $offset,
             $limit
         );
