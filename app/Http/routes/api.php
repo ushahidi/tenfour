@@ -80,4 +80,7 @@ $api->version($version, [
     $api->get($base.'organizations/{organization}/subscriptions/{subscription}/hostedpage/update', ['uses' => 'SubscriptionController@getUpdatePaymentInfoHostedPageUrl']);
     $api->post($base.'organizations/{organization}/subscriptions/{subscription}/credits', ['uses' => 'SubscriptionController@addCredits']);
 
+    // emergency alerts
+    $api->resource($base.'alerts', 'EmergencyAlertController');
+    $api->get($base.'alerts/sources', ['uses' => 'EmergencyAlertController@sources']);    
 });

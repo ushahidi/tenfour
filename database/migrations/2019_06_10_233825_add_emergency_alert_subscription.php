@@ -18,7 +18,11 @@ class AddEmergencyAlertSubscription extends Migration
             $table->bigIncrements('id');
             $table->boolean('automatic')->default(false);
             $table->integer('user_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('feed_id');
             $table->integer('group_id')->unsigned()->nullable();
+            $table->foreign('feed_id')
+                ->references('id')->on('alert_feed')
+                ->onDelete('cascade');
             $table->foreign('user_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade');

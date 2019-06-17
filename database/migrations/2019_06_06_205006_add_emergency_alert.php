@@ -14,16 +14,15 @@ class AddEmergencyAlert extends Migration
     public function up()
     {
         Schema::create('alert_feed', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->integer('owner_id')->unsigned()->default(0);
             $table->integer('organization_id')->unsigned()->default(0);
-            
-            // id of the check in this scheduled check_in group was created from
             $table->string('country');
             $table->string('city');
-            $table->string('source_type');
-            $table->text('source_config');
+            $table->string('source_id');
             $table->text('enabled');
+            $table->foreign('source_id')
+                ->references('source_id')->on('alert_source');
             $table->foreign('organization_id')
                 ->references('id')->on('organizations')
                 ->onDelete('cascade');

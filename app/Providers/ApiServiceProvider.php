@@ -94,6 +94,9 @@ class ApiServiceProvider extends ServiceProvider
         $this->app->bind('TenFour\Contracts\Repositories\AlertSourceRepository',
                          'TenFour\Repositories\EloquentAlertSourceRepository');
 
+        $this->app->bind('TenFour\Contracts\Repositories\AlertFeedRepository',
+                         'TenFour\Repositories\EloquentAlertFeedRepository');
+
         $this->app->bind('TenFour\Contracts\Services\PaymentService',
                          'TenFour\Services\Payments\ChargeBeePaymentService');
 

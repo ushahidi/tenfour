@@ -13,7 +13,7 @@ class DeleteAlertSource extends Command
      *
      * @var string
      */
-    protected $signature = 'alerts:delete {feed_id}';
+    protected $signature = 'alerts:delete {source_id}';
 
     /**
      * The console command description.
@@ -39,14 +39,14 @@ class DeleteAlertSource extends Command
      */
     public function handle(AlertSourceRepository $source)
     {
-        $feed_id = $this->argument('feed_id');
-        if (!$feed_id) {
-            $this->error("Could not delete the source subscription, missing feed_id");
+        $source_id = $this->argument('source_id');
+        if (!$source_id) {
+            $this->error("Could not delete the source subscription, missing source_id");
             return;
         }
-        $sourceObj = $source->delete($feed_id);
+        $sourceObj = $source->delete($source_id);
         if ($sourceObj) {
-            $this->info("Successfully deleted a source with id $feed_id");
+            $this->info("Successfully deleted a source with id $source_id");
         } else {
             $this->error("Could not delete the source subscription");
             $this->error(var_export($sourceObj, true));

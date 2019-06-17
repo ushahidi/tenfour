@@ -5,7 +5,7 @@ interface AlertSourceRepository extends CrudRepository
 {
     /**
      * Get all
-     * @param  [int] $feed_id
+     * @param  [int] $source_id
      * @param  [int] $name
      * @param  [int] $enabled
      * @param  [int] $offset

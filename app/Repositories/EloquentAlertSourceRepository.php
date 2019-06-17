@@ -53,9 +53,9 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
      *
      * @return mixed
      */
-     public function update(array $input, $feed_id) {
+     public function update(array $input, $source_id) {
 
-        $alert = AlertSource::update(['feed_id' => $feed_id], $input);
+        $alert = AlertSource::update(['source_id' => $source_id], $input);
 
         return $alert->toArray();
      }
@@ -67,9 +67,9 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
       *
       * @return mixed
       */
-     public function delete($feed_id) {
+     public function delete($source_id) {
 
-        $alert = AlertSource::find($feed_id)->delete();
+        $alert = AlertSource::find($source_id)->delete();
 
         return $alert;
      }
@@ -77,13 +77,13 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
      /**
       * Find
       *
-      * @param int $feed_id
+      * @param int $source_id
       *
       * @return mixed
       */
-     public function find($feed_id) {
+     public function find($source_id) {
 
-        $alert = AlertSource::get(['feed_id' => $feed_id]);
+        $alert = AlertSource::get(['source_id' => $source_id]);
 
         return $alert;
      }

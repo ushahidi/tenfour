@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class AlertSource extends Model
 {
-    protected $primaryKey = 'feed_id';
+    protected $primaryKey = 'source_id';
     protected $keyType = 'string';
 
     /**
@@ -33,7 +33,7 @@ class AlertSource extends Model
      */
 
     protected $fillable = [
-        'name', 'feed_id', 'protocol', 'url', 'authentication_options', 'enabled'
+        'name', 'source_id', 'protocol', 'url', 'authentication_options', 'enabled'
     ];
 
     /**

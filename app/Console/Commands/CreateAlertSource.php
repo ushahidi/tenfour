@@ -13,7 +13,7 @@ class CreateAlertSource extends Command
      *
      * @var string
      */
-    protected $signature = 'alerts:subscribe {feed_id} {name} {protocol} {url} {authentication_options} {enabled} {organization_id?}';
+    protected $signature = 'alerts:subscribe {source_id} {name} {protocol} {url} {authentication_options} {enabled} {organization_id?}';
 
     /**
      * The console command description.
@@ -42,7 +42,7 @@ class CreateAlertSource extends Command
         $input = $this->arguments();
         $sourceObj  = $source->create($input);
         if ($sourceObj) {
-            $this->info("Successfully added a new source with id $sourceObj->feed_id");
+            $this->info("Successfully added a new source with id $sourceObj->source_id");
         } else {
             $this->error("Could not create the source subscription");
             $this->error(var_export($sourceObj, true));

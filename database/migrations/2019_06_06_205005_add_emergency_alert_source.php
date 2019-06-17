@@ -21,9 +21,9 @@ class AddEmergencyAlertSource extends Migration
             $table->string('name');
 
             //human readable key to identify the service across all systems
-            $table->string('feed_id');
+            $table->string('source_id');
 
-            $table->primary('feed_id');
+            $table->primary('source_id');
 
             /**
              * id of the check in this scheduled check_in group was created from
