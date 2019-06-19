@@ -33,7 +33,7 @@ class AlertSource extends Model
      */
 
     protected $fillable = [
-        'name', 'source_id', 'protocol', 'url', 'authentication_options', 'enabled'
+        'country', 'state', 'name', 'source_id', 'protocol', 'url', 'authentication_options', 'enabled'
     ];
 
     /**
