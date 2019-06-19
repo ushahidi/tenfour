@@ -81,6 +81,6 @@ $api->version($version, [
     $api->post($base.'organizations/{organization}/subscriptions/{subscription}/credits', ['uses' => 'SubscriptionController@addCredits']);
 
     // emergency alerts
-    $api->resource($base.'alerts', 'EmergencyAlertController');
-    $api->get($base.'alerts/sources', ['uses' => 'EmergencyAlertController@sources']);    
+    // $api->resource($base.'alerts', 'EmergencyAlertController');
+    $api->get($base.'organizations/{organization}/alerts/sources', ['uses' => 'EmergencyAlertController@sources']);    
 });

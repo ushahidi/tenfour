@@ -40,7 +40,7 @@ class ListAlertSources extends Command
     public function handle(AlertSourceRepository $source)
     {
         $header = [
-            'name', 'source_id', 'protocol', 'url', 'authentication_options', 'enabled', 'created_at', 'updated_at'
+            'name', 'source_id', 'protocol', 'url', 'authentication_options', 'type', 'enabled', 'created_at', 'updated_at'
         ];
         $this->table($header, $source->all());
     }

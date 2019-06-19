@@ -13,7 +13,7 @@ class CreateAlertSource extends Command
      *
      * @var string
      */
-    protected $signature = 'alerts:subscribe {source_id} {name} {protocol} {url} {authentication_options} {enabled} {organization_id?}';
+    protected $signature = 'alerts:subscribe {source_id} {name} {protocol} {url} {authentication_options} {enabled} {country} {type} {state?} {organization_id?}';
 
     /**
      * The console command description.

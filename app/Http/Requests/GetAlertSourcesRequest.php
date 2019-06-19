@@ -1,6 +1,6 @@
 <?php
 
-namespace TenFour\Http\Requests\EmergencyAlerts;
+namespace TenFour\Http\Requests;
 
 use Dingo\Api\Http\FormRequest;
 use TenFour\Traits\UserAccess;
@@ -20,7 +20,7 @@ class GetAlertSourcesRequest extends FormRequest
             return false;
         }
 
-        if ($this->user()->isMember($this->query('organization'))) {
+        if ($this->user()->isMember($this->route('organization'))) {
             return true;
         }
 

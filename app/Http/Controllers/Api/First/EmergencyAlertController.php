@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\DB;
 use TenFour\Contracts\Repositories\AlertSourceRepository;
 use TenFour\Contracts\Repositories\AlertFeedRepository;
 use TenFour\Http\Transformers\AlertSourceTransformer;
-use TenFour\Http\Requests\EmergencyAlerts\GetAlertSourcesRequest;
-use TenFour\Http\Requests\EmergencyAlerts\GetAlertSubscriptionsRequest;
+use TenFour\Http\Requests\GetAlertSourcesRequest;
+use TenFour\Http\Requests\GetAlertSubscriptionsRequest;
 use TenFour\Http\Transformers\AlertSubscriptionTransformer;
 
 /**
