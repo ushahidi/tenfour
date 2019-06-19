@@ -23,7 +23,7 @@ class AlertFeed extends Model
      */
 
     protected $fillable = [
-        'country', 'city', 'source_type', 'source_config', 'enabled', 'organization_id', 'owner_id'
+        'automatic', 'country', 'city', 'source_type', 'source_config', 'enabled', 'organization_id', 'owner_id'
     ];
 
     /**

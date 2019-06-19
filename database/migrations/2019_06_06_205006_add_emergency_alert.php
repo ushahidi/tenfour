@@ -17,10 +17,11 @@ class AddEmergencyAlert extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->integer('owner_id')->unsigned()->default(0);
             $table->integer('organization_id')->unsigned()->default(0);
+            $table->boolean('automatic')->default(false);
+            $table->date('enabled');
             $table->string('country');
             $table->string('city');
             $table->string('source_id');
-            $table->text('enabled');
             $table->foreign('source_id')
                 ->references('source_id')->on('alert_source');
             $table->foreign('organization_id')

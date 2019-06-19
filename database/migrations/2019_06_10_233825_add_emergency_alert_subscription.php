@@ -16,7 +16,6 @@ class AddEmergencyAlertSubscription extends Migration
         //who are the groups or users subscribed to get the emergency_alert?
         Schema::create('alert_subscription', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->boolean('automatic')->default(false);
             $table->integer('user_id')->unsigned()->nullable();
             $table->unsignedBigInteger('feed_id');
             $table->integer('group_id')->unsigned()->nullable();
