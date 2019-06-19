@@ -20,7 +20,7 @@ class AddEmergencyAlert extends Migration
             $table->boolean('automatic')->default(false);
             $table->date('enabled');
             $table->string('country');
-            $table->string('city');
+            $table->string('state');
             $table->string('source_id');
             $table->foreign('source_id')
                 ->references('source_id')->on('alert_source');

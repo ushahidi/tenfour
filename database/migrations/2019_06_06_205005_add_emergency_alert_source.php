@@ -43,7 +43,8 @@ class AddEmergencyAlertSource extends Migration
             $table->string('authentication_options'); 
 
             $table->boolean('enabled');
-
+            $table->text('country');
+            $table->text('state');
             $table->timestamps();
         });
     }
