@@ -18,6 +18,9 @@ use TenFour\Http\Transformers\AlertSourceTransformer;
 use TenFour\Http\Requests\GetAlertSourcesRequest;
 use TenFour\Http\Requests\GetAlertSubscriptionsRequest;
 use TenFour\Http\Transformers\AlertSubscriptionTransformer;
+use TenFour\Http\Requests\SaveAlertFeedRequest;
+use TenFour\Http\Transformers\AlertFeedTransformer;
+use TenFour\Http\Requests\GetAlertFeedsRequest;
 
 /**
  * @Resource("EmergencyAlerts", uri="/api/v1/emergencyAlerts")
@@ -45,6 +48,38 @@ class EmergencyAlertController extends ApiController
         return $this->response->collection($sources, new AlertSourceTransformer, 'alerts');
     }
 
+    /**
+     * Get all alert sources available for this organization
+    **/
+    public function addFeed(SaveAlertFeedRequest $request, $organization_id)
+    {
+        $feed = $this->alertFeedRepo->create(
+            $request->input()
+        );
+        return $this->response->item($feed, new AlertFeedTransformer, 'alert');
+    }
+
+    /**
+     * Get all alert sources available for this organization
+    **/
+    public function getFeed(GetAlertFeedsRequest $request, $organization_id)
+    {
+        $feed = $this->alertFeedRepo->find(
+            $request->route("id")
+        );
+        return $this->response->item($feed, new AlertFeedTransformer, 'feed');
+    }
+
+    /**
+     * Get all alert sources available for this organization
+    **/
+    public function getFeeds(GetAlertFeedsRequest $request, $organization_id)
+    {
+        $feed = $this->alertFeedRepo->all(
+            $request->route("organization")
+        );
+        return $this->response->item($feed, new AlertFeedTransformer, 'feeds');
+    }
     /**
      * Subscribe an organization's groups and people to receive alerts from a source
     **/

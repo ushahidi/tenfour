@@ -5,7 +5,7 @@ namespace TenFour\Http\Requests;
 use Dingo\Api\Http\FormRequest;
 use TenFour\Traits\UserAccess;
 
-class GetAlertSourcesRequest extends FormRequest
+class GetAlertFeedsRequest extends FormRequest
 {
     use UserAccess;
 

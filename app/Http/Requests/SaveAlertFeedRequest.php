@@ -5,7 +5,7 @@ namespace TenFour\Http\Requests;
 use Dingo\Api\Http\FormRequest;
 use TenFour\Traits\UserAccess;
 
-class GetAlertSourcesRequest extends FormRequest
+class SaveAlertFeedRequest extends FormRequest
 {
     use UserAccess;
 
@@ -16,7 +16,7 @@ class GetAlertSourcesRequest extends FormRequest
      */
     public function authorize()
     {
-     if (!$this->user()) {
+        if (!$this->user()) {
             return false;
         }
 
