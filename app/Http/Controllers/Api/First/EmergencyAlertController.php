@@ -4,16 +4,13 @@ namespace TenFour\Http\Controllers\Api\First;
 
 use TenFour\Contracts\Repositories\CheckInRepository;
 use TenFour\Http\Response;
-use TenFour\Jobs\SendCheckIn;
-use TenFour\Services\CreditService;
-use TenFour\Notifications\CheckInChanged;
-use TenFour\Models\CheckIn;
 
 use Dingo\Api\Auth\Auth;
 use App;
 use Illuminate\Support\Facades\DB;
 use TenFour\Contracts\Repositories\AlertSourceRepository;
 use TenFour\Contracts\Repositories\AlertFeedRepository;
+use TenFour\Contracts\Repositories\AlertFeedEntryRepository;
 use TenFour\Http\Transformers\AlertSourceTransformer;
 use TenFour\Http\Requests\GetAlertSourcesRequest;
 use TenFour\Http\Requests\GetAlertSubscriptionsRequest;
@@ -27,9 +24,10 @@ use TenFour\Http\Requests\GetAlertFeedsRequest;
  */
 class EmergencyAlertController extends ApiController
 {
-    public function __construct(AlertFeedRepository $alertFeedRepo, AlertSourceRepository $alertSourceRepo, CheckInRepository $check_ins, Auth $auth, Response $response)
+    public function __construct(AlertFeedRepository $alertFeedRepo, AlertFeedEntryRepository $alertFeedEntryRepo, AlertSourceRepository $alertSourceRepo, CheckInRepository $check_ins, Auth $auth, Response $response)
     {
         $this->alertFeedRepo = $alertFeedRepo;
+        $this->alertFeedEntryRepo = $alertFeedEntryRepo;
         $this->alertSourceRepo = $alertSourceRepo;
         $this->check_ins = $check_ins;
         $this->auth = $auth;

@@ -7,7 +7,7 @@ use TenFour\Models\AlertSource;
 use TenFour\Models\AlertFeedEntry;
 
 use TenFour\Models\AlertSubscription;
-use TenFour\Contracts\Repositories\AlertFeedRepository;
+use TenFour\Contracts\Repositories\AlertFeedEntryRepository;
 use DB;
 
 use Illuminate\Support\Facades\Notification;
@@ -16,7 +16,7 @@ use TenFour\Notifications\CheckInReceived;
 use Illuminate\Support\Facades\Log;
 use PhpSpec\Exception\Fracture\InterfaceNotImplementedException;
 
-class EloquentAlertFeedRepository implements AlertFeedRepository
+class EloquentAlertFeedEntryRepository implements AlertFeedEntryRepository
 {
     public function __construct()
     {
@@ -31,34 +31,29 @@ class EloquentAlertFeedRepository implements AlertFeedRepository
      * @param  [int] $limit
      * @return [Array]
      */
-    public function all($org_id = null, $owner_id = null, $source_type = null, $enabled = null, $offset = 0, $limit = 0) {
+    public function all($feed_id = null, $owner_id = null, $source_type = null, $enabled = null, $offset = 0, $limit = 0) {
         
-        $alerts = AlertFeed::where('organization_id' ,'=', $org_id)->get();
-        // FIXME: ->entries() for whatever reason isn't working. Get help in pull request :/ 
-        foreach ($alerts as $alert) {
-            $alert['source'] = AlertSource::where('source_id', '=', $alert->source_id)->first();
-            $alert['feed'] = AlertFeedEntry::where('feed_id', '=', $alert->id)->get();
-        }
+        $alerts = AlertFeedEntry::where('feed_id' ,'=', $feed_id)->with('feed')->get();
         return $alerts->toArray();
     }
 
     public function create(array $input)
     {
-        $alert = AlertFeed::create($input);
+        $alert = AlertFeedEntry::create($input);
 
         return $alert->fresh()
             ->toArray();
     } 
     public function update(array $input, $id)
     {
-        $alert = AlertFeed::update($input);
+        $alert = AlertFeedEntry::update($input);
 
         return $alert->fresh()
             ->toArray();
     }
     public function find($id)
     {
-        $alert = AlertFeed::find($id);
+        $alert = AlertFeedEntry::find($id);
 
         return $alert->fresh()
             ->toArray();
@@ -66,7 +61,7 @@ class EloquentAlertFeedRepository implements AlertFeedRepository
 
     public function delete($id)
     {
-        $alert = AlertFeed::delete($id);
+        $alert = AlertFeedEntry::delete($id);
         return $alert;
     }
 }

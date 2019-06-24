@@ -1,8 +1,8 @@
 <?php
-
 namespace TenFour\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Tenfour\Models\AlertFeedEntry;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Intervention\Image\Point;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +21,12 @@ class AlertFeed extends Model
      *
      * @var array
      */
+/**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    // protected $with = ['entries'];
 
     protected $fillable = [
         'automatic',
@@ -49,4 +55,8 @@ class AlertFeed extends Model
     {
         return $this->belongsTo('TenFour\Models\Organization');
     }
+
+    // public function entries() {
+    // return $this->hasMany('Tenfour\Models\AlertFeedEntry');
+    // }
 }
