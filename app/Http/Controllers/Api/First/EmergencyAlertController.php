@@ -55,7 +55,7 @@ class EmergencyAlertController extends ApiController
         $feed = $this->alertFeedRepo->create(
             $request->input()
         );
-        return $this->response->item($feed, new AlertFeedTransformer, 'alert');
+        return $this->response->item($feed, new AlertFeedTransformer, 'feed');
     }
 
     /**
