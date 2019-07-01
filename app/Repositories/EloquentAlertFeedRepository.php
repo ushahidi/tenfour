@@ -6,15 +6,8 @@ use TenFour\Models\AlertSource;
 
 use TenFour\Models\AlertFeedEntry;
 
-use TenFour\Models\AlertSubscription;
 use TenFour\Contracts\Repositories\AlertFeedRepository;
 use DB;
-
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Hash;
-use TenFour\Notifications\CheckInReceived;
-use Illuminate\Support\Facades\Log;
-use PhpSpec\Exception\Fracture\InterfaceNotImplementedException;
 
 class EloquentAlertFeedRepository implements AlertFeedRepository
 {

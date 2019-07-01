@@ -10,6 +10,7 @@ use App;
 use Illuminate\Support\Facades\DB;
 use TenFour\Contracts\Repositories\AlertSourceRepository;
 use TenFour\Contracts\Repositories\AlertFeedRepository;
+use TenFour\Contracts\Repositories\AlertSubscriptionRepository;
 use TenFour\Contracts\Repositories\AlertFeedEntryRepository;
 use TenFour\Http\Transformers\AlertSourceTransformer;
 use TenFour\Http\Requests\GetAlertSourcesRequest;
@@ -24,7 +25,7 @@ use TenFour\Http\Requests\GetAlertFeedsRequest;
  */
 class EmergencyAlertController extends ApiController
 {
-    public function __construct(AlertFeedRepository $alertFeedRepo, AlertFeedEntryRepository $alertFeedEntryRepo, AlertSourceRepository $alertSourceRepo, CheckInRepository $check_ins, Auth $auth, Response $response)
+    public function __construct(AlertFeedRepository $alertFeedRepo, AlertFeedEntryRepository $alertFeedEntryRepo, AlertSourceRepository $alertSourceRepo, AlertSubscriptionRepository $alertSubscriptionRepo, CheckInRepository $check_ins, Auth $auth, Response $response)
     {
         $this->alertFeedRepo = $alertFeedRepo;
         $this->alertFeedEntryRepo = $alertFeedEntryRepo;
@@ -83,10 +84,10 @@ class EmergencyAlertController extends ApiController
     **/
     public function subscribe(CreateAlertSubscriptionRequest $request, $organization_id)
     {
-        $sources = $this->alertSourceRepo->all(
+        $sources = $this->alertSubscriptionRepo->create(
             $request->input('organization', false)
         );//TODO create things
-        return $this->response->collection($sources, new AlertSourceTransformer, 'alerts');
+        return $this->response->collection($sources, new AlertSubscriptionTransformer, 'alerts');
     }
 
 
@@ -95,9 +96,9 @@ class EmergencyAlertController extends ApiController
     **/
     public function subscriptions(GetAlertSubscriptionsRequest $request, $organization_id)
     {
-        $sources = $this->alertFeedRepo->create(
+        $sources = $this->alertSourceRepo->all(
             $request->input('organization', false)
         );//TODO create things
-        return $this->response->collection($sources, new AlertSubscriptionTransformer, 'alerts');
+        return $this->response->collection($sources, new AlertSourceTransformer, 'alerts');
     }
 }

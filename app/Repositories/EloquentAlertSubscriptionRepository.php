@@ -1,11 +1,11 @@
 <?php
 namespace TenFour\Repositories;
 
-use TenFour\Models\AlertSource;
-use TenFour\Contracts\Repositories\AlertSourceRepository;
+use TenFour\Models\AlertSubscription;
+use TenFour\Contracts\Repositories\AlertSubscriptionRepository;
 use DB;
 
-class EloquentAlertSourceRepository implements AlertSourceRepository
+class EloquentAlertSubscriptionRepository implements AlertSubscriptionRepository
 {
 
     public function __construct()
@@ -23,16 +23,16 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
     public function all($organization_id = null, $enabled = null, $offset = 0, $limit = 0) {
         
         if (is_bool($enabled)) {
-            $alerts = AlertSource::where('enabled' ,'=', intval($enabled))->get();
+            $alerts = AlertSubscription::where('enabled' ,'=', intval($enabled))->get();
         } else {
-            $alerts = AlertSource::all();
+            $alerts = AlertSubscription::all();
         }
         return $alerts->toArray();
     }
 
     public function create(array $input)
     {
-        $alert = AlertSource::create($input);
+        $alert = AlertSubscription::create($input);
 
         return $alert->fresh();
     }
@@ -47,7 +47,7 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
      */
      public function update(array $input, $source_id) {
 
-        $alert = AlertSource::update(['source_id' => $source_id], $input);
+        $alert = AlertSubscription::update(['source_id' => $source_id], $input);
 
         return $alert->toArray();
      }
@@ -61,7 +61,7 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
       */
      public function delete($source_id) {
 
-        $alert = AlertSource::find($source_id)->delete();
+        $alert = AlertSubscription::find($source_id)->delete();
 
         return $alert;
      }
@@ -75,7 +75,7 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
       */
      public function find($source_id) {
 
-        $alert = AlertSource::get(['source_id' => $source_id]);
+        $alert = AlertSubscription::get(['source_id' => $source_id]);
 
         return $alert;
      }
