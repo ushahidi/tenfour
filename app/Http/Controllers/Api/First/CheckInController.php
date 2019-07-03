@@ -26,18 +26,21 @@ use Dingo\Api\Auth\Auth;
 use App;
 use TenFour\Models\ScheduledCheckin;
 use Illuminate\Support\Facades\DB;
+use TenFour\Models\AlertSubscription;
+use TenFour\Contracts\Repositories\AlertSubscriptionRepository;
 
 /**
  * @Resource("Checkins", uri="/api/v1/organizations/{org_id}/checkins")
  */
 class CheckInController extends ApiController
 {
-    public function __construct(CheckInRepository $check_ins, Auth $auth, Response $response, CreditService $creditService)
+    public function __construct(CheckInRepository $check_ins, Auth $auth, Response $response, CreditService $creditService , AlertSubscriptionRepository $alertSubscription)
     {
         $this->check_ins = $check_ins;
         $this->auth = $auth;
         $this->response = $response;
         $this->creditService = $creditService;
+        $this->alert_subscription = $alertSubscription;
     }
 
     /**
@@ -387,6 +390,7 @@ class CheckInController extends ApiController
     public function create(CreateCheckInRequest $request, $organization_id)
     {
         $schedule = $request->input('schedule');
+        $alert_feed = $request->input('alert_feed');
         if ($schedule) {
             $expires_at = $schedule['expires_at'];
             if (!$expires_at && $schedule['frequency'] === 'once') {
@@ -420,6 +424,13 @@ class CheckInController extends ApiController
             }
             // Send check-in
             dispatch((new SendCheckIn($check_in))/*->onQueue('checkins')*/);
+        }
+        if ($alert_feed && isset($alert_feed['feed_id'])) {
+            $subscription = new AlertSubscription([
+                'checkin_template_id' => $check_in['id'],
+                'feed_id' => $alert_feed['feed_id']
+            ]);
+            $subscription->save();
         }
         return $this->response->item($check_in, new CheckInTransformer, 'checkin');
     }

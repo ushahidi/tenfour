@@ -17,8 +17,10 @@ class AddEmergencyAlertSource extends Migration
         // but cold lambdas are a pain because they are slow to come up,
         // and this would let OSS users setup their own however they like 
         Schema::create('alert_source', function (Blueprint $table) {
-            //user friendly name for the service
+            // user friendly name for the service
             $table->string('name');
+            // a user facing url to add as a link from the list of sources.
+            $table->string('user_facing_url');
 
             //human readable key to identify the service across all systems
             $table->string('source_id');

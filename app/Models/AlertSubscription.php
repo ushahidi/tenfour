@@ -23,7 +23,7 @@ class AlertSubscription extends Model
      */
 
     protected $fillable = [
-        'group_id', 'user_id', 'source_id'
+        'checkin_template_id', 'feed_id'
     ];
 
     /**
