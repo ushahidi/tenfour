@@ -1,0 +1,16 @@
+{
+  "name": "tenfour",
+  "repository": "http://github.com/ushahidi/tenfour",
+  "private": "true",
+  "scripts": {
+    "docs:api": "aglio -i resources/docs/api/_index.apib -o docs/api/index.html",
+  },
+  "dependencies": {
+    "laravel-elixir": "^3.0.0",
+    "bootstrap-sass": "^3.0.0"
+  },
+  "devDependencies": {
+    "aglio": "^2.1.1",
+    "gulp": "^3.8.8"
+  }
+}
