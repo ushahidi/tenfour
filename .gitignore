@@ -1,0 +1,23 @@
+# composer
+/vendor
+composer.phar
+
+# Laravel
+/bootstrap/compiled.php
+.env.*.php
+.env.php
+.idea
+.vagrant
+.env
+# OSX
+.DS_Store
+Thumbs.db
+
+
+tests/_output/*
+
+codeship.aes
+deployment.env
+docs/api/index.html
+
+nexmo-private.key
