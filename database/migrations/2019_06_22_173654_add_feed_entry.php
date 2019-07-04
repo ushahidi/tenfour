@@ -18,6 +18,8 @@ class AddFeedEntry extends Migration
             $table->unsignedBigInteger('feed_id');
             $table->string('title');
             $table->string('body');
+            $table->text('country')->nullable();
+            $table->text('state')->nullable();
             $table->longText('metadata')->default(null); // other options ?
             $table->foreign('feed_id')
                 ->references('id')->on('alert_feed')

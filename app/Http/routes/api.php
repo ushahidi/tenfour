@@ -88,4 +88,5 @@ $api->version($version, [
     $api->get($base.'organizations/{organization}/alerts/feed/{id}', ['uses' => 'EmergencyAlertController@getFeed']);
     $api->get($base.'organizations/{organization}/alerts/feed', ['uses' => 'EmergencyAlertController@getFeeds']);
     $api->post($base.'organizations/{organization}/alerts/subscribe', ['uses' => 'EmergencyAlertController@subscribe']);
+    $api->post($base.'webhooks/alerts/feed/notification', ['uses' => 'EmergencyAlertController@newAlertFeedEntry']);    
 });

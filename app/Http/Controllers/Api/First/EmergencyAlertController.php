@@ -19,6 +19,7 @@ use TenFour\Http\Transformers\AlertSubscriptionTransformer;
 use TenFour\Http\Requests\SaveAlertFeedRequest;
 use TenFour\Http\Transformers\AlertFeedTransformer;
 use TenFour\Http\Requests\GetAlertFeedsRequest;
+use TenFour\Models\AlertFeedEntry;
 
 /**
  * @Resource("EmergencyAlerts", uri="/api/v1/emergencyAlerts")
@@ -111,5 +112,40 @@ class EmergencyAlertController extends ApiController
             $request->input('organization', false)
         );//TODO create things
         return $this->response->collection($sources, new AlertSourceTransformer, 'alerts');
+    }
+    /**
+     * Notify of a new alert
+    **/
+    public function newAlertFeedEntry(GetAlertFeedsRequest $request)
+    {
+        $feedEntry = $this->alertFeedEntryRepo->create(
+            $request->input()
+        );
+        $subscribers = $this->notifySubscribersForFeedEntry($feedEntry);
+        return $this->response->item($feedEntry, new AlertFeedTransformer, 'feedEntry');
+    }
+
+    private function notifySubscribersForFeedEntry(AlertFeedEntry $feedEntry) {
+        $subscribers = $this->alertSubscriptionRepo->subscribers();
+        foreach ($subscribers as $subscriber) {
+            // automatic checkin
+            if ($subscriber->checkin_template_id) {
+                $checkin = $this->check_ins->find($subscriber->checkin_template_id);
+                $checkin->message = substr($feedEntry->title . '\n' . $feedEntry->body, 0, 140);
+                //TODO generate bit.ly with the full alert text to attach
+                $checkin->save();
+                $checkInTemplate = $checkin->toArray();
+                $now = new \DateTime('now');
+                $checkInTemplate['send_at'] = $now->format('Y-m-d H:i:s');
+                unset($checkInTemplate['id']);
+                unset($checkInTemplate['created_at']);
+                unset($checkInTemplate['updated_at']);
+                unset($checkInTemplate['deleted_at']);
+                unset($checkInTemplate['template']);
+                unset($checkInTemplate['users']);
+                $this->check_ins->create($checkInTemplate);
+            }
+            //TODO notify admin via push notification of the new alert
+        }
     }
 }
