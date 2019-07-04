@@ -20,14 +20,39 @@ class EloquentAlertSourceRepository implements AlertSourceRepository
      * @param  [int] $limit
      * @return [Array]
      */
-    public function all($organization_id = null, $enabled = null, $offset = 0, $limit = 0) {
+    public function all($organization_id = null, $enabled = null, $country = null, $state = null, $offset = 0, $limit = 0) {
         
-        if (is_bool($enabled)) {
-            $alerts = AlertSource::where('enabled' ,'=', intval($enabled))->get();
-        } else {
-            $alerts = AlertSource::all();
+        $query = AlertSource::query()
+            ->orderBy('created_at', 'desc');
+
+        if ($country) {
+            $query->where('country', $country);
         }
+        if ($state) {
+            $query->where('state', $state);
+        }
+
+
+        if (is_bool($enabled)) {
+            $query->where('enabled', intval($enabled));
+        }
+        if ($limit > 0) {
+          $query
+            ->offset($offset)
+            ->limit($limit);
+        }
+
+        $alerts = $query->get();
+
         return $alerts->toArray();
+    }
+    /**
+     * Get locations available in Alert Sources
+     * @return [Array]
+     */
+    public function locations() {
+        $locations = AlertSource::query()->get(['country', 'state']);
+        return $locations->toArray();
     }
 
     public function create(array $input)

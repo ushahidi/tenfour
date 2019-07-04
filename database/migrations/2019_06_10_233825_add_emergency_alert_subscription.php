@@ -17,7 +17,7 @@ class AddEmergencyAlertSubscription extends Migration
         Schema::create('alert_subscription', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('feed_id');
-            $table->unsignedBigInteger('checkin_template_id');
+            $table->integer('checkin_template_id')->unsigned()->default(0);
             $table->foreign('feed_id')
                 ->references('id')->on('alert_feed')
                 ->onDelete('cascade');

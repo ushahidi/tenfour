@@ -81,6 +81,8 @@ $api->version($version, [
     $api->post($base.'organizations/{organization}/subscriptions/{subscription}/credits', ['uses' => 'SubscriptionController@addCredits']);
 
     // emergency alerts
+    
+    $api->get($base.'organizations/{organization}/alerts/locations', ['uses' => 'EmergencyAlertController@sourceLocations']);    
     $api->get($base.'organizations/{organization}/alerts/sources', ['uses' => 'EmergencyAlertController@sources']);    
     $api->post($base.'organizations/{organization}/alerts/feed', ['uses' => 'EmergencyAlertController@addFeed']);
     $api->get($base.'organizations/{organization}/alerts/feed/{id}', ['uses' => 'EmergencyAlertController@getFeed']);

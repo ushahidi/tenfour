@@ -41,10 +41,21 @@ class EmergencyAlertController extends ApiController
     public function sources(GetAlertSourcesRequest $request, $organization_id)
     {
         $sources = $this->alertSourceRepo->all(
-            $request->input('organization', false),
-            $request->input('enabled', null)
+            $request->query('organization', false),
+            $request->query('enabled', null),
+            $request->query('country'),
+            $request->query('state')
         );
         return $this->response->collection($sources, new AlertSourceTransformer, 'alerts');
+    }
+
+    /**
+     * Get all alert sources available for this organization
+    **/
+    public function sourceLocations(GetAlertSourcesRequest $request, $organization_id)
+    {
+        $sources = $this->alertSourceRepo->locations();
+        return $this->response->collection($sources, new AlertSourceTransformer, 'locations');
     }
 
     /**
