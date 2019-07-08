@@ -47,7 +47,7 @@ class AddEmergencyAlertSource extends Migration
             $table->boolean('enabled');
             $table->boolean('type');//sms,email,api,other
             $table->text('country');
-            $table->text('state');
+            $table->text('state')->nullable();
             $table->timestamps();
         });
     }

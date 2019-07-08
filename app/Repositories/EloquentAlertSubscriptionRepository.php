@@ -79,4 +79,9 @@ class EloquentAlertSubscriptionRepository implements AlertSubscriptionRepository
 
         return $alert;
      }
+
+     public function subscribers($feed_id) {
+        $alerts = AlertSubscription::where('feed_id' ,'=', intval($feed_id))->get();
+        return $alerts->toArray();
+     }
 }

@@ -88,5 +88,14 @@ $api->version($version, [
     $api->get($base.'organizations/{organization}/alerts/feed/{id}', ['uses' => 'EmergencyAlertController@getFeed']);
     $api->get($base.'organizations/{organization}/alerts/feed', ['uses' => 'EmergencyAlertController@getFeeds']);
     $api->post($base.'organizations/{organization}/alerts/subscribe', ['uses' => 'EmergencyAlertController@subscribe']);
-    $api->post($base.'webhooks/alerts/feed/notification', ['uses' => 'EmergencyAlertController@newAlertFeedEntry']);    
+});
+
+// Add authenticated routes
+$api->version($version, [
+    'namespace' => 'TenFour\Http\Controllers\Api',
+    // 'protected' => true,
+    // 'middleware' => 'auth.basic.emergency-alerts-webhook',
+    // 'scopes' => ['user', 'organization', 'contact', 'checkin']
+], function ($api) use ($base) {
+    $api->post($base.'webhooks/alerts/feed/notification', ['uses' => 'EmergencyAlertWebhookController@newAlertFeedEntry']);    
 });
