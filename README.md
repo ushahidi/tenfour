@@ -17,13 +17,13 @@ TenFour has modules that work with telecom carriers around the world (SMS curren
 ## How to use TenFour
 
 <b>TenFour step by step<b>
-    <li> 1. [Create an organisation URL](https://www.tenfour.org/support/how-to-sign-up)</li>
-    <li> 2. [Go through 'onboarding'](https://www.tenfour.org/support/onboarding)</li>
-    <li> 3. Onboarding should prompt you to:
-            - [Add people](https://www.tenfour.org/support/adding-users) 
-            - [Send a test check-in](https://www.tenfour.org/support/compose-a-checkin) 
-            - [Create a group](https://www.tenfour.org/support/creating-groups)</li>
-   <li> 4. After onboarding you will be able to use all the functions in TenFour freely.</li>
+* [Create an organisation URL](https://www.tenfour.org/support/how-to-sign-up)
+* [Go through 'onboarding'](https://www.tenfour.org/support/onboarding)
+* Onboarding should prompt you to:
+    + [Add people](https://www.tenfour.org/support/adding-users) 
+    + [Send a test check-in](https://www.tenfour.org/support/compose-a-checkin) 
+    + [Create a group](https://www.tenfour.org/support/creating-groups)
+* After onboarding you will be able to use all the functions in TenFour freely.
     
 Make note of your URL (example: https://myorganisation.tenfour.org/) and the password associated with yoru URL/Account or store in a secure password vault.
 
