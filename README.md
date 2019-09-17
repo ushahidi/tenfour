@@ -12,7 +12,7 @@ Users can Add contacts to a group so one can check-in with multiple people with 
 
 TenFour has modules that work with telecom carriers around the world (SMS currently in US, UK, CA, KE).
 
-[View our TenFour product slides here](https://docs.google.com/document/d/1WjHofPDWkaeV5UYbKHhoZCuNT7Oc5nwG2eBkdmUPDz0/edit?usp=sharing)
+[View our TenFour product slides here](https://drive.google.com/file/d/1B80_hcdWD-7SQFdssUzzRegfChtbwjdH/view)
 
 ## How to use TenFour
 
@@ -34,6 +34,8 @@ Authoring a message is easy, you just type in your question and select the answe
 Users then receive messages from all different channels. They can respond, and their response is routed back to TenFour
 
 You can then go back to the app and see the status of check-ins.
+
+More info on how to use TenFour is included on the [TenFour support page](https://www.tenfour.org/support/what-is-tenfour)
 
 ## Why do we need TenFour?
 
