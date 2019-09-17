@@ -12,17 +12,17 @@ Users can Add contacts to a group so one can check-in with multiple people with 
 
 TenFour has modules that work with telecom carriers around the world (SMS currently in US, UK, CA, KE).
 
-[View our TenFour product slides here] (https://docs.google.com/document/d/1WjHofPDWkaeV5UYbKHhoZCuNT7Oc5nwG2eBkdmUPDz0/edit?usp=sharing)
+[View our TenFour product slides here](https://docs.google.com/document/d/1WjHofPDWkaeV5UYbKHhoZCuNT7Oc5nwG2eBkdmUPDz0/edit?usp=sharing)
 
 ## How to use TenFour
 
 <b>TenFour step by step<b>
-    1. [Create an organisation URL] (https://www.tenfour.org/support/how-to-sign-up)
-    2. [Go through 'onboarding'] (https://www.tenfour.org/support/onboarding)
+    1. [Create an organisation URL](https://www.tenfour.org/support/how-to-sign-up)
+    2. [Go through 'onboarding'](https://www.tenfour.org/support/onboarding)
     3. Onboarding should prompt you to:
         1.[Add people](https://www.tenfour.org/support/adding-users)
-        2.[Send a test check-in] (https://www.tenfour.org/support/compose-a-checkin)
-        3.[Create a group] (https://www.tenfour.org/support/creating-groups)
+        2.[Send a test check-in](https://www.tenfour.org/support/compose-a-checkin)
+        3.[Create a group](https://www.tenfour.org/support/creating-groups)
     4. After onboarding you will be able to use all the functions in TenFour freely.
     
 Make note of your URL (example: https://myorganisation.tenfour.org/) and the password associated with yoru URL/Account or store in a secure password vault.
@@ -64,15 +64,15 @@ During the election in Kenya this last summer, violence broke out in the slums. 
 
 ## Contributing Code
 
-TenFour became Open Source in August 2019. It was previous a closed repository and not an Open Source tool due to SMS vendor information being tied to [Ushahidi] (ushahidi.com) who built the tool over the last 4 years.
+TenFour became Open Source in August 2019. It was previous a closed repository and not an Open Source tool due to SMS vendor information being tied to [Ushahidi](ushahidi.com) who built the tool over the last 4 years.
 
 As such the process for contributing is a work in progress and will be updated here. 
 
 ## Contributing Design
 
-The process to contribute design to TenFour is captured by [Open Design](https://opendesign.ushahidi.com/), a project between [Ushahidi] (ushahidi.com), [Adobe](https://www.adobe.com/) & [Designit](https://www.designit.com/).
+The process to contribute design to TenFour is captured by [Open Design](https://opendesign.ushahidi.com/), a project between [Ushahidi](ushahidi.com), [Adobe](https://www.adobe.com/) & [Designit](https://www.designit.com/).
 
-Documentation on how to contribute design work will be added to a documentation environment specifically for TenFour but for now please see [Ushahidi's design documentation on Gitbooks] (https://app.gitbook.com/@ushahidi/s/platform-developer-documentation/design/design-process)
+Documentation on how to contribute design work will be added to a documentation environment specifically for TenFour but for now please see [Ushahidi's design documentation on Gitbooks](https://app.gitbook.com/@ushahidi/s/platform-developer-documentation/design/design-process)
 
 ### License
 
