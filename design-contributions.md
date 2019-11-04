@@ -12,6 +12,6 @@ This is an [Adobe XD file] (https://www.adobe.com/uk/products/xd.html) and as su
 
 ## XD live link 'for development' located [here] (https://xd.adobe.com/spec/c5e82b6d-6bc1-42a0-6973-497102ffd660-b3d9/)
 
-# This issue will serve the purpose of version control until such time as Adobe XD (or related plugins/products) are able to facilitate versioning of design files.
+*This issue will serve the purpose of version control until such time as Adobe XD (or related plugins/products) are able to facilitate versioning of design files.*
 
 First file uploaded by @Erioldoesdesign on the 04 - November - 2019 at 22.05pm
