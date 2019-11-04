@@ -74,6 +74,8 @@ As such the process for contributing is a work in progress and will be updated h
 
 The process to contribute design to TenFour is captured by [Open Design](https://opendesign.ushahidi.com/), a project between [Ushahidi](ushahidi.com), [Adobe](https://www.adobe.com/) & [Designit](https://www.designit.com/).
 
+You can find details on how to contribute design to TenFour on the [Design contribution page] (https://github.com/ushahidi/tenfour/blob/develop/design-contributions.md) 
+
 Documentation on how to contribute design work will be added to a documentation environment specifically for TenFour but for now please see [Ushahidi's design documentation on Gitbooks](https://app.gitbook.com/@ushahidi/s/platform-developer-documentation/design/design-process)
 
 ### License
