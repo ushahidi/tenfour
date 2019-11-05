@@ -8,9 +8,9 @@ This is an [Adobe XD file] (https://www.adobe.com/uk/products/xd.html) and as su
 
 ## XD Cloud doc located [TBC] ( )
 
-## XD live link 'for review' located [here] (https://xd.adobe.com/view/d6acbb4d-0dce-44da-7093-bac08af8152d-a09d/)
+## XD live link 'for review' located [here](https://xd.adobe.com/view/d6acbb4d-0dce-44da-7093-bac08af8152d-a09d/)
 
-## XD live link 'for development' located [here] (https://xd.adobe.com/spec/c5e82b6d-6bc1-42a0-6973-497102ffd660-b3d9/)
+## XD live link 'for development' located [here](https://xd.adobe.com/spec/c5e82b6d-6bc1-42a0-6973-497102ffd660-b3d9/grid)
 
 *This issue will serve the purpose of version control until such time as Adobe XD (or related plugins/products) are able to facilitate versioning of design files.*
 
