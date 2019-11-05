@@ -4,9 +4,9 @@ A comprehensive 'Sticker Sheet' or 'Design system' for the current TenFour UI & 
 
 This is an [Adobe XD file] (https://www.adobe.com/uk/products/xd.html) and as such, will only work on Adobe XD software. A cloud doc is in development as of November 2019.
 
-## Downloadable master XD doc located [here] (https://drive.google.com/open?id=1vPUbfle3GYR7kim2A_4woCuUSIB258Li)
+## Downloadable master XD doc located in an open google drive [here](https://drive.google.com/open?id=1vPUbfle3GYR7kim2A_4woCuUSIB258Li)
 
-## XD Cloud doc located [TBC] ( )
+## XD Cloud doc located [TBC]( )
 
 ## XD live link 'for review' located [here](https://xd.adobe.com/view/d6acbb4d-0dce-44da-7093-bac08af8152d-a09d/)
 
