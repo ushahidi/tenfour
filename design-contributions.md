@@ -2,7 +2,7 @@
 
 A comprehensive 'Sticker Sheet' or 'Design system' for the current TenFour UI & journey flow to be used for any designers looking to contribute UX, UI, Graphics, Illustration, Interaction Design or any visual design to TenFour as an OSS product.
 
-This is an [Adobe XD file] (https://www.adobe.com/uk/products/xd.html) and as such, will only work on Adobe XD software. A cloud doc is in development as of November 2019.
+This is an [Adobe XD file](https://www.adobe.com/uk/products/xd.html) and as such, will only work on Adobe XD software. A cloud doc is in development as of November 2019.
 
 ## Downloadable master XD doc located in an open google drive [here](https://drive.google.com/open?id=1vPUbfle3GYR7kim2A_4woCuUSIB258Li)
 
