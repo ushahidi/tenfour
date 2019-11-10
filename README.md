@@ -70,6 +70,78 @@ TenFour became Open Source in August 2019. It was previous a closed repository a
 
 As such the process for contributing is a work in progress and will be updated here. 
 
+### Labels and how to use them to find development/technical issues
+
+**back-end issues** - Issues to do with TenFour's Back-end 'API' or 'Client'.
+
+**bug** - An issue that is not functioning as expected or not in the 'ideal' way for a large part of the TenFour users.
+
+**devops** - An issue that looks at the development operation of the feature/product as a whole. Could be server, connection, reliability based.
+
+**documentation** - An issue that needs supporting documentation created and logged for the feature/issue.
+
+**duplicate** - A label to flag that there is a duplicate or very similar issue to the one with this label and the two issues could potentiall be condensed into one.
+
+**enhancement** - A label to show that the issue is an improvement on an existing feature.
+
+**epic** - A label to indicate a collection of issues under one theme or type. This is called an 'epic'.
+
+**Feature: Check-In** - An issue that looks at the TenFour check-ins screens/process.
+
+**Feature: Groups** - An issue that looks at the TenFour groups screens/process.
+
+**Feature: Notifications** - An issue that looks at the TenFour notifications screens/process.
+
+**Feature: Onboarding** - An issue that looks at the TenFour onboarding screens/process.
+
+**Feature: People** - An issue that looks at the TenFour people screens/process.
+
+**Feature: Profile** - An issue that looks at the TenFour profile screens/process.
+
+**Feature: Settings** - An issue that looks at the TenFour settings screens/process.
+
+**feature request** - A request specifically come from a user of TenFour that does not alreayd exist in the product.
+
+**front-end** - An issue which needs front-end development coding.
+
+**good first issue** - An issue that is suspected to be a good first issue for a new contributor to TenFour.
+
+**grant requirement** - An issue that is connected to a requirement detailed in a grant/funding proposal.
+
+**low priority** - An issue that is not at all critical to the functioning/improvement of the product.
+
+**medium priority** - An issue that is somewhat critical to the functioning/improvement of the product.
+
+**high priority** - An issue that is very critical to the functioning/improvement of the product.
+
+**marketing** - An issue for marketing materials and/or promotional materials for TenFour. Can include presentation templates, merchandise etc.
+
+**mobile** - This is an issue which affects and/or is most important on mobile.
+
+**P0 - Unbreak now!** - This is a critical issue for developer/s to fix as it stops TenFour from functioning as intended.
+
+**P1 - Immediate** - This is an important but not critical issue for developer to fix. It make reduce TenFour from functioning as intended
+
+**P2 - Normal** - An issue which will be useful but not critical to have in the product.
+
+**P1 - Low** - An issue that is somewhat useful but not critical to have in the product.
+
+**P4 - Wishlist** - An issue which is a very nice to have in the product.
+
+**PWA** - An issue that is specific to the PWA or [Progressive Web App](https://ionicframework.com/docs/v3/developer-resources/progressive-web-apps/).
+
+**QA by dev** - An issue that needs quality assurance testing by someone with development/coding experience.
+
+**question** - An issue which raises a question from the community.
+
+**Support** - An issue that needs work from a support function like tutorials, guides, documentation or customer/user support.
+
+**Tech debt** - An issue which is as a result of [technical debt](https://en.wikipedia.org/wiki/Technical_debt)
+
+**TenFour.org** - An issue that affects [Tenfour.org website](https://tenfour.org/)
+
+**wontfix** - An issue that won't be looked at until further notice.
+
 ## Contributing Design
 
 The process to contribute design to TenFour is captured by [Open Design](https://opendesign.ushahidi.com/), a project between [Ushahidi](ushahidi.com), [Adobe](https://www.adobe.com/) & [Designit](https://www.designit.com/).
@@ -77,6 +149,24 @@ The process to contribute design to TenFour is captured by [Open Design](https:/
 You can find details on how to contribute design to TenFour on the [Design contribution page](https://github.com/ushahidi/tenfour/blob/develop/design-contributions.md) 
 
 Documentation on how to contribute design work will be added to a documentation environment specifically for TenFour but for now please see [Ushahidi's design documentation on Gitbooks](https://app.gitbook.com/@ushahidi/s/platform-developer-documentation/design/design-process)
+
+### Labels and how to use them to find design issues
+
+**Open Design issue** - An issue that has been identified for an [Open design](http://opendesign.ushahidi.com/) workshop. These workshops bring together designers wanting to contribute in groups (or individuals) to issues in TenFour.
+
+**Design: Interaction** - An issue which needs attention to how users interaction with it. Could be UI connected, voice, or gesture. Particularly useful for Human Computer Interaction/Design (HCI/D) people.
+
+**Design: UI** - An issue which needs attention to the interface that users use. Can be a visual interface but also a conversation interface (voice) etc.
+
+**Design: Usability + Inclusion** - An issue which needs attention to how users of all abilities and needs are considered. Inclusion and accessibility focus needed to inform how the feature functions.
+
+**Design: User Research** - An issue which needs further user research done to fully discover and validate the problem/hypothesis presented in the issue.
+
+**Design: UX** - An issue which needs attention on user experince of the feature or issue. Could be prototypes, flows, inclusion of other features, interactions and tasks that the user performs as part of this issue.
+
+**Design: Visual + Graphic** - An issue which needs visual design and/or graphics. Could be to help communicate a feature visually with animations, supporting graphics and illustration or logo, colours and brand changes.
+
+**QA by Design** - This is an issue that after having gone through development, needs a designer to approve the functionailty.
 
 ### License
 
