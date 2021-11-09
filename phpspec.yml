@@ -1,5 +1,0 @@
-suites:
-    main:
-        namespace: TenFour
-        psr4_prefix: TenFour
-        src_path: app
